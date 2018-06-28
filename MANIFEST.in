@@ -1,0 +1,9 @@
+
+# Misc
+include LICENSE.txt COPYING.LESSER
+
+# Documentation
+recursive-include docs/build/html *
+recursive-include docs/source *
+recursive-include tests *.py
+recursive-include bin *.py
