@@ -31,7 +31,13 @@ from math import pi as pi
 
 
 DEG2RAD = pi/180.0
+"""Constant to convert from degrees to radians."""
+
 RAD2DEG = 180.0/pi
+"""Constant to convert from radians to degrees."""
+
+TOL = 1E-8
+"""Internal tolerance being used by default"""
 
 
 class Angle(object):
@@ -85,7 +91,7 @@ class Angle(object):
         -13.5
         """
         self._deg = 0.0         # Angle value is stored here in decimal format
-        self._tol = 1E-8
+        self._tol = TOL
         self.set(*args, **kwargs)   # Let's use 'set()' method to set angle
 
     @staticmethod
@@ -201,7 +207,7 @@ class Angle(object):
     def get_tolerance(self):
         """Gets the internal tolerance value used to compare Angles.
 
-        :note: The default tolerance value is 1E-8.
+        :note: The default tolerance value is TOL.
 
         :returns: Internal tolerance, as float.
         """
