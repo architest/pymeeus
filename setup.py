@@ -18,13 +18,13 @@ with open('README.rst', 'w') as outfile:
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
-with open(path.join(here, 'README.md')) as f:
+with open(path.join(here, 'README.rst')) as f:
     long_description = f.read()
 
 
 config = {
     'name': 'PyMeeus',
-    'version': '0.0.1',
+    'version': '0.0.3',
     'description': 'Python implementation of Jean Meeus astronomical routines',
     'long_description': long_description,
     'keywords': 'Meeus astronomy module library',
