@@ -55,7 +55,7 @@ class Angle(object):
     :type radians: bool
 
     :returns: Angle object.
-    :raises: ValueError if input values are of wrong type.
+    :raises: TypeError if input values are of wrong type.
 
     >>> a = Angle(-13, 30, 0.0)
     >>> print(a)
@@ -78,7 +78,7 @@ class Angle(object):
         :type radians: bool
 
         :returns: Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(-13, 30, 0.0)
         >>> print(a)
@@ -259,7 +259,7 @@ class Angle(object):
         :type radians: bool
 
         :returns: None.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
         """
         # If we have only one argument, it can be a single value or tuple/list
         if len(args) == 1:
@@ -273,7 +273,7 @@ class Angle(object):
                 self._deg = Angle.reduce_deg(deg)
             elif isinstance(deg, (list, tuple)):
                 if len(deg) == 0:
-                    raise ValueError("Invalid input value in constructor")
+                    raise TypeError("Invalid input value in constructor")
                 elif len(deg) == 1:
                     # This is a single value
                     if 'radians' in kwargs:
@@ -288,7 +288,7 @@ class Angle(object):
                     # Only the first three values are taken into account
                     self._deg = Angle.dms2deg(deg[0], deg[1], deg[2])
             else:
-                raise ValueError("Invalid input value in constructor")
+                raise TypeError("Invalid input value in constructor")
         elif len(args) == 2:
             # Seconds value is set to zero
             self._deg = Angle.dms2deg(args[0], args[1])
@@ -373,7 +373,7 @@ class Angle(object):
         :note: For the comparison, the internal tolerance value is used.
 
         :returns: A boolean.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(172.01)
         >>> b = Angle(172.009)
@@ -385,7 +385,7 @@ class Angle(object):
         elif isinstance(b, Angle):
             return abs(self._deg - b._deg) < self._tol
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __ne__(self, b):
         """This method defines the 'is not equal' operator between Angles.
@@ -405,7 +405,7 @@ class Angle(object):
         """This method defines the 'is less than' operator between Angles.
 
         :returns: A boolean.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(72.0)
         >>> b = Angle(72.0)
@@ -417,7 +417,7 @@ class Angle(object):
         elif isinstance(b, Angle):
             return self._deg < b._deg
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __ge__(self, b):
         """This method defines 'is equal or greater' operator between Angles.
@@ -435,7 +435,7 @@ class Angle(object):
         """This method defines the 'is greater than' operator between Angles.
 
         :returns: A boolean.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(172.01)
         >>> b = Angle(172.009)
@@ -447,7 +447,7 @@ class Angle(object):
         elif isinstance(b, Angle):
             return self._deg > b._deg
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __le__(self, b):
         """This method defines 'is equal or less' operator between Angles.
@@ -487,7 +487,7 @@ class Angle(object):
         """This method is used to obtain the module b of this Angle.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(333.0)
         >>> b = Angle(72.0)
@@ -501,13 +501,13 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(sign*(abs(self._deg) % b._deg))
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __add__(self, b):
         """This method defines the addition between Angles.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(83.1)
         >>> b = Angle(18.4)
@@ -519,13 +519,13 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(self._deg + b._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __sub__(self, b):
         """This method defines the subtraction between Angles.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(25.4)
         >>> b = Angle(10.2)
@@ -538,7 +538,7 @@ class Angle(object):
         """This method defines the multiplication between Angles.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(33.0)
         >>> b = Angle(72.0)
@@ -550,13 +550,14 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(self._deg * b._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __div__(self, b):
         """This method defines the division between Angles.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(172.0)
         >>> b = Angle(86.0)
@@ -570,12 +571,14 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(self._deg / b._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __truediv__(self, b):
         """This method defines the division between Angles (Python 3).
 
-        :raises: ValueError if input values are of wrong type.
+        :returns: A new Angle object.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
         :see: __div__
         """
         return self.__div__(b)
@@ -584,7 +587,7 @@ class Angle(object):
         """This method defines the power operation for Angles.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(12.5)
         >>> b = Angle(4.0)
@@ -596,7 +599,7 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(self._deg**b._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __imod__(self, b):
         """This method defines the accumulative module b of this Angle.
@@ -659,7 +662,8 @@ class Angle(object):
         """This method defines the accumulative division to this Angle.
 
         :returns: This Angle.
-        :raises: ValueError if input values are of wrong type.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(330.0)
         >>> b = Angle(30.0)
@@ -669,12 +673,17 @@ class Angle(object):
         """
         if b == 0.0:
             raise ValueError("Division by zero is not allowed")
+        if not isinstance(b, (int, float, Angle)):
+            raise TypeError("Wrong operand type")
         self = self / b
         return self
 
     def __itruediv__(self, b):
         """This method defines accumulative division to this Angle (Python3).
 
+        :returns: This Angle.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
         :see: __idiv__
         """
         return self.__idiv__(b)
@@ -723,7 +732,7 @@ class Angle(object):
         """This method defines the subtraction between Angles by the right.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(25.0)
         >>> print(24.0 - a)
@@ -735,7 +744,7 @@ class Angle(object):
         """This method defines multiplication between Angles by the right.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(11.0)
         >>> print(250.0 * a)
@@ -747,7 +756,8 @@ class Angle(object):
         """This method defines division between Angles by the right.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(80.0)
         >>> print(350 / a)
@@ -760,12 +770,14 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(b._deg / self._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __rtruediv__(self, b):
         """This method defines division between Angle by the right (Python3).
 
-        :raises: ValueError if input values are of wrong type.
+        :returns: A new Angle object.
+        :raises: ValueError if divisor is zero.
+        :raises: TypeError if input values are of wrong type.
         :see: __rdiv__
         """
         return self.__rdiv__(b)
@@ -774,7 +786,7 @@ class Angle(object):
         """This method defines the power operation for Angles by the right.
 
         :returns: A new Angle object.
-        :raises: ValueError if input values are of wrong type.
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(5.0)
         >>> print(24.0 ** a)
@@ -785,7 +797,7 @@ class Angle(object):
         elif isinstance(b, Angle):
             return Angle(b._deg**self._deg)
         else:
-            raise ValueError("Wrong operands")
+            raise TypeError("Wrong operand type")
 
     def __float__(self):
         """This method returns Angle value as a float.
@@ -950,6 +962,17 @@ def main():
     e = c + 11.5
     print_me("   c + 11.5", e)                              # 193.5
 
+    print("")
+
+    # Types allowed are int, float and Angle
+    print('e = c + "32.5"')
+    try:
+        e = c + "32.5"
+    except TypeError:
+        print("TypeError!: Valid types are int, float, and Angle, not string!")
+
+    print("")
+
     # Subtraction
     e = c - d
     print_me("   c - d", e)                                 # 184.95
@@ -968,6 +991,19 @@ def main():
     print_me("d", d)                                        # 6.0
     e = c / d
     print_me("   c / d", e)                                 # 25.0
+
+    print("")
+
+    # Division by zero is not allowed
+    d.set(0.0)
+    print_me("d", d)                                        # 6.0
+    print('e = c / d')
+    try:
+        e = c / d
+    except ValueError:
+        print("ValueError!: Division by zero is not allowed!")
+
+    print("")
 
     # Power
     d.set(2.2)
