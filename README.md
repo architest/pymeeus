@@ -1,5 +1,5 @@
 # PyMeeus
-> **_Library of astronomical algorithms in Python_**.
+> **Library of astronomical algorithms in Python**.
 
 PyMeeus is a Python implementation of the astronomical algorithms described in
 the classical book "Astronomical Algorithms, 2nd Edition (1998)" from Jean
@@ -14,6 +14,8 @@ in Python :-).
 
 ## What's new
 
+* 0.0.2
+    * Documentation improvements
 * 0.0.1
     * Initial commit
 
