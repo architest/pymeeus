@@ -12,15 +12,6 @@ are its simplicity, ease of use, ease of reading, ease of installation (it has
 the minimum amount of dependencies), abundant documentation, and it is written
 in Python :-).
 
-## What's new
-
-* 0.0.3
-    * Removed unnecessary dependencies
-* 0.0.2
-    * Documentation improvements
-* 0.0.1
-    * Initial commit
-
 ## Meta
 
 Author: Dagoberto Salazar
@@ -51,4 +42,13 @@ place in `tests` directory.
 
 Finally, documentation is also a big thing here. Add proper and abundant
 documentation to your new code. This also includes in-line comments!!!.
+
+## What's new
+
+* 0.0.3
+    * Removed unnecessary dependencies
+* 0.0.2
+    * Documentation improvements
+* 0.0.1
+    * Initial commit
 
