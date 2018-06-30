@@ -14,6 +14,8 @@ in Python :-).
 
 ## What's new
 
+* 0.0.3
+    * Removed unnecessary dependencies
 * 0.0.2
     * Documentation improvements
 * 0.0.1

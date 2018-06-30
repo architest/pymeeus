@@ -4,15 +4,6 @@ except ImportError:
     from distutils.core import setup
 
 from os import path
-import pypandoc
-
-
-# Converts Markdown to reStructured
-z = pypandoc.convert('README.md', 'rst', format='markdown')
-
-# Writes converted file
-with open('README.rst', 'w') as outfile:
-    outfile.write(z)
 
 
 here = path.abspath(path.dirname(__file__))
@@ -24,7 +15,7 @@ with open(path.join(here, 'README.rst')) as f:
 
 config = {
     'name': 'PyMeeus',
-    'version': '0.0.2',
+    'version': '0.0.3',
     'description': 'Python implementation of Jean Meeus astronomical routines',
     'long_description': long_description,
     'keywords': 'Meeus astronomy module library',
@@ -33,7 +24,7 @@ config = {
     'author_email': 'dagoberto.salazar@gmail.com',
     'url': 'https://github.com/architest/pymeeus',
     'download_url': 'https://github.com/architest/pymeeus',
-    'install_requires': ['nose', 'pypandoc'],
+    # 'install_requires': ['nose', 'pypandoc'],
     'packages': ['pymeeus'],            # 'scripts': ['example.py'],
     'py_modules': ['base'],
     'classifiers': [
