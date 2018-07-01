@@ -51,6 +51,18 @@ def test_angle_constructor():
     assert abs(i._deg - 57.29577951) < tol, \
         "ERROR: 9th constructor test, degrees value doesn't match"
 
+    j = pymeeus.base.Angle((23.0, 26.0, 48.999983999, -1.0))
+    assert abs(j._deg - (-23.44694444)) < tol, \
+        "ERROR: 10th constructor test, degrees value doesn't match"
+
+    k = pymeeus.base.Angle(23.0, 26.0, 48.999983999, -7.4)
+    assert abs(k._deg - (-23.44694444)) < tol, \
+        "ERROR: 11th constructor test, degrees value doesn't match"
+
+    m = pymeeus.base.Angle([23.0, -26.0, 48.999983999, -4.5])
+    assert abs(m._deg - (-23.44694444)) < tol, \
+        "ERROR: 12th constructor test, degrees value doesn't match"
+
 
 def test_angle_deg2dms():
     """Tests deg2dms() static method of Angle class"""

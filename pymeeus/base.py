@@ -296,21 +296,36 @@ class Angle(object):
                     if 'radians' in kwargs:
                         if kwargs['radians']:
                             # Input value is in radians. Convert to degrees
-                            deg = deg*RAD2DEG
-                    self._deg = Angle.reduce_deg(deg)
+                            deg[0] = deg[0]*RAD2DEG
+                    self._deg = Angle.reduce_deg(deg[0])
                 elif len(deg) == 2:
                     # Seconds value is set to zero
                     self._deg = Angle.dms2deg(deg[0], deg[1])
-                else:
-                    # Only the first three values are taken into account
+                elif len(deg) == 3:
+                    # The first three values are taken into account
                     self._deg = Angle.dms2deg(deg[0], deg[1], deg[2])
+                else:
+                    # Only the first four values are taken into account
+                    sign = -1.0 if deg[0] < 0 or deg[1] < 0 or deg[2] < 0 \
+                        or deg[3] < 0 else 1.0
+                    # If sign < 0, make sure deg[0] is negative
+                    degrees = sign * abs(deg[0])
+                    self._deg = Angle.dms2deg(degrees, deg[1], deg[2])
             else:
                 raise TypeError("Invalid input value in constructor")
         elif len(args) == 2:
             # Seconds value is set to zero
             self._deg = Angle.dms2deg(args[0], args[1])
-        else:
+        elif len(args) == 3:
+            # The first three values are taken into account
             self._deg = Angle.dms2deg(args[0], args[1], args[2])
+        else:
+            # Only the first four values are taken into account
+            sign = -1.0 if args[0] < 0 or args[1] < 0 or args[2] < 0 \
+                or args[3] else 1.0
+            # If sign < 0, make sure args[0] is negative
+            degrees = sign * abs(args[0])
+            self._deg = Angle.dms2deg(degrees, args[1], args[2])
 
     def dms_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string.
