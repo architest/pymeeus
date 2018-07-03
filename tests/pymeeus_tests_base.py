@@ -64,6 +64,30 @@ def test_angle_constructor():
         "ERROR: 12th constructor test, degrees value doesn't match"
 
 
+def test_angle_set_ra():
+    """Tests the set_ra() method of Angle class"""
+    tol = 1E-8
+
+    a = pymeeus.base.Angle()
+
+    a.set_ra(9.248833333333)                        # Input is in RA
+    print(a._deg)
+    assert abs(a._deg - 138.7325) < tol, \
+        "ERROR: 1st set_ra() test, degrees value doesn't match"
+
+    a.set_ra(-9.248833333333)
+    assert abs(a._deg - (-138.7325)) < tol, \
+        "ERROR: 2nd set_ra() test, degrees value doesn't match"
+
+    a.set_ra(9, 14, 55.8)
+    assert abs(a._deg - 138.7325) < tol, \
+        "ERROR: 3rd set_ra() test, degrees value doesn't match"
+
+    a.set_ra((9, 14, 55.8, -1.0))
+    assert abs(a._deg - (-138.7325)) < tol, \
+        "ERROR: 4th set_ra() test, degrees value doesn't match"
+
+
 def test_angle_deg2dms():
     """Tests deg2dms() static method of Angle class"""
     tol = 1E-8

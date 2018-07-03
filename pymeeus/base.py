@@ -278,8 +278,11 @@ class Angle(object):
         :rtype: None
         :raises: TypeError if input values are of wrong type.
         """
+        # If no arguments are given, internal angle is set to zero
+        if len(args) == 0:
+            self._deg = 0.0
         # If we have only one argument, it can be a single value or tuple/list
-        if len(args) == 1:
+        elif len(args) == 1:
             deg = args[0]
             if isinstance(deg, (int, float)):
                 if 'radians' in kwargs:
@@ -319,13 +322,35 @@ class Angle(object):
         elif len(args) == 3:
             # The first three values are taken into account
             self._deg = Angle.dms2deg(args[0], args[1], args[2])
-        else:
+        elif len(args) >= 4:
             # Only the first four values are taken into account
             sign = -1.0 if args[0] < 0 or args[1] < 0 or args[2] < 0 \
-                or args[3] else 1.0
+                or args[3] < 0 else 1.0
             # If sign < 0, make sure args[0] is negative
             degrees = sign * abs(args[0])
             self._deg = Angle.dms2deg(degrees, args[1], args[2])
+
+    def set_ra(self, *args):
+        """Define the value of the Angle object from a Right Ascension.
+
+        It takes decimals and sexagesimal input. The sexagesimal Right
+        Ascensions can be given as separate hours, minutes, seconds values, or
+        as tuples or lists.
+
+        :param \*args: Input Right Ascension, in decimal or sexagesimal format.
+        :type \*args: int, float, list, tuple
+
+        :returns: None.
+        :rtype: None
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Angle()
+        >>> a.set_ra(9, 14, 55.8)
+        >>> print(a)
+        138.7325
+        """
+        self.set(*args)
+        self._deg *= 15.0   # Multipy Right Ascension by 15.0 to get degrees
 
     def dms_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string.
@@ -605,7 +630,7 @@ class Angle(object):
 
         :returns: A new Angle object.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(172.0)
@@ -614,7 +639,7 @@ class Angle(object):
         2.0
         """
         if b == 0.0:
-            raise ValueError("Division by zero is not allowed")
+            raise ZeroDivisionError("Division by zero is not allowed")
         if isinstance(b, (int, float)):
             return Angle(self._deg / float(b))
         elif isinstance(b, Angle):
@@ -627,7 +652,7 @@ class Angle(object):
 
         :returns: A new Angle object.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __div__
         """
@@ -718,7 +743,7 @@ class Angle(object):
 
         :returns: This Angle.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(330.0)
@@ -728,7 +753,7 @@ class Angle(object):
         11.0
         """
         if b == 0.0:
-            raise ValueError("Division by zero is not allowed")
+            raise ZeroDivisionError("Division by zero is not allowed")
         if not isinstance(b, (int, float, Angle)):
             raise TypeError("Wrong operand type")
         self = self / b
@@ -739,7 +764,7 @@ class Angle(object):
 
         :returns: This Angle.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __idiv__
         """
@@ -819,7 +844,7 @@ class Angle(object):
 
         :returns: A new Angle object.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(80.0)
@@ -827,7 +852,7 @@ class Angle(object):
         4.375
         """
         if self == 0.0:
-            raise ValueError("Division by zero is not allowed")
+            raise ZeroDivisionError("Division by zero is not allowed")
         if isinstance(b, (int, float)):
             return Angle(float(b) / self._deg)
         elif isinstance(b, Angle):
@@ -840,7 +865,7 @@ class Angle(object):
 
         :returns: A new Angle object.
         :rtype: Angle
-        :raises: ValueError if divisor is zero.
+        :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __rdiv__
         """
@@ -957,6 +982,13 @@ def main():
 
     print("")
 
+    # We can also specify the angle as a Right Ascension
+    print("Angle can be given as a Right Ascension: Hours, Minutes, Seconds")
+    a.set_ra(9, 14, 55.8)
+    print_me("a.set_ra(9, 14, 55.8); print(a)", a)
+
+    print("")
+
     # Use the 'to_positive()' method to get the positive version of an angle
     a = Angle(-87.32)                                       # 272.68
     print_me("a = Angle(-87.32); print(a.to_positive())", a.to_positive())
@@ -1068,8 +1100,8 @@ def main():
     print('e = c / d')
     try:
         e = c / d
-    except ValueError:
-        print("ValueError!: Division by zero is not allowed!")
+    except ZeroDivisionError:
+        print("ZeroDivisionError!: Division by zero is not allowed!")
 
     print("")
 
