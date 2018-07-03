@@ -390,6 +390,28 @@ class Angle(object):
             else:
                 return "0:0:0.0"
 
+    def ra_str(self, fancy=True):
+        """Returns the Angle value as a sexagesimal string in Right Ascension.
+
+        The parameter 'fancy' allows to print in "Hh M' S''" format if true,
+        and in "H:M:S" (easier to parse) if False.
+
+        :param fancy: Format of output string. True by default.
+        :type fancy: bool
+
+        :returns: Angle value as Right Ascension in sexagesimal format.
+        :rtype: string
+
+        >>> a = Angle(138.73250000)
+        >>> print(a.ra_str())
+        9h 14' 55.8''
+        """
+        a = Angle(self())/15.0
+        s = a.dms_str(fancy)
+        if fancy:
+            s = s.replace('d', 'h')
+        return s
+
     def rad(self):
         """Returns the Angle value in radians.
 
