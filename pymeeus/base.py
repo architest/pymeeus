@@ -1013,6 +1013,12 @@ def main():
 
     print("")
 
+    # We can print the result as Right Ascension in a string
+    a = Angle(138.75)
+    print_me("a = Angle(138.75), print(a.ra_str())", a.ra_str())
+
+    print("")
+
     # Use the 'to_positive()' method to get the positive version of an angle
     a = Angle(-87.32)                                       # 272.68
     print_me("a = Angle(-87.32); print(a.to_positive())", a.to_positive())
