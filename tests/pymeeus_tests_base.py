@@ -22,7 +22,7 @@ from math import pi as pi
 import pymeeus.base
 
 
-TOLERANCE = 1E-8
+TOLERANCE = 1E-10
 
 
 def setup():
@@ -69,7 +69,7 @@ def test_angle_constructor():
         "ERROR: 8th constructor test, degrees value doesn't match"
 
     i = pymeeus.base.Angle(1.0, radians=True)
-    assert abs(i._deg - 57.29577951) < TOLERANCE, \
+    assert abs(i._deg - 57.29577951308232) < TOLERANCE, \
         "ERROR: 9th constructor test, degrees value doesn't match"
 
     j = pymeeus.base.Angle((23.0, 26.0, 48.999983999, -1.0))
@@ -125,7 +125,7 @@ def test_angle_deg2dms():
         "ERROR: In 1st deg2dms() test, degrees value doesn't match"
     assert abs(m - 26.0) < TOLERANCE, \
         "ERROR: In 1st deg2dms() test, minutes value doesn't match"
-    assert abs(s - 48.999983999) < TOLERANCE, \
+    assert abs(s - 48.9999839999999) < TOLERANCE, \
         "ERROR: In 1st deg2dms() test, seconds value doesn't match"
     assert abs(sign - 1.0) < TOLERANCE, \
         "ERROR: In 1st deg2dms() test, sign value doesn't match"
@@ -135,7 +135,7 @@ def test_angle_deg2dms():
         "ERROR: In 2nd deg2dms() test, degrees value doesn't match"
     assert abs(m - 26.0) < TOLERANCE, \
         "ERROR: In 2nd deg2dms() test, minutes value doesn't match"
-    assert abs(s - 48.999983999) < TOLERANCE, \
+    assert abs(s - 48.9999839999999) < TOLERANCE, \
         "ERROR: In 2nd deg2dms() test, seconds value doesn't match"
     assert abs(sign - (-1.0)) < TOLERANCE, \
         "ERROR: In 2nd deg2dms() test, sign value doesn't match"
@@ -192,7 +192,7 @@ def test_angle_reduce_dms():
     assert abs(m - 5.0) < TOLERANCE, \
         "ERROR: In 2nd reduce_dms() test, minutes value doesn't match"
 
-    assert abs(s - 18.84) < TOLERANCE, \
+    assert abs(s - 18.8399999997) < TOLERANCE, \
         "ERROR: In 2nd reduce_dms() test, seconds value doesn't match"
 
     assert abs(sign - (-1.0)) < TOLERANCE, \
@@ -205,7 +205,7 @@ def test_angle_reduce_dms():
     assert abs(m - 26.0) < TOLERANCE, \
         "ERROR: In 3rd reduce_dms() test, minutes value doesn't match"
 
-    assert abs(s - 42.599999999) < TOLERANCE, \
+    assert abs(s - 42.6) < TOLERANCE, \
         "ERROR: In 3rd reduce_dms() test, seconds value doesn't match"
 
     assert abs(sign - (-1.0)) < TOLERANCE, \
@@ -487,7 +487,7 @@ def test_angle_pow():
     b.set(-2.0)
     c = a ** b
 
-    assert abs(c() - 0.005486968) < TOLERANCE, \
+    assert abs(c() - 0.005486968449931413) < TOLERANCE, \
         "ERROR: In 2nd __pow__() test, degrees value doesn't match"
 
 
@@ -588,7 +588,7 @@ def test_angle_idiv():
 
     a /= 1.5
 
-    assert abs(a() - (-0.833333333)) < TOLERANCE, \
+    assert abs(a() - (-0.833333333333333)) < TOLERANCE, \
         "ERROR: In 3rd __idiv__() test, degrees value doesn't match"
 
 
@@ -603,7 +603,7 @@ def test_angle_ipow():
     b = pymeeus.base.Angle(-2.0)
     a **= b
 
-    assert abs(a() - 1.1083e-05) < TOLERANCE, \
+    assert abs(a() - 1.108338532999e-05) < TOLERANCE, \
         "ERROR: In 2nd __ipow__() test, degrees value doesn't match"
 
 

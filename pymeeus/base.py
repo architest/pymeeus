@@ -36,7 +36,7 @@ DEG2RAD = pi/180.0
 RAD2DEG = 180.0/pi
 """Constant to convert from radians to degrees."""
 
-TOL = 1E-8
+TOL = 1E-10
 """Internal tolerance being used by default"""
 
 
