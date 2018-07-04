@@ -85,13 +85,22 @@ def test_angle_constructor():
         "ERROR: 12th constructor test, degrees value doesn't match"
 
 
+def test_angle_set_radians():
+    """Tests the set_radians() method of Angle class"""
+
+    a = pymeeus.base.Angle()
+
+    a.set_radians(pi)                               # Input is in radians
+    assert abs(a() - 180.0) < TOLERANCE, \
+        "ERROR: 1st set_radians() test, degrees value doesn't match"
+
+
 def test_angle_set_ra():
     """Tests the set_ra() method of Angle class"""
 
     a = pymeeus.base.Angle()
 
     a.set_ra(9.248833333333)                        # Input is in RA
-    print(a._deg)
     assert abs(a._deg - 138.7325) < TOLERANCE, \
         "ERROR: 1st set_ra() test, degrees value doesn't match"
 
@@ -227,6 +236,14 @@ def test_angle_ra_str():
     result = a.ra_str(False)
     assert result == "9:15:0.0", \
         "ERROR: In 2nd ra_str() test, the output value doesn't match"
+
+
+def test_angle_get_ra():
+    """Tests get_ra() method of Angle class"""
+    a = pymeeus.base.Angle(138.75)
+
+    assert abs(a.get_ra() - 9.25) < TOLERANCE, \
+        "ERROR: In 1st get_ra() test, the output value doesn't match"
 
 
 def test_angle_call():

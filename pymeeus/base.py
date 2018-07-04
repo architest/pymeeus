@@ -330,6 +330,23 @@ class Angle(object):
             degrees = sign * abs(args[0])
             self._deg = Angle.dms2deg(degrees, args[1], args[2])
 
+    def set_radians(self, rads):
+        """Method to define the value of the Angle objecti from radians.
+
+        :param rads: Input angle, in radians.
+        :type rads: int, float
+
+        :returns: None.
+        :rtype: None
+        :raises: TypeError if input value is of wrong type.
+
+        >>> a = Angle()
+        >>> a.set_radians(pi)
+        >>> print(a)
+        180.0
+        """
+        self.set(rads, radians=True)
+
     def set_ra(self, *args):
         """Define the value of the Angle object from a Right Ascension.
 
@@ -389,6 +406,18 @@ class Angle(object):
                 return "0:0:{}".format(sign*s)
             else:
                 return "0:0:0.0"
+
+    def get_ra(self):
+        """Returns the Angle value as a Right Ascension in float format
+
+        :returns: The internal value of the Angle object as Right Ascension.
+        :rtype: int, float
+
+        >>> a = Angle(138.75)
+        >>> print(a.get_ra())
+        9.25
+        """
+        return self._deg/15.0
 
     def ra_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string in Right Ascension.
@@ -983,17 +1012,21 @@ def main():
 
     # Redefine Angle 'a' several times
     a.set(-0.44694444)
-    print_me("a.dms_str()", a.dms_str())            # -26' 48.999984''
+    print("a.set(-0.44694444)")
+    print_me("   a.dms_str()", a.dms_str())             # -26' 48.999984''
     a.set(0, 0, -46.31)
-    print_me("a.dms_str(False)", a.dms_str(False))  # 0:0:-46.31
+    print("a.set(0, 0, -46.31)")
+    print_me("   a.dms_str(False)", a.dms_str(False))   # 0:0:-46.31
 
     print("")
 
     # We can use decimals in degrees/minutes. They are converted automatically
     a.set(0, -46.25, 0.0)
-    print_me("a.set(0, -46.25, 0.0); a.dms_str()", a.dms_str())  # -46' 15.0''
+    print("a.set(0, -46.25, 0.0)")
+    print_me("   a.dms_str()", a.dms_str())             # -46' 15.0''
     a.set(0, 0, 0.0)
-    print_me("a.set(0, 0, 0.0); a.dms_str()", a.dms_str())  # 0d 0' 0.0''
+    print("a.set(0, 0, 0.0)")
+    print_me("   a.dms_str()", a.dms_str())             # 0d 0' 0.0''
 
     print("")
 
@@ -1009,19 +1042,24 @@ def main():
     # We can also specify the angle as a Right Ascension
     print("Angle can be given as a Right Ascension: Hours, Minutes, Seconds")
     a.set_ra(9, 14, 55.8)
-    print_me("a.set_ra(9, 14, 55.8); print(a)", a)
+    print("a.set_ra(9, 14, 55.8)")
+    print_me("   print(a)", a)
 
     print("")
 
-    # We can print the result as Right Ascension in a string
+    # We can print the Angle as Right Ascension, as a float and as string
     a = Angle(138.75)
-    print_me("a = Angle(138.75), print(a.ra_str())", a.ra_str())
+    print("a = Angle(138.75)")
+    print_me("   print(a.get_ra())", a.get_ra())
+    print_me("   print(a.ra_str())", a.ra_str())
+    print_me("   print(a.ra_str(False))", a.ra_str(False))
 
     print("")
 
     # Use the 'to_positive()' method to get the positive version of an angle
     a = Angle(-87.32)                                       # 272.68
-    print_me("a = Angle(-87.32); print(a.to_positive())", a.to_positive())
+    print("a = Angle(-87.32)")
+    print_me("   print(a.to_positive())", a.to_positive())
 
     print("")
 
