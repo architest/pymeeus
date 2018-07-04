@@ -18,7 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from nose.tools import *
 from math import pi as pi
 import pymeeus.base
 
