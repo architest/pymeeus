@@ -405,6 +405,8 @@ class Angle(object):
         >>> a = Angle(138.75)
         >>> print(a.ra_str())
         9h 15' 0.0''
+        >>> print(a.ra_str(fancy=False))
+        9:15:0.0
         """
         a = Angle(self())/15.0
         s = a.dms_str(fancy)

@@ -200,6 +200,19 @@ def test_angle_dms_str():
         "ERROR: In 2nd dms_str() test, the output value doesn't match"
 
 
+def test_angle_ra_str():
+    """Tests ra_str() method of Angle class"""
+    a = pymeeus.base.Angle(138.75)
+
+    result = a.ra_str()
+    assert result == "9h 15' 0.0''", \
+        "ERROR: In 1st ra_str() test, the output value doesn't match"
+
+    result = a.ra_str(False)
+    assert result == "9:15:0.0", \
+        "ERROR: In 2nd ra_str() test, the output value doesn't match"
+
+
 def test_angle_call():
     """Tests the __call__() method of Angle class"""
     tol = 1E-8
