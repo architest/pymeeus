@@ -402,9 +402,9 @@ class Angle(object):
         :returns: Angle value as Right Ascension in sexagesimal format.
         :rtype: string
 
-        >>> a = Angle(138.73250000)
+        >>> a = Angle(138.75)
         >>> print(a.ra_str())
-        9h 14' 55.8''
+        9h 15' 0.0''
         """
         a = Angle(self())/15.0
         s = a.dms_str(fancy)
