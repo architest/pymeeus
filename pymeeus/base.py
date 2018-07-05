@@ -52,21 +52,8 @@ class Angle(object):
     angles can be given as separate degree, minutes, seconds values, or as
     tuples or lists.
 
-    If 'radians=True' is passed, then the input value is converted from
-    radians to degrees.
-
-    :param \*args: Input angle, in decimal or sexagesimal format.
-    :type \*args: int, float, list, tuple
-    :param radians: If True, input angle is in radians. False by default.
-    :type radians: bool
-
-    :returns: Angle object.
-    :rtype: Angle
-    :raises: TypeError if input values are of wrong type.
-
-    >>> a = Angle(-13, 30, 0.0)
-    >>> print(a)
-    -13.5
+    Also, if 'radians=True' is passed to the constructor, then the input value
+    is considered as in radians, and converted to degrees.
     """
 
     def __init__(self, *args, **kwargs):
@@ -293,7 +280,7 @@ class Angle(object):
                 self._deg = Angle.reduce_deg(deg)
             elif isinstance(deg, (list, tuple)):
                 if len(deg) == 0:
-                    raise TypeError("Invalid input value in constructor")
+                    raise TypeError("Invalid input value")
                 elif len(deg) == 1:
                     # This is a single value
                     if 'radians' in kwargs:
@@ -315,7 +302,7 @@ class Angle(object):
                     degrees = sign * abs(deg[0])
                     self._deg = Angle.dms2deg(degrees, deg[1], deg[2])
             else:
-                raise TypeError("Invalid input value in constructor")
+                raise TypeError("Invalid input value")
         elif len(args) == 2:
             # Seconds value is set to zero
             self._deg = Angle.dms2deg(args[0], args[1])
@@ -978,6 +965,172 @@ class Angle(object):
         """
         # NOTE: This method is only called in Python 3
         return Angle(round(self._deg, n))
+
+
+class Interpolation(object):
+    """
+    Class Interpolation deals with finding intermediate values to those given
+    in a table.
+
+    Besides the basic interpolation, this class also provides methods to find
+    the extrema (maximum or minimum value) in a given interval (if present),
+    and it also has methods to find roots (the values of the argument 'x' for
+    which the function 'y' becomes zero). For the interpolations the class uses
+    the Lagrange interpolation method.
+
+    The constructor takes pairs of (x, y) values from the table of interest.
+    These pairs of values can be given as a sequence of int/floats, tuples, or
+    lists.
+
+    If a sequence of int/floats is given, the values in the odd positions are
+    considered to belong to the 'x' set, while the values in the even positions
+    belong to the 'y' set. If only one tuple or list is provided, it is assumed
+    that it is the 'y' set, and the 'x' set is build from 0 onwards with steps
+    of length 1.
+
+    Please keep in mind that a minimum of two data pairs are needed in order to
+    carry out any interpolation. If only one value is provided, a ValueError
+    exception will be raised.
+    """
+
+    def __init__(self, *args):
+        """Interpolation constructor.
+
+        This takes pairs of (x, y) values from the table of interest. These
+        pairs of values can be given as a sequence of int/floats, tuples, or
+        lists.
+
+        If a sequence of int/floats is given, the values in the odd positions
+        are considered to belong to the 'x' set, while the values in the eveni
+        positions belong to the 'y' set. If only one tuple or list is provided,
+        it is assumed that it is the 'y' set, and the 'x' set is build from 0
+        onwards with steps of length 1.
+
+        Please keep in mind that a minimum of two data pairs are needed in
+        order to carry out any interpolation. If only one value is provided, a
+        ValueError exception will be raised.
+
+        :param \*args: Input tabular values.
+        :type \*args: int, float, list, tuple
+
+        :returns: Interpolation object.
+        :rtype: Interpolation
+        :raises: ValueError if not enough input data pairs are provided.
+        :raises: TypeError if input values are of wrong type.
+        """
+        self._x = []
+        self._y = []
+        self.set(*args)         # Let's use 'set()' method to handle the setup
+
+    def set(self, *args):
+        """Method used to define the value pairs of Interpolation object.
+
+        This takes pairs of (x, y) values from the table of interest. These
+        pairs of values can be given as a sequence of int/floats, tuples, or
+        lists.
+
+        If a sequence of int/floats is given, the values in the odd positions
+        are considered to belong to the 'x' set, while the values in the eveni
+        positions belong to the 'y' set. If only one tuple or list is provided,
+        it is assumed that it is the 'y' set, and the 'x' set is build from 0
+        onwards with steps of length 1.
+
+        Please keep in mind that a minimum of two data pairs are needed in
+        order to carry out any interpolation. If only one value is provided, a
+        ValueError exception will be raised.
+
+        :param \*args: Input tabular values.
+        :type \*args: int, float, list, tuple
+
+        :returns: Interpolation object.
+        :rtype: Interpolation
+        :raises: ValueError if not enough input data pairs are provided.
+        :raises: TypeError if input values are of wrong type.
+        """
+        # If no arguments are given, internal data lists are set to empty
+        if len(args) == 0:
+            self._x = []
+            self._y = []
+        # If we have only one argument, it can be a single value or tuple/list
+        elif len(args) == 1:
+            if isinstance(args[0], (int, float)):
+                # Insuficient data to interpolate. Raise ValueError exception
+                self._x = []
+                self._y = []
+                raise ValueError("Invalid number of input values")
+            elif isinstance(args[0], (list, tuple)):
+                seq = args[0]
+                if len(seq) < 2:
+                    self._x = []
+                    self._y = []
+                    raise ValueError("Invalid number of input values")
+                else:
+                    # Read input values into 'y', and create 'x'
+                    i = 0
+                    for value in seq:
+                        self._x.append(i)
+                        self._y.append(value)
+                        i += 1
+            else:
+                raise TypeError("Invalid input value")
+        elif len(args) == 2:
+            if isinstance(args[0], (int, float)) or \
+                    isinstance(args[1], (int, float)):
+                # Insuficient data to interpolate. Raise ValueError exception
+                self._x = []
+                self._y = []
+                raise ValueError("Invalid number of input values")
+            elif isinstance(args[0], (list, tuple)) and \
+                    isinstance(args[1], (int, float)):
+                x = args[0]
+                y = args[1]
+                # Check if they have the same length. If not, make them equal
+                length_min = min(len(x), len(y))
+                x = x[:length_min]
+                y = y[:length_min]
+                if len(x) < 2 or len(y) < 2:
+                    self._x = []
+                    self._y = []
+                    raise ValueError("Invalid number of input values")
+                else:
+                    # Read input values into 'x' and 'y'
+                    for xval, yval in zip(x, y):
+                        self._x.append(xval)
+                        self._y.append(yval)
+            else:
+                raise TypeError("Invalid input value")
+        elif len(args) == 3:
+            # In this case, no combination of input values is valid
+            raise ValueError("Invalid number of input values")
+        else:
+            # If there is an odd number of arguments, drop the last one
+            if len(args) % 2 != 0:
+                args = args[:-1]
+            # Check that all the arguments are floats or ints
+            all_numbers = True
+            for arg in args:
+                all_numbers = all_numbers and isinstance(arg, (int, float))
+            # If any of the values failed the test, raise an exception
+            if not all_numbers:
+                raise TypeError("Invalid input value")
+            # Now, extract the data
+            for i in range(len(args)/2):
+                self._x.append(2 * i)
+                self._y.append(2 * i + 1)
+
+    def __str__(self):
+        """Method used when trying to print the object.
+
+        :returns: Internal tabular values as strings.
+        :rtype: string
+
+        >>> a = Angle(12.5)
+        >>> print(a)
+        12.5
+        """
+        xstr = "X: " + str(self._x) + "\n"
+        ystr = "Y: " + str(self._y)
+        return xstr + ystr
 
 
 def main():
