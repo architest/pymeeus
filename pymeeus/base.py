@@ -1117,6 +1117,11 @@ class Interpolation(object):
             for i in range(len(args)/2):
                 self._x.append(2 * i)
                 self._y.append(2 * i + 1)
+        # After self._x is found, confirm that x's are different to each other
+        for i in range(len(self._x) - 1):
+            for k in range(i + 1, len(self._x)):
+                if abs(self._x[i] - self._x[k]) < TOL:
+                    raise ValueError("Invalid input: Values in 'x' are equal")
 
     def __str__(self):
         """Method used when trying to print the object.
