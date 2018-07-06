@@ -33,6 +33,8 @@ def teardown():
     pass
 
 
+# Angle class
+
 def test_angle_constructor():
     """Tests the constructur of Angle class"""
 
@@ -297,15 +299,15 @@ def test_angle_to_positive():
 def test_angle_ne():
     """Tests the 'is not equal' operator of Angles"""
     # NOTE: Test 'is not equal' also tests 'is equal' operator
-    # Default tolerance for Angles is 1E-8
+    # Default tolerance for Angles is 1E-10
     a = pymeeus.base.Angle(152.7)
-    b = pymeeus.base.Angle(152.70000001)
+    b = pymeeus.base.Angle(152.7000000001)
 
     assert (a != b), \
         "ERROR: In 1st __ne__() test, Angles are different but taken as equal"
 
     a = pymeeus.base.Angle(-13, 30)
-    b = pymeeus.base.Angle(-13.500000001)
+    b = pymeeus.base.Angle(-13.50000000001)
 
     assert not (a != b), \
         "ERROR: In 2nd __ne__() test, Angles are equal but taken as different"
@@ -762,3 +764,23 @@ def test_angle_round():
 
     assert abs(float(round(a, 7)) - 57.2957795) < TOLERANCE, \
         "ERROR: In 3rd __round__() test, degrees value doesn't match"
+
+
+# Interpolation class
+
+def test_interpolation_constructor():
+    """Tests the constructur of Interpolation class"""
+
+    i = pymeeus.base.Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+    assert i._x == [1, 2, 3, 4, 5, 6], \
+        "ERROR: 1st constructor test, 'x' values don't match"
+
+    assert i._y == [2, 4, 6, 8, 10, 12], \
+        "ERROR: 2nd constructor test, 'y' values don't match"
+
+    j = pymeeus.base.Interpolation([3, -8, 1, 12, 2, 5, 8])
+    assert j._x == [0, 1, 2, 3, 4, 5, 6], \
+        "ERROR: 3rd constructor test, 'x' values don't match"
+
+    assert j._y == [3, -8, 1, 12, 2, 5, 8], \
+        "ERROR: 4th constructor test, 'y' values don't match"
