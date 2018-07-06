@@ -1031,6 +1031,7 @@ class Interpolation(object):
         """
         self._x = []
         self._y = []
+        self._table = []
         self.set(*args)         # Let's use 'set()' method to handle the setup
 
     def _order_points(self):
@@ -1175,8 +1176,10 @@ class Interpolation(object):
             for k in range(i + 1, len(self._x)):
                 if abs(self._x[i] - self._x[k]) < TOL:
                     raise ValueError("Invalid input: Values in 'x' are equal")
-        # Finally, order the data points if needed
+        # Order the data points if needed
         self._order_points()
+        # Create the table containing the Newton coefficientes
+        self._compute_table()
 
     def __str__(self):
         """Method used when trying to print the object.
@@ -1191,6 +1194,49 @@ class Interpolation(object):
         xstr = "X: " + str(self._x) + "\n"
         ystr = "Y: " + str(self._y)
         return xstr + ystr
+
+    def _compute_table(self):
+        """Method to compute coefficients of Newton interpolation method."""
+        for i in range(len(self._x)):
+            self._table.append(self._newton_diff(0, i))
+
+    def _newton_diff(self, start, end):
+        """Auxiliary method to compute the elements of the Newton table.
+
+        :param start: Starting index
+        :type start: int
+        :param end: Ending index
+        :type end: int
+
+        :returns: Resulting value of the element of the Newton table.
+        :rtype: float
+        """
+        if abs(end - start) < TOL:
+            val = self._y[start]
+        else:
+            x = list(self._x)       # Let's make a copy, just in case
+            val = (self._newton_diff(start, end - 1) -
+                   self._newton_diff(start + 1, end)) / (x[start] - x[end])
+
+        return val
+
+    def __call__(self, x):
+        """Method to interpolate the function at a given 'x'.
+
+        :param x: Point where the interpolation will be carried out.
+        :type x: int,float
+
+        :returns: Resulting value of the interpolation.
+        :rtype: float
+        """
+        val = 0.0
+        for i in range(len(self._x)):
+            xval = 1.0
+            for j in range(i):
+                xval = xval * (x - self._x[j])
+            val += self._table[i] * xval
+
+        return val
 
 
 def main():
@@ -1459,6 +1505,12 @@ def main():
     print("NOTE:")
     print("   a. They are ordered in 'x'")
     print("   b. The extra value in 'x' was dropped")
+
+    j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])
+    print(j)
+    print_me("j(2) = ", j(2))
+    print_me("j(-0.5) = ", j(-0.5))
+    print_me("j(0.5) = ", j(0.5))
 
 
 if __name__ == '__main__':
