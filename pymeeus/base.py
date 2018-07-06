@@ -1017,10 +1017,49 @@ class Interpolation(object):
         :rtype: Interpolation
         :raises: ValueError if not enough input data pairs are provided.
         :raises: TypeError if input values are of wrong type.
+
+        >>> i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> print(i._x)
+        [1, 2, 3, 4, 5, 6]
+        >>> print(i._y)
+        [2, 4, 6, 8, 10, 12]
+        >>> j = Interpolation([3, -8, 1, 12, 2, 5, 8])
+        >>> print(j._x)
+        [0, 1, 2, 3, 4, 5, 6]
+        >>> print(j._y)
+        [3, -8, 1, 12, 2, 5, 8]
         """
         self._x = []
         self._y = []
         self.set(*args)         # Let's use 'set()' method to handle the setup
+
+    def _order_points(self):
+        """Method to put in ascending order (w.r.t. 'x') the data points."""
+
+        # Let's work with copies of the original lists
+        x = list(self._x)
+        y = list(self._y)
+
+        xnew = []
+        ynew = []
+        xmax = max(x) + 1.0
+        for _ in range(len(x)):
+            # Get the index of the minimum value
+            imin = x.index(min(x))
+            # Append the current minimum value to the new 'x' list
+            xnew.append(x[imin])
+            # Store the *position* of the current minimum value to new 'y' list
+            ynew.append(imin)
+            # The current minimum value will no longer be the minimum
+            x[imin] = xmax
+
+        # In the new 'y' list, substitute the positions by the real values
+        for i in range(len(x)):
+            ynew[i] = y[ynew[i]]
+
+        # Store the results in the corresponding fields
+        self._x = xnew
+        self._y = ynew
 
     def set(self, *args):
         """Method used to define the value pairs of Interpolation object.
@@ -1042,15 +1081,29 @@ class Interpolation(object):
         :param \*args: Input tabular values.
         :type \*args: int, float, list, tuple
 
-        :returns: Interpolation object.
-        :rtype: Interpolation
+        :returns: None.
+        :rtype: None
         :raises: ValueError if not enough input data pairs are provided.
         :raises: TypeError if input values are of wrong type.
+
+        >>> i = Interpolation()
+        >>> i.set([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> print(i._x)
+        [1, 2, 3, 4, 5, 6]
+        >>> print(i._y)
+        [2, 4, 6, 8, 10, 12]
+        >>> j = Interpolation()
+        >>> j.set([3, -8, 1, 12, 2, 5, 8])
+        >>> print(j._x)
+        [0, 1, 2, 3, 4, 5, 6]
+        >>> print(j._y)
+        [3, -8, 1, 12, 2, 5, 8]
         """
         # If no arguments are given, internal data lists are set to empty
         if len(args) == 0:
             self._x = []
             self._y = []
+            return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
             if isinstance(args[0], (int, float)):
@@ -1081,7 +1134,7 @@ class Interpolation(object):
                 self._y = []
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)) and \
-                    isinstance(args[1], (int, float)):
+                    isinstance(args[1], (list, tuple)):
                 x = args[0]
                 y = args[1]
                 # Check if they have the same length. If not, make them equal
@@ -1122,6 +1175,8 @@ class Interpolation(object):
             for k in range(i + 1, len(self._x)):
                 if abs(self._x[i] - self._x[k]) < TOL:
                     raise ValueError("Invalid input: Values in 'x' are equal")
+        # Finally, order the data points if needed
+        self._order_points()
 
     def __str__(self):
         """Method used when trying to print the object.
@@ -1143,6 +1198,11 @@ def main():
     # Let's define a small helper function
     def print_me(msg, val):
         print("{}: {}".format(msg, val))
+
+    # Let's show some uses of Angle class
+    print('\n' + 35*'*')
+    print("*** Use of Angle class")
+    print(35*'*' + '\n')
 
     # Create an Angle object, providing degrees, minutes and seconds
     a = Angle(-23.0, 26.0, 48.999983999)
@@ -1387,6 +1447,18 @@ def main():
     print_me("   e = 3.5 / b", e)                           # 0.116666666667
     e = 3.5 ** b
     print_me("   e = 3.5 ** b", e)                          # 220.0
+
+    # Let's now work with the Interpolation class
+    print('\n' + 35*'*')
+    print("*** Use of Interpolation class")
+    print(35*'*' + '\n')
+
+    i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+    print("i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])")
+    print(i)
+    print("NOTE:")
+    print("   a. They are ordered in 'x'")
+    print("   b. The extra value in 'x' was dropped")
 
 
 if __name__ == '__main__':
