@@ -271,13 +271,18 @@ class Angle(object):
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
             deg = args[0]
-            if isinstance(deg, (int, float)):
+            if isinstance(deg, (int, float, Angle)):
                 if 'radians' in kwargs:
                     if kwargs['radians']:
                         # Input value is in radians. Convert to degrees
                         deg = deg*RAD2DEG
-                # Store the decimal degree value, reduced to the [0:360) range
                 self._deg = Angle.reduce_deg(deg)
+                # If the input parameter was an Angle
+               # if isinstance(deg, Angle):
+               #     self.deg = deg()
+               # else:
+               #     # Store decimal degree value, reduced to [0:360) range
+               #     self._deg = Angle.reduce_deg(deg)
             elif isinstance(deg, (list, tuple)):
                 if len(deg) == 0:
                     raise TypeError("Invalid input value")
@@ -1174,10 +1179,11 @@ class Interpolation(object):
             # If there is an odd number of arguments, drop the last one
             if len(args) % 2 != 0:
                 args = args[:-1]
-            # Check that all the arguments are floats or ints
+            # Check that all the arguments are ints, floats or Angles
             all_numbers = True
             for arg in args:
-                all_numbers = all_numbers and isinstance(arg, (int, float))
+                all_numbers = all_numbers and \
+                            isinstance(arg, (int, float, Angle))
             # If any of the values failed the test, raise an exception
             if not all_numbers:
                 raise TypeError("Invalid input value")
@@ -1202,9 +1208,10 @@ class Interpolation(object):
         :returns: Internal tabular values as strings.
         :rtype: string
 
-        >>> a = Angle(12.5)
-        >>> print(a)
-        12.5
+        >>> i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> print(i)
+        X: [1, 2, 3, 4, 5, 6]
+        Y: [2, 4, 6, 8, 10, 12]
         """
         xstr = "X: " + str(self._x) + "\n"
         ystr = "Y: " + str(self._y)
@@ -1244,6 +1251,11 @@ class Interpolation(object):
         :returns: Resulting value of the interpolation.
         :rtype: float
         :raises: ValueError if input value is outside of interpolation range.
+
+        >>> i = Interpolation([7, 8, 9], [0.884226, 0.877366, 0.870531])
+        >>> y = round(i(8.18125), 6)
+        >>> print(y)
+        0.876125
         """
         # Check if Newton coefficients table is not empty
         if len(self._table) == 0:
@@ -1532,6 +1544,19 @@ def main():
     print(j)
     print_me("j(2) = ", j(2))
     print_me("j(0.5) = ", j(0.5))
+
+    # We can interpolate Angles too
+    k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],
+                      [Angle(0, 54, 36.125), Angle(0, 54, 24.606),
+                       Angle(0, 54, 15.486), Angle(0, 54, 8.694),
+                       Angle(0, 54, 4.133)])
+
+    print_me("k(28.27777778)", Angle(k(28.1388888889)).dms_str())
+
+    a = Angle(34, 8, 52)
+    print_me("a", a)
+    b = Angle(a)
+    print_me("b", b)
 
 
 if __name__ == '__main__':
