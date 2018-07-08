@@ -975,8 +975,12 @@ class Interpolation(object):
     Besides the basic interpolation, this class also provides methods to find
     the extrema (maximum or minimum value) in a given interval (if present),
     and it also has methods to find roots (the values of the argument 'x' for
-    which the function 'y' becomes zero). For the interpolations the class uses
-    the Lagrange interpolation method.
+    which the function 'y' becomes zero).
+
+    Please note that it seems that Meeus uses the Bessel interpolation method
+    (Chapter 3). However, this class uses the Newton interpolation method
+    because it is (arguably) more flexible regarding the number of entries
+    provided in the interpolation table.
 
     The constructor takes pairs of (x, y) values from the table of interest.
     These pairs of values can be given as a sequence of int/floats, tuples, or
@@ -1028,6 +1032,11 @@ class Interpolation(object):
         [0, 1, 2, 3, 4, 5, 6]
         >>> print(j._y)
         [3, -8, 1, 12, 2, 5, 8]
+        >>> k = Interpolation(3, -8, 1, 12, 2, 5, 8)
+        >>> print(k._x)
+        [1, 2, 3]
+        >>> print(k._y)
+        [12, 5, -8]
         """
         self._x = []
         self._y = []
@@ -1099,6 +1108,11 @@ class Interpolation(object):
         [0, 1, 2, 3, 4, 5, 6]
         >>> print(j._y)
         [3, -8, 1, 12, 2, 5, 8]
+        >>> k = Interpolation(3, -8, 1, 12, 2, 5, 8)
+        >>> print(k._x)
+        [1, 2, 3]
+        >>> print(k._y)
+        [12, 5, -8]
         """
         # If no arguments are given, internal data lists are set to empty
         if len(args) == 0:
@@ -1167,10 +1181,10 @@ class Interpolation(object):
             # If any of the values failed the test, raise an exception
             if not all_numbers:
                 raise TypeError("Invalid input value")
-            # Now, extract the data
-            for i in range(len(args)/2):
-                self._x.append(2 * i)
-                self._y.append(2 * i + 1)
+            # Now, extract the data: Odds are x's, evens are y's
+            for i in range(int(len(args)/2.0)):
+                self._x.append(args[2 * i])
+                self._y.append(args[2 * i + 1])
         # After self._x is found, confirm that x's are different to each other
         for i in range(len(self._x) - 1):
             for k in range(i + 1, len(self._x)):
@@ -1178,8 +1192,9 @@ class Interpolation(object):
                     raise ValueError("Invalid input: Values in 'x' are equal")
         # Order the data points if needed
         self._order_points()
-        # Create the table containing the Newton coefficientes
-        self._compute_table()
+        # Create table containing Newton coefficientes, only if values given
+        if len(self._x) > 0:
+            self._compute_table()
 
     def __str__(self):
         """Method used when trying to print the object.
@@ -1228,7 +1243,14 @@ class Interpolation(object):
 
         :returns: Resulting value of the interpolation.
         :rtype: float
+        :raises: ValueError if input value is outside of interpolation range.
         """
+        # Check if Newton coefficients table is not empty
+        if len(self._table) == 0:
+            raise RuntimeError("Internal table hasn't been built. Use set().")
+        # Check that x is within interpolation table values
+        if x < self._x[0] or x > self._x[-1]:
+            raise ValueError("Input value outside of interpolation range.")
         val = 0.0
         for i in range(len(self._x)):
             xval = 1.0
@@ -1509,7 +1531,6 @@ def main():
     j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])
     print(j)
     print_me("j(2) = ", j(2))
-    print_me("j(-0.5) = ", j(-0.5))
     print_me("j(0.5) = ", j(0.5))
 
 
