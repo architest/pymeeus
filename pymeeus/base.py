@@ -89,7 +89,7 @@ class Angle(object):
         value in the +/-[0:360) range.
 
         :param deg: Input degree angle in decimal format.
-        :type deg: int, float
+        :type deg: int, float, Angle
 
         :returns: Float value of the angle in the +/-[0:360) range.
         :rtype: float
@@ -276,13 +276,8 @@ class Angle(object):
                     if kwargs['radians']:
                         # Input value is in radians. Convert to degrees
                         deg = deg*RAD2DEG
+                # This works for ints, floats and Angles
                 self._deg = Angle.reduce_deg(deg)
-                # If the input parameter was an Angle
-               # if isinstance(deg, Angle):
-               #     self.deg = deg()
-               # else:
-               #     # Store decimal degree value, reduced to [0:360) range
-               #     self._deg = Angle.reduce_deg(deg)
             elif isinstance(deg, (list, tuple)):
                 if len(deg) == 0:
                     raise TypeError("Invalid input value")
