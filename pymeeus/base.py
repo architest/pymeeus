@@ -1239,33 +1239,78 @@ class Interpolation(object):
         """Method to interpolate the function at a given 'x'.
 
         :param x: Point where the interpolation will be carried out.
-        :type x: int,float
+        :type x: int, float, Angle
 
         :returns: Resulting value of the interpolation.
         :rtype: float
         :raises: ValueError if input value is outside of interpolation range.
+        :raises: TypeError if input value is of wrong type.
 
         >>> i = Interpolation([7, 8, 9], [0.884226, 0.877366, 0.870531])
         >>> y = round(i(8.18125), 6)
         >>> print(y)
         0.876125
         """
-        # Check if 'x' already belongs to the data table
-        for i in range(len(self._x)):
-            if abs(x - self._x[i]) < TOL:
-                return self._y[i]           # We don't need to look further
-        # Check if Newton coefficients table is not empty
-        if len(self._table) == 0:
-            raise RuntimeError("Internal table hasn't been built. Use set().")
-        # Check that x is within interpolation table values
-        if x < self._x[0] or x > self._x[-1]:
-            raise ValueError("Input value outside of interpolation range.")
-        # Horner's method is used to efficiently compute the result
-        val = self._table[-1]
-        for i in range(len(self._table) - 1, 0, -1):
-            val = self._table[i - 1] + (x - self._x[i - 1]) * val
+        # Check if input value is of correct type
+        if isinstance(x, (int, float, Angle)):
+            # Check if 'x' already belongs to the data table
+            for i in range(len(self._x)):
+                if abs(x - self._x[i]) < TOL:
+                    return self._y[i]           # We don't need to look further
+            # Check if Newton coefficients table is not empty
+            if len(self._table) == 0:
+                raise RuntimeError("Internal table is empty. Use set().")
+            # Check that x is within interpolation table values
+            if x < self._x[0] or x > self._x[-1]:
+                raise ValueError("Input value outside of interpolation range.")
+            # Horner's method is used to efficiently compute the result
+            val = self._table[-1]
+            for i in range(len(self._table) - 1, 0, -1):
+                val = self._table[i - 1] + (x - self._x[i - 1]) * val
 
-        return val
+            return val
+        else:
+            raise TypeError("Invalid input value")
+
+    def derivative(self, x):
+        """Method to compute the derivative from interpolation polynomial.
+
+        :param x: Point where the interpolation derivative will be carried out.
+        :type x: int, float, Angle
+
+        :returns: Resulting value of the interpolation derivative.
+        :rtype: float
+        :raises: ValueError if input value is outside of interpolation range.
+        :raises: TypeError if input value is of wrong type.
+
+        >>> m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+        >>> m.derivative(-1.0)
+        8.0
+        >>> m.derivative(0.5)
+        -1.0
+        """
+        # Check if input value is of correct type
+        if isinstance(x, (int, float, Angle)):
+            # Check that x is within interpolation table values
+            if x < self._x[0] or x > self._x[-1]:
+                raise ValueError("Input value outside of interpolation range.")
+            # If we only have two interpolation points, derivative is simple
+            if len(self._x) == 2:
+                return (self._y[1] - self._y[0])/(self._x[1] - self._x[0])
+            else:
+                res = self._table[1]
+                for k in range(len(self._table) - 1, 1, -1):
+                    val = 0.0
+                    for j in range(k):
+                        s = 1.0
+                        for i in range(k):
+                            if i != j:
+                                s *= (x - self._x[i])
+                        val += s
+                    res += val*self._table[k]
+                return res
+        else:
+            raise TypeError("Invalid input value")
 
 
 def main():
@@ -1534,26 +1579,40 @@ def main():
     print("NOTE:")
     print("   a. They are ordered in 'x'")
     print("   b. The extra value in 'x' was dropped")
+    print("")
 
     j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])
+    print("j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])")
     print(j)
-    print_me("j(2) = ", j(2))
-    print_me("j(0.5) = ", j(0.5))
+    print_me("j(2)", j(2))
+    print_me("j(0.5)", j(0.5))
     # Test with a value already in the data table
-    print_me("j(1) = ", j(1))
+    print_me("j(1)", j(1))
+    print("")
 
     # We can interpolate Angles too
     k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],
                       [Angle(0, 54, 36.125), Angle(0, 54, 24.606),
                        Angle(0, 54, 15.486), Angle(0, 54, 8.694),
                        Angle(0, 54, 4.133)])
+    print("k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],\n\
+                      [Angle(0, 54, 36.125), Angle(0, 54, 24.606),\n\
+                       Angle(0, 54, 15.486), Angle(0, 54, 8.694),\n\
+                       Angle(0, 54, 4.133)])")
 
     print_me("k(28.27777778)", Angle(k(28.1388888889)).dms_str())
+    print("")
 
-    a = Angle(34, 8, 52)
-    print_me("a", a)
-    b = Angle(a)
-    print_me("b", b)
+    m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+    print("m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])")
+    print(m)
+    print_me("m(-0.5)", m(-0.5))
+    print_me("m(0.5)", m(0.5))
+    print_me("m'(-1.0)", m.derivative(-1.0))
+    print_me("m'(-0.5)", m.derivative(-0.5))
+    print_me("m'(0.0)", m.derivative(0.0))
+    print_me("m'(0.5)", m.derivative(0.5))
+    print_me("m'(1.0)", m.derivative(1.0))
 
 
 if __name__ == '__main__':
