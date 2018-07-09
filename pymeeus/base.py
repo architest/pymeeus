@@ -1003,8 +1003,10 @@ class Interpolation(object):
         """Interpolation constructor.
 
         This takes pairs of (x, y) values from the table of interest. These
-        pairs of values can be given as a sequence of int/floats, tuples, or
-        lists.
+        pairs of values can be given as a sequence of int/floats, tuples, lists
+        or Angles.
+
+        :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
         If a sequence of int, floats or Angles is given, the values in the odd
         positions are considered to belong to the 'x' set, while the values in
