@@ -803,3 +803,27 @@ def test_interpolation_call():
 
     assert abs(m(0.7) - 2.93) < TOLERANCE, \
         "ERROR: In 2nd __call__() test, output value doesn't match"
+
+
+def test_interpolation_derivative():
+    """Tests the derivative() method of Interpolation class"""
+
+    m = pymeeus.base.Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+
+    assert abs(m.derivative(-1.0) - 8.0) < TOLERANCE, \
+        "ERROR: In 1st derivative() test, output value doesn't match"
+
+    assert abs(m.derivative(0.0) - 2.0) < TOLERANCE, \
+        "ERROR: In 2nd derivative() test, output value doesn't match"
+
+    assert abs(m.derivative(0.5) - (-1.0)) < TOLERANCE, \
+        "ERROR: In 3rd derivative() test, output value doesn't match"
+
+
+def test_interpolation_root():
+    """Tests the root() method of Interpolation class"""
+
+    m = pymeeus.base.Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+
+    assert abs(m.root() - (-0.7207592200561265)) < TOLERANCE, \
+        "ERROR: In 1st root() test, output value doesn't match"
