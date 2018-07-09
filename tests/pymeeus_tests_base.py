@@ -19,6 +19,7 @@
 
 
 from math import pi as pi
+from math import sqrt as sqrt
 import pymeeus.base
 
 
@@ -815,6 +816,30 @@ def test_interpolation_call():
     assert abs(m(2.5) - (-1.75)) < TOLERANCE, \
         "ERROR: In 5th __call__() test, output value doesn't match"
 
+    # Add a test with Right Ascension
+    y0 = pymeeus.base.Angle(10, 18, 48.732, ra=True)
+    y1 = pymeeus.base.Angle(10, 23, 22.835, ra=True)
+    y2 = pymeeus.base.Angle(10, 27, 57.247, ra=True)
+    y3 = pymeeus.base.Angle(10, 32, 31.983, ra=True)
+
+    m = pymeeus.base.Interpolation([8.0, 10.0, 12.0, 14.0], [y0, y1, y2, y3])
+
+    a = pymeeus.base.Angle(m(11.0))
+    h, m, s, sign = a.ra_tuple()
+    assert abs(h - 10.0) < TOLERANCE and \
+        abs(m - 25.0) < TOLERANCE and \
+        abs(s - 40.0014375) < TOLERANCE and \
+        abs(sign == 1.0), \
+        "ERROR: In 6th __call__() test, output value doesn't match"
+
+    # Add a test with 6 interpolation table entries, based on sine function
+    m = pymeeus.base.Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
+                                   [0.4913598528, 0.5145891926, 0.4646875083,
+                                    0.4711658342, 0.5236885653, 0.5453707057])
+
+    assert abs(m(30.0) - 0.5) < TOLERANCE, \
+        "ERROR: In 7th __call__() test, output value doesn't match"
+
 
 def test_interpolation_derivative():
     """Tests the derivative() method of Interpolation class"""
@@ -840,6 +865,17 @@ def test_interpolation_derivative():
 
     assert abs(m.derivative(2.5) - 3.0) < TOLERANCE, \
         "ERROR: In 6th derivative() test, output value doesn't match"
+
+    # Add a test with 6 interpolation table entries, based on sine function
+    m = pymeeus.base.Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
+                                   [0.4913598528, 0.5145891926, 0.4646875083,
+                                    0.4711658342, 0.5236885653, 0.5453707057])
+
+    # XXXX These results here are WRONG!!!
+    print("sin'(30.0) = {}".format(m.derivative(30.0)))
+    print("sqrt(3.0)/2.0 = {}".format(sqrt(3.0)/2.0))
+    assert abs(m.derivative(30.0) - sqrt(3.0)/2.0) < TOLERANCE, \
+        "ERROR: In 7th derivative() test, output value doesn't match"
 
 
 def test_interpolation_root():
