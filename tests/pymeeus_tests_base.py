@@ -864,6 +864,28 @@ def test_interpolation_root():
     assert abs(m.root(0.0, 3.15) - 3.0) < TOLERANCE, \
         "ERROR: In 4th root() test, output value doesn't match"
 
+    # Let's some tests with Angles
+    y0 = pymeeus.base.Angle(0, -28, 13.4)
+    y1 = pymeeus.base.Angle(0, 6, 46.3)
+    y2 = pymeeus.base.Angle(0, 38, 23.2)
+
+    m = pymeeus.base.Interpolation([26.0, 27.0, 28.0], [y0, y1, y2])
+
+    assert abs(m.root() - 26.798732705) < TOLERANCE, \
+        "ERROR: In 5th root() test, output value doesn't match"
+
+    y0 = pymeeus.base.Angle(-1, 11, 21.23)
+    y1 = pymeeus.base.Angle(0, -28, 12.31)
+    y2 = pymeeus.base.Angle(0, 16, 7.02)
+    y3 = pymeeus.base.Angle(1, 1, 0.13)
+    y4 = pymeeus.base.Angle(1, 45, 46.33)
+
+    m = pymeeus.base.Interpolation([25.0, 26.0, 27.0, 28.0, 29.0],
+                                   [y0, y1, y2, y3, y4])
+
+    assert abs(m.root() - 26.6385869469) < TOLERANCE, \
+        "ERROR: In 6th root() test, output value doesn't match"
+
 
 def test_interpolation_minmax():
     """Tests the minmax() method of Interpolation class"""
@@ -877,3 +899,12 @@ def test_interpolation_minmax():
 
     assert abs(m.minmax() - 1.0) < TOLERANCE, \
         "ERROR: In 2nd minmax() test, output value doesn't match"
+
+    m = pymeeus.base.Interpolation([12.0, 16.0, 20.0],
+                                   [1.3814294, 1.3812213, 1.3812453])
+
+    assert abs(m.minmax() - 17.5863851788) < TOLERANCE, \
+        "ERROR: In 3rd minmax() test, output value doesn't match"
+
+    assert abs(m(m.minmax()) - 1.38120304666) < TOLERANCE, \
+        "ERROR: In 4th minmax() test, output value doesn't match"
