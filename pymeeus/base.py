@@ -489,7 +489,7 @@ class Angle(object):
         return Angle.deg2dms(self())
 
     def ra_tuple(self):
-        """Returns the Angle n Right Ascension format as a tuple containing
+        """Returns the Angle in Right Ascension format as a tuple containing
         (hours, minutes, seconds, sign).
 
         :returns: Angle value as RA in (hours, minutes, seconds, sign) format.
@@ -1832,6 +1832,26 @@ def main():
     print_me("m.root()", m.root())
     # Get the extremum within the interval
     print_me("m.minmax()", m.minmax())
+
+    m = Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
+                      [0.4913598528, 0.5145891926, 0.4646875083,
+                       0.4711658342, 0.5236885653, 0.5453707057])
+
+    print_me("sin(29.5)", m(29.5))
+    print_me("sin(30.0)", m(30.0))
+    print_me("sin(30.5)", m(30.5))
+    print_me("sin'(29.5)", m.derivative(29.5))
+    print_me("sin'(30.0)", m.derivative(30.0))
+    print_me("sin'(30.5)", m.derivative(30.5))
+
+    m = Interpolation([29.43, 30.97, 33.05],
+                      [0.4913598528, 0.5145891926,
+                       0.5453707057])
+
+    # XXXX These results here are WRONG!!!
+    print_me("sin'(29.5)", m.derivative(29.5))
+    print_me("sin'(30.0)", m.derivative(30.0))
+    print_me("sin'(30.5)", m.derivative(30.5))
 
 
 if __name__ == '__main__':
