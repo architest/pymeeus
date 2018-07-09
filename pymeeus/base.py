@@ -1313,7 +1313,7 @@ class Interpolation(object):
             raise TypeError("Invalid input value")
 
     def root(self, xl=0, xh=0, max_iter=1000):
-        """Method to compute the root inside the [xl, xh] range.
+        """Method to find the root inside the [xl, xh] range.
 
         This method applies, in principle, the Newton method to find the root;
         however, if conditions are such that Newton method may not bei properly
@@ -1332,12 +1332,12 @@ class Interpolation(object):
 
         :note: If xl == xh (and not zero), a ValueError exception is raised.
 
-        :note: If method doesn't converge within max_iter ierations, then a
-        Value error exception is raised.
+        :note: If the method doesn't converge within max_iter ierations, then a
+        ValueError exception is raised.
 
         :param xl: Lower limit of interval where the root will be looked for.
         :type xl: int, float, Angle
-        :param xh: higher limit of interval where the root will be looked for.
+        :param xh: Higher limit of interval where the root will be looked for.
         :type xh: int, float, Angle
         :param max_iter: Maximum number of iterations allowed.
         :type max_iter: int
@@ -1416,6 +1416,59 @@ class Interpolation(object):
             return x
         else:
             raise TypeError("Invalid input value")
+
+    def minmax(self, xl=0, xh=0, max_iter=1000):
+        """Method to find the minimum or maximum inside the [xl, xh] range.
+
+        Finding the minimum or maximum (extremum) of a function within a given
+        interval is akin to find the root of its derivative. Therefore, this
+        method creates an interpolation object for the derivative function, and
+        calls the root method of that object. See root() method for more
+        details.
+
+        If values xl, xh are not given, the limits of the interpolation table
+        values will be used.
+
+        :note: This method returns a ValueError exception if the corresponding
+        derivatives yl' = f'(xl) and yh' = f'(xh) values have the same sign.
+        In that case, the method assumes there is no extremum in the [xl, xh]
+        interval.
+
+        :note: If any of the xl, xh values is beyond the limits given by the
+        interpolation values, its value will be set to the corresponding limit.
+
+        :note: If xl == xh (and not zero), a ValueError exception is raised.
+
+        :note: If the method doesn't converge within max_iter ierations, then
+        a ValueError exception is raised.
+
+        :param xl: Lower limit of interval where a extremum will be looked for.
+        :type xl: int, float, Angle
+        :param xh: Higher limit of interval where extremum will be looked for.
+        :type xh: int, float, Angle
+        :param max_iter: Maximum number of iterations allowed.
+        :type max_iter: int
+
+        :returns: Extremum of interpolated function within [xl, xh] interval.
+        :rtype: int, float, Angle
+        :raises: ValueError if yl = f(xl), yh = f(xh) have same sign.
+        :raises: ValueError if xl == xh.
+        :raises: ValueError if maximum number of iterations is exceeded.
+        :raises: TypeError if input value is of wrong type.
+
+        >>> m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+        >>> round(m.minmax(), 8)
+        0.33333333
+        """
+        # Compute the derivatives for the current data
+        x = list(self._x)
+        y = []
+        for xi in x:
+            y.append(self.derivative(xi))
+        # Create a new Interpolation object
+        prime = Interpolation(x, y)
+        # Find the root within that object, and return it
+        return prime.root(xl, xh, max_iter)
 
 
 def main():
@@ -1722,6 +1775,8 @@ def main():
     print_me("m'(1.0)", m.derivative(1.0))
     # Get the root within the interval
     print_me("m.root()", m.root())
+    # Get the extremum within the interval
+    print_me("m.minmax()", m.minmax())
 
 
 if __name__ == '__main__':
