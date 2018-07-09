@@ -784,3 +784,22 @@ def test_interpolation_constructor():
 
     assert j._y == [3, -8, 1, 12, 2, 5, 8], \
         "ERROR: 4th constructor test, 'y' values don't match"
+
+    k = pymeeus.base.Interpolation(3, -8, 1, 12, 2, 5, 8)
+    assert k._x == [1, 2, 3], \
+        "ERROR: 5th constructor test, 'x' values don't match"
+
+    assert k._y == [12, 5, -8], \
+        "ERROR: 6th constructor test, 'y' values don't match"
+
+
+def test_interpolation_call():
+    """Tests the __call__() method of Interpolation class"""
+
+    m = pymeeus.base.Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+
+    assert abs(m(-0.8) - (-0.52)) < TOLERANCE, \
+        "ERROR: In 1st __call__() test, output value doesn't match"
+
+    assert abs(m(0.7) - 2.93) < TOLERANCE, \
+        "ERROR: In 2nd __call__() test, output value doesn't match"
