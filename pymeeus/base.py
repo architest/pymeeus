@@ -983,8 +983,10 @@ class Interpolation(object):
     provided in the interpolation table.
 
     The constructor takes pairs of (x, y) values from the table of interest.
-    These pairs of values can be given as a sequence of int/floats, tuples, or
-    lists.
+    These pairs of values can be given as a sequence of int/floats, tuples,
+    lists or Angles.
+
+    :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
     If a sequence of int/floats is given, the values in the odd positions are
     considered to belong to the 'x' set, while the values in the even positions
@@ -1004,18 +1006,18 @@ class Interpolation(object):
         pairs of values can be given as a sequence of int/floats, tuples, or
         lists.
 
-        If a sequence of int/floats is given, the values in the odd positions
-        are considered to belong to the 'x' set, while the values in the eveni
-        positions belong to the 'y' set. If only one tuple or list is provided,
-        it is assumed that it is the 'y' set, and the 'x' set is build from 0
-        onwards with steps of length 1.
+        If a sequence of int, floats or Angles is given, the values in the odd
+        positions are considered to belong to the 'x' set, while the values in
+        the even positions belong to the 'y' set. If only one tuple or list is
+        provided, it is assumed that it is the 'y' set, and the 'x' set is
+        build from 0 onwards with steps of length 1.
 
         Please keep in mind that a minimum of two data pairs are needed in
         order to carry out any interpolation. If only one value is provided, a
         ValueError exception will be raised.
 
         :param \*args: Input tabular values.
-        :type \*args: int, float, list, tuple
+        :type \*args: int, float, list, tuple, Angle
 
         :returns: Interpolation object.
         :rtype: Interpolation
@@ -1075,21 +1077,23 @@ class Interpolation(object):
         """Method used to define the value pairs of Interpolation object.
 
         This takes pairs of (x, y) values from the table of interest. These
-        pairs of values can be given as a sequence of int/floats, tuples, or
-        lists.
+        pairs of values can be given as a sequence of int/floats, tuples,
+        lists, or Angles.
 
-        If a sequence of int/floats is given, the values in the odd positions
-        are considered to belong to the 'x' set, while the values in the eveni
-        positions belong to the 'y' set. If only one tuple or list is provided,
-        it is assumed that it is the 'y' set, and the 'x' set is build from 0
-        onwards with steps of length 1.
+        :note: When using Angles, be careful with the 360-to-0 discontinuity.
+
+        If a sequence of int, floats or Angles is given, the values in the odd
+        positions are considered to belong to the 'x' set, while the values in
+        the even positions belong to the 'y' set. If only one tuple or list is
+        provided, it is assumed that it is the 'y' set, and the 'x' set is
+        build from 0 onwards with steps of length 1.
 
         Please keep in mind that a minimum of two data pairs are needed in
         order to carry out any interpolation. If only one value is provided, a
         ValueError exception will be raised.
 
         :param \*args: Input tabular values.
-        :type \*args: int, float, list, tuple
+        :type \*args: int, float, list, tuple, Angle
 
         :returns: None.
         :rtype: None
@@ -1123,7 +1127,7 @@ class Interpolation(object):
             return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
-            if isinstance(args[0], (int, float)):
+            if isinstance(args[0], (int, float, Angle)):
                 # Insuficient data to interpolate. Raise ValueError exception
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)):
@@ -1140,8 +1144,8 @@ class Interpolation(object):
             else:
                 raise TypeError("Invalid input value")
         elif len(args) == 2:
-            if isinstance(args[0], (int, float)) or \
-                    isinstance(args[1], (int, float)):
+            if isinstance(args[0], (int, float, Angle)) or \
+                    isinstance(args[1], (int, float, Angle)):
                 # Insuficient data to interpolate. Raise ValueError exception
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)) and \
