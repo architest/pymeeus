@@ -454,6 +454,24 @@ class Angle(object):
         """
         return self.rad()
 
+    def dms_tuple(self):
+        """Returns the Angle as a tuple containing (degrees, minutes, seconds,
+        sign).
+
+        :returns: Angle value as (degrees, minutes, seconds, sign).
+        :rtype: tuple
+        """
+        return Angle.deg2dms(self())
+
+    def ra_tuple(self):
+        """Returns the Angle n Right Ascension format as a tuple containing
+        (hours, minutes, seconds, sign).
+
+        :returns: Angle value as RA in (hours, minutes, seconds, sign) format.
+        :rtype: tuple
+        """
+        return Angle.deg2dms(self()/15.0)
+
     def to_positive(self):
         """Converts the internal angle value from negative to positive.
 
@@ -1505,6 +1523,13 @@ def main():
     print_me("{Deg}d {Min}' {Sec}''", a.dms_str())  # 23d 26' 48.999984''
     # In plain format:
     print_me("{Deg}:{Min}:{Sec}", a.dms_str(False))  # -23:26:48.999983999
+
+    print("")
+
+    # Print directly as a tuple
+    a = Angle(23.44694444)
+    print_me("a.dms_tuple()", a.dms_tuple())
+    print_me("a.ra_tuple()", a.ra_tuple())
 
     print("")
 
