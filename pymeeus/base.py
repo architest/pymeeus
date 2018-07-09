@@ -1312,6 +1312,111 @@ class Interpolation(object):
         else:
             raise TypeError("Invalid input value")
 
+    def root(self, xl=0, xh=0, max_iter=1000):
+        """Method to compute the root inside the [xl, xh] range.
+
+        This method applies, in principle, the Newton method to find the root;
+        however, if conditions are such that Newton method may not bei properly
+        behaving or converging, then it switches to the linear Interpolation
+        method.
+
+        If values xl, xh are not given, the limits of the interpolation table
+        values will be used.
+
+        :note: This method returns a ValueError exception if the corresponding
+        yl = f(xl) and yh = f(xh) values have the same sign. In that case, the
+        method assumes there is no root in the [xl, xh] interval.
+
+        :note: If any of the xl, xh values is beyond the limits given by the
+        interpolation values, its value will be set to the corresponding limit.
+
+        :note: If xl == xh (and not zero), a ValueError exception is raised.
+
+        :note: If method doesn't converge within max_iter ierations, then a
+        Value error exception is raised.
+
+        :param xl: Lower limit of interval where the root will be looked for.
+        :type xl: int, float, Angle
+        :param xh: higher limit of interval where the root will be looked for.
+        :type xh: int, float, Angle
+        :param max_iter: Maximum number of iterations allowed.
+        :type max_iter: int
+
+        :returns: Root of the interpolated function within [xl, xh] interval.
+        :rtype: int, float, Angle
+        :raises: ValueError if yl = f(xl), yh = f(xh) have same sign.
+        :raises: ValueError if xl == xh.
+        :raises: ValueError if maximum number of iterations is exceeded.
+        :raises: TypeError if input value is of wrong type.
+
+        >>> m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+        >>> round(m.root(), 8)
+        -0.72075922
+        """
+        # Get the limits of the interpolation table
+        xmin = self._x[0]
+        xmax = self._x[-1]
+        # Check if input value is of correct type
+        if isinstance(xl, (int, float, Angle)) and \
+           isinstance(xh, (int, float, Angle)):
+            # Check if BOTH values are zero
+            if xl == 0 and xh == 0:
+                xl = xmin
+                xh = xmax
+            # Check if limits are equal
+            if abs(xl - xh) < TOL:
+                raise ValueError("Invalid limits: xl and xh values are equal")
+            # Put limits in order. Swap them if necessary
+            if xl > xh:
+                xl, xh = xh, xl
+            # Check limits against interpolation table. Reset if necessary
+            if xl < self._x[0]:
+                xl = xmin
+            if xh < self._x[-1]:
+                xh = xmax
+            yl = self.__call__(xl)
+            yh = self.__call__(xh)
+            # Check for a couple special cases
+            if abs(yl) < TOL:
+                return xl               # xl is a root
+            if abs(yh) < TOL:
+                return xh               # xh is a root
+            # Check if signs of ordinates are the same
+            if (yl * yh) > 0.0:
+                raise ValueError("Invalid interval: Probably no root exists")
+            # We are good to go. First option: Newton's root-finding method
+            x = (xl + xh)/2.0           # Start in the middle of interval
+            y = self.__call__(x)
+            num_iter = 0                # Count the number of iterations
+            while abs(y) > TOL:
+                if num_iter >= max_iter:
+                    raise ValueError("Too many iterations: Probably no root\
+                                     exists")
+                num_iter += 1
+                yp = self.derivative(x)
+                # If derivative is too small, switch to linear interpolation
+                if abs(yp) < 1e-3:
+                    x = (xl*yh - xh*yl)/(yh - yl)
+                    y = self.__call__(x)
+                else:
+                    x = x - y/yp
+                    # Check if x is within limits
+                    if x < xmin or x > xmax:
+                        # Switch to linear interpolation
+                        x = (xl*yh - xh*yl)/(yh - yl)
+                        y = self.__call__(x)
+                    else:
+                        y = self.__call__(x)
+                if (y * yl) >= 0.0:
+                    xl = x
+                    yl = y
+                else:
+                    xh = x
+                    yh = y
+            return x
+        else:
+            raise TypeError("Invalid input value")
+
 
 def main():
 
@@ -1606,13 +1711,17 @@ def main():
     m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
     print("m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])")
     print(m)
+    # Get interpolated values
     print_me("m(-0.5)", m(-0.5))
     print_me("m(0.5)", m(0.5))
+    # Get derivatives
     print_me("m'(-1.0)", m.derivative(-1.0))
     print_me("m'(-0.5)", m.derivative(-0.5))
     print_me("m'(0.0)", m.derivative(0.0))
     print_me("m'(0.5)", m.derivative(0.5))
     print_me("m'(1.0)", m.derivative(1.0))
+    # Get the root within the interval
+    print_me("m.root()", m.root())
 
 
 if __name__ == '__main__':
