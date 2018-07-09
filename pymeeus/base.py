@@ -1114,23 +1114,21 @@ class Interpolation(object):
         >>> print(k._y)
         [12, 5, -8]
         """
-        # If no arguments are given, internal data lists are set to empty
+        # Clean up the internal data tables
+        self._x = []
+        self._y = []
+        self._table = []
+        # If no arguments are given, return. Internal data tables are empty
         if len(args) == 0:
-            self._x = []
-            self._y = []
             return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
             if isinstance(args[0], (int, float)):
                 # Insuficient data to interpolate. Raise ValueError exception
-                self._x = []
-                self._y = []
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)):
                 seq = args[0]
                 if len(seq) < 2:
-                    self._x = []
-                    self._y = []
                     raise ValueError("Invalid number of input values")
                 else:
                     # Read input values into 'y', and create 'x'
@@ -1145,8 +1143,6 @@ class Interpolation(object):
             if isinstance(args[0], (int, float)) or \
                     isinstance(args[1], (int, float)):
                 # Insuficient data to interpolate. Raise ValueError exception
-                self._x = []
-                self._y = []
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)) and \
                     isinstance(args[1], (list, tuple)):
@@ -1157,8 +1153,6 @@ class Interpolation(object):
                 x = x[:length_min]
                 y = y[:length_min]
                 if len(x) < 2 or len(y) < 2:
-                    self._x = []
-                    self._y = []
                     raise ValueError("Invalid number of input values")
                 else:
                     # Read input values into 'x' and 'y'
@@ -1258,12 +1252,10 @@ class Interpolation(object):
         # Check that x is within interpolation table values
         if x < self._x[0] or x > self._x[-1]:
             raise ValueError("Input value outside of interpolation range.")
-        val = 0.0
-        for i in range(len(self._x)):
-            xval = 1.0
-            for j in range(i):
-                xval = xval * (x - self._x[j])
-            val += self._table[i] * xval
+        # Horner's method is used to efficiently compute the result
+        val = self._table[-1]
+        for i in range(len(self._table) - 1, 0, -1):
+            val = self._table[i - 1] + (x - self._x[i - 1]) * val
 
         return val
 
