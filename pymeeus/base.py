@@ -1250,6 +1250,10 @@ class Interpolation(object):
         >>> print(y)
         0.876125
         """
+        # Check if 'x' already belongs to the data table
+        for i in range(len(self._x)):
+            if abs(x - self._x[i]) < TOL:
+                return self._y[i]           # We don't need to look further
         # Check if Newton coefficients table is not empty
         if len(self._table) == 0:
             raise RuntimeError("Internal table hasn't been built. Use set().")
@@ -1535,6 +1539,8 @@ def main():
     print(j)
     print_me("j(2) = ", j(2))
     print_me("j(0.5) = ", j(0.5))
+    # Test with a value already in the data table
+    print_me("j(1) = ", j(1))
 
     # We can interpolate Angles too
     k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],
