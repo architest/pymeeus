@@ -827,3 +827,12 @@ def test_interpolation_root():
 
     assert abs(m.root() - (-0.7207592200561265)) < TOLERANCE, \
         "ERROR: In 1st root() test, output value doesn't match"
+
+
+def test_interpolation_minmax():
+    """Tests the minmax() method of Interpolation class"""
+
+    m = pymeeus.base.Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])
+
+    assert abs(m.minmax() - 0.3333333333) < TOLERANCE, \
+        "ERROR: In 1st minmax() test, output value doesn't match"
