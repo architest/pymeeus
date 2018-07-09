@@ -66,10 +66,15 @@ class Angle(object):
         If 'radians=True' is passed, then the input value is converted from
         radians to degrees.
 
+        If 'ra=True' is passed, then the input value is converted from Right
+        Ascension to degrees
+
         :param \*args: Input angle, in decimal or sexagesimal format.
         :type \*args: int, float, list, tuple
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
+        :param ra: If True, input angle is in Right Ascension. False by default
+        :type ra: bool
 
         :returns: Angle object.
         :rtype: Angle
@@ -256,18 +261,28 @@ class Angle(object):
         If 'radians=True' is passed, then the input value is converted from
         radians to degrees
 
+        If 'ra=True' is passed, then the input value is converted from Right
+        Ascension to degrees
+
         :param \*args: Input angle, in decimal or sexagesimal format.
         :type \*args: int, float, list, tuple
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
+        :param ra: If True, input angle is in Right Ascension. False by default
+        :type ra: bool
 
         :returns: None.
         :rtype: None
         :raises: TypeError if input values are of wrong type.
         """
+        if 'ra' in kwargs:
+            if kwargs['ra']:
+                self.set_ra(*args)
+                return
         # If no arguments are given, internal angle is set to zero
         if len(args) == 0:
             self._deg = 0.0
+            return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
             deg = args[0]
@@ -278,6 +293,7 @@ class Angle(object):
                         deg = deg*RAD2DEG
                 # This works for ints, floats and Angles
                 self._deg = Angle.reduce_deg(deg)
+                return
             elif isinstance(deg, (list, tuple)):
                 if len(deg) == 0:
                     raise TypeError("Invalid input value")
@@ -288,12 +304,15 @@ class Angle(object):
                             # Input value is in radians. Convert to degrees
                             deg[0] = deg[0]*RAD2DEG
                     self._deg = Angle.reduce_deg(deg[0])
+                    return
                 elif len(deg) == 2:
                     # Seconds value is set to zero
                     self._deg = Angle.dms2deg(deg[0], deg[1])
+                    return
                 elif len(deg) == 3:
                     # The first three values are taken into account
                     self._deg = Angle.dms2deg(deg[0], deg[1], deg[2])
+                    return
                 else:
                     # Only the first four values are taken into account
                     sign = -1.0 if deg[0] < 0 or deg[1] < 0 or deg[2] < 0 \
@@ -301,14 +320,17 @@ class Angle(object):
                     # If sign < 0, make sure deg[0] is negative
                     degrees = sign * abs(deg[0])
                     self._deg = Angle.dms2deg(degrees, deg[1], deg[2])
+                    return
             else:
                 raise TypeError("Invalid input value")
         elif len(args) == 2:
             # Seconds value is set to zero
             self._deg = Angle.dms2deg(args[0], args[1])
+            return
         elif len(args) == 3:
             # The first three values are taken into account
             self._deg = Angle.dms2deg(args[0], args[1], args[2])
+            return
         elif len(args) >= 4:
             # Only the first four values are taken into account
             sign = -1.0 if args[0] < 0 or args[1] < 0 or args[2] < 0 \
@@ -316,6 +338,7 @@ class Angle(object):
             # If sign < 0, make sure args[0] is negative
             degrees = sign * abs(args[0])
             self._deg = Angle.dms2deg(degrees, args[1], args[2])
+            return
 
     def set_radians(self, rads):
         """Method to define the value of the Angle objecti from radians.
@@ -333,6 +356,7 @@ class Angle(object):
         180.0
         """
         self.set(rads, radians=True)
+        return
 
     def set_ra(self, *args):
         """Define the value of the Angle object from a Right Ascension.
@@ -355,6 +379,7 @@ class Angle(object):
         """
         self.set(*args)
         self._deg *= 15.0   # Multipy Right Ascension by 15.0 to get degrees
+        return
 
     def dms_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string.
@@ -1567,6 +1592,9 @@ def main():
     a.set_ra(9, 14, 55.8)
     print("a.set_ra(9, 14, 55.8)")
     print_me("   print(a)", a)
+    b = Angle(9, 14, 55.8, ra=True)
+    print("b = Angle(9, 14, 55.8, ra=True)")
+    print_me("   print(b)", b)
 
     print("")
 
