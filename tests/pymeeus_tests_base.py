@@ -36,7 +36,7 @@ def teardown():
 # Angle class
 
 def test_angle_constructor():
-    """Tests the constructur of Angle class"""
+    """Tests the constructor of Angle class"""
 
     a = pymeeus.base.Angle(23.44694444)
     assert abs(a._deg - 23.44694444) < TOLERANCE, \
@@ -769,7 +769,7 @@ def test_angle_round():
 # Interpolation class
 
 def test_interpolation_constructor():
-    """Tests the constructur of Interpolation class"""
+    """Tests the constructor of Interpolation class"""
 
     i = pymeeus.base.Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
     assert i._x == [1, 2, 3, 4, 5, 6], \
@@ -942,3 +942,46 @@ def test_interpolation_minmax():
 
     assert abs(m(m.minmax()) - 1.38120304666) < TOLERANCE, \
         "ERROR: In 4th minmax() test, output value doesn't match"
+
+
+# CurveFitting class
+
+def test_curvefitting_constructor():
+    """Tests the constructor of CurveFitting class"""
+
+    i = pymeeus.base.CurveFitting([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+    assert i._x == [5, 3, 6, 1, 2, 4], \
+        "ERROR: 1st constructor test, 'x' values don't match"
+
+    assert i._y == [10, 6, 12, 2, 4, 8], \
+        "ERROR: 2nd constructor test, 'y' values don't match"
+
+    j = pymeeus.base.CurveFitting([3, -8, 1, 12, 2, 5, 8])
+    assert j._x == [0, 1, 2, 3, 4, 5, 6], \
+        "ERROR: 3rd constructor test, 'x' values don't match"
+
+    assert j._y == [3, -8, 1, 12, 2, 5, 8], \
+        "ERROR: 4th constructor test, 'y' values don't match"
+
+    k = pymeeus.base.CurveFitting(3, -8, 1, 12, 2, 5, 8)
+    assert k._x == [3, 1, 2], \
+        "ERROR: 5th constructor test, 'x' values don't match"
+
+    assert k._y == [-8, 12, 5], \
+        "ERROR: 6th constructor test, 'y' values don't match"
+
+
+def test_curvefitting_correlation_coeff():
+    """Tests the coefficient of correlation of CurveFitting class"""
+
+    cf = pymeeus.base.CurveFitting([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0,
+                                    42.0, 52.0, 54.0, 39.0, 61.0, 42.0, 49.0,
+                                    50.0, 62.0, 44.0, 39.0, 43.0, 54.0, 44.0,
+                                    37.0],
+                                   [90.4, 125.3, 161.8, 143.4, 52.5, 50.8,
+                                    71.5, 152.8, 131.3, 98.5, 144.8, 78.1,
+                                    89.5, 63.9, 112.1, 82.0, 119.8, 161.2,
+                                    208.4, 111.6, 167.1, 162.1])
+    r = cf.correlation_coeff()
+    assert abs(round(r, 3) - (-0.767)) < TOLERANCE, \
+        "ERROR: 1st correlation coefficient test, 'r' value doesn't match"
