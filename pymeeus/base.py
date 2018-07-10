@@ -1075,6 +1075,7 @@ class Interpolation(object):
         self._x = []
         self._y = []
         self._table = []
+        self._tol = TOL
         self.set(*args)         # Let's use 'set()' method to handle the setup
 
     def _order_points(self):
@@ -1219,7 +1220,7 @@ class Interpolation(object):
         # After self._x is found, confirm that x's are different to each other
         for i in range(len(self._x) - 1):
             for k in range(i + 1, len(self._x)):
-                if abs(self._x[i] - self._x[k]) < TOL:
+                if abs(self._x[i] - self._x[k]) < self._tol:
                     raise ValueError("Invalid input: Values in 'x' are equal")
         # Order the data points if needed
         self._order_points()
@@ -1242,6 +1243,28 @@ class Interpolation(object):
         ystr = "Y: " + str(self._y)
         return xstr + ystr
 
+    def get_tolerance(self):
+        """Gets the internal tolerance value used for comparisons.
+
+        :note: The default tolerance value is TOL.
+
+        :returns: Internal tolerance.
+        :rtype: float
+        """
+        return self._tol
+
+    def set_tolerance(self, tol):
+        """Changes the internal tolerance value used for comparisons.
+
+        :param tol: New tolerance value.
+        :type tol: int, float
+
+        :returns: None
+        :rtype: None
+        """
+        self._tol = tol
+        return
+
     def _compute_table(self):
         """Method to compute coefficients of Newton interpolation method."""
         for i in range(len(self._x)):
@@ -1258,7 +1281,7 @@ class Interpolation(object):
         :returns: Resulting value of the element of the Newton table.
         :rtype: float
         """
-        if abs(end - start) < TOL:
+        if abs(end - start) < self._tol:
             val = self._y[start]
         else:
             x = list(self._x)       # Let's make a copy, just in case
@@ -1287,7 +1310,7 @@ class Interpolation(object):
         if isinstance(x, (int, float, Angle)):
             # Check if 'x' already belongs to the data table
             for i in range(len(self._x)):
-                if abs(x - self._x[i]) < TOL:
+                if abs(x - self._x[i]) < self._tol:
                     return self._y[i]           # We don't need to look further
             # Check if Newton coefficients table is not empty
             if len(self._table) == 0:
@@ -1396,7 +1419,7 @@ class Interpolation(object):
                 xl = xmin
                 xh = xmax
             # Check if limits are equal
-            if abs(xl - xh) < TOL:
+            if abs(xl - xh) < self._tol:
                 raise ValueError("Invalid limits: xl and xh values are equal")
             # Put limits in order. Swap them if necessary
             if xl > xh:
@@ -1409,9 +1432,9 @@ class Interpolation(object):
             yl = self.__call__(xl)
             yh = self.__call__(xh)
             # Check for a couple special cases
-            if abs(yl) < TOL:
+            if abs(yl) < self._tol:
                 return xl               # xl is a root
-            if abs(yh) < TOL:
+            if abs(yh) < self._tol:
                 return xh               # xh is a root
             # Check if signs of ordinates are the same
             if (yl * yh) > 0.0:
@@ -1420,7 +1443,7 @@ class Interpolation(object):
             x = (xl + xh)/2.0           # Start in the middle of interval
             y = self.__call__(x)
             num_iter = 0                # Count the number of iterations
-            while abs(y) > TOL:
+            while abs(y) > self._tol:
                 if num_iter >= max_iter:
                     raise ValueError("Too many iterations: Probably no root\
                                      exists")
