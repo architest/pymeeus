@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, pi
+from math import sqrt, pi, degrees
 import pymeeus.base
 
 
@@ -280,7 +280,7 @@ def test_angle_radians():
     """Tests the radians() and rad() methods of Angle class"""
     a = pymeeus.base.Angle(180.0)
 
-    assert abs(a.radians() - pi) < TOLERANCE, \
+    assert abs(a.rad() - pi) < TOLERANCE, \
         "ERROR: In 1st radians() test, radians value doesn't match"
 
 
@@ -871,7 +871,7 @@ def test_interpolation_derivative():
                                     0.4711658342, 0.5236885653, 0.5453707057])
 
     # We need to adjust the result because degrees were used instead of radians
-    res = m.derivative(30.0) * pymeeus.base.RAD2DEG
+    res = degrees(m.derivative(30.0))
     assert abs(res - sqrt(3.0)/2.0) < TOLERANCE, \
         "ERROR: In 7th derivative() test, output value doesn't match"
 

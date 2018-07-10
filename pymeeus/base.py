@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, pi
+from math import sqrt, pi, degrees, radians
 
 
 """
@@ -29,12 +29,6 @@ from math import sqrt, pi
 .. moduleauthor:: Dagoberto Salazar
 """
 
-
-DEG2RAD = pi/180.0
-"""Constant to convert from degrees to radians."""
-
-RAD2DEG = 180.0/pi
-"""Constant to convert from radians to degrees."""
 
 TOL = 1E-10
 """Internal tolerance being used by default"""
@@ -290,7 +284,7 @@ class Angle(object):
                 if 'radians' in kwargs:
                     if kwargs['radians']:
                         # Input value is in radians. Convert to degrees
-                        deg = deg*RAD2DEG
+                        deg = degrees(deg)
                 # This works for ints, floats and Angles
                 self._deg = Angle.reduce_deg(deg)
                 return
@@ -302,7 +296,7 @@ class Angle(object):
                     if 'radians' in kwargs:
                         if kwargs['radians']:
                             # Input value is in radians. Convert to degrees
-                            deg[0] = deg[0]*RAD2DEG
+                            deg[0] = degrees(deg[0])
                     self._deg = Angle.reduce_deg(deg[0])
                     return
                 elif len(deg) == 2:
@@ -318,8 +312,8 @@ class Angle(object):
                     sign = -1.0 if deg[0] < 0 or deg[1] < 0 or deg[2] < 0 \
                         or deg[3] < 0 else 1.0
                     # If sign < 0, make sure deg[0] is negative
-                    degrees = sign * abs(deg[0])
-                    self._deg = Angle.dms2deg(degrees, deg[1], deg[2])
+                    degs = sign * abs(deg[0])
+                    self._deg = Angle.dms2deg(degs, deg[1], deg[2])
                     return
             else:
                 raise TypeError("Invalid input value")
@@ -336,8 +330,8 @@ class Angle(object):
             sign = -1.0 if args[0] < 0 or args[1] < 0 or args[2] < 0 \
                 or args[3] < 0 else 1.0
             # If sign < 0, make sure args[0] is negative
-            degrees = sign * abs(args[0])
-            self._deg = Angle.dms2deg(degrees, args[1], args[2])
+            degs = sign * abs(args[0])
+            self._deg = Angle.dms2deg(degs, args[1], args[2])
             return
 
     def set_radians(self, rads):
@@ -465,19 +459,7 @@ class Angle(object):
         >>> print(round(a.rad(), 8))
         0.83360416
         """
-        return self._deg * DEG2RAD
-
-    def radians(self):
-        """Returns the angle value in radians.
-
-        :returns: Angle value in radians.
-        :rtype: float
-
-        >>> a = Angle(47.762)
-        >>> print(round(a.radians(), 8))
-        0.83360416
-        """
-        return self.rad()
+        return radians(self._deg)
 
     def dms_tuple(self):
         """Returns the Angle as a tuple containing (degrees, minutes, seconds,
@@ -1583,7 +1565,7 @@ def main():
     print_me("b = Angle(pi, radians=True); print(b)", b)    # 180.0
 
     # And we can easily carry out the 'degrees to radians' conversion
-    print_me("print(b.radians())", b.radians())             # 3.14159265359
+    print_me("print(b.rad())", b.rad())                     # 3.14159265359
 
     print("")
 
@@ -1841,10 +1823,10 @@ def main():
     print_me("sin(30.0)\t", m(30.0))
     print_me("sin(30.5)\t", m(30.5))
     # Derivative must be adjusted because degrees were used instead of radians
-    print_me("sin'(29.5)\t", m.derivative(29.5)*RAD2DEG)
-    print_me("sin'(30.0)\t", m.derivative(30.0)*RAD2DEG)
+    print_me("sin'(29.5)\t", degrees(m.derivative(29.5)))
+    print_me("sin'(30.0)\t", degrees(m.derivative(30.0)))
     print_me("sqrt(3.0)/2.0\t", sqrt(3.0)/2.0)
-    print_me("sin'(30.5)\t", m.derivative(30.5)*RAD2DEG)
+    print_me("sin'(30.5)\t", degrees(m.derivative(30.5)))
 
 
 if __name__ == '__main__':
