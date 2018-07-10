@@ -276,12 +276,12 @@ def test_angle_str():
         "ERROR: In 2nd __str__() test, degrees value doesn't match"
 
 
-def test_angle_radians():
-    """Tests the radians() and rad() methods of Angle class"""
+def test_angle_rad():
+    """Tests the rad() method of Angle class"""
     a = pymeeus.base.Angle(180.0)
 
     assert abs(a.rad() - pi) < TOLERANCE, \
-        "ERROR: In 1st radians() test, radians value doesn't match"
+        "ERROR: In 1st rad() test, radians value doesn't match"
 
 
 def test_angle_to_positive():
