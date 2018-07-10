@@ -18,8 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import pi as pi
-from math import sqrt as sqrt
+from math import sqrt, pi
 import pymeeus.base
 
 
@@ -871,10 +870,9 @@ def test_interpolation_derivative():
                                    [0.4913598528, 0.5145891926, 0.4646875083,
                                     0.4711658342, 0.5236885653, 0.5453707057])
 
-    # XXXX These results here are WRONG!!!
-    print("sin'(30.0) = {}".format(m.derivative(30.0)))
-    print("sqrt(3.0)/2.0 = {}".format(sqrt(3.0)/2.0))
-    assert abs(m.derivative(30.0) - sqrt(3.0)/2.0) < TOLERANCE, \
+    # We need to adjust the result because degrees were used instead of radians
+    res = m.derivative(30.0) * pymeeus.base.RAD2DEG
+    assert abs(res - sqrt(3.0)/2.0) < TOLERANCE, \
         "ERROR: In 7th derivative() test, output value doesn't match"
 
 
