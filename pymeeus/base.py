@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import pi as pi
+from math import sqrt, pi
 
 
 """
@@ -1837,21 +1837,14 @@ def main():
                       [0.4913598528, 0.5145891926, 0.4646875083,
                        0.4711658342, 0.5236885653, 0.5453707057])
 
-    print_me("sin(29.5)", m(29.5))
-    print_me("sin(30.0)", m(30.0))
-    print_me("sin(30.5)", m(30.5))
-    print_me("sin'(29.5)", m.derivative(29.5))
-    print_me("sin'(30.0)", m.derivative(30.0))
-    print_me("sin'(30.5)", m.derivative(30.5))
-
-    m = Interpolation([29.43, 30.97, 33.05],
-                      [0.4913598528, 0.5145891926,
-                       0.5453707057])
-
-    # XXXX These results here are WRONG!!!
-    print_me("sin'(29.5)", m.derivative(29.5))
-    print_me("sin'(30.0)", m.derivative(30.0))
-    print_me("sin'(30.5)", m.derivative(30.5))
+    print_me("sin(29.5)\t", m(29.5))
+    print_me("sin(30.0)\t", m(30.0))
+    print_me("sin(30.5)\t", m(30.5))
+    # Derivative must be adjusted because degrees were used instead of radians
+    print_me("sin'(29.5)\t", m.derivative(29.5)*RAD2DEG)
+    print_me("sin'(30.0)\t", m.derivative(30.0)*RAD2DEG)
+    print_me("sqrt(3.0)/2.0\t", sqrt(3.0)/2.0)
+    print_me("sin'(30.5)\t", m.derivative(30.5)*RAD2DEG)
 
 
 if __name__ == '__main__':
