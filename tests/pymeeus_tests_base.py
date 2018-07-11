@@ -32,6 +32,7 @@ i_angles2 = pymeeus.base.Interpolation()
 i_sine = pymeeus.base.Interpolation()
 cf1 = pymeeus.base.CurveFitting()
 cf2 = pymeeus.base.CurveFitting()
+cf3 = pymeeus.base.CurveFitting()
 
 
 def setup():
@@ -65,7 +66,7 @@ def setup():
                [0.4913598528, 0.5145891926, 0.4646875083, 0.4711658342,
                 0.5236885653, 0.5453707057])
 
-    # Set up a couple CurveFitting objects
+    # Set up a few CurveFitting objects
     cf1.set([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0, 52.0, 54.0, 39.0,
              61.0, 42.0, 49.0, 50.0, 62.0, 44.0, 39.0, 43.0, 54.0, 44.0, 37.0],
             [90.4, 125.3, 161.8, 143.4, 52.5, 50.8, 71.5, 152.8, 131.3, 98.5,
@@ -77,6 +78,10 @@ def setup():
              0.1770, 0.1755, 0.1746],
             [10.92, 11.01, 10.99, 10.78, 10.87, 10.80, 10.75, 10.14, 10.21,
              9.97, 9.69, 9.57, 9.66, 9.63, 9.65, 9.44, 9.44, 9.32, 9.20])
+
+    cf3.set([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
+            [-9.372, -3.821, 0.291, 3.730, 5.822, 8.324, 9.083, 6.957, 7.006,
+             0.365, -1.722])
 
 
 def teardown():
@@ -1015,3 +1020,17 @@ def test_curvefitting_linear_fitting():
 
     assert abs(round(b, 2) - 7.03) < TOLERANCE, \
         "ERROR: In 4th linear_fitting() test, 'b' value doesn't match"
+
+
+def test_curvefitting_quadratic_fitting():
+    """Tests the quadratic_fitting() method of CurveFitting class"""
+
+    a, b, c = cf3.quadratic_fitting()
+    assert abs(round(a, 2) - (-2.22)) < TOLERANCE, \
+        "ERROR: In 1st quadratic_fitting() test, 'a' value doesn't match"
+
+    assert abs(round(b, 2) - 3.76) < TOLERANCE, \
+        "ERROR: In 2nd quadratic_fitting() test, 'b' value doesn't match"
+
+    assert abs(round(c, 2) - 6.64) < TOLERANCE, \
+        "ERROR: In 3rd quadratic_fitting() test, 'c' value doesn't match"
