@@ -25,8 +25,51 @@ import pymeeus.base
 TOLERANCE = 1E-10
 
 
+# Declare some objects to be used later
+i_ra = pymeeus.base.Interpolation()
+i_angles1 = pymeeus.base.Interpolation()
+i_angles2 = pymeeus.base.Interpolation()
+i_sine = pymeeus.base.Interpolation()
+cf = pymeeus.base.CurveFitting()
+
+
 def setup():
-    pass
+    """This function is used to set up the environment for the tests"""
+    # Set up a interpolation object which uses Right Ascension
+    y0 = pymeeus.base.Angle(10, 18, 48.732, ra=True)
+    y1 = pymeeus.base.Angle(10, 23, 22.835, ra=True)
+    y2 = pymeeus.base.Angle(10, 27, 57.247, ra=True)
+    y3 = pymeeus.base.Angle(10, 32, 31.983, ra=True)
+
+    i_ra.set([8.0, 10.0, 12.0, 14.0], [y0, y1, y2, y3])
+
+    # Set up a couple interpolation objects with Angles
+    y0 = pymeeus.base.Angle(0, -28, 13.4)
+    y1 = pymeeus.base.Angle(0, 6, 46.3)
+    y2 = pymeeus.base.Angle(0, 38, 23.2)
+
+    i_angles1.set([26.0, 27.0, 28.0], [y0, y1, y2])
+
+    y0 = pymeeus.base.Angle(-1, 11, 21.23)
+    y1 = pymeeus.base.Angle(0, -28, 12.31)
+    y2 = pymeeus.base.Angle(0, 16, 7.02)
+    y3 = pymeeus.base.Angle(1, 1, 0.13)
+    y4 = pymeeus.base.Angle(1, 45, 46.33)
+
+    i_angles2.set([25.0, 26.0, 27.0, 28.0, 29.0], [y0, y1, y2, y3, y4])
+
+    # Set up an interpolation object with 6 interpolation table entries, based
+    # on sine function
+    i_sine.set([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
+               [0.4913598528, 0.5145891926, 0.4646875083, 0.4711658342,
+                0.5236885653, 0.5453707057])
+
+    # Set up a CurveFitting object
+    cf.set([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0, 52.0, 54.0, 39.0,
+            61.0, 42.0, 49.0, 50.0, 62.0, 44.0, 39.0, 43.0, 54.0, 44.0, 37.0],
+           [90.4, 125.3, 161.8, 143.4, 52.5, 50.8, 71.5, 152.8, 131.3, 98.5,
+            144.8, 78.1, 89.5, 63.9, 112.1, 82.0, 119.8, 161.2, 208.4, 111.6,
+            167.1, 162.1])
 
 
 def teardown():
@@ -815,15 +858,8 @@ def test_interpolation_call():
     assert abs(m(2.5) - (-1.75)) < TOLERANCE, \
         "ERROR: In 5th __call__() test, output value doesn't match"
 
-    # Add a test with Right Ascension
-    y0 = pymeeus.base.Angle(10, 18, 48.732, ra=True)
-    y1 = pymeeus.base.Angle(10, 23, 22.835, ra=True)
-    y2 = pymeeus.base.Angle(10, 27, 57.247, ra=True)
-    y3 = pymeeus.base.Angle(10, 32, 31.983, ra=True)
-
-    m = pymeeus.base.Interpolation([8.0, 10.0, 12.0, 14.0], [y0, y1, y2, y3])
-
-    a = pymeeus.base.Angle(m(11.0))
+    # This interpolation test uses Right Ascension
+    a = pymeeus.base.Angle(i_ra(11.0))
     h, m, s, sign = a.ra_tuple()
     assert abs(h - 10.0) < TOLERANCE and \
         abs(m - 25.0) < TOLERANCE and \
@@ -831,12 +867,8 @@ def test_interpolation_call():
         abs(sign == 1.0), \
         "ERROR: In 6th __call__() test, output value doesn't match"
 
-    # Add a test with 6 interpolation table entries, based on sine function
-    m = pymeeus.base.Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
-                                   [0.4913598528, 0.5145891926, 0.4646875083,
-                                    0.4711658342, 0.5236885653, 0.5453707057])
-
-    assert abs(m(30.0) - 0.5) < TOLERANCE, \
+    # Test with 6 interpolation table entries, based on sine function
+    assert abs(i_sine(30.0) - 0.5) < TOLERANCE, \
         "ERROR: In 7th __call__() test, output value doesn't match"
 
 
@@ -865,13 +897,9 @@ def test_interpolation_derivative():
     assert abs(m.derivative(2.5) - 3.0) < TOLERANCE, \
         "ERROR: In 6th derivative() test, output value doesn't match"
 
-    # Add a test with 6 interpolation table entries, based on sine function
-    m = pymeeus.base.Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
-                                   [0.4913598528, 0.5145891926, 0.4646875083,
-                                    0.4711658342, 0.5236885653, 0.5453707057])
-
+    # Do test with an interpolation object with 6 table entries, based on sine
     # We need to adjust the result because degrees were used instead of radians
-    res = degrees(m.derivative(30.0))
+    res = degrees(i_sine.derivative(30.0))
     assert abs(res - sqrt(3.0)/2.0) < TOLERANCE, \
         "ERROR: In 7th derivative() test, output value doesn't match"
 
@@ -898,26 +926,11 @@ def test_interpolation_root():
     assert abs(m.root(0.0, 3.15) - 3.0) < TOLERANCE, \
         "ERROR: In 4th root() test, output value doesn't match"
 
-    # Let's some tests with Angles
-    y0 = pymeeus.base.Angle(0, -28, 13.4)
-    y1 = pymeeus.base.Angle(0, 6, 46.3)
-    y2 = pymeeus.base.Angle(0, 38, 23.2)
-
-    m = pymeeus.base.Interpolation([26.0, 27.0, 28.0], [y0, y1, y2])
-
-    assert abs(m.root() - 26.798732705) < TOLERANCE, \
+    # Let's do some tests with Angles
+    assert abs(i_angles1.root() - 26.798732705) < TOLERANCE, \
         "ERROR: In 5th root() test, output value doesn't match"
 
-    y0 = pymeeus.base.Angle(-1, 11, 21.23)
-    y1 = pymeeus.base.Angle(0, -28, 12.31)
-    y2 = pymeeus.base.Angle(0, 16, 7.02)
-    y3 = pymeeus.base.Angle(1, 1, 0.13)
-    y4 = pymeeus.base.Angle(1, 45, 46.33)
-
-    m = pymeeus.base.Interpolation([25.0, 26.0, 27.0, 28.0, 29.0],
-                                   [y0, y1, y2, y3, y4])
-
-    assert abs(m.root() - 26.6385869469) < TOLERANCE, \
+    assert abs(i_angles2.root() - 26.6385869469) < TOLERANCE, \
         "ERROR: In 6th root() test, output value doesn't match"
 
 
@@ -972,16 +985,19 @@ def test_curvefitting_constructor():
 
 
 def test_curvefitting_correlation_coeff():
-    """Tests the coefficient of correlation of CurveFitting class"""
+    """Tests the correlation_coeff() method of CurveFitting class"""
 
-    cf = pymeeus.base.CurveFitting([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0,
-                                    42.0, 52.0, 54.0, 39.0, 61.0, 42.0, 49.0,
-                                    50.0, 62.0, 44.0, 39.0, 43.0, 54.0, 44.0,
-                                    37.0],
-                                   [90.4, 125.3, 161.8, 143.4, 52.5, 50.8,
-                                    71.5, 152.8, 131.3, 98.5, 144.8, 78.1,
-                                    89.5, 63.9, 112.1, 82.0, 119.8, 161.2,
-                                    208.4, 111.6, 167.1, 162.1])
     r = cf.correlation_coeff()
     assert abs(round(r, 3) - (-0.767)) < TOLERANCE, \
-        "ERROR: 1st correlation coefficient test, 'r' value doesn't match"
+        "ERROR: 1st correlation_coeff() test, 'r' value doesn't match"
+
+
+def test_curvefitting_linear_fitting():
+    """Tests the linear_fitting() method of CurveFitting class"""
+
+    a, b = cf.linear_fitting()
+    assert abs(round(a, 2) - (-2.49)) < TOLERANCE, \
+        "ERROR: In 1st linear_fitting() test, 'a' value doesn't match"
+
+    assert abs(round(b, 2) - 244.18) < TOLERANCE, \
+        "ERROR: In 2nd linear_fitting() test, 'b' value doesn't match"
