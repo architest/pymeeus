@@ -1775,7 +1775,7 @@ class CurveFitting(object):
         return (n*sxy - sx*sy)/(sqrt(n*sx2 - sx*sx)*sqrt(n*sy2 - sy*sy))
 
     def linear_fitting(self):
-        """This method returns a tuple with the 'a', 'b' coefficients of of the
+        """This method returns a tuple with the 'a', 'b' coefficients of the
         linear equation 'y = a*x + b' that best fits the table data, using the
         least squares approach.
 
@@ -1802,6 +1802,29 @@ class CurveFitting(object):
         a = (n*sxy - sx*sy)/d
         b = (sy*sx2 - sx*sxy)/d
         return (a, b)
+
+    def quadratic_fitting(self):
+        """This method returns a tuple with the 'a', 'b', 'c' coefficients of
+        the quadratic equation 'y = a*x*x + b*x + c' that best fits the table
+        data, using the least squares approach.
+
+        :returns: 'a', 'b', 'c' coefficients of best quadratic equation fit.
+        :rtype: tuple
+        """
+        n = self._N
+        p = self._P
+        q = self._Q
+        r = self._R
+        s = self._S
+        t = self._T
+        u = self._U
+        v = self._V
+        q2 = q*q
+        d = n*q*s + 2.0*p*q*r - q2*q - p*p*s - n*r*r
+        a = (n*q*v + p*r*t + p*q*u - q2*t - p*p*v - n*r*u)/d
+        b = (n*s*u + p*q*v + q*r*t - q2*u - p*s*t - n*r*v)/d
+        c = (q*s*t + q*r*u + p*r*v - q2*v - p*s*u - r*r*t)/d
+        return (a, b, c)
 
 
 def main():
