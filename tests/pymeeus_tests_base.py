@@ -1062,3 +1062,15 @@ def test_curvefitting_general_fitting():
 
     assert abs(round(c, 2) - 0.39) < TOLERANCE, \
         "ERROR: In 3rd general_fitting() test, 'c' value doesn't match"
+
+    cf5 = pymeeus.base.CurveFitting([0, 1.2, 1.4, 1.7, 2.1, 2.2])
+
+    a, b, c = cf5.general_fitting(sqrt)
+    assert abs(round(a, 3) - 1.016) < TOLERANCE, \
+        "ERROR: In 4th general_fitting() test, 'a' value doesn't match"
+
+    assert abs(round(b, 3) - 0.0) < TOLERANCE, \
+        "ERROR: In 5th general_fitting() test, 'b' value doesn't match"
+
+    assert abs(round(c, 3) - 0.0) < TOLERANCE, \
+        "ERROR: In 6th general_fitting() test, 'c' value doesn't match"
