@@ -2211,11 +2211,13 @@ def main():
 
     # Let's use 'linear_fitting()'
     a, b = cf1.linear_fitting()
-    print("a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+    print("Linear fitting:")
+    print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
 
     # Compute the correlation coefficient
     r = cf1.correlation_coeff()
-    print_me("r", round(r, 3))
+    print("Correlation coefficient:")
+    print_me("   r", round(r, 3))
 
     cf2 = CurveFitting([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5,
                         3.0],
@@ -2224,8 +2226,10 @@ def main():
 
     # Now use 'quadratic_fitting()'
     a, b, c = cf2.quadratic_fitting()
-    print("a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
-                                          round(c, 2)))
+    # Original curve: y = -2.0*x*x + 3.5*x + 7.0 + noise
+    print("Quadratic fitting:")
+    print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
+                                             round(c, 2)))
 
 
 if __name__ == '__main__':
