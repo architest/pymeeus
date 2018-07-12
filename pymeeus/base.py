@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, pi, degrees, radians, fsum
+from math import sqrt, pi, degrees, radians, fsum, sin
 
 
 """
@@ -2228,6 +2228,26 @@ def main():
     a, b, c = cf2.quadratic_fitting()
     # Original curve: y = -2.0*x*x + 3.5*x + 7.0 + noise
     print("Quadratic fitting:")
+    print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
+                                             round(c, 2)))
+
+    cf4 = CurveFitting([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183, 200,
+                        218, 230, 248, 269, 290, 303, 320, 344],
+                       [0.0433, 0.2532, 0.3386, 0.3560, 0.4983, 0.7577, 1.4585,
+                        1.8628, 1.8264, 1.2431, -0.2043, -1.2431, -1.8422,
+                        -1.8726, -1.4889, -0.8372, -0.4377, -0.3640, -0.3508,
+                        -0.2126])
+
+    # Let's define the three functions to be used for fitting
+    def sin1(x): return sin(radians(x))
+
+    def sin2(x): return sin(radians(2.0*x))
+
+    def sin3(x): return sin(radians(3.0*x))
+
+    # Use 'general_fitting()' here
+    a, b, c = cf4.general_fitting(sin1, sin2, sin3)
+    print("General fitting:")
     print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
                                              round(c, 2)))
 
