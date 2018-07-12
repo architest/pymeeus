@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, pi, degrees
+from math import sqrt, pi, degrees, radians, sin
 import pymeeus.base
 
 
@@ -33,6 +33,7 @@ i_sine = pymeeus.base.Interpolation()
 cf1 = pymeeus.base.CurveFitting()
 cf2 = pymeeus.base.CurveFitting()
 cf3 = pymeeus.base.CurveFitting()
+cf4 = pymeeus.base.CurveFitting()
 
 
 def setup():
@@ -82,6 +83,12 @@ def setup():
     cf3.set([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
             [-9.372, -3.821, 0.291, 3.730, 5.822, 8.324, 9.083, 6.957, 7.006,
              0.365, -1.722])
+
+    cf4.set([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183, 200, 218, 230,
+             248, 269, 290, 303, 320, 344],
+            [0.0433, 0.2532, 0.3386, 0.3560, 0.4983, 0.7577, 1.4585, 1.8628,
+             1.8264, 1.2431, -0.2043, -1.2431, -1.8422, -1.8726, -1.4889,
+             -0.8372, -0.4377, -0.3640, -0.3508, -0.2126])
 
 
 def teardown():
@@ -1034,3 +1041,24 @@ def test_curvefitting_quadratic_fitting():
 
     assert abs(round(c, 2) - 6.64) < TOLERANCE, \
         "ERROR: In 3rd quadratic_fitting() test, 'c' value doesn't match"
+
+
+def test_curvefitting_general_fitting():
+    """Tests the general_fitting() method of CurveFitting class"""
+
+    # Let's define the three functions to be used for fitting
+    def sin1(x): return sin(radians(x))
+
+    def sin2(x): return sin(radians(2.0*x))
+
+    def sin3(x): return sin(radians(3.0*x))
+
+    a, b, c = cf4.general_fitting(sin1, sin2, sin3)
+    assert abs(round(a, 2) - 1.2) < TOLERANCE, \
+        "ERROR: In 1st general_fitting() test, 'a' value doesn't match"
+
+    assert abs(round(b, 2) - (-0.77)) < TOLERANCE, \
+        "ERROR: In 2nd general_fitting() test, 'b' value doesn't match"
+
+    assert abs(round(c, 2) - 0.39) < TOLERANCE, \
+        "ERROR: In 3rd general_fitting() test, 'c' value doesn't match"
