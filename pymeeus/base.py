@@ -1826,6 +1826,46 @@ class CurveFitting(object):
         c = (q*s*t + q*r*u + p*r*v - q2*v - p*s*u - r*r*t)/d
         return (a, b, c)
 
+    def general_fitting(self, f0, f1, f2):
+        """This method returns a tuple with the 'a', 'b', 'c' coefficients of
+        the general equation 'y = a*f0(x) + b*f1(x) + c*f2(x)' that best fits
+        the table data, using the least squares approach.
+
+        :param f0, f1, f2: Functions used to build the general equation.
+        :type f0, f1, f2: function
+        :returns: 'a', 'b', 'c' coefficients of best general equation fit.
+        :rtype: tuple
+        """
+        m = 0
+        p = 0
+        q = 0
+        r = 0
+        s = 0
+        t = 0
+        u = 0
+        v = 0
+        w = 0
+        xl = list(self._x)
+        yl = list(self._y)
+        for i in range(len(xl)):
+            x = xl[i]
+            y = yl[i]
+            m += f0(x)*f0(x)
+            p += f0(x)*f1(x)
+            q += f0(x)*f2(x)
+            r += f1(x)*f1(x)
+            s += f1(x)*f2(x)
+            t += f2(x)*f2(x)
+            u += y*f0(x)
+            v += y*f1(x)
+            w += y*f2(x)
+
+        d = m*r*t + 2.0*p*q*s - m*s*s - r*q*q - t*p*p
+        a = (u*(r*t - s*s) + v*(q*s - p*t) + w*(p*s - q*r))/d
+        b = (u*(s*q - p*t) + v*(m*t - q*q) + w*(p*q - m*s))/d
+        c = (u*(p*s - r*q) + v*(p*q - m*s) + w*(m*r - p*p))/d
+        return (a, b, c)
+
 
 def main():
 
