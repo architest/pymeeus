@@ -1816,6 +1816,15 @@ class CurveFitting(object):
         :returns: 'a', 'b', 'c' coefficients of best quadratic equation fit.
         :rtype: tuple
         :raises: ZeroDivisionError if input data leads to a division by zero
+
+        >>> cf2 = CurveFitting([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5,
+        ...                     2.0, 2.5,3.0],
+        ...                    [-9.372, -3.821, 0.291, 3.730, 5.822, 8.324,
+        ...                     9.083, 6.957, 7.006, 0.365, -1.722])
+        >>> a, b, c = cf2.quadratic_fitting()
+        >>> print("a = {}; b = {}; c = {}".format(round(a, 2), round(b, 2),
+        ...                                       round(c, 2)))
+        a = -2.22; b = 3.76; c = 6.64
         """
         n = self._N
         p = self._P
@@ -1847,6 +1856,26 @@ class CurveFitting(object):
         :rtype: tuple
         :raises: ZeroDivisionError if input functions are null or input data
         leads to a division by zero
+
+        >>> cf4 = CurveFitting([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183,
+        ...                     200, 218, 230, 248, 269, 290, 303, 320, 344],
+        ...                    [0.0433, 0.2532, 0.3386, 0.3560, 0.4983, 0.7577,
+        ...                     1.4585, 1.8628, 1.8264, 1.2431, -0.2043,
+        ...                     -1.2431, -1.8422, -1.8726, -1.4889, -0.8372,
+        ...                     -0.4377, -0.3640, -0.3508, -0.2126])
+        >>> def sin1(x): return sin(radians(x))
+        >>> def sin2(x): return sin(radians(2.0*x))
+        >>> def sin3(x): return sin(radians(3.0*x))
+        >>> a, b, c = cf4.general_fitting(sin1, sin2, sin3)
+        >>> print("a = {}; b = {}; c = {}".format(round(a, 2), round(b, 2),
+        ...                                       round(c, 2)))
+        a = 1.2; b = -0.77; c = 0.39
+
+        >>> cf5 = CurveFitting([0, 1.2, 1.4, 1.7, 2.1, 2.2])
+        >>> a, b, c = cf5.general_fitting(sqrt)
+        >>> print("a = {}; b = {}; c = {}".format(round(a, 3), round(b, 3),
+        ...                                       round(c, 3)))
+        a = 1.016; b = 0.0; c = 0.0
         """
         m = 0
         p = 0
@@ -2278,7 +2307,7 @@ def main():
     a, b, c = cf5.general_fitting(sqrt)
     print("General fitting with f0 = sqrt(x), f1 = 0.0 and f2 = 0.0:")
     print("   a = {}\tb = {}\t\tc = {}".format(round(a, 3), round(b, 3),
-                                             round(c, 3)))
+                                               round(c, 3)))
 
 
 if __name__ == '__main__':
