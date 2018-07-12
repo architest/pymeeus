@@ -1781,6 +1781,7 @@ class CurveFitting(object):
 
         :returns: 'a', 'b' coefficients of best linear equation fit.
         :rtype: tuple
+        :raises: ZeroDivisionError if input data leads to a division by zero
 
         >>> cf = CurveFitting([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0,
         ...                    52.0, 54.0, 39.0, 61.0, 42.0, 49.0, 50.0, 62.0,
@@ -1799,6 +1800,10 @@ class CurveFitting(object):
         sy = self._T
         sx2 = self._Q
         d = n*sx2 - sx*sx
+
+        if abs(d) < TOL:
+            raise ZeroDivisionError("Input data leads to a division by zero")
+
         a = (n*sxy - sx*sy)/d
         b = (sy*sx2 - sx*sxy)/d
         return (a, b)
@@ -1810,6 +1815,7 @@ class CurveFitting(object):
 
         :returns: 'a', 'b', 'c' coefficients of best quadratic equation fit.
         :rtype: tuple
+        :raises: ZeroDivisionError if input data leads to a division by zero
         """
         n = self._N
         p = self._P
@@ -1821,12 +1827,16 @@ class CurveFitting(object):
         v = self._V
         q2 = q*q
         d = n*q*s + 2.0*p*q*r - q2*q - p*p*s - n*r*r
+
+        if abs(d) < TOL:
+            raise ZeroDivisionError("Input data leads to a division by zero")
+
         a = (n*q*v + p*r*t + p*q*u - q2*t - p*p*v - n*r*u)/d
         b = (n*s*u + p*q*v + q*r*t - q2*u - p*s*t - n*r*v)/d
         c = (q*s*t + q*r*u + p*r*v - q2*v - p*s*u - r*r*t)/d
         return (a, b, c)
 
-    def general_fitting(self, f0, f1, f2):
+    def general_fitting(self, f0, f1=lambda *args: 0.0, f2=lambda *args: 0.0):
         """This method returns a tuple with the 'a', 'b', 'c' coefficients of
         the general equation 'y = a*f0(x) + b*f1(x) + c*f2(x)' that best fits
         the table data, using the least squares approach.
@@ -1835,6 +1845,8 @@ class CurveFitting(object):
         :type f0, f1, f2: function
         :returns: 'a', 'b', 'c' coefficients of best general equation fit.
         :rtype: tuple
+        :raises: ZeroDivisionError if input functions are null or input data
+        leads to a division by zero
         """
         m = 0
         p = 0
@@ -1860,7 +1872,17 @@ class CurveFitting(object):
             v += y*f1(x)
             w += y*f2(x)
 
+        if abs(r) < TOL and abs(t) < TOL and abs(m) >= TOL:
+            return (u/m, 0.0, 0.0)
+
+        if abs(m*r*t) < TOL:
+            raise ZeroDivisionError("Invalid input functions: They are null")
+
         d = m*r*t + 2.0*p*q*s - m*s*s - r*q*q - t*p*p
+
+        if abs(d) < TOL:
+            raise ZeroDivisionError("Input data leads to a division by zero")
+
         a = (u*(r*t - s*s) + v*(q*s - p*t) + w*(p*s - q*r))/d
         b = (u*(s*q - p*t) + v*(m*t - q*q) + w*(p*q - m*s))/d
         c = (u*(p*s - r*q) + v*(p*q - m*s) + w*(m*r - p*p))/d
@@ -2247,9 +2269,16 @@ def main():
 
     # Use 'general_fitting()' here
     a, b, c = cf4.general_fitting(sin1, sin2, sin3)
-    print("General fitting:")
+    print("General fitting with f0 = sin(x), f1 = sin(2*x), f2 = sin(3*x):")
     print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
                                              round(c, 2)))
+
+    cf5 = CurveFitting([0, 1.2, 1.4, 1.7, 2.1, 2.2])
+
+    a, b, c = cf5.general_fitting(sqrt)
+    print("General fitting with f0 = sqrt(x), f1 = 0.0 and f2 = 0.0:")
+    print("   a = {}\tb = {}\t\tc = {}".format(round(a, 3), round(b, 3),
+                                             round(c, 3)))
 
 
 if __name__ == '__main__':
