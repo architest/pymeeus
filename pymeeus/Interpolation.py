@@ -209,7 +209,7 @@ class Interpolation(object):
                 self._table = args[0]._table
                 self._tol = args[0]._tol
                 return
-            if isinstance(args[0], (int, float, Angle)):
+            elif isinstance(args[0], (int, float, Angle)):
                 # Insuficient data to interpolate. Raise ValueError exception
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)):
