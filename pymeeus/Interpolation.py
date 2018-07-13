@@ -149,7 +149,7 @@ class Interpolation(object):
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples,
         lists, or Angles. It is also possible to provide an Interpolation
-        object to the constructor in order to get a copy.
+        object to this method in order to get a copy.
 
         :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
