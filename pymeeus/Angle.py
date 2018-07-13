@@ -41,7 +41,8 @@ class Angle(object):
 
     The constructor takes decimals and sexagesimal input. The sexagesimal
     angles can be given as separate degree, minutes, seconds values, or as
-    tuples or lists.
+    tuples or lists. It is also possible to provide another Angle object as
+    input.
 
     Also, if 'radians=True' is passed to the constructor, then the input value
     is considered as in radians, and converted to degrees.
@@ -52,7 +53,7 @@ class Angle(object):
 
         It takes decimals and sexagesimal input. The sexagesimal angles can be
         given as separate degree, minutes, seconds values, or as tuples or
-        lists.
+        lists. It is also possible to provide another Angle object as input.
 
         If 'radians=True' is passed, then the input value is converted from
         radians to degrees.
@@ -60,8 +61,9 @@ class Angle(object):
         If 'ra=True' is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format.
-        :type \*args: int, float, list, tuple
+        :param \*args: Input angle, in decimal or sexagesimal format, or
+        another Angle object.
+        :type \*args: int, float, list, tuple, Angle
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
@@ -247,7 +249,7 @@ class Angle(object):
 
         It takes decimals and sexagesimal input. The sexagesimal angles can be
         given as separate degree, minutes, seconds values, or as tuples or
-        lists.
+        lists. It is also possible to provide another Angle object as input.
 
         If 'radians=True' is passed, then the input value is converted from
         radians to degrees
@@ -255,8 +257,9 @@ class Angle(object):
         If 'ra=True' is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format.
-        :type \*args: int, float, list, tuple
+        :param \*args: Input angle, in decimal or sexagesimal format, or
+        another Angle object.
+        :type \*args: int, float, list, tuple, Angle
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
