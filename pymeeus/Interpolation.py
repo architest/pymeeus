@@ -49,7 +49,8 @@ class Interpolation(object):
 
     The constructor takes pairs of (x, y) values from the table of interest.
     These pairs of values can be given as a sequence of int/floats, tuples,
-    lists or Angles.
+    lists or Angles. It is also possible to provide an Interpolation object to
+    the constructor in order to get a copy.
 
     :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -69,7 +70,8 @@ class Interpolation(object):
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples, lists
-        or Angles.
+        or Angles. It is also possible to provide an Interpolation object to
+        the constructor in order to get a copy.
 
         :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -83,8 +85,8 @@ class Interpolation(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values.
-        :type \*args: int, float, list, tuple, Angle
+        :param \*args: Input tabular values, or another Interpolation object.
+        :type \*args: int, float, list, tuple, Angle, Interpolation
 
         :returns: Interpolation object.
         :rtype: Interpolation
@@ -146,7 +148,8 @@ class Interpolation(object):
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples,
-        lists, or Angles.
+        lists, or Angles. It is also possible to provide an Interpolation
+        object to the constructor in order to get a copy.
 
         :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -160,8 +163,8 @@ class Interpolation(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values.
-        :type \*args: int, float, list, tuple, Angle
+        :param \*args: Input tabular values, or another Interpolation object.
+        :type \*args: int, float, list, tuple, Angle, Interpolation
 
         :returns: None.
         :rtype: None
@@ -185,6 +188,11 @@ class Interpolation(object):
         [1, 2, 3]
         >>> print(k._y)
         [12, 5, -8]
+        >>> m = Interpolation(k)
+        >>> print(m._x)
+        [1, 2, 3]
+        >>> print(m._y)
+        [12, 5, -8]
         """
         # Clean up the internal data tables
         self._x = []
@@ -195,6 +203,12 @@ class Interpolation(object):
             return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
+            if isinstance(args[0], Interpolation):          # Copy constructor
+                self._x = args[0]._x
+                self._y = args[0]._y
+                self._table = args[0]._table
+                self._tol = args[0]._tol
+                return
             if isinstance(args[0], (int, float, Angle)):
                 # Insuficient data to interpolate. Raise ValueError exception
                 raise ValueError("Invalid number of input values")
@@ -578,6 +592,13 @@ def main():
     print("NOTE:")
     print("   a. They are ordered in 'x'")
     print("   b. The extra value in 'x' was dropped")
+    print("")
+
+    # Use the copy constructor
+    print("We can easily make a copy of an Interpolation object")
+    j = Interpolation(i)
+    print("j = Interpolation(i)")
+    print(j)
     print("")
 
     j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])
