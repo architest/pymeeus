@@ -76,6 +76,9 @@ class Angle(object):
         >>> a = Angle(-13, 30, 0.0)
         >>> print(a)
         -13.5
+        >>> b = Angle(a)
+        >>> print(b)
+        -13.5
         """
         self._deg = 0.0         # Angle value is stored here in decimal format
         self._tol = TOL
@@ -278,10 +281,15 @@ class Angle(object):
         if len(args) == 0:
             self._deg = 0.0
             return
-        # If we have only one argument, it can be a single value or tuple/list
+        # If we have only one argument, it can be a single value, a tuple/list
+        # or an Angle
         elif len(args) == 1:
             deg = args[0]
-            if isinstance(deg, (int, float, Angle)):
+            if isinstance(deg, Angle):                  # Copy constructor
+                self._deg = deg._deg
+                self._tol = deg._tol
+                return
+            if isinstance(deg, (int, float)):
                 if 'radians' in kwargs:
                     if kwargs['radians']:
                         # Input value is in radians. Convert to degrees
@@ -1016,6 +1024,12 @@ def main():
 
     # Second we print using the __str__ method (no extra parentheses needed)
     print_me("The angle 'a' is", a)                 # -23.44694444
+
+    print("")
+
+    # Use the copy constructor
+    b = Angle(a)
+    print_me("Angle 'b', which is a copy of 'a', is", b)
 
     print("")
 
