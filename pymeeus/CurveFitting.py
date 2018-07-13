@@ -39,7 +39,8 @@ class CurveFitting(object):
 
     The constructor takes pairs of (x, y) values from the table of interest.
     These pairs of values can be given as a sequence of int/floats, tuples,
-    lists or Angles.
+    lists or Angles. It is also possible to provide a CurveFitting object to
+    the constructor in order to get a copy.
 
     :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -59,7 +60,8 @@ class CurveFitting(object):
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples, lists
-        or Angles.
+        or Angles. It is also possible to provide a CurveFitting object to the
+        constructor in order to get a copy.
 
         :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -73,11 +75,11 @@ class CurveFitting(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values.
-        :type \*args: int, float, list, tuple, Angle
+        :param \*args: Input tabular values, or another CurveFitting object.
+        :type \*args: int, float, list, tuple, Angle, CurveFitting
 
-        :returns: Interpolation object.
-        :rtype: Interpolation
+        :returns: CurveFitting object.
+        :rtype: CurveFitting
         :raises: ValueError if not enough input data pairs are provided.
         :raises: TypeError if input values are of wrong type.
 
@@ -96,6 +98,11 @@ class CurveFitting(object):
         [3, 1, 2]
         >>> print(k._y)
         [-8, 12, 5]
+        >>> m = CurveFitting(k)
+        >>> print(m._x)
+        [3, 1, 2]
+        >>> print(m._y)
+        [-8, 12, 5]
         """
         # Initialize data table
         self._x = []
@@ -107,7 +114,8 @@ class CurveFitting(object):
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples,
-        lists, or Angles.
+        lists, or Angles. It is also possible to provide a CurveFitting object
+        to this method in order to get a copy.
 
         :note: When using Angles, be careful with the 360-to-0 discontinuity.
 
@@ -121,7 +129,7 @@ class CurveFitting(object):
         order to carry out any interpolation. If only one value is provided, a
         ValueError exception will be raised.
 
-        :param \*args: Input tabular values.
+        :param \*args: Input tabular values, or another CurveFitting object.
         :type \*args: int, float, list, tuple, Angle
 
         :returns: None.
@@ -155,7 +163,10 @@ class CurveFitting(object):
             return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
-            if isinstance(args[0], (int, float, Angle)):
+            if isinstance(args[0], CurveFitting):
+                self._x = args[0]._x
+                self._y = args[0]._y
+            elif isinstance(args[0], (int, float, Angle)):
                 # Insuficient data for curve fitting. Raise ValueError
                 raise ValueError("Invalid number of input values")
             elif isinstance(args[0], (list, tuple)):
@@ -435,6 +446,7 @@ def main():
     print("*** Use of CurveFitting class")
     print(35*'*' + '\n')
 
+    # Create a CurveFitting object
     cf1 = CurveFitting([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0, 52.0,
                         54.0, 39.0, 61.0, 42.0, 49.0, 50.0, 62.0, 44.0, 39.0,
                         43.0, 54.0, 44.0, 37.0],
@@ -444,8 +456,20 @@ def main():
 
     # Let's use 'linear_fitting()'
     a, b = cf1.linear_fitting()
-    print("Linear fitting:")
+    print("Linear fitting for cf1:")
     print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+
+    print("")
+
+    # Use the copy constructor
+    print("Let's make a copy:")
+    cf2 = CurveFitting(cf1)
+    print("   cf2 = CurveFitting(cf1)")
+    a, b = cf2.linear_fitting()
+    print("Linear fitting for cf2:")
+    print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+
+    print("")
 
     # Compute the correlation coefficient
     r = cf1.correlation_coeff()
@@ -457,12 +481,16 @@ def main():
                        [-9.372, -3.821, 0.291, 3.730, 5.822, 8.324, 9.083,
                         6.957, 7.006, 0.365, -1.722])
 
+    print("")
+
     # Now use 'quadratic_fitting()'
     a, b, c = cf2.quadratic_fitting()
     # Original curve: y = -2.0*x*x + 3.5*x + 7.0 + noise
     print("Quadratic fitting:")
     print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
                                              round(c, 2)))
+
+    print("")
 
     cf4 = CurveFitting([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183, 200,
                         218, 230, 248, 269, 290, 303, 320, 344],
@@ -483,6 +511,8 @@ def main():
     print("General fitting with f0 = sin(x), f1 = sin(2*x), f2 = sin(3*x):")
     print("   a = {}\tb = {}\tc = {}".format(round(a, 2), round(b, 2),
                                              round(c, 2)))
+
+    print("")
 
     cf5 = CurveFitting([0, 1.2, 1.4, 1.7, 2.1, 2.2])
 
