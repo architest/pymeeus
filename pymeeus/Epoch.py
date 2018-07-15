@@ -199,7 +199,7 @@ class Epoch(object):
         >>> e.set(1900, 'Jan', 1, leap_seconds=0.0)
         >>> print(e)
         2415020.5
-        >>> e.set(-1001, 'August', 17.9, leap_seconds=0.0)
+        >>> e.set(-1001, 'august', 17.9, leap_seconds=0.0)
         >>> print(e)
         1355671.4
         >>> e.set(-4712, 1, 1.5, leap_seconds=0.0)
@@ -385,12 +385,17 @@ class Epoch(object):
 
         :returns: Whether the provided date belongs to Julian calendar or not.
         :rtype: bool
+
+        >>> Epoch.is_julian(1997, 5, 27.1)
+        False
+        >>> Epoch.is_julian(1397, 7, 7.0)
+        True
         """
         if year < 1582:
             return True
         elif year == 1582 and month < 10:
             return True
-        elif year == 1582 and month == 10 and day <= 4:
+        elif year == 1582 and month == 10 and day < 5.0:
             return True
         else:
             return False
