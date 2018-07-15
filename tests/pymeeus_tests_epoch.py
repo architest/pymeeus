@@ -1,0 +1,262 @@
+# -*- coding: utf-8 -*-
+
+
+# PyMeeus: Python module implementing astronomical algorithms.
+# Copyright (C) 2018  Dagoberto Salazar
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+from pymeeus.base import TOL
+from pymeeus.Epoch import Epoch
+
+
+# Epoch class
+
+def test_epoch_constructor():
+    """Tests the constructor of Epoch class"""
+
+    a = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+    assert abs(a._jde - 2446966.0) < TOL, \
+        "ERROR: 1st constructor test, JDE value doesn't match"
+
+    a = Epoch(1988, 6, 19.5, leap_seconds=0.0)
+    assert abs(a._jde - 2447332.0) < TOL, \
+        "ERROR: 2nd constructor test, JDE value doesn't match"
+
+    a = Epoch(1600, 'jan', 1.0, leap_seconds=0.0)
+    assert abs(a._jde - 2305447.5) < TOL, \
+        "ERROR: 3rd constructor test, JDE value doesn't match"
+
+    a = Epoch(-123, 'DECEMBER', 31.0, leap_seconds=0.0)
+    assert abs(a._jde - 1676496.5) < TOL, \
+        "ERROR: 4th constructor test, JDE value doesn't match"
+
+    a = Epoch(-4712, 1, 1.5, leap_seconds=0.0)
+    assert abs(a._jde - 0.0) < TOL, \
+        "ERROR: 5th constructor test, JDE value doesn't match"
+
+
+def test_epoch_is_julian():
+    """Tests the is_julian() static method of Epoch class"""
+
+    assert Epoch.is_julian(1582, 10, 4.99), \
+        "ERROR: 1st is_julian() test, output doesn't match"
+
+    assert not Epoch.is_julian(1582, 10, 5.0), \
+        "ERROR: 2nd is_julian() test, output doesn't match"
+
+    assert not Epoch.is_julian(2018, 11, 6.0), \
+        "ERROR: 3rd is_julian() test, output doesn't match"
+
+    assert Epoch.is_julian(-2000, 3, 16.0), \
+        "ERROR: 4th is_julian() test, output doesn't match"
+
+
+def test_epoch_get_month():
+    """Test the get_month() static method of Epoch class"""
+
+    assert Epoch.get_month(10) == 10, \
+        "ERROR: 1st get_month() test, output doesn't match"
+
+    assert Epoch.get_month('Feb') == 2, \
+        "ERROR: 2nd get_month() test, output doesn't match"
+
+    assert Epoch.get_month('MAR') == 3, \
+        "ERROR: 3rd get_month() test, output doesn't match"
+
+    assert Epoch.get_month('January') == 1, \
+        "ERROR: 4th get_month() test, output doesn't match"
+
+    assert Epoch.get_month('DECEMBER') == 12, \
+        "ERROR: 5th get_month() test, output doesn't match"
+
+    assert Epoch.get_month('september') == 9, \
+        "ERROR: 6th get_month() test, output doesn't match"
+
+    assert Epoch.get_month('may') == 5, \
+        "ERROR: 7th get_month() test, output doesn't match"
+
+
+def test_epoch_is_leap():
+    """Tests the is_leap() static method of Epoch class"""
+
+    assert not Epoch.is_leap(1582), \
+        "ERROR: 1st is_leap() test, output doesn't match"
+
+    assert Epoch.is_leap(1580), \
+        "ERROR: 2nd is_leap() test, output doesn't match"
+
+    assert not Epoch.is_leap(2018), \
+        "ERROR: 3rd is_leap() test, output doesn't match"
+
+    assert Epoch.is_leap(2000), \
+        "ERROR: 4th is_leap() test, output doesn't match"
+
+    assert Epoch.is_leap(-2000), \
+        "ERROR: 5th is_leap() test, output doesn't match"
+
+
+def test_epoch_getDOY():
+    """Tests the getDOY() static method of Epoch class"""
+
+    assert Epoch.getDOY(1978, 11, 14) == 318, \
+        "ERROR: 1st getDOY() test, output doesn't match"
+
+    assert Epoch.getDOY(2012, 3, 3.1) == 63.1, \
+        "ERROR: 2nd getDOY() test, output doesn't match"
+
+    assert Epoch.getDOY(-400, 2, 29.9) == 60.9, \
+        "ERROR: 3rd getDOY() test, output doesn't match"
+
+
+def test_epoch_doy2date():
+    """Tests the doy2date() static method of Epoch class"""
+
+    assert Epoch.doy2date(2017, 32) == (2017, 2, 1), \
+        "ERROR: 1st doy2date() test, output doesn't match"
+
+    assert Epoch.doy2date(-3, 60) == (-3, 3, 1.0), \
+        "ERROR: 2nd doy2date() test, output doesn't match"
+
+    assert Epoch.doy2date(-4, 60) == (-4, 2, 29.0), \
+        "ERROR: 3rd doy2date() test, output doesn't match"
+
+    t = Epoch.doy2date(2017, 365.7)
+    assert t[0] == 2017 and t[1] == 12 and abs(t[2] - 31.7) < TOL, \
+        "ERROR: 4th doy2date() test, output doesn't match"
+
+    t = Epoch.doy2date(2012, 63.1)
+    assert t[0] == 2012 and t[1] == 3 and abs(t[2] - 3.1) < TOL, \
+        "ERROR: 5th doy2date() test, output doesn't match"
+
+    t = Epoch.doy2date(-4, 60)
+    assert t[0] == -4 and t[1] == 2 and abs(t[2] - 29) < TOL, \
+        "ERROR: 6th doy2date() test, output doesn't match"
+
+
+def test_epoch_leap_seconds():
+    """Tests the leap_seconds() static method of Epoch class"""
+
+    assert Epoch.leap_seconds(1983, 6) == 11, \
+        "ERROR: 1st leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(1983, 7) == 12, \
+        "ERROR: 2nd leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(2016, 11) == 26, \
+        "ERROR: 3rd leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(2017, 1) == 27, \
+        "ERROR: 4th leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(1972, 6) == 0, \
+        "ERROR: 5th leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(1972, 7) == 1, \
+        "ERROR: 6th leap_seconds() test, output doesn't match"
+
+    assert Epoch.leap_seconds(2018, 7) == 27, \
+        "ERROR: 7th leap_seconds() test, output doesn't match"
+
+
+def test_epoch_get_date():
+    """Tests the get_date() method of Epoch class"""
+
+    e = Epoch(2436116.31)
+    t = e.get_date(leap_seconds=0.0)
+    assert t[0] == 1957 and t[1] == 10 and abs(t[2] - 4.81) < TOL, \
+        "ERROR: 1st get_date() test, output doesn't match"
+
+    e = Epoch(1842713.0)
+    t = e.get_date(leap_seconds=0.0)
+    assert t[0] == 333 and t[1] == 1 and abs(t[2] - 27.5) < TOL, \
+        "ERROR: 2nd get_date() test, output doesn't match"
+
+    e = Epoch(1507900.13)
+    t = e.get_date(leap_seconds=0.0)
+    assert t[0] == -584 and t[1] == 5 and abs(round(t[2], 2) - 28.63) < TOL, \
+        "ERROR: 3rd get_date() test, output doesn't match"
+
+
+def test_epoch_dow():
+    """Tests the dow() method of Epoch class"""
+
+    e = Epoch(1954, 'June', 30)
+    assert e.dow() == 3, "ERROR: 1st dow() test, output doesn't match"
+
+    e = Epoch(2018, 'Feb', 14.9)
+    assert e.dow(as_string=True) == 'Wednesday', \
+        "ERROR: 2nd dow() test, output doesn't match"
+
+    e = Epoch(2018, 'Feb', 15)
+    assert e.dow(as_string=True) == 'Thursday', \
+        "ERROR: 3rd dow() test, output doesn't match"
+
+    e = Epoch(2018, 'Jul', 15.9)
+    assert e.dow(as_string=True) == 'Sunday', \
+        "ERROR: 4th dow() test, output doesn't match"
+
+
+def test_epoch_mjd():
+    """Tests the mjd() method of Epoch class"""
+
+    e = Epoch(1858, 'NOVEMBER', 17, leap_seconds=0.0)
+    assert e.mjd() == 0.0, "ERROR: 1st mjd() test, output doesn't match"
+
+
+def test_epoch_jde():
+    """Tests the jde() method of Epoch class"""
+
+    e = Epoch(-1000, 2, 29.0, leap_seconds=0.0)
+    assert e.jde() == 1355866.5, "ERROR: 1st jde() test, output doesn't match"
+
+
+def test_epoch_call():
+    """Tests the __call__() method of Epoch class"""
+
+    e = Epoch(-122, 1, 1.0, leap_seconds=0.0)
+    assert e() == 1676497.5, "ERROR: 1st __call__() test, output doesn't match"
+
+
+def test_epoch_add():
+    """Tests the addition between Epochs"""
+
+    a = Epoch(1991, 7, 11)
+    b = a + 10000
+    y, m, d = b.get_date()
+    assert y == 2018 and m == 11 and abs(round(d, 2) - 26.0) < TOL, \
+        "ERROR: 1st __call__() test, output doesn't match"
+
+# def test_angle_sub():
+#     """Tests the subtraction between Angles"""
+# def test_angle_iadd():
+#     """Tests the accumulative addition between Angles"""
+# def test_angle_isub():
+#     """Tests the accumulative subtraction between Angles"""
+# def test_angle_ne():
+#     """Tests the 'is not equal' operator of Angles"""
+#     # NOTE: Test 'is not equal' also tests 'is equal' operator
+# def test_angle_ge():
+#     """Tests the 'is greater or equal' operator of Angles"""
+#     # NOTE: Test of 'is greater or equal' also test 'is less than' operator
+# def test_angle_le():
+#     """Tests the 'is less or equal' operator of Angles"""
+#     # NOTE: Test of 'is less or equal' also test 'is greater than' operator
+# def test_angle_radd():
+#     """Tests the addition between Angles by the right"""
+# def test_angle_float():
+#     """Tests the 'float()' operation on Angles"""
+# def test_angle_int():
+#     """Tests the 'int()' operation on Angles"""
