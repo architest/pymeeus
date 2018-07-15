@@ -491,13 +491,13 @@ class Epoch(object):
         :type DD: int, float
 
         :returns: Day Of Year (DOY).
-        :rtype: int, float
+        :rtype: float
         :raises: ValueError if input values correspond to a wrong date.
 
         >>> Epoch.getDOY(1999, 1, 29)
-        29
+        29.0
         >>> Epoch.getDOY(1978, 11, 14)
-        318
+        318.0
         >>> Epoch.getDOY(2017, 12, 31.7)
         365.7
         >>> Epoch.getDOY(2012, 3, 3.1)
@@ -510,12 +510,16 @@ class Epoch(object):
             raise ValueError("Invalid input data")
         day = int(DD)
         frac = DD % 1
-        try:
-            d = datetime.date(YYYY, MM, day)
-        except ValueError:
-            raise ValueError("Invalid input date")
-        doy = d.timetuple().tm_yday
-        return doy + frac
+        if YYYY >= 1:                           # datetime's minimum year is 1
+            try:
+                d = datetime.date(YYYY, MM, day)
+            except ValueError:
+                raise ValueError("Invalid input date")
+            doy = d.timetuple().tm_yday
+        else:
+            k = 2 if Epoch.is_leap(YYYY) else 1
+            doy = floor((275.0*MM)/9.0) - k*floor((MM + 9.0)/12.0) + day - 30.0
+        return float(doy + frac)
 
     @staticmethod
     def doy2date(year, doy):
@@ -540,16 +544,49 @@ class Epoch(object):
         >>> t = Epoch.doy2date(2012, 63.1)
         >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
         2012/3/3.1
-        >>> t = Epoch.doy2date(-1000, 60)
+        >>> t = Epoch.doy2date(-1004, 60)
         >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
-        -1000/2/29
+        -1004/2/29.0
+        >>> t = Epoch.doy2date(0, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        0/2/29.0
+        >>> t = Epoch.doy2date(1, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        1/3/1.0
+        >>> t = Epoch.doy2date(-1, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        -1/3/1.0
+        >>> t = Epoch.doy2date(-2, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        -2/3/1.0
+        >>> t = Epoch.doy2date(-3, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        -3/3/1.0
+        >>> t = Epoch.doy2date(-4, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        -4/2/29.0
+        >>> t = Epoch.doy2date(-5, 60)
+        >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
+        -5/3/1.0
         """
         if isinstance(year, (int, float)) and isinstance(doy, (int, float)):
             frac = float(doy % 1)
             doy = int(doy)
-            ref = datetime.date(year, 1, 1)
-            mydate = datetime.date.fromordinal(ref.toordinal() + doy - 1)
-            return year, mydate.month, mydate.day + frac
+            if year >= 1:                   # datetime's minimum year is 1
+                ref = datetime.date(year, 1, 1)
+                mydate = datetime.date.fromordinal(ref.toordinal() + doy - 1)
+                return year, mydate.month, mydate.day + frac
+            else:
+                # The algorithm provided by Meeus doesn't work for years below
+                # +1. This little hack solves that problem (the 'if' result is
+                # inverted here).
+                k = 1 if Epoch.is_leap(year) else 2
+                if doy < 32:
+                    m = 1
+                else:
+                    m = floor((9.0*(k + doy))/275.0 + 0.98)
+                d = doy - floor((275.0*m)/9.0) + k*floor((m + 9.0)/12.0) + 30
+                return year, int(m), d + frac
         else:
             raise ValueError("Invalid input values")
 
@@ -731,12 +768,24 @@ class Epoch(object):
         >>> e = Epoch(1954, 'June', 30)
         >>> e.dow()
         3
-        >>> e.set(2018, 'Jul', 15.78)
+        >>> e = Epoch(2018, 'Feb', 14.9)
         >>> e.dow(as_string=True)
-        Sunday
+        'Wednesday'
+        >>> e = Epoch(2018, 'Feb', 15)
+        >>> e.dow(as_string=True)
+        'Thursday'
+        >>> e = Epoch(2018, 'Feb', 15.99)
+        >>> e.dow(as_string=True)
+        'Thursday'
+        >>> e.set(2018, 'Jul', 15.4)
+        >>> e.dow(as_string=True)
+        'Sunday'
+        >>> e.set(2018, 'Jul', 15.9)
+        >>> e.dow(as_string=True)
+        'Sunday'
         """
-        jd = floor(self._jde) + 2.0
-        doy = jd % 7
+        jd = floor(self._jde - 0.5) + 2.0
+        doy = int(jd % 7)
         if not as_string:
             return doy
         else:
