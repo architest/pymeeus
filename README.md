@@ -45,6 +45,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.0.7
+    * Epoch class added
 * 0.0.6
     * CurveFitting class added
 * 0.0.5
