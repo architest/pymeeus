@@ -1121,6 +1121,115 @@ def main():
     f = Epoch(d, leap_seconds=0.0)
     print_me("JDE for 837/4/10.3", f)
 
+    print("")
+
+    # Check if a given date belong to the Julian or Gregorian calendar
+    print_me("Is 1590/4/21.4 a Julian date?", Epoch.is_julian(1590, 4, 21.4))
+
+    print("")
+
+    # We can also check if a given year is leap or not
+    print_me("Is -1000 a leap year?", Epoch.is_leap(-1000))
+    print_me("Is 1800 a leap year?", Epoch.is_leap(1800))
+    print_me("Is 2012 a leap year?", Epoch.is_leap(2012))
+
+    print("")
+
+    # Get the Day Of Year corresponding to a given date
+    print_me("Day Of Year (DOY) of 1978/11/14", Epoch.getDOY(1978, 11, 14))
+    print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.getDOY(-400, 2, 29.9))
+
+    print("")
+
+    # Now the opposite: Get a date from a DOY
+    t = Epoch.doy2date(2017, 365.7)
+    s = str(t[0]) + "/" + str(t[1]) + "/" + str(round(t[2], 2))
+    print_me("Date from DOY 2017:365.7", s)
+
+    t = Epoch.doy2date(-4, 60)
+    s = str(t[0]) + "/" + str(t[1]) + "/" + str(round(t[2], 2))
+    print_me("Date from DOY -4:60", s)
+
+    print("")
+
+    # There is an internal table which we can use to get the leap seconds
+    print_me("Number of leap seconds applied up to July 1983",
+             Epoch.leap_seconds(1983, 7))
+
+    print("")
+
+    # We can convert the internal JDE value back to a date
+    e = Epoch(2436116.31)
+    y, m, d = e.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("Date from JDE 2436116.31", s)
+
+    print("")
+
+    # It is possible to get the day of the week corresponding to a given date
+    e = Epoch(2018, 'Feb', 15)
+    print_me("The day of week of 2018/2/15 is", e.dow(as_string=True))
+
+    print("")
+
+    # In some cases it is useful to get the Modified Julian Day (MJD)
+    e = Epoch(1923, 'August', 23)
+    print_me("Modified Julian Day for 1923/8/23", round(e.mjd(), 2))
+
+    print("")
+
+    # It is possible to carry out some algebraic operations with Epochs
+
+    # Add 10000 days to a given date
+    a = Epoch(1991, 7, 11)
+    b = a + 10000
+    y, m, d = b.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("1991/7/11 plus 10000 days is", s)
+
+    # Subtract two Epochs to find the number of days between them
+    a = Epoch(1986, 2, 9.0)
+    b = Epoch(1910, 4, 20.0)
+    print_me("The number of days between 1986/2/9 and 1910/4/20 is",
+             round(a - b, 2))
+
+    # We can also subtract a given amount of days from an Epoch
+    a = Epoch(2003, 12, 31.0)
+    b = a - 365.5
+    y, m, d = b.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("2003/12/31 minus 365.5 days is", s)
+
+    # Accumulative addition and subtraction of days is also allowed
+    a = Epoch(2003, 12, 31.0)
+    a += 32.5
+    y, m, d = a.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("2003/12/31 plus 32.5 days is", s)
+
+    a = Epoch(2001, 12, 31.0)
+    a -= 2*365
+    y, m, d = a.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("2001/12/31 minus 2*365 days is", s)
+
+    # It is also possible to add days from the right
+    a = Epoch(2004, 2, 27.8)
+    b = 2.2 + a
+    y, m, d = b.get_date()
+    s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
+    print_me("2004/2/27.8 plus 2.2 days is", s)
+
+    print("")
+
+    # Comparison operadors between epochs are also defined
+    a = Epoch(2007, 5, 20.0)
+    b = Epoch(2007, 5, 20.000001)
+    print_me("2007/5/20.0 == 2007/5/20.000001", a == b)
+    print_me("2007/5/20.0 != 2007/5/20.000001", a != b)
+    print_me("2007/5/20.0 > 2007/5/20.000001", a > b)
+    print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
+
 
 if __name__ == '__main__':
 
