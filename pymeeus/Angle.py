@@ -566,6 +566,7 @@ class Angle(object):
 
         :returns: A boolean.
         :rtype: bool
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(172.01)
         >>> b = Angle(172.009)
@@ -598,6 +599,7 @@ class Angle(object):
 
         :returns: A boolean.
         :rtype: bool
+        :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(72.0)
         >>> b = Angle(72.0)
