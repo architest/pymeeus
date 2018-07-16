@@ -237,26 +237,105 @@ def test_epoch_add():
     b = a + 10000
     y, m, d = b.get_date()
     assert y == 2018 and m == 11 and abs(round(d, 2) - 26.0) < TOL, \
-        "ERROR: 1st __call__() test, output doesn't match"
+        "ERROR: 1st __add__() test, output doesn't match"
 
-# def test_angle_sub():
-#     """Tests the subtraction between Angles"""
-# def test_angle_iadd():
-#     """Tests the accumulative addition between Angles"""
-# def test_angle_isub():
-#     """Tests the accumulative subtraction between Angles"""
-# def test_angle_ne():
-#     """Tests the 'is not equal' operator of Angles"""
-#     # NOTE: Test 'is not equal' also tests 'is equal' operator
-# def test_angle_ge():
-#     """Tests the 'is greater or equal' operator of Angles"""
-#     # NOTE: Test of 'is greater or equal' also test 'is less than' operator
-# def test_angle_le():
-#     """Tests the 'is less or equal' operator of Angles"""
-#     # NOTE: Test of 'is less or equal' also test 'is greater than' operator
-# def test_angle_radd():
-#     """Tests the addition between Angles by the right"""
-# def test_angle_float():
-#     """Tests the 'float()' operation on Angles"""
-# def test_angle_int():
-#     """Tests the 'int()' operation on Angles"""
+
+def test_epoch_sub():
+    """Tests the subtraction between Epochs"""
+
+    a = Epoch(1986, 2, 9.0)
+    b = Epoch(1910, 4, 20.0)
+    c = a - b
+    assert abs(round(c, 1) - 27689.0) < TOL, \
+        "ERROR: 1st __sub__() test, output doesn't match"
+
+    a = Epoch(2003, 12, 31.0)
+    b = a - 365.5
+    y, m, d = b.get_date()
+    assert y == 2002 and m == 12 and abs(round(d, 1) - 30.5) < TOL, \
+        "ERROR: 2nd __sub__() test, output doesn't match"
+
+
+def test_epoch_iadd():
+    """Tests the accumulative addition in Epochs"""
+
+    a = Epoch(2003, 12, 31.0)
+    a += 32.5
+    y, m, d = a.get_date()
+    assert y == 2004 and m == 2 and abs(round(d, 1) - 1.5) < TOL, \
+        "ERROR: 1st __iadd__() test, output doesn't match"
+
+
+def test_epoch_isub():
+    """Tests the accumulative subtraction in Epochs"""
+
+    a = Epoch(2001, 12, 31.0)
+    a -= 2*365
+    y, m, d = a.get_date()
+    assert y == 2000 and m == 1 and abs(round(d, 1) - 1.0) < TOL, \
+        "ERROR: 1st __isub__() test, output doesn't match"
+
+
+def test_epoch_radd():
+    """Tests the addition with Epochs by the right"""
+
+    a = Epoch(2004, 2, 27.8)
+    b = 2.2 + a
+    y, m, d = b.get_date()
+    assert y == 2004 and m == 3 and abs(round(d, 1) - 1.0) < TOL, \
+        "ERROR: 1st __radd__() test, output doesn't match"
+
+
+def test_epoch_int():
+    """Tests the 'int()' operation on Epochs"""
+
+    a = Epoch(2434923.85)
+    assert abs(int(a) - 2434923) < TOL, \
+        "ERROR: 1st __int__() test, output doesn't match"
+
+
+def test_epoch_float():
+    """Tests the 'float()' operation on Epochs"""
+
+    a = Epoch(2434923.85)
+    assert abs(float(a) - 2434923.85) < TOL, \
+        "ERROR: 1st __float__() test, output doesn't match"
+
+
+def test_epoch_ne():
+    """Tests the 'is not equal' operator of Epochs"""
+    # NOTE: Test 'is not equal' also tests 'is equal' operator
+
+    a = Epoch(2007, 5, 20.0)
+    b = Epoch(2007, 5, 20.000001)
+    assert a != b, "ERROR: 1st __ne__() test, output doesn't match"
+
+    a = Epoch(2004, 10, 15.7)
+    b = Epoch(a)
+    assert not a != b, "ERROR: 2nd __ne__() test, output doesn't match"
+
+    a = Epoch(2434923.85)
+    assert not a != 2434923.85, \
+        "ERROR: 3rd __ne__() test, output doesn't match"
+
+
+def test_epoch_ge():
+    """Tests the 'is greater or equal' operator of Epochs"""
+    # NOTE: Test of 'is greater or equal' also tests 'is less than' operator
+
+    a = Epoch(2004, 10, 15.71)
+    b = Epoch(2004, 10, 15.7)
+    assert a >= b, "ERROR: 1st __ge__() test, output doesn't match"
+
+
+def test_epoch_le():
+    """Tests the 'is less or equal' operator of Epochs"""
+    # NOTE: Test of 'is less or equal' also tests 'is greater than' operator
+
+    a = Epoch(2004, 10, 15.71)
+    b = Epoch(2004, 10, 15.7)
+    assert not a <= b, "ERROR: 1st __le__() test, output doesn't match"
+
+    a = Epoch(-207, 11, 5.2)
+    b = Epoch(-207, 11, 5.2)
+    assert a <= b, "ERROR: 2nd __le__() test, output doesn't match"
