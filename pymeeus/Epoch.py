@@ -21,7 +21,7 @@
 import calendar
 import datetime
 from math import floor
-# from base import TOL
+from base import TOL
 
 
 """
@@ -934,8 +934,8 @@ class Epoch(object):
         :param b: Value to be added, in days.
         :type b: int, float
 
-        :returns: A new Angle object.
-        :rtype: Angle
+        :returns: A new Epoch object.
+        :rtype: Epoch
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(2004, 2, 27.8)
@@ -960,6 +960,142 @@ class Epoch(object):
         2434923
         """
         return int(self._jde)
+
+    def __float__(self):
+        """This method returns the internal JDE value as a float.
+
+        :returns: Internal JDE value as a float.
+        :rtype: float
+
+        >>> a = Epoch(2434923.85)
+        >>> float(a)
+        2434923.85
+        """
+        return float(self._jde)
+
+    def __eq__(self, b):
+        """This method defines the 'is equal' operator between Epochs.
+
+        :note: For the comparison, the base.TOL value is used.
+
+        :returns: A boolean.
+        :rtype: bool
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Epoch(2007, 5, 20.0)
+        >>> b = Epoch(2007, 5, 20.000001)
+        >>> a == b
+        False
+        >>> a = Epoch(2004, 10, 15.7)
+        >>> b = Epoch(a)
+        >>> a == b
+        True
+        >>> a = Epoch(2434923.85)
+        >>> a == 2434923.85
+        True
+        """
+        if isinstance(b, (int, float)):
+            return abs(self._jde - float(b)) < TOL
+        elif isinstance(b, Epoch):
+            return abs(self._jde - b._jde) < TOL
+        else:
+            raise TypeError("Wrong operand type")
+
+    def __ne__(self, b):
+        """This method defines the 'is not equal' operator between Epochs.
+
+        :note: For the comparison, the base.TOL value is used.
+
+        :returns: A boolean.
+        :rtype: bool
+
+        >>> a = Epoch(2007, 5, 20.0)
+        >>> b = Epoch(2007, 5, 20.000001)
+        >>> a != b
+        True
+        >>> a = Epoch(2004, 10, 15.7)
+        >>> b = Epoch(a)
+        >>> a != b
+        False
+        >>> a = Epoch(2434923.85)
+        >>> a != 2434923.85
+        False
+        """
+        return not self.__eq__(b)           # '!=' == 'not(==)'
+
+    def __lt__(self, b):
+        """This method defines the 'is less than' operator between Epochs.
+
+        :returns: A boolean.
+        :rtype: bool
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Epoch(2004, 10, 15.7)
+        >>> b = Epoch(2004, 10, 15.7)
+        >>> a < b
+        False
+        """
+        if isinstance(b, (int, float)):
+            return self._jde < float(b)
+        elif isinstance(b, Epoch):
+            return self._jde < b._jde
+        else:
+            raise TypeError("Wrong operand type")
+
+    def __ge__(self, b):
+        """This method defines 'is equal or greater' operator between Epochs.
+
+        :returns: A boolean.
+        :rtype: bool
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Epoch(2004, 10, 15.71)
+        >>> b = Epoch(2004, 10, 15.7)
+        >>> a >= b
+        True
+        """
+        return not self.__lt__(b)           # '>=' == 'not(<)'
+
+    def __gt__(self, b):
+        """This method defines the 'is greater than' operator between Epochs.
+
+        :returns: A boolean.
+        :rtype: bool
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Epoch(2004, 10, 15.71)
+        >>> b = Epoch(2004, 10, 15.7)
+        >>> a > b
+        True
+        >>> a = Epoch(-207, 11, 5.2)
+        >>> b = Epoch(-207, 11, 5.2)
+        >>> a > b
+        False
+        """
+        if isinstance(b, (int, float)):
+            return self._jde > float(b)
+        elif isinstance(b, Epoch):
+            return self._jde > b._jde
+        else:
+            raise TypeError("Wrong operand type")
+
+    def __le__(self, b):
+        """This method defines 'is equal or less' operator between Epochs.
+
+        :returns: A boolean.
+        :rtype: bool
+        :raises: TypeError if input values are of wrong type.
+
+        >>> a = Epoch(2004, 10, 15.71)
+        >>> b = Epoch(2004, 10, 15.7)
+        >>> a <= b
+        False
+        >>> a = Epoch(-207, 11, 5.2)
+        >>> b = Epoch(-207, 11, 5.2)
+        >>> a <= b
+        True
+        """
+        return not self.__gt__(b)           # '<=' == 'not(>)'
 
 
 def main():
