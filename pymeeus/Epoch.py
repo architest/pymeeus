@@ -401,14 +401,17 @@ class Epoch(object):
             return False
 
     @staticmethod
-    def get_month(month):
-        """Method to get the month as a integer in the [1, 12] range.
+    def get_month(month, as_string=False):
+        """Method to get the month as a integer in the [1, 12] range, or as a
+        full name.
 
         :param month: Month, in numeric, short name or long name format
         :type DD: int, float, str
+        :param as_string: Whether the output will be numeric, or a long name.
+        :type DD: bool
 
-        :returns: Month as integer in the [1, 12] range.
-        :rtype: int
+        :returns: Month as integer in the [1, 12] range, or as a long name.
+        :rtype: int, str
         :raises: ValueError if input month value is invalid.
 
         >>> Epoch.get_month(4.0)
@@ -421,6 +424,12 @@ class Epoch(object):
         8
         >>> Epoch.get_month('NOVEMBER')
         11
+        >>> Epoch.get_month(9.0, as_string=True)
+        'September'
+        >>> Epoch.get_month('Feb', as_string=True)
+        'February'
+        >>> Epoch.get_month('March', as_string=True)
+        'March'
         """
 
         months_mmm = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -431,21 +440,30 @@ class Epoch(object):
                        "December"]
 
         if isinstance(month, (int, float)):
-            month = floor(month)            # Truncate if it has decimals
+            month = int(month)            # Truncate if it has decimals
             if month >= 1 and month <= 12:
-                return int(month)
+                if not as_string:
+                    return month
+                else:
+                    return months_full[month - 1]
             else:
                 raise ValueError("Invalid value for the input month")
         elif isinstance(month, str):
             month = month.strip().capitalize()
             if len(month) == 3:
                 if month in months_mmm:
-                    return (months_mmm.index(month) + 1)
+                    if not as_string:
+                        return (months_mmm.index(month) + 1)
+                    else:
+                        return months_full[months_mmm.index(month)]
                 else:
                     raise ValueError("Invalid value for the input month")
             else:
                 if month in months_full:
-                    return (months_full.index(month) + 1)
+                    if not as_string:
+                        return (months_full.index(month) + 1)
+                    else:
+                        return month
                 else:
                     raise ValueError("Invalid value for the input month")
 
@@ -1234,6 +1252,17 @@ def main():
     # In some cases it is useful to get the Modified Julian Day (MJD)
     e = Epoch(1923, 'August', 23)
     print_me("Modified Julian Day for 1923/8/23", round(e.mjd(), 2))
+
+    print("")
+
+    # Epoch class can also provide the date of Easter for a given year
+    # Let's spice up the output a little bit, calling dow() and get_month()
+    month, day = Epoch.easter(2019)
+    e = Epoch(2019, month, day)
+    s = e.dow(as_string=True) + " " + str(day) + "st of " + \
+        Epoch.get_month(month, as_string=True)
+    print_me("Easter day for 2019", s)
+    # I know Easter is always on Sunday, by the way... ;-)
 
     print("")
 
