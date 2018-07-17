@@ -88,6 +88,9 @@ def test_epoch_get_month():
     assert Epoch.get_month('may') == 5, \
         "ERROR: 7th get_month() test, output doesn't match"
 
+    assert Epoch.get_month(6, as_string=True) == 'June', \
+        "ERROR: 8th get_month() test, output doesn't match"
+
 
 def test_epoch_is_leap():
     """Tests the is_leap() static method of Epoch class"""
