@@ -171,6 +171,34 @@ def test_epoch_leap_seconds():
         "ERROR: 7th leap_seconds() test, output doesn't match"
 
 
+def test_epoch_easter():
+    """Tests the easter() method of Epoch class"""
+
+    t = Epoch.easter(2000)
+    assert t[0] == 4 and t[1] == 23, \
+        "ERROR: 1st easter() test, output doesn't match"
+
+    t = Epoch.easter(1954)
+    assert t[0] == 4 and t[1] == 18, \
+        "ERROR: 2nd easter() test, output doesn't match"
+
+    t = Epoch.easter(179)
+    assert t[0] == 4 and t[1] == 12, \
+        "ERROR: 3rd easter() test, output doesn't match"
+
+    t = Epoch.easter(1243)
+    assert t[0] == 4 and t[1] == 12, \
+        "ERROR: 4th easter() test, output doesn't match"
+
+    t = Epoch.easter(1991)
+    assert t[0] == 3 and t[1] == 31, \
+        "ERROR: 5th easter() test, output doesn't match"
+
+    t = Epoch.easter(1993)
+    assert t[0] == 4 and t[1] == 11, \
+        "ERROR: 6th easter() test, output doesn't match"
+
+
 def test_epoch_get_date():
     """Tests the get_date() method of Epoch class"""
 
