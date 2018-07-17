@@ -249,7 +249,7 @@ class Epoch(object):
                 year, month, day, hours, minutes, sec = \
                     self._check_values(d.year, d.month, d.day)
             else:
-                raise TypeError("Invalid input value")
+                raise TypeError("Invalid input type")
         elif len(args) == 2:
             # Insuficient data to set the Epoch
             raise ValueError("Invalid number of input values")
@@ -655,6 +655,65 @@ class Epoch(object):
             month = 6
             day = 30.0
         return year, month, day, lseconds
+
+    @staticmethod
+    def easter(year):
+        """Method to return the Easter day for given year.
+
+        :note: This method is valid for both Gregorian and Julian years.
+
+        :param year: Year
+        :type year: int
+
+        :returns: Easter month and day, as a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> Epoch.easter(1991)
+        (3, 31)
+        >>> Epoch.easter(1818)
+        (3, 22)
+        >>> Epoch.easter(1943)
+        (4, 25)
+        >>> Epoch.easter(2000)
+        (4, 23)
+        >>> Epoch.easter(1954)
+        (4, 18)
+        >>> Epoch.easter(179)
+        (4, 12)
+        >>> Epoch.easter(1243)
+        (4, 12)
+        """
+        if not isinstance(year, (int, float)):
+            raise TypeError("Invalid input type")
+        year = int(year)
+        if year >= 1583:
+            # In this case, we are using the Gregorian calendar
+            a = year % 19
+            b = int(year/100.0)
+            c = year % 100
+            d = int(b/4.0)
+            e = b % 4
+            f = int((b + 8.0)/25.0)
+            g = int((b - f + 1.0)/3.0)
+            h = (19*a + b - d - g + 15) % 30
+            i = int(c/4.0)
+            k = c % 4
+            ll = (32 + 2*(e + i) - h - k) % 7
+            m = int((a + 11*h + 22*ll)/451.0)
+            n = int((h + ll - 7*m + 114)/31.0)
+            p = (h + ll - 7*m + 114) % 31
+            return (n, p + 1)
+        else:
+            # The Julian calendar is used here
+            a = year % 4
+            b = year % 7
+            c = year % 19
+            d = (19*c + 15) % 30
+            e = (2*a + 4*b - d + 34) % 7
+            f = int((d + e + 114)/31.0)
+            g = (d + e + 114) % 31
+            return (f, g + 1)
 
     def __str__(self):
         """Method used when trying to print the object.
