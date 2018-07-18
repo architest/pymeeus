@@ -21,7 +21,7 @@
 import calendar
 import datetime
 from math import floor
-from base import TOL
+from base import TOL, get_ordinal_suffix
 
 
 """
@@ -399,43 +399,6 @@ class Epoch(object):
             return True
         else:
             return False
-
-    @staticmethod
-    def get_suffix(number):
-        """Method to get the suffix of a given ordinal number, like 1'st',
-        2'nd', 15'th', etc.
-
-        :param number: Integer number
-        :type number: int
-
-        :returns: Suffix corresponding to input ordinal number
-        :rtype: str
-        :raises: TypeError if input type is invalid.
-
-        >>> Epoch.get_suffix(40)
-        'th'
-        >>> Epoch.get_suffix(101)
-        'st'
-        >>> Epoch.get_suffix(2)
-        'nd'
-        >>> Epoch.get_suffix(19)
-        'th'
-        >>> Epoch.get_suffix(23)
-        'rd'
-        """
-        if not isinstance(number, (int, float)):
-            raise TypeError("Invalid input type")
-        else:
-            number = int(floor(number))
-            number = number % 10
-            if number == 1:
-                return 'st'
-            elif number == 2:
-                return 'nd'
-            elif number == 3:
-                return 'rd'
-            else:
-                return 'th'
 
     @staticmethod
     def get_month(month, as_string=False):
@@ -1338,7 +1301,7 @@ def main():
     # Let's spice up the output a little bit, calling dow() and get_month()
     month, day = Epoch.easter(2019)
     e = Epoch(2019, month, day)
-    s = e.dow(as_string=True) + ", " + str(day) + Epoch.get_suffix(day) + \
+    s = e.dow(as_string=True) + ", " + str(day) + get_ordinal_suffix(day) + \
         " of " + Epoch.get_month(month, as_string=True)
     print_me("Easter day for 2019", s)
     # I know Easter is always on Sunday, by the way... ;-)
@@ -1346,7 +1309,7 @@ def main():
     print("")
 
     month, day = Epoch.jewish_pesach(1990)
-    s = str(day) + Epoch.get_suffix(day) + " of " + \
+    s = str(day) + get_ordinal_suffix(day) + " of " + \
         Epoch.get_month(month, as_string=True)
     print_me("Jewish Pesach day for 1990", s)
 

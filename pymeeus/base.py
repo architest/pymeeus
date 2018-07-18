@@ -18,6 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+from math import floor
+
+
 """
 .. module:: base
    :synopsis: Basic routines and constants used by the pymeeus module
@@ -47,6 +50,43 @@ def machine_accuracy():
     return (j, int(j*0.30103))
 
 
+def get_ordinal_suffix(ordinal):
+    """Method to get the suffix of a given ordinal number, like 1'st',
+    2'nd', 15'th', etc.
+
+    :param ordinal: Ordinal number
+    :type ordinal: int
+
+    :returns: Suffix corresponding to input ordinal number
+    :rtype: str
+    :raises: TypeError if input type is invalid.
+
+    >>> get_ordinal_suffix(40)
+    'th'
+    >>> get_ordinal_suffix(101)
+    'st'
+    >>> get_ordinal_suffix(2)
+    'nd'
+    >>> get_ordinal_suffix(19)
+    'th'
+    >>> get_ordinal_suffix(23)
+    'rd'
+    """
+    if not isinstance(ordinal, (int, float)):
+        raise TypeError("Invalid input type")
+    else:
+        ordinal = int(floor(ordinal))
+        ordinal = ordinal % 10
+        if ordinal == 1:
+            return 'st'
+        elif ordinal == 2:
+            return 'nd'
+        elif ordinal == 3:
+            return 'rd'
+        else:
+            return 'th'
+
+
 def main():
 
     # Let's define a small helper function
@@ -60,6 +100,11 @@ def main():
     j, d = machine_accuracy()
     print_me("Number of significant BITS in the mantissa\t", j)
     print_me("Number of significant DIGITS in a decimal number", d)
+
+    print("")
+
+    print_me("The suffix for ordinal 2 is", get_ordinal_suffix(2))
+    print_me("The suffix for ordinal 16 is", get_ordinal_suffix(16))
 
 
 if __name__ == '__main__':
