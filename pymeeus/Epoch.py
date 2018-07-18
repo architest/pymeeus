@@ -401,14 +401,51 @@ class Epoch(object):
             return False
 
     @staticmethod
+    def get_suffix(number):
+        """Method to get the suffix of a given ordinal number, like 1'st',
+        2'nd', 15'th', etc.
+
+        :param number: Integer number
+        :type number: int
+
+        :returns: Suffix corresponding to input ordinal number
+        :rtype: str
+        :raises: TypeError if input type is invalid.
+
+        >>> Epoch.get_suffix(40)
+        'th'
+        >>> Epoch.get_suffix(101)
+        'st'
+        >>> Epoch.get_suffix(2)
+        'nd'
+        >>> Epoch.get_suffix(19)
+        'th'
+        >>> Epoch.get_suffix(23)
+        'rd'
+        """
+        if not isinstance(number, (int, float)):
+            raise TypeError("Invalid input type")
+        else:
+            number = int(floor(number))
+            number = number % 10
+            if number == 1:
+                return 'st'
+            elif number == 2:
+                return 'nd'
+            elif number == 3:
+                return 'rd'
+            else:
+                return 'th'
+
+    @staticmethod
     def get_month(month, as_string=False):
         """Method to get the month as a integer in the [1, 12] range, or as a
         full name.
 
         :param month: Month, in numeric, short name or long name format
-        :type DD: int, float, str
+        :type month: int, float, str
         :param as_string: Whether the output will be numeric, or a long name.
-        :type DD: bool
+        :type as_string: bool
 
         :returns: Month as integer in the [1, 12] range, or as a long name.
         :rtype: int, str
@@ -702,6 +739,7 @@ class Epoch(object):
         >>> Epoch.easter(1243)
         (4, 12)
         """
+        # This algorithm is describes in pages 67-69 of Meeus book
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
         year = int(year)
@@ -732,6 +770,47 @@ class Epoch(object):
             f = int((d + e + 114)/31.0)
             g = (d + e + 114) % 31
             return (f, g + 1)
+
+    @staticmethod
+    def jewish_pesach(year):
+        """Method to return the Jewish Easter (Pesach) day for given year.
+
+        :note: This method is valid for both Gregorian and Julian years.
+
+        :param year: Year
+        :type year: int
+
+        :returns: Jewish Easter (Pesach) month and day, as a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> Epoch.jewish_pesach(1990)
+        (4, 10)
+        """
+        # This algorithm is described in pages 71-73 of Meeus book
+        if not isinstance(year, (int, float)):
+            raise TypeError("Invalid input type")
+        year = int(year)
+        c = int(floor(year/100.0))
+        s = 0 if year < 1583 else int(floor((3.0*c - 5.0)/4.0))
+        a = (12*(year + 1)) % 19
+        b = year % 4
+        q = -1.904412361576 + 1.554241796621*a + 0.25*b \
+            - 0.003177794022*year + s
+        j = (int(floor(q)) + 3*year + 5*b + 2 + s) % 7
+        r = q - floor(q)
+        if j == 2 or j == 4 or j == 6:
+            d = int(floor(q)) + 23
+        elif j == 1 and a > 6 and r > 0.632870370:
+            d = int(floor(q)) + 24
+        elif j == 0 and a > 11 and r > 0.897723765:
+            d = int(floor(q)) + 23
+        else:
+            d = int(floor(q)) + 22
+        if d > 31:
+            return (4, d - 31)
+        else:
+            return (3, d)
 
     def __str__(self):
         """Method used when trying to print the object.
@@ -1259,10 +1338,17 @@ def main():
     # Let's spice up the output a little bit, calling dow() and get_month()
     month, day = Epoch.easter(2019)
     e = Epoch(2019, month, day)
-    s = e.dow(as_string=True) + " " + str(day) + "st of " + \
-        Epoch.get_month(month, as_string=True)
+    s = e.dow(as_string=True) + ", " + str(day) + Epoch.get_suffix(day) + \
+        " of " + Epoch.get_month(month, as_string=True)
     print_me("Easter day for 2019", s)
     # I know Easter is always on Sunday, by the way... ;-)
+
+    print("")
+
+    month, day = Epoch.jewish_pesach(1990)
+    s = str(day) + Epoch.get_suffix(day) + " of " + \
+        Epoch.get_month(month, as_string=True)
+    print_me("Jewish Pesach day for 1990", s)
 
     print("")
 
