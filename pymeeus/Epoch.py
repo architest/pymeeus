@@ -20,8 +20,7 @@
 
 import calendar
 import datetime
-from math import floor
-from base import TOL, get_ordinal_suffix
+from base import TOL, get_ordinal_suffix, INT
 
 
 """
@@ -286,11 +285,11 @@ class Epoch(object):
         if m <= 2:
             y -= 1
             m += 12
-        a = floor(y/100.0)
+        a = INT(y/100.0)
         b = 0.0
-        if not Epoch.is_julian(y, m, floor(d)):
-            b = 2.0 - a + floor(a/4.0)
-        jde = floor(365.25*(y + 4716.0)) + floor(30.6001*(m + 1.0)) + \
+        if not Epoch.is_julian(y, m, INT(d)):
+            b = 2.0 - a + INT(a/4.0)
+        jde = INT(365.25*(y + 4716.0)) + INT(30.6001*(m + 1.0)) + \
             d + b - 1524.5
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
@@ -374,7 +373,7 @@ class Epoch(object):
 
     @staticmethod
     def is_julian(year, month, day):
-        """This method returns True if date given is in the Julian calendar.
+        """This method returns True if given date is in the Julian calendar.
 
         :param year: Year
         :type y: int
@@ -490,7 +489,7 @@ class Epoch(object):
         if isinstance(year, (int, float)):
             # Mind the difference between Julian and Gregorian calendars
             if year >= 1582:
-                year = floor(year)
+                year = INT(year)
                 return calendar.isleap(year)
             else:
                 return (abs(year) % 4) == 0
@@ -536,7 +535,7 @@ class Epoch(object):
             doy = d.timetuple().tm_yday
         else:
             k = 2 if Epoch.is_leap(YYYY) else 1
-            doy = floor((275.0*MM)/9.0) - k*floor((MM + 9.0)/12.0) + day - 30.0
+            doy = INT((275.0*MM)/9.0) - k*INT((MM + 9.0)/12.0) + day - 30.0
         return float(doy + frac)
 
     @staticmethod
@@ -602,8 +601,8 @@ class Epoch(object):
                 if doy < 32:
                     m = 1
                 else:
-                    m = floor((9.0*(k + doy))/275.0 + 0.98)
-                d = doy - floor((275.0*m)/9.0) + k*floor((m + 9.0)/12.0) + 30
+                    m = INT((9.0*(k + doy))/275.0 + 0.98)
+                d = doy - INT((275.0*m)/9.0) + k*INT((m + 9.0)/12.0) + 30
                 return year, int(m), d + frac
         else:
             raise ValueError("Invalid input values")
@@ -663,7 +662,7 @@ class Epoch(object):
         list_years = sorted(LEAP_TABLE.keys())
         lyear = list_years[-1]
         lseconds = LEAP_TABLE[lyear]
-        year = floor(lyear)
+        year = INT(lyear)
         # So far, leap seconds are added either on June 30th or December 31th
         if lyear % 1 == 0.0:
             year -= 1
@@ -709,18 +708,18 @@ class Epoch(object):
         if year >= 1583:
             # In this case, we are using the Gregorian calendar
             a = year % 19
-            b = int(year/100.0)
+            b = INT(year/100.0)
             c = year % 100
-            d = int(b/4.0)
+            d = INT(b/4.0)
             e = b % 4
-            f = int((b + 8.0)/25.0)
-            g = int((b - f + 1.0)/3.0)
+            f = INT((b + 8.0)/25.0)
+            g = INT((b - f + 1.0)/3.0)
             h = (19*a + b - d - g + 15) % 30
-            i = int(c/4.0)
+            i = INT(c/4.0)
             k = c % 4
             ll = (32 + 2*(e + i) - h - k) % 7
-            m = int((a + 11*h + 22*ll)/451.0)
-            n = int((h + ll - 7*m + 114)/31.0)
+            m = INT((a + 11*h + 22*ll)/451.0)
+            n = INT((h + ll - 7*m + 114)/31.0)
             p = (h + ll - 7*m + 114) % 31
             return (n, p + 1)
         else:
@@ -730,7 +729,7 @@ class Epoch(object):
             c = year % 19
             d = (19*c + 15) % 30
             e = (2*a + 4*b - d + 34) % 7
-            f = int((d + e + 114)/31.0)
+            f = INT((d + e + 114)/31.0)
             g = (d + e + 114) % 31
             return (f, g + 1)
 
@@ -753,27 +752,97 @@ class Epoch(object):
         # This algorithm is described in pages 71-73 of Meeus book
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
-        year = int(year)
-        c = int(floor(year/100.0))
-        s = 0 if year < 1583 else int(floor((3.0*c - 5.0)/4.0))
+        year = INT(year)
+        c = INT(year/100.0)
+        s = 0 if year < 1583 else INT((3.0*c - 5.0)/4.0)
         a = (12*(year + 1)) % 19
         b = year % 4
         q = -1.904412361576 + 1.554241796621*a + 0.25*b \
             - 0.003177794022*year + s
-        j = (int(floor(q)) + 3*year + 5*b + 2 + s) % 7
-        r = q - floor(q)
+        j = (INT(q) + 3*year + 5*b + 2 + s) % 7
+        r = q - INT(q)
         if j == 2 or j == 4 or j == 6:
-            d = int(floor(q)) + 23
+            d = INT(q) + 23
         elif j == 1 and a > 6 and r > 0.632870370:
-            d = int(floor(q)) + 24
+            d = INT(q) + 24
         elif j == 0 and a > 11 and r > 0.897723765:
-            d = int(floor(q)) + 23
+            d = INT(q) + 23
         else:
-            d = int(floor(q)) + 22
+            d = INT(q) + 22
         if d > 31:
             return (4, d - 31)
         else:
             return (3, d)
+
+    @staticmethod
+    def moslem2gregorian(year, month, day):
+        """Method to convert a date in the Moslen calendar to the Gregorian
+        (or Julian) calendar.
+
+        :note: This method is valid for both Gregorian and Julian years.
+
+        :param year: Year
+        :type year: int
+        :param month: Month
+        :type month: int
+        :param day: Day
+        :type day: int
+
+        :returns: Date in Gregorian (Julian) calendar: year, month and day, as
+        a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> Epoch.moslem2gregorian(1421, 1, 1)
+        (2000, 4, 6)
+        """
+        # First, check that input types are correct
+        if not isinstance(year, (int, float)) or \
+                not isinstance(month, (int, float)) or \
+                not isinstance(day, (int, float)):
+            raise TypeError("Invalid input type")
+        if day < 1 or day > 30 or month < 1 or month > 12 or year < 1:
+            raise ValueError("Invalid input data")
+        # This algorithm is described in pages 73-75 of Meeus book
+        # Note: Ramadan is month Nr. 9
+        h = INT(year)
+        m = INT(month)
+        d = INT(day)
+        n = d + INT(29.5001*(m - 1) + 0.99)
+        q = INT(h/30.0)
+        r = h % 30
+        a = INT((11.0*r + 3.0)/30.0)
+        w = 404*q + 354*r + 208 + a
+        q1 = INT(w/1461.0)
+        q2 = w % 1461
+        g = 621 + 4*INT(7.0*q + q1)
+        k = INT(q2/365.2422)
+        e = INT(365.2422*k)
+        j = q2 - e + n - 1
+        x = g + k
+        if j > 366 and x % 4 == 0:
+            j -= 366
+            x += 1
+        elif j > 365 and x % 4 > 0:
+            j -= 365
+            x += 1
+
+        # Check if date is in Gregorian calendar. '277' is DOY of October 4th
+        if (x > 1583) or (x == 1582 and j > 277):
+            jd = INT(365.25*(x - 1.0)) + 1721423 + j
+            alpha = INT((jd - 1867216.25)/36524.25)
+            beta = jd if jd < 2299161 else (jd + 1 + alpha - INT(alpha/4.0))
+            b = beta + 1524
+            c = INT((b - 122.1)/365.25)
+            d = INT(365.25*c)
+            e = INT((b - d)/30.6001)
+            day = b - d - INT(30.6001*e)
+            month = (e - 1) if e < 14 else (e - 13)
+            year = (c - 4716) if month > 2 else (c - 4715)
+            return year, month, day
+        else:
+            # It is a Julian date. We have year and DOY
+            return Epoch.doy2date(x, j)
 
     def __str__(self):
         """Method used when trying to print the object.
@@ -818,18 +887,18 @@ class Epoch(object):
         -584/5/28.63
         """
         jd = self._jde + 0.5
-        z = floor(jd)
+        z = INT(jd)
         f = jd % 1
         if z < 2299161:
             a = z
         else:
-            alpha = floor((z - 1867216.25)/36524.25)
-            a = z + 1 + alpha - floor(alpha/4.0)
+            alpha = INT((z - 1867216.25)/36524.25)
+            a = z + 1 + alpha - INT(alpha/4.0)
         b = a + 1524
-        c = floor((b - 122.1)/365.25)
-        d = floor(365.25*c)
-        e = floor((b - d)/30.6001)
-        day = b - d - floor(30.6001*e) + f
+        c = INT((b - 122.1)/365.25)
+        d = INT(365.25*c)
+        e = INT((b - d)/30.6001)
+        day = b - d - INT(30.6001*e) + f
         if e < 14:
             month = e - 1
         elif e == 14 or e == 15:
@@ -903,8 +972,8 @@ class Epoch(object):
         >>> e.dow(as_string=True)
         'Sunday'
         """
-        jd = floor(self._jde - 0.5) + 2.0
-        doy = int(jd % 7)
+        jd = INT(self._jde - 0.5) + 2.0
+        doy = INT(jd % 7)
         if not as_string:
             return doy
         else:
@@ -1308,10 +1377,21 @@ def main():
 
     print("")
 
+    # Compute the date of the Jewish Easter (Pesach) for a given year
     month, day = Epoch.jewish_pesach(1990)
     s = str(day) + get_ordinal_suffix(day) + " of " + \
         Epoch.get_month(month, as_string=True)
     print_me("Jewish Pesach day for 1990", s)
+
+    print("")
+
+    # Now, convert a date in the Moslem calendar to the Gregorian calendar
+    y, m, d = Epoch.moslem2gregorian(1421, 1, 1)
+    print_me("The date 1421/1/1 in the Moslem calendar is, in Gregorian " +
+             "calendar", "{}/{}/{}".format(y, m, d))
+    y, m, d = Epoch.moslem2gregorian(1439, 9, 1)
+    print_me("The start of Ramadan month (9/1) for Gregorian year 2018 is",
+             "{}/{}/{}".format(y, m, d))
 
     print("")
 
