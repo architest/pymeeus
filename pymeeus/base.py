@@ -87,6 +87,30 @@ def get_ordinal_suffix(ordinal):
             return 'th'
 
 
+def INT(number):
+    """This method behaves in the same way as the 'INT()' function described by
+    Meeus in his book: Greatest integer which is not greater than number.
+
+    :param number: Number or expresion
+    :type number: int, float
+
+    :returns: Greatest integer which is not greater than number
+    :rtype: int
+    :raises: TypeError if input type is invalid.
+
+    >>> INT(19)
+    19
+    >>> INT(19.95)
+    19
+    >>> INT(-2.4)
+    -3
+    """
+    if not isinstance(number, (int, float)):
+        raise TypeError("Invalid input type")
+    else:
+        return int(floor(number))
+
+
 def main():
 
     # Let's define a small helper function
