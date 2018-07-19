@@ -865,6 +865,89 @@ class Epoch(object):
             # It is a Julian date. We have year and DOY
             return Epoch.doy2date(x, j)
 
+    @staticmethod
+    def gregorian2moslem(year, month, day):
+        """Method to convert a date in the Gregorian (or Julian) calendar to
+        the Moslen calendar.
+
+        :param year: Year
+        :type year: int
+        :param month: Month
+        :type month: int
+        :param day: Day
+        :type day: int
+
+        :returns: Date in Moslem calendar: year, month and day, as a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> Epoch.gregorian2moslem(1991, 8, 13)
+        (1412, 2, 2)
+        """
+        # First, check that input types are correct
+        if not isinstance(year, (int, float)) or \
+                not isinstance(month, (int, float)) or \
+                not isinstance(day, (int, float)):
+            raise TypeError("Invalid input type")
+        if day < 1 or day > 31 or month < 1 or month > 12 or year < -4712:
+            raise ValueError("Invalid input data")
+        # This algorithm is described in pages 75-76 of Meeus book
+        x = INT(year)
+        m = INT(month)
+        d = INT(day)
+        if m < 3:
+            x -= 1
+            m += 12
+        alpha = INT(x/100.0)
+        beta = 2 - alpha + INT(alpha/4.0)
+        b = INT(365.25*x) + INT(30.6001*(m + 1.0)) + d + 1722519 + beta
+        c = INT((b - 122.1)/365.25)
+        d = INT(365.25*c)
+        e = INT((b - d)/30.6001)
+        d = b - d - INT(30.6001*e)
+        m = (e - 1) if e < 14 else (e - 13)
+        x = (c - 4716) if month > 2 else (c - 4715)
+        w = 1 if x % 4 == 0 else 2
+        n = INT((275.0*m)/9.0) - w*INT((m + 9.0)/12.0) + d - 30
+        a = x - 623
+        b = INT(a/4.0)
+        c = a % 4
+        c1 = 365.2501*c
+        c2 = INT(c1)
+        if c1 - c2 > 0.5:
+            c2 += 1
+        dp = 1461*b + 170 + c2
+        q = INT(dp/10631.0)
+        r = dp % 10631
+        j = INT(r/354.0)
+        k = r % 354
+        o = INT((11.0*j + 14.0)/30.0)
+        h = 30*q + j + 1
+        jj = k - o + n - 1
+        # jj is the number of the day in the moslem year h. If jj > 354 we need
+        # to know if h is a leap year
+        if jj > 354:
+            cl = h % 30
+            dl = (11*cl + 3) % 30
+            if dl < 19:
+                jj -= 354
+                h += 1
+            else:
+                jj -= 355
+                h += 1
+            if jj == 0:
+                jj = 355
+                h -= 1
+        # Now, let's convert DOY jj to month and day
+        if jj == 355:
+            m = 12
+            d = 30
+        else:
+            s = INT((jj - 1.0)/29.5)
+            m = 1 + s
+            d = INT(jj - 29.5*s)
+        return h, m, d
+
     def __str__(self):
         """Method used when trying to print the object.
 
@@ -1420,6 +1503,10 @@ def main():
     y, m, d = Epoch.moslem2gregorian(1439, 9, 1)
     print_me("The start of Ramadan month (9/1) for Gregorian year 2018 is",
              "{}/{}/{}".format(y, m, d))
+    # We can go from the Gregorian calendar back to the Moslem calendar too
+    print_me("Date 1991/8/13 in Gregorian calendar is, in Moslem calendar",
+             "{}/{}/{}".format(*Epoch.gregorian2moslem(1991, 8, 13)))
+    # Note: The '*' before 'Epoch' will _unpack_ the tuple into components
 
     print("")
 
