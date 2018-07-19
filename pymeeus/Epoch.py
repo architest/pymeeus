@@ -674,6 +674,27 @@ class Epoch(object):
         return year, month, day, lseconds
 
     @staticmethod
+    def utc2local():
+        """Method to return the difference between UTC and local time.
+
+        By default, dates in this Epoch class are handled in Coordinated
+        Universal Time (UTC). This method provides you the seconds that you
+        have to add or subtract to UTC time to convert to your local time.
+
+        Please bear in mind that, in order for this method to work, you
+        operative system must be correctly configured, with the right time and
+        corresponding time zone.
+
+        :returns: Difference in seconds between local and UTC time.
+        :rtype: float
+        """
+        localhour = datetime.datetime.now().hour
+        utchour = datetime.datetime.utcnow().hour
+        localminute = datetime.datetime.now().minute
+        utcminute = datetime.datetime.utcnow().minute
+        return (localhour - utchour)*3600.0 + (localminute - utcminute)*60.0
+
+    @staticmethod
     def easter(year):
         """Method to return the Easter day for given year.
 
@@ -1363,6 +1384,13 @@ def main():
     # In some cases it is useful to get the Modified Julian Day (MJD)
     e = Epoch(1923, 'August', 23)
     print_me("Modified Julian Day for 1923/8/23", round(e.mjd(), 2))
+
+    print("")
+
+    # If your system is appropriately configured, you can get the difference in
+    # seconds between your local time and UTC
+    print_me("To convert from local system time to UTC you must add/subtract" +
+             " this amount of seconds", Epoch.utc2local())
 
     print("")
 
