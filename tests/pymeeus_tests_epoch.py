@@ -202,6 +202,30 @@ def test_epoch_easter():
         "ERROR: 6th easter() test, output doesn't match"
 
 
+def test_epoch_jewish_pesach():
+    """Tests the jewish_pesach() method of Epoch class"""
+
+    t = Epoch.jewish_pesach(1990)
+    assert t[0] == 4 and t[1] == 10, \
+        "ERROR: 1st jewish_pesach() test, output doesn't match"
+
+
+def test_epoch_moslem2gregorian():
+    """Tests the moslem2gregorian() method of Epoch class"""
+
+    t = Epoch.moslem2gregorian(1421, 1, 1)
+    assert t[0] == 2000 and t[1] == 4 and t[2] == 6, \
+        "ERROR: 1st moslem2gregorian() test, output doesn't match"
+
+
+def test_epoch_gregorian2moslem():
+    """Tests the gregorian2moslem() method of Epoch class"""
+
+    t = Epoch.gregorian2moslem(1991, 8, 13)
+    assert t[0] == 1412 and t[1] == 2 and t[2] == 2, \
+        "ERROR: 1st gregorian2moslem() test, output doesn't match"
+
+
 def test_epoch_get_date():
     """Tests the get_date() method of Epoch class"""
 
