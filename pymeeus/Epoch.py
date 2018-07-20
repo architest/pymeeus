@@ -82,8 +82,16 @@ class Epoch(object):
     class, you may use the 'get_last_leap_second()' method.
 
     The UTC to TT correction is done by default, but you may disable it by
-    setting 'lead_seconds=0'. In that case, it is supposed that the input data
+    setting 'leap_seconds=0'. In that case, it is supposed that the input data
     is already in TT scale.
+
+    :note: As said above, UTC to TT correction is done by default, but UTC was
+    implemented in July 1972. Therefore, for dates before that the correction
+    in NOT carried out, and it is supposed that the input data is already in
+    TT scale.
+
+    :note: For conversions between TT and Universal Time (UT), please use the
+    method 'tt2ut()'.
 
     :note: Internally, time values are stored as a Julian Ephemeris Day (JDE),
     based on the uniform scale of Dynamical Time, or more specifically,
@@ -168,6 +176,9 @@ class Epoch(object):
         leap seconds table will be bypassed. On the other hand, if it is set
         to zero, then the UTC to TT correction is disabled, and it is supposed
         that the input data is already in TT scale.
+
+        :note: The UTC to TT correction is only carried out for dates after
+        July 1972.
 
         :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
         hours, minutes, seconds values, by themselves or inside a tuple or list
@@ -266,6 +277,9 @@ class Epoch(object):
     def _compute_jde(self, y, m, d, utc2tt=True, leap_seconds=0.0):
         """Method to compute the Julian Ephemeris Day (JDE).
 
+        :note: The UTC to TT correction is only carried out for dates after
+        July 1972.
+
         :param y: Year
         :type y: int
         :param m: Month
@@ -295,14 +309,14 @@ class Epoch(object):
         deltasec = 0.0
         # In this case, UTC to TT correction is applied automatically
         if utc2tt:
-            deltasec = 32.184       # Difference between TT and TAI
             if y > 1972 or (y == 1972 and m >= 7):
+                deltasec = 32.184   # Difference between TT and TAI
                 deltasec += 10.0    # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(y, m)
         else:                           # Correction is NOT automatic
             if leap_seconds != 0.0:     # We apply provided leap seconds
-                deltasec = 32.184       # Difference between TT and TAI
                 if y > 1972 or (y == 1972 and m >= 7):
+                    deltasec = 32.184   # Difference between TT and TAI
                     deltasec += 10.0    # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
         return jde + deltasec/DAY2SEC
@@ -1043,6 +1057,87 @@ class Epoch(object):
             year, month, day = Epoch.doy2date(year, doy)
         return year, month, day
 
+    @staticmethod
+    def tt2ut(year, month):
+        """This method provides an approximation of the difference, in seconds,
+        between Terrestrial Time and Universal Time, denoted 'DeltaT', where:
+        DeltaT = TT - UT.
+
+        Here we depart from Meeus book and use the polynomial expressions from:
+
+        https://eclipse.gsfc.nasa.gov/LEcat5/deltatpoly.html
+
+        Which are regarded as more elaborate and precise than Meeus'.
+
+        Please note that, by definition, the UTC time used internally in this
+        Epoch class by default is kept within 0.9 seconds from UT. Therefore,
+        UTC is in itself a quite good approximation to UT, maybe even better
+        than some of the results provided by this method.
+
+        :param year: Year we want to compute DeltaT for.
+        :type year: int, float
+        :param month: Month we want to compute DeltaT for.
+        :type month: int, float
+
+        :returns: DeltaT, in seconds
+        :rtype: float
+        """
+        y = year + (month - 0.5)/12.0
+        if year < -500:
+            u = (year - 1820.0)/100.0
+            dt = -20.0 + 32.0*u*u
+        elif year >= -500 and year < 500:
+            u = y/100.0
+            dt = 10583.6 + u*(-1014.41 + u*(33.78311 + u*(-5.952053
+                              + u*(-0.1798452 + u*(0.022174192
+                                   + 0.0090316521*u)))))
+        elif year >= 500 and year < 1600:
+            dt = 1574.2 + u*(-556.01 + u*(71.23472 + u*(0.319781
+                             + u*(-0.8503463 + u*(-0.005050998
+                                                  + 0.0083572073*u)))))
+        elif year >= 1600 and year < 1700:
+            t = y - 1600.0
+            dt = 120.0 + t*(-0.9808 + t*(-0.01532 + t/7129.0))
+        elif year >= 1700 and year < 1800:
+            t = y - 1700.0
+            dt = 8.83 + t*(0.1603 + t*(-0.0059285 + t*(0.00013336
+                                                       - t/117400.0)))
+        elif year >= 1800 and year < 1860:
+            t = y - 1800.0
+            dt = 13.72 + t*(-0.332447 + t*(0.0068612 + t*(0.0041116
+                            + t*(-0.00037436 + t*(0.0000121272
+                                 + t*(-0.0000001699 + 0.000000000875*t))))))
+        elif year >= 1860 and year < 1900:
+            t = y - 1860.0
+            dt = 7.62 + t*(0.5737 + t*(-0.251754 + t*(0.01680668
+                           + t*(-0.0004473624 + t/233174.0))))
+        elif year >= 1900 and year < 1920:
+            t = y - 1900.0
+            dt = -2.79 + t*(1.494119 + t*(-0.0598939 + t*(0.0061966
+                                                          - 0.000197*t)))
+        elif year >= 1920 and year < 1941:
+            t = y - 1920.0
+            dt = 21.20 + t*(0.84493 + t*(-0.076100 + 0.0020936*t))
+        elif year >= 1941 and year < 1961:
+            t = y - 1950.0
+            dt = 29.07 + t*(0.407 + t*(-1.0/233.0 + t/2547.0))
+        elif year >= 1961 and year < 1986:
+            t = y - 1975.0
+            dt = 45.45 + t*(1.067 + t*(-1.0/260.0 - t/718.0))
+        elif year >= 1986 and year < 2005:
+            t = y - 2000.0
+            dt = 63.86 + t*(0.3345 + t*(-0.060374 + t*(0.0017275
+                                        + t*(0.000651814 + 0.00002373599*t))))
+        elif year >= 2005 and year < 2050:
+            t = y - 2000.0
+            dt = 62.92 + t*(0.32217 + 0.005589*t)
+        elif year >= 2050 and year < 2150:
+            dt = -20.0 + 32.0 * ((y - 1820.0)/100.0)**2 - 0.5628*(2150.0 - y)
+        else:
+            u = (year - 1820.0)/100.0
+            dt = -20.0 + 32.0*u*u
+        return dt
+
     def dow(self, as_string=False):
         """Method to return the day of week corresponding to this Epoch.
 
@@ -1474,6 +1569,15 @@ def main():
     # seconds between your local time and UTC
     print_me("To convert from local system time to UTC you must add/subtract" +
              " this amount of seconds", Epoch.utc2local())
+
+    print("")
+
+    # Compute DeltaT = TT - UT differences for various dates
+    print_me("DeltaT (TT - UT) for Feb/333", round(Epoch.tt2ut(333, 2), 1))
+    print_me("DeltaT (TT - UT) for Jan/1642", round(Epoch.tt2ut(1642, 1), 1))
+    print_me("DeltaT (TT - UT) for Feb/1928", round(Epoch.tt2ut(1928, 1), 1))
+    print_me("DeltaT (TT - UT) for Feb/1977", round(Epoch.tt2ut(1977, 2), 1))
+    print_me("DeltaT (TT - UT) for Jan/1998", round(Epoch.tt2ut(1998, 1), 1))
 
     print("")
 
