@@ -85,10 +85,10 @@ class Epoch(object):
     setting 'leap_seconds=0'. In that case, it is supposed that the input data
     is already in TT scale.
 
-    :note: As said above, UTC to TT correction is done by default, but UTC was
-    implemented in July 1972. Therefore, for dates before that the correction
-    in NOT carried out, and it is supposed that the input data is already in
-    TT scale.
+    :note: As said above, UTC to TT correction is done by default, but the
+    current version of UTC was implemented in January 1st, 1972. Therefore, for
+    dates before the correction in NOT carried out, and it is supposed that the
+    input data is already in TT scale.
 
     :note: For conversions between TT and Universal Time (UT), please use the
     method 'tt2ut()'.
@@ -178,7 +178,7 @@ class Epoch(object):
         that the input data is already in TT scale.
 
         :note: The UTC to TT correction is only carried out for dates after
-        July 1972.
+        January 1st, 1972.
 
         :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
         hours, minutes, seconds values, by themselves or inside a tuple or list
@@ -278,7 +278,7 @@ class Epoch(object):
         """Method to compute the Julian Ephemeris Day (JDE).
 
         :note: The UTC to TT correction is only carried out for dates after
-        July 1972.
+        January 1st, 1972.
 
         :param y: Year
         :type y: int
@@ -309,13 +309,13 @@ class Epoch(object):
         deltasec = 0.0
         # In this case, UTC to TT correction is applied automatically
         if utc2tt:
-            if y > 1972 or (y == 1972 and m >= 7):
+            if y >= 1972:
                 deltasec = 32.184   # Difference between TT and TAI
                 deltasec += 10.0    # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(y, m)
         else:                           # Correction is NOT automatic
             if leap_seconds != 0.0:     # We apply provided leap seconds
-                if y > 1972 or (y == 1972 and m >= 7):
+                if y >= 1972:
                     deltasec = 32.184   # Difference between TT and TAI
                     deltasec += 10.0    # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
