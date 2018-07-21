@@ -404,11 +404,8 @@ class Epoch(object):
         >>> Epoch.is_julian(1397, 7, 7.0)
         True
         """
-        if year < 1582:
-            return True
-        elif year == 1582 and month < 10:
-            return True
-        elif year == 1582 and month == 10 and day < 5.0:
+        if (year < 1582) or (year == 1582 and month < 10) or \
+           (year == 1582 and month == 10 and day < 5.0):
             return True
         else:
             return False
@@ -495,6 +492,8 @@ class Epoch(object):
         False
         >>> Epoch.is_leap(2012)
         True
+        >>> Epoch.is_leap(1900)
+        False
         >>> Epoch.is_leap(-1000)
         True
         >>> Epoch.is_leap(1000)
@@ -1034,16 +1033,17 @@ class Epoch(object):
             leap_seconds = kwargs['leap_seconds']
         # If enabled, let's convert from TT to UTC, subtracting needed seconds
         deltasec = 0.0
-        # In this case, TT to UTC correction is applied automatically
+        # In this case, TT to UTC correction is applied automatically, but only
+        # for dates after July 1st, 1972
         if tt2utc:
-            deltasec = 32.184       # Difference between TT and TAI
             if year > 1972 or (year == 1972 and month >= 7):
+                deltasec = 32.184   # Difference between TT and TAI
                 deltasec += 10.0    # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(year, month)
         else:                           # Correction is NOT automatic
             if leap_seconds != 0.0:     # We apply provided leap seconds
-                deltasec = 32.184       # Difference between TT and TAI
                 if year > 1972 or (year == 1972 and month >= 7):
+                    deltasec = 32.184   # Difference between TT and TAI
                     deltasec += 10.0    # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
 
@@ -1081,6 +1081,33 @@ class Epoch(object):
 
         :returns: DeltaT, in seconds
         :rtype: float
+
+        >>> round(Epoch.tt2ut(1642, 1), 1)
+        62.1
+        >>> round(Epoch.tt2ut(1680, 1), 1)
+        15.3
+        >>> round(Epoch.tt2ut(1700, 1), 1)
+        8.8
+        >>> round(Epoch.tt2ut(1726, 1), 1)
+        10.9
+        >>> round(Epoch.tt2ut(1750, 1), 1)
+        13.4
+        >>> round(Epoch.tt2ut(1774, 1), 1)
+        16.7
+        >>> round(Epoch.tt2ut(1800, 1), 1)
+        13.7
+        >>> round(Epoch.tt2ut(1820, 1), 1)
+        11.9
+        >>> round(Epoch.tt2ut(1890, 1), 1)
+        -6.1
+        >>> round(Epoch.tt2ut(1928, 2), 1)
+        24.2
+        >>> round(Epoch.tt2ut(1977, 2), 1)
+        47.7
+        >>> round(Epoch.tt2ut(1998, 1), 1)
+        63.0
+        >>> round(Epoch.tt2ut(2015, 7), 1)
+        69.3
         """
         y = year + (month - 0.5)/12.0
         if year < -500:
@@ -1101,7 +1128,7 @@ class Epoch(object):
         elif year >= 1700 and year < 1800:
             t = y - 1700.0
             dt = 8.83 + t*(0.1603 + t*(-0.0059285 + t*(0.00013336
-                                                       - t/117400.0)))
+                                                       - t/1174000.0)))
         elif year >= 1800 and year < 1860:
             t = y - 1800.0
             dt = 13.72 + t*(-0.332447 + t*(0.0068612 + t*(0.0041116
