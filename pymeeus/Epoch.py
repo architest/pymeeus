@@ -1207,6 +1207,32 @@ class Epoch(object):
                          'Thursday', 'Friday', 'Saturday']
             return day_names[doy]
 
+    def sidereal_time(self):
+        """Method to compute the mean sidereal time at Greenwich for the epoch
+        represented by this object.
+
+        :returns: Mean sidereal time, in days
+        :rtype: float
+
+        >>> e = Epoch(1987, 4, 10, leap_seconds=0.0)
+        >>> round(e.sidereal_time(), 9)
+        0.549147764
+        >>> e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
+        >>> round(e.sidereal_time(), 9)
+        0.357605204
+        """
+        jd0 = INT(self()) + 0.5 if self() % 1 >= 0.5 else INT(self()) - 0.5
+        t = (jd0 - 2451545.0)/36525.0
+        theta0 = 6.0/DAY2HOURS + 41.0/DAY2MIN + 50.54841/DAY2SEC
+        s = t*(8640184.812866 + t*(0.093104 - 0.0000062*t))
+        theta0 += (s % DAY2SEC) / DAY2SEC
+        deltajd = self() - jd0
+        if abs(deltajd) < TOL:                      # In this case, we are done
+            return theta0
+        else:
+            deltajd *= 1.00273790935
+            return (theta0 + deltajd) % 1
+
     def mjd(self):
         """This method returns the Modified Julian Day (MJD).
 
