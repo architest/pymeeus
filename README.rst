@@ -23,6 +23,7 @@ Distributed under the GNU Lesser General Public License v3 (LGPLv3). See
 ``LICENSE.txt`` and ``COPYING.LESSER`` for more information.
 
 Documentation: https://pymeeus.readthedocs.io/en/latest/
+
 GitHub: https://github.com/architest/
 
 Contributing
@@ -50,6 +51,10 @@ documentation to your new code. This also includes in-line comments!!!.
 
 What's new
 ----------
+
+-  0.0.9
+
+   -  Significant documentation improvements
 
 -  0.0.8
 

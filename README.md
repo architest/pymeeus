@@ -2,8 +2,7 @@
 > **Library of astronomical algorithms in Python**.
 
 PyMeeus is a Python implementation of the astronomical algorithms described in
-the classical book "Astronomical Algorithms, 2nd Edition (1998)" from Jean
-Meeus.
+the classical book "Astronomical Algorithms, 2nd Edition (1998)" by Jean Meeus.
 
 There are great astronomical libraries out there. For instance, if you're
 looking for high precision and speed you should take a look at
@@ -19,7 +18,9 @@ Author: Dagoberto Salazar
 Distributed under the GNU Lesser General Public License v3 (LGPLv3). See
 ``LICENSE.txt`` and ``COPYING.LESSER`` for more information.
 
-[https://github.com/architest/](https://github.com/architest/)
+Documentation: [https://pymeeus.readthedocs.io/en/latest/](https://pymeeus.readthedocs.io/en/latest/)
+
+GitHub: [https://github.com/architest/](https://github.com/architest/)
 
 ## Contributing
 
@@ -45,6 +46,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.0.9
+    * Significant documentation improvements
 * 0.0.8
     * Epoch class finished
 * 0.0.7
