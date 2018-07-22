@@ -1208,8 +1208,14 @@ class Epoch(object):
             return day_names[doy]
 
     def sidereal_time(self):
-        """Method to compute the mean sidereal time at Greenwich for the epoch
-        represented by this object.
+        """Method to compute the _mean_ sidereal time at Greenwich for the
+        epoch represented by this object.
+
+        :note: If you require the result as an angle, you should convert the
+        result from this method to hours with decimals (with DAY2HOURS), and
+        then multiply by 15 deg/hr. Alternatively, you can convert the result
+        to hours with decimals, and feed this value to an Angle object, setting
+        'ra=True', and making use of Angle facilities for further handling.
 
         :returns: Mean sidereal time, in days
         :rtype: float
@@ -1228,7 +1234,7 @@ class Epoch(object):
         theta0 += (s % DAY2SEC) / DAY2SEC
         deltajd = self() - jd0
         if abs(deltajd) < TOL:                      # In this case, we are done
-            return theta0
+            return theta0 % 1
         else:
             deltajd *= 1.00273790935
             return (theta0 + deltajd) % 1
@@ -1631,6 +1637,17 @@ def main():
     print_me("DeltaT (TT - UT) for Feb/1928", round(Epoch.tt2ut(1928, 1), 1))
     print_me("DeltaT (TT - UT) for Feb/1977", round(Epoch.tt2ut(1977, 2), 1))
     print_me("DeltaT (TT - UT) for Jan/1998", round(Epoch.tt2ut(1998, 1), 1))
+
+    print("")
+
+    # The difference between civil day and sidereal day is almost 4 minutes
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    st1 = round(e.sidereal_time(), 9)
+    e = Epoch(1987, 4, 11, leap_seconds=0.0)
+    st2 = round(e.sidereal_time(), 9)
+    ds = (st2 - st1)*DAY2MIN
+    msg = "{}m {}s".format(INT(ds), (ds % 1)*60.0)
+    print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
 
     print("")
 
