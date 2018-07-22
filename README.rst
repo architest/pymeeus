@@ -24,7 +24,7 @@ Distributed under the GNU Lesser General Public License v3 (LGPLv3). See
 
 Documentation: https://pymeeus.readthedocs.io/en/latest/
 
-GitHub: https://github.com/architest/
+GitHub: https://github.com/architest/pymeeus
 
 Contributing
 ------------
