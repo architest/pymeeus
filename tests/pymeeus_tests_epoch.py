@@ -245,6 +245,28 @@ def test_epoch_get_date():
         "ERROR: 3rd get_date() test, output doesn't match"
 
 
+def test_epoch_tt2ut():
+    """Tests the tt2ut() method of Epoch class"""
+
+    assert abs(round(Epoch.tt2ut(1642, 1), 1) - 62.1) < TOL, \
+        "ERROR: 1st tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1680, 1), 1) - 15.3) < TOL, \
+        "ERROR: 2nd tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1774, 1), 1) - 16.7) < TOL, \
+        "ERROR: 3rd tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1890, 1), 1) - (-6.1)) < TOL, \
+        "ERROR: 4th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1928, 2), 1) - 24.2) < TOL, \
+        "ERROR: 5th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(2015, 7), 1) - 69.3) < TOL, \
+        "ERROR: 6th tt2ut() test, output doesn't match"
+
+
 def test_epoch_dow():
     """Tests the dow() method of Epoch class"""
 
@@ -262,6 +284,18 @@ def test_epoch_dow():
     e = Epoch(2018, 'Jul', 15.9)
     assert e.dow(as_string=True) == 'Sunday', \
         "ERROR: 4th dow() test, output doesn't match"
+
+
+def test_epoch_sidereal_time():
+    """Tests the sidereal_time() method of Epoch class"""
+
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    assert abs(round(e.sidereal_time(), 9) - 0.549147764) < TOL, \
+        "ERROR: 1st sidereal_time() test, output doesn't match"
+
+    e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
+    assert abs(round(e.sidereal_time(), 9) - 0.357605204) < TOL, \
+        "ERROR: 2nd sidereal_time() test, output doesn't match"
 
 
 def test_epoch_mjd():
