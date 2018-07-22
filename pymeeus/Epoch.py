@@ -71,43 +71,47 @@ class Epoch(object):
     outdated at some point in time. To counter this, you have two options:
 
     - Download an updated version of this Pymeeus package.
-    - Use the argument 'leap_seconds' in the constructor or 'set()' method to
-    provide the correct number of leap seconds (w.r.t. TAI) to be applied.
+    - Use the argument **leap_seconds** in the constructor or :meth:`set` method
+      to provide the correct number of leap seconds (w.r.t. TAI) to be applied.
 
     For instance, if at some time in the future the TAI-UTC difference is 43
-    seconds, you should set 'leap_seconds=43' if you don't have an updated
+    seconds, you should set **leap_seconds=43** if you don't have an updated
     version of this class.
 
     In order to know which is the most updated leap second value stored in this
-    class, you may use the 'get_last_leap_second()' method.
+    class, you may use the :meth:`get_last_leap_second()` method.
 
     The UTC to TT correction is done by default, but you may disable it by
-    setting 'leap_seconds=0'. In that case, it is supposed that the input data
-    is already in TT scale.
+    setting **leap_seconds=0**. In that case, it is supposed that the input
+    data is already in TT scale.
 
-    :note: As said above, UTC to TT correction is done by default, but the
-    current version of UTC was implemented in January 1st, 1972. Therefore, for
-    dates before the correction in NOT carried out, and it is supposed that the
-    input data is already in TT scale.
+    .. note:: As said above, UTC to TT correction is done by default, but the
+       current version of UTC was implemented in January 1st, 1972. Therefore,
+       for dates before the correction in NOT carried out, and it is supposed
+       that the input data is already in TT scale.
 
-    :note: For conversions between TT and Universal Time (UT), please use the
-    method 'tt2ut()'.
+    .. note:: For conversions between TT and Universal Time (UT), please use
+       the method :meth:`tt2ut`.
 
-    :note: Internally, time values are stored as a Julian Ephemeris Day (JDE),
-    based on the uniform scale of Dynamical Time, or more specifically,
-    Terrestial Time (TT) (itself the redefinition of Terrestrial Dynamical
-    Time, TDT).
+    .. note:: Internally, time values are stored as a Julian Ephemeris Day
+       (JDE), based on the uniform scale of Dynamical Time, or morei
+       specifically, Terrestial Time (TT) (itself the redefinition of
+       Terrestrial Dynamical Time, TDT).
 
-    :note: The UTC-TT conversion is composed of three parts: a) TT-TAI,
-    composed of 32.184 s, b) TAI-UTC(1972), 10 s, and c) UTC(1972)-UTC(Now),
-    which is the current amount of leap seconds. When you do 'leap_seconds=43',
-    you modify the c) part, while when you do 'leap_seconds=0.0', you disable
-    the three corrections.
+    .. note:: The UTC-TT conversion is composed of three corrections:
 
-    :note: Given that this class stores the epoch as JDE, if the JDE value is
-    in the order of millions of days then, for a computer with 15-digit
-    accuracy, the final time resolution is about 10 milliseconds. That is
-    considered enough for most applications of this class.
+       a. TT-TAI, composed of 32.184 s,
+       b. TAI-UTC(1972), 10 s, and
+       c. UTC(1972)-UTC(Now)
+
+       which is the current amount of leap seconds. When you do, for instance,
+       **leap_seconds=43**, you modify the c. part, while when you do
+       *leap_seconds=0.0*, you disable the three corrections.
+
+    .. note:: Given that this class stores the epoch as JDE, if the JDE value
+       is in the order of millions of days then, for a computer with 15-digit
+       accuracy, the final time resolution is about 10 milliseconds. That is
+       considered enough for most applications of this class.
     """
 
     def __init__(self, *args, **kwargs):
@@ -119,30 +123,32 @@ class Epoch(object):
 
         It is also possible to provide another Epoch object as input for the
         constructor, or the year, month, etc. arguments can be provided in a
-        tuple or list. Moreover, it is also possible provide 'date' or
-        'datetime' objects for initialization.
+        tuple or list. Moreover, it is also possible provide :class:`date` or
+        :class:`datetime` objects for initialization.
 
-        The 'month' value can be provided as an integer (1 = January, 2 =
+        The **month** value can be provided as an integer (1 = January, 2 =
         February, etc), or it can be provided as short (Jan, Feb, ...) or long
         (January, February, ...) names. Also, hours, minutes, seconds can be
         provided separately, or as decimals of the day value.
 
-        If 'leap_seconds' argument is set to a value different than zero, then
-        that value will be used for the UTC->TAI conversion, and the internal
-        leap seconds table will be bypassed. On the other hand, if it is set
-        to zero, then the UTC to TT correction is disabled, and it is supposed
-        that the input data is already in TT scale.
+        If **leap_seconds** argument is set to a value different than zero,
+        then that value will be used for the UTC->TAI conversion, and the
+        internal leap seconds table will be bypassed. On the other hand, if it
+        is set to zero, then the UTC to TT correction is disabled, and it is
+        supposed that the input data is already in TT scale.
 
         :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
-        hours, minutes, seconds values, by themselves or inside a tuple or list
-        :type \*args: int, float, Epoch, tuple, list, date, datetime
+           hours, minutes, seconds values, by themselves or inside a tuple or
+           list
+        :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
+           datetime
         :param leap_seconds: If different from zero, this is the value to be
-        used in the UTC->TAI conversion. If equals to zero, conversion is
-        disabled.
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled.
         :type leap_seconds: int, float
 
         :returns: Epoch object.
-        :rtype: Epoch
+        :rtype: :py:class:`Epoch`
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
@@ -162,30 +168,33 @@ class Epoch(object):
         values is supposed to be in UTC time (civil time).
 
         It is also possible to provide another Epoch object as input for the
-        'set()' method, or the year, month, etc arguments can be provided in a
-        tuple or list. Moreover, it is also possible provide 'date' or
-        'datetime' objects for initialization.
+        :meth:`set` method, or the year, month, etc arguments can be provided
+        in a tuple or list. Moreover, it is also possible provide :class:`date`
+        or :class:`datetime` objects for initialization.
 
-        The 'month' value can be provided as an integer (1 = January, 2 =
+        The **month** value can be provided as an integer (1 = January, 2 =
         February, etc), or it can be provided as short (Jan, Feb, ...) or long
         (January, February, ...) names. Also, hours, minutes, seconds can be
         provided separately, or as decimals of the day value.
 
-        If 'leap_seconds' argument is set to a value different than zero, then
-        that value will be used for the UTC->TAI conversion, and the internal
-        leap seconds table will be bypassed. On the other hand, if it is set
-        to zero, then the UTC to TT correction is disabled, and it is supposed
-        that the input data is already in TT scale.
+        If **leap_seconds** argument is set to a value different than zero,
+        then that value will be used for the UTC->TAI conversion, and the
+        internal leap seconds table will be bypassed. On the other hand, if it
+        is set to zero, then the UTC to TT correction is disabled, and it is
+        supposed that the input data is already in TT scale.
 
-        :note: The UTC to TT correction is only carried out for dates after
-        January 1st, 1972.
+        .. note:: The UTC to TT correction is only carried out for dates after
+           January 1st, 1972.
 
         :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
-        hours, minutes, seconds values, by themselves or inside a tuple or list
-        :type \*args: int, float, Epoch, tuple, list, date, datetime
+           hours, minutes, seconds values, by themselves or inside a tuple or
+           list
+        :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
+           datetime
         :param leap_seconds: If different from zero, this is the value to be
-        used in the UTC->TAI conversion. If equals to zero, conversion is
-        disabled. If not given, UTC to TT conversion is carried out (default).
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
         :type leap_seconds: int, float
 
         :returns: None.
@@ -277,8 +286,8 @@ class Epoch(object):
     def _compute_jde(self, y, m, d, utc2tt=True, leap_seconds=0.0):
         """Method to compute the Julian Ephemeris Day (JDE).
 
-        :note: The UTC to TT correction is only carried out for dates after
-        January 1st, 1972.
+        .. note:: The UTC to TT correction is only carried out for dates after
+           January 1st, 1972.
 
         :param y: Year
         :type y: int
@@ -711,7 +720,7 @@ class Epoch(object):
     def easter(year):
         """Method to return the Easter day for given year.
 
-        :note: This method is valid for both Gregorian and Julian years.
+        .. note:: This method is valid for both Gregorian and Julian years.
 
         :param year: Year
         :type year: int
@@ -771,7 +780,7 @@ class Epoch(object):
     def jewish_pesach(year):
         """Method to return the Jewish Easter (Pesach) day for given year.
 
-        :note: This method is valid for both Gregorian and Julian years.
+        .. note:: This method is valid for both Gregorian and Julian years.
 
         :param year: Year
         :type year: int
@@ -813,7 +822,7 @@ class Epoch(object):
         """Method to convert a date in the Moslen calendar to the Gregorian
         (or Julian) calendar.
 
-        :note: This method is valid for both Gregorian and Julian years.
+        .. note:: This method is valid for both Gregorian and Julian years.
 
         :param year: Year
         :type year: int
@@ -823,7 +832,7 @@ class Epoch(object):
         :type day: int
 
         :returns: Date in Gregorian (Julian) calendar: year, month and day, as
-        a tuple
+           a tuple
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
@@ -976,8 +985,8 @@ class Epoch(object):
     def get_date(self, **kwargs):
         """This method converts the internal JDE value back to a date.
 
-        Use 'leap_seconds=0.0' to disable the automatic TT to UTC conversion
-        mechanism, or provide a non zero value to 'leap_seconds' to apply a
+        Use **leap_seconds=0.0** to disable the automatic TT to UTC conversion
+        mechanism, or provide a non zero value to **leap_seconds** to apply a
         specific leap seconds value.
 
         :param leap_seconds: Optional value for leap seconds.
@@ -1060,7 +1069,7 @@ class Epoch(object):
     @staticmethod
     def tt2ut(year, month):
         """This method provides an approximation of the difference, in seconds,
-        between Terrestrial Time and Universal Time, denoted 'DeltaT', where:
+        between Terrestrial Time and Universal Time, denoted **DeltaT**, where:
         DeltaT = TT - UT.
 
         Here we depart from Meeus book and use the polynomial expressions from:
@@ -1071,8 +1080,8 @@ class Epoch(object):
 
         Please note that, by definition, the UTC time used internally in this
         Epoch class by default is kept within 0.9 seconds from UT. Therefore,
-        UTC is in itself a quite good approximation to UT, maybe even better
-        than some of the results provided by this method.
+        UTC is in itself a quite good approximation to UT, arguably better than
+        some of the results provided by this method.
 
         :param year: Year we want to compute DeltaT for.
         :type year: int, float
@@ -1169,11 +1178,11 @@ class Epoch(object):
         """Method to return the day of week corresponding to this Epoch.
 
         By default, this method returns an integer value: 0 for Sunday, 1 for
-        Monday, etc. However, when 'as_string=True' is passed, the names of the
-        days are returned.
+        Monday, etc. However, when **as_string=True** is passed, the names of
+        the days are returned.
 
         :param as_string: Whether result will be given as a integer or as a
-        string. False by default.
+           string. False by default.
         :type as_string: bool
 
         :returns: Day of the week, as a integer or as a string.
@@ -1211,11 +1220,12 @@ class Epoch(object):
         """Method to compute the _mean_ sidereal time at Greenwich for the
         epoch represented by this object.
 
-        :note: If you require the result as an angle, you should convert the
-        result from this method to hours with decimals (with DAY2HOURS), and
-        then multiply by 15 deg/hr. Alternatively, you can convert the result
-        to hours with decimals, and feed this value to an Angle object, setting
-        'ra=True', and making use of Angle facilities for further handling.
+        .. note:: If you require the result as an angle, you should convert the
+           result from this method to hours with decimals (with
+           :const:`DAY2HOURS`), and then multiply by 15 deg/hr. Alternatively,
+           you can convert the result to hours with decimals, and feed this
+           value to an :class:`Angle` object, setting **ra=True**, and making
+           use of :class:`Angle` facilities for further handling.
 
         :returns: Mean sidereal time, in days
         :rtype: float
@@ -1282,7 +1292,7 @@ class Epoch(object):
         :type b: int, float
 
         :returns: A new Epoch object.
-        :rtype: Epoch
+        :rtype: :py:class:`Epoch`
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(1991, 7, 11)
@@ -1301,11 +1311,11 @@ class Epoch(object):
         Epoch and a given number of days.
 
         :param b: Value to be subtracted, either an Epoch or days.
-        :type b: Epoch, int, float
+        :type b: py:class:`Epoch`, int, float
 
         :returns: A new Epoch object if parameter 'b' is in days, or the
-        difference between provided Epochs, in days.
-        :rtype: Epoch, float
+           difference between provided Epochs, in days.
+        :rtype: :py:class:`Epoch`, float
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(1986, 2, 9.0)
@@ -1337,7 +1347,7 @@ class Epoch(object):
         :type b: int, float
 
         :returns: This Epoch.
-        :rtype: Epoch
+        :rtype: :py:class:`Epoch`
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(2003, 12, 31.0)
@@ -1359,7 +1369,7 @@ class Epoch(object):
         :type b: int, float
 
         :returns: This Epoch.
-        :rtype: Epoch
+        :rtype: :py:class:`Epoch`
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(2001, 12, 31.0)
@@ -1381,7 +1391,7 @@ class Epoch(object):
         :type b: int, float
 
         :returns: A new Epoch object.
-        :rtype: Epoch
+        :rtype: :py:class:`Epoch`
         :raises: TypeError if operand is of wrong type.
 
         >>> a = Epoch(2004, 2, 27.8)
@@ -1422,7 +1432,7 @@ class Epoch(object):
     def __eq__(self, b):
         """This method defines the 'is equal' operator between Epochs.
 
-        :note: For the comparison, the base.TOL value is used.
+        .. note:: For the comparison, the **base.TOL** value is used.
 
         :returns: A boolean.
         :rtype: bool
@@ -1450,7 +1460,7 @@ class Epoch(object):
     def __ne__(self, b):
         """This method defines the 'is not equal' operator between Epochs.
 
-        :note: For the comparison, the base.TOL value is used.
+        .. note:: For the comparison, the **base.TOL** value is used.
 
         :returns: A boolean.
         :rtype: bool

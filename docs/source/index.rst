@@ -11,7 +11,11 @@
    :maxdepth: 2
    :caption: Contents:
 
-   code
+   base
+   Angle
+   Interpolation
+   CurveFitting
+   Epoch
 
 
 Indices and tables

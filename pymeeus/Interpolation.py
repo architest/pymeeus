@@ -52,7 +52,7 @@ class Interpolation(object):
     lists or Angles. It is also possible to provide an Interpolation object to
     the constructor in order to get a copy.
 
-    :note: When using Angles, be careful with the 360-to-0 discontinuity.
+    .. note:: When using Angles, be careful with the 360-to-0 discontinuity.
 
     If a sequence of int, floats or Angles is given, the values in the odd
     positions are considered to belong to the 'x' set, while the values in the
@@ -73,7 +73,7 @@ class Interpolation(object):
         or Angles. It is also possible to provide an Interpolation object to
         the constructor in order to get a copy.
 
-        :note: When using Angles, be careful with the 360-to-0 discontinuity.
+        .. note:: When using Angles, be careful with the 360-to-0 discontinuity
 
         If a sequence of int, floats or Angles is given, the values in the odd
         positions are considered to belong to the 'x' set, while the values in
@@ -86,10 +86,11 @@ class Interpolation(object):
         provided, a ValueError exception will be raised.
 
         :param \*args: Input tabular values, or another Interpolation object.
-        :type \*args: int, float, list, tuple, Angle, Interpolation
+        :type \*args: int, float, list, tuple, :py:class:`Angle`,
+           :py:class:`Interpolation`
 
         :returns: Interpolation object.
-        :rtype: Interpolation
+        :rtype: :py:class:`Interpolation`
         :raises: ValueError if not enough input data pairs are provided.
         :raises: TypeError if input values are of wrong type.
 
@@ -151,7 +152,7 @@ class Interpolation(object):
         lists, or Angles. It is also possible to provide an Interpolation
         object to this method in order to get a copy.
 
-        :note: When using Angles, be careful with the 360-to-0 discontinuity.
+        .. note:: When using Angles, be careful with the 360-to-0 discontinuity
 
         If a sequence of int, floats or Angles is given, the values in the odd
         positions are considered to belong to the 'x' set, while the values in
@@ -164,7 +165,7 @@ class Interpolation(object):
         provided, a ValueError exception will be raised.
 
         :param \*args: Input tabular values, or another Interpolation object.
-        :type \*args: int, float, list, tuple, Angle, Interpolation
+        :type \*args: int, float, list, tuple, :py:class:`Angle`
 
         :returns: None.
         :rtype: None
@@ -295,7 +296,7 @@ class Interpolation(object):
     def get_tolerance(self):
         """Gets the internal tolerance value used for comparisons.
 
-        :note: The default tolerance value is TOL.
+        .. note:: The default tolerance value is TOL.
 
         :returns: Internal tolerance.
         :rtype: float
@@ -343,7 +344,7 @@ class Interpolation(object):
         """Method to interpolate the function at a given 'x'.
 
         :param x: Point where the interpolation will be carried out.
-        :type x: int, float, Angle
+        :type x: int, float, :py:class:`Angle`
 
         :returns: Resulting value of the interpolation.
         :rtype: float
@@ -380,7 +381,7 @@ class Interpolation(object):
         """Method to compute the derivative from interpolation polynomial.
 
         :param x: Point where the interpolation derivative will be carried out.
-        :type x: int, float, Angle
+        :type x: int, float, :py:class:`Angle`
 
         :returns: Resulting value of the interpolation derivative.
         :rtype: float
@@ -427,27 +428,29 @@ class Interpolation(object):
         If values xl, xh are not given, the limits of the interpolation table
         values will be used.
 
-        :note: This method returns a ValueError exception if the corresponding
-        yl = f(xl) and yh = f(xh) values have the same sign. In that case, the
-        method assumes there is no root in the [xl, xh] interval.
+        .. note:: This method returns a ValueError exception if the
+           corresponding yl = f(xl) and yh = f(xh) values have the same sign.
+           In that case, the method assumes there is no root in the [xl, xh]
+           interval.
 
-        :note: If any of the xl, xh values is beyond the limits given by the
-        interpolation values, its value will be set to the corresponding limit.
+        .. note:: If any of the xl, xh values is beyond the limits given by the
+           interpolation values, its value will be set to the corresponding
+           limit.
 
-        :note: If xl == xh (and not zero), a ValueError exception is raised.
+        .. note:: If xl == xh (and not zero), a ValueError exception is raised.
 
-        :note: If the method doesn't converge within max_iter ierations, then a
-        ValueError exception is raised.
+        .. note:: If the method doesn't converge within max_iter ierations,
+           then a ValueError exception is raised.
 
         :param xl: Lower limit of interval where the root will be looked for.
-        :type xl: int, float, Angle
+        :type xl: int, float, :py:class:`Angle`
         :param xh: Higher limit of interval where the root will be looked for.
-        :type xh: int, float, Angle
+        :type xh: int, float, :py:class:`Angle`
         :param max_iter: Maximum number of iterations allowed.
         :type max_iter: int
 
         :returns: Root of the interpolated function within [xl, xh] interval.
-        :rtype: int, float, Angle
+        :rtype: int, float, :py:class:`Angle`
         :raises: ValueError if yl = f(xl), yh = f(xh) have same sign.
         :raises: ValueError if xl == xh.
         :raises: ValueError if maximum number of iterations is exceeded.
@@ -527,34 +530,39 @@ class Interpolation(object):
         Finding the minimum or maximum (extremum) of a function within a given
         interval is akin to find the root of its derivative. Therefore, this
         method creates an interpolation object for the derivative function, and
-        calls the root method of that object. See root() method for more
+        calls the root method of that object. See :meth:`root` method for more
         details.
 
         If values xl, xh are not given, the limits of the interpolation table
         values will be used.
 
-        :note: This method returns a ValueError exception if the corresponding
-        derivatives yl' = f'(xl) and yh' = f'(xh) values have the same sign.
-        In that case, the method assumes there is no extremum in the [xl, xh]
-        interval.
+        .. note::
 
-        :note: If any of the xl, xh values is beyond the limits given by the
-        interpolation values, its value will be set to the corresponding limit.
+           This method returns a ValueError exception if the corresponding
+           derivatives yl' = f'(xl) and yh' = f'(xh) values have the same sign.
+           In that case, the method assumes there is no extremum in the
+           [xl, xh] interval.
 
-        :note: If xl == xh (and not zero), a ValueError exception is raised.
+        .. note::
 
-        :note: If the method doesn't converge within max_iter ierations, then
-        a ValueError exception is raised.
+           If any of the xl, xh values is beyond the limits given by the
+           interpolation values, its value will be set to the corresponding
+           limit.
+
+        .. note:: If xl == xh (and not zero), a ValueError exception is raised.
+
+        .. note:: If the method doesn't converge within max_iter ierations,
+           then a ValueError exception is raised.
 
         :param xl: Lower limit of interval where a extremum will be looked for.
-        :type xl: int, float, Angle
+        :type xl: int, float, :py:class:`Angle`
         :param xh: Higher limit of interval where extremum will be looked for.
-        :type xh: int, float, Angle
+        :type xh: int, float, :py:class:`Angle`
         :param max_iter: Maximum number of iterations allowed.
         :type max_iter: int
 
         :returns: Extremum of interpolated function within [xl, xh] interval.
-        :rtype: int, float, Angle
+        :rtype: int, float, :py:class:`Angle`
         :raises: ValueError if yl = f(xl), yh = f(xh) have same sign.
         :raises: ValueError if xl == xh.
         :raises: ValueError if maximum number of iterations is exceeded.

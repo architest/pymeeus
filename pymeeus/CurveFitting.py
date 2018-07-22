@@ -42,7 +42,7 @@ class CurveFitting(object):
     lists or Angles. It is also possible to provide a CurveFitting object to
     the constructor in order to get a copy.
 
-    :note: When using Angles, be careful with the 360-to-0 discontinuity.
+    .. note:: When using Angles, be careful with the 360-to-0 discontinuity.
 
     If a sequence of int, floats or Angles is given, the values in the odd
     positions are considered to belong to the 'x' set, while the values in the
@@ -63,7 +63,7 @@ class CurveFitting(object):
         or Angles. It is also possible to provide a CurveFitting object to the
         constructor in order to get a copy.
 
-        :note: When using Angles, be careful with the 360-to-0 discontinuity.
+        .. note:: When using Angles, be careful with the 360-to-0 discontinuity
 
         If a sequence of int, floats or Angles is given, the values in the odd
         positions are considered to belong to the 'x' set, while the values in
@@ -76,10 +76,11 @@ class CurveFitting(object):
         provided, a ValueError exception will be raised.
 
         :param \*args: Input tabular values, or another CurveFitting object.
-        :type \*args: int, float, list, tuple, Angle, CurveFitting
+        :type \*args: int, float, list, tuple, :py:class:`Angle`,
+           :py:class:`CurveFitting`
 
         :returns: CurveFitting object.
-        :rtype: CurveFitting
+        :rtype: :py:class:`CurveFitting`
         :raises: ValueError if not enough input data pairs are provided.
         :raises: TypeError if input values are of wrong type.
 
@@ -117,7 +118,7 @@ class CurveFitting(object):
         lists, or Angles. It is also possible to provide a CurveFitting object
         to this method in order to get a copy.
 
-        :note: When using Angles, be careful with the 360-to-0 discontinuity.
+        .. note:: When using Angles, be careful with the 360-to-0 discontinuity
 
         If a sequence of int, floats or Angles is given, the values in the odd
         positions are considered to belong to the 'x' set, while the values in
@@ -130,7 +131,7 @@ class CurveFitting(object):
         ValueError exception will be raised.
 
         :param \*args: Input tabular values, or another CurveFitting object.
-        :type \*args: int, float, list, tuple, Angle
+        :type \*args: int, float, list, tuple, :py:class:`Angle`
 
         :returns: None.
         :rtype: None
@@ -293,8 +294,8 @@ class CurveFitting(object):
 
     def linear_fitting(self):
         """This method returns a tuple with the 'a', 'b' coefficients of the
-        linear equation 'y = a*x + b' that best fits the table data, using the
-        least squares approach.
+        linear equation *'y = a*x + b'* that best fits the table data, using
+        the least squares approach.
 
         :returns: 'a', 'b' coefficients of best linear equation fit.
         :rtype: tuple
@@ -327,7 +328,7 @@ class CurveFitting(object):
 
     def quadratic_fitting(self):
         """This method returns a tuple with the 'a', 'b', 'c' coefficients of
-        the quadratic equation 'y = a*x*x + b*x + c' that best fits the table
+        the quadratic equation *'y = a*x*x + b*x + c'* that best fits the table
         data, using the least squares approach.
 
         :returns: 'a', 'b', 'c' coefficients of best quadratic equation fit.
@@ -364,7 +365,7 @@ class CurveFitting(object):
 
     def general_fitting(self, f0, f1=lambda *args: 0.0, f2=lambda *args: 0.0):
         """This method returns a tuple with the 'a', 'b', 'c' coefficients of
-        the general equation 'y = a*f0(x) + b*f1(x) + c*f2(x)' that best fits
+        the general equation *'y = a*f0(x) + b*f1(x) + c*f2(x)'* that best fits
         the table data, using the least squares approach.
 
         :param f0, f1, f2: Functions used to build the general equation.
@@ -372,7 +373,7 @@ class CurveFitting(object):
         :returns: 'a', 'b', 'c' coefficients of best general equation fit.
         :rtype: tuple
         :raises: ZeroDivisionError if input functions are null or input data
-        leads to a division by zero
+           leads to a division by zero
 
         >>> cf4 = CurveFitting([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183,
         ...                     200, 218, 230, 248, 269, 290, 303, 320, 344],

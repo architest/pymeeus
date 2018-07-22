@@ -37,9 +37,11 @@ TOL = 1E-10
 def machine_accuracy():
     """This function computes the accuracy of the computer being used.
 
-    :returns: A tuple containing the number of significant bits in the mantissa
-    of a floating number, and the number of significant digits in a decimal
-    number.
+    This function returns a tuple containing the number of significant bits in
+    the mantissa of a floating number, and the number of significant digits in
+    a decimal number.
+
+    :returns: Number of significant bits, and of significant digits
     :rtype: tuple
     """
     j = 0.0
@@ -88,8 +90,8 @@ def get_ordinal_suffix(ordinal):
 
 
 def INT(number):
-    """This method behaves in the same way as the 'INT()' function described by
-    Meeus in his book: Greatest integer which is not greater than number.
+    """This method behaves in the same way as the **INT()** function described
+    by Meeus in his book: Greatest integer which is not greater than number.
 
     :param number: Number or expresion
     :type number: int, float

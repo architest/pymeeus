@@ -1,13 +1,10 @@
-Documentation for the Code
-**************************
+Base
+****
 
 .. automodule:: pymeeus
 
 
-Angle
-=====
-
-Class to handle angles.
+Basic, general functions and constants.
 
 .. automodule:: pymeeus.base
    :members:

@@ -44,8 +44,8 @@ class Angle(object):
     tuples or lists. It is also possible to provide another Angle object as
     input.
 
-    Also, if 'radians=True' is passed to the constructor, then the input value
-    is considered as in radians, and converted to degrees.
+    Also, if **radians=True** is passed to the constructor, then the input
+    value is considered as in radians, and converted to degrees.
     """
 
     def __init__(self, *args, **kwargs):
@@ -55,22 +55,21 @@ class Angle(object):
         given as separate degree, minutes, seconds values, or as tuples or
         lists. It is also possible to provide another Angle object as input.
 
-        If 'radians=True' is passed, then the input value is converted from
+        If **radians=True** is passed, then the input value is converted from
         radians to degrees.
 
-        If 'ra=True' is passed, then the input value is converted from Right
+        If **ra=True** is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format, or
-        another Angle object.
-        :type \*args: int, float, list, tuple, Angle
+        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
+        :type \*args: int, float, list, tuple, :py:class:`Angle`
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
         :type ra: bool
 
         :returns: Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(-13, 30, 0.0)
@@ -90,7 +89,7 @@ class Angle(object):
         value in the +/-[0:360) range.
 
         :param deg: Input degree angle in decimal format.
-        :type deg: int, float, Angle
+        :type deg: int, float, :py:class:`Angle`
 
         :returns: Float value of the angle in the +/-[0:360) range.
         :rtype: float
@@ -161,7 +160,7 @@ class Angle(object):
         :returns: Angle in sexagesimal format, with ranges adjusted.
         :rtype: tuple
 
-        :note: The output format is (Degrees, Minutes, Seconds, sign)
+        .. note:: The output format is (Degrees, Minutes, Seconds, sign)
 
         >>> print(Angle.deg2dms(23.44694444))
         (23, 26, 48.999983999997596, 1.0)
@@ -201,7 +200,7 @@ class Angle(object):
     def get_tolerance(self):
         """Gets the internal tolerance value used to compare Angles.
 
-        :note: The default tolerance value is TOL.
+        .. note:: The default tolerance value is **base.TOL**.
 
         :returns: Internal tolerance.
         :rtype: float
@@ -254,15 +253,14 @@ class Angle(object):
         given as separate degree, minutes, seconds values, or as tuples or
         lists. It is also possible to provide another Angle object as input.
 
-        If 'radians=True' is passed, then the input value is converted from
+        If **radians=True** is passed, then the input value is converted from
         radians to degrees
 
-        If 'ra=True' is passed, then the input value is converted from Right
+        If **ra=True** is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format, or
-        another Angle object.
-        :type \*args: int, float, list, tuple, Angle
+        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
+        :type \*args: int, float, list, tuple, :py:class:`Angle`
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
@@ -391,7 +389,7 @@ class Angle(object):
     def dms_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string.
 
-        The parameter 'fancy' allows to print in "Dd M' S''" format if true,
+        The parameter **fancy** allows to print in "Dd M' S''" format if True,
         and in "D:M:S" (easier to parse) if False.
 
         :param fancy: Format of output string. True by default.
@@ -441,7 +439,7 @@ class Angle(object):
     def ra_str(self, fancy=True):
         """Returns the Angle value as a sexagesimal string in Right Ascension.
 
-        The parameter 'fancy' allows to print in "Hh M' S''" format if true,
+        The parameter **fancy** allows to print in "Hh M' S''" format if True,
         and in "H:M:S" (easier to parse) if False.
 
         :param fancy: Format of output string. True by default.
@@ -496,7 +494,7 @@ class Angle(object):
         """Converts the internal angle value from negative to positive.
 
         :returns: This angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(-87.32)
         >>> print(a.to_positive())
@@ -509,7 +507,7 @@ class Angle(object):
     def __eq__(self, b):
         """This method defines the 'is equal' operator between Angles.
 
-        :note: For the comparison, the internal tolerance value is used.
+        .. note:: For the comparison, the internal tolerance value is used.
 
         :returns: A boolean.
         :rtype: bool
@@ -530,7 +528,7 @@ class Angle(object):
     def __ne__(self, b):
         """This method defines the 'is not equal' operator between Angles.
 
-        :note: For the comparison, the internal tolerance value is used.
+        .. note:: For the comparison, the internal tolerance value is used.
 
         :returns: A boolean.
         :rtype: bool
@@ -612,7 +610,7 @@ class Angle(object):
         """This method is used to obtain the negative version of this Angle.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(-11.2)
         >>> print(-a)
@@ -624,7 +622,7 @@ class Angle(object):
         """This method is used to obtain the absolute value of this Angle.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(-303.67)
         >>> print(abs(a))
@@ -636,7 +634,7 @@ class Angle(object):
         """This method is used to obtain the module b of this Angle.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(333.0)
@@ -657,7 +655,7 @@ class Angle(object):
         """This method defines the addition between Angles.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(83.1)
@@ -676,7 +674,7 @@ class Angle(object):
         """This method defines the subtraction between Angles.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(25.4)
@@ -690,7 +688,7 @@ class Angle(object):
         """This method defines the multiplication between Angles.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(33.0)
@@ -709,7 +707,7 @@ class Angle(object):
         """This method defines the division between Angles.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
@@ -731,7 +729,7 @@ class Angle(object):
         """This method defines the division between Angles (Python 3).
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __div__
@@ -742,7 +740,7 @@ class Angle(object):
         """This method defines the power operation for Angles.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(12.5)
@@ -761,7 +759,7 @@ class Angle(object):
         """This method defines the accumulative module b of this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(330.0)
         >>> b = Angle(45.0)
@@ -777,7 +775,7 @@ class Angle(object):
         """This method defines the accumulative addition to this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(172.1)
         >>> b = Angle(54.6)
@@ -792,7 +790,7 @@ class Angle(object):
         """This method defines the accumulative subtraction to this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(97.0)
         >>> b = Angle(39.0)
@@ -807,7 +805,7 @@ class Angle(object):
         """This method defines the accumulative multiplication to this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(30.0)
         >>> b = Angle(55.0)
@@ -822,7 +820,7 @@ class Angle(object):
         """This method defines the accumulative division to this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
@@ -843,7 +841,7 @@ class Angle(object):
         """This method defines accumulative division to this Angle (Python3).
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __idiv__
@@ -854,7 +852,7 @@ class Angle(object):
         """This method defines the accumulative power to this Angle.
 
         :returns: This Angle.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(37.0)
         >>> b = Angle(3.0)
@@ -869,7 +867,7 @@ class Angle(object):
         """This method defines module operation between Angles by the right.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(80.0)
         >>> print(350 % a)
@@ -885,7 +883,7 @@ class Angle(object):
         """This method defines the addition between Angles by the right
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(83.1)
         >>> print(8.5 + a)
@@ -897,7 +895,7 @@ class Angle(object):
         """This method defines the subtraction between Angles by the right.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(25.0)
@@ -910,7 +908,7 @@ class Angle(object):
         """This method defines multiplication between Angles by the right.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(11.0)
@@ -923,7 +921,7 @@ class Angle(object):
         """This method defines division between Angles by the right.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
 
@@ -944,7 +942,7 @@ class Angle(object):
         """This method defines division between Angle by the right (Python3).
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: ZeroDivisionError if divisor is zero.
         :raises: TypeError if input values are of wrong type.
         :see: __rdiv__
@@ -955,7 +953,7 @@ class Angle(object):
         """This method defines the power operation for Angles by the right.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
         :raises: TypeError if input values are of wrong type.
 
         >>> a = Angle(5.0)
@@ -997,7 +995,7 @@ class Angle(object):
         """This method returns an Angle with content rounded to 'n' decimal.
 
         :returns: A new Angle object.
-        :rtype: Angle
+        :rtype: :py:class:`Angle`
 
         >>> a = Angle(11.4361)
         >>> print(round(a, 2))
