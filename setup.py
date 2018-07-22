@@ -15,7 +15,7 @@ with open(path.join(here, 'README.rst')) as f:
 
 config = {
     'name': 'PyMeeus',
-    'version': '0.0.7',
+    'version': '0.0.8',
     'description': 'Python implementation of Jean Meeus astronomical routines',
     'long_description': long_description,
     'keywords': 'Meeus astronomy module library',
@@ -25,7 +25,8 @@ config = {
     'url': 'https://github.com/architest/pymeeus',
     'download_url': 'https://github.com/architest/pymeeus',
     # 'install_requires': ['nose', 'pypandoc'],
-    'packages': ['pymeeus'],            # 'scripts': ['example.py'],
+    'packages': ['pymeeus'],
+    # 'scripts': ['example.py'],
     'py_modules': ['base'],
     'classifiers': [
         'Development Status :: 3 - Alpha',
