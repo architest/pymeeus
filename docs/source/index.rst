@@ -23,6 +23,9 @@
 
    ex-base
    ex-Angle
+   ex-Interpolation
+   ex-CurveFitting
+   ex-Epoch
 
 
 Indices and tables

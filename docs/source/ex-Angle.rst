@@ -286,6 +286,7 @@ Let's now work with some useful operators and functions::
 - It is very easy to add Angles to obtain a new Angle::
 
     e = c + d
+
     print_me("   c + d", e)
 
     #    c + d: 133.7825
