@@ -1040,7 +1040,7 @@ def main():
 
     # We can print Angle 'a' directly in sexagesimal format
     # In 'fancy' format:
-    print_me("{Deg}d {Min}' {Sec}''", a.dms_str())  # 23d 26' 48.999984''
+    print_me("{Deg}d {Min}' {Sec}''", a.dms_str())  # -23d 26' 48.999984''
     # In plain format:
     print_me("{Deg}:{Min}:{Sec}", a.dms_str(False))  # -23:26:48.999983999
 
@@ -1111,13 +1111,13 @@ def main():
 
     # Call the __repr__() method to get a string defining the current object
     # This string can then be fed to 'eval()' function to generate the object
-    print_me("print(b.__repr__())", b.__repr__())           # Angle(180.0)
+    print_me("print(b.__repr__())", b.__repr__())           # Angle(138.7325)
     c = eval(repr(b))
-    print_me("c = eval(repr(b)); print(c)", c)              # 180.0
+    print_me("c = eval(repr(b)); print(c)", c)              # 138.7325
 
     print("")
 
-    print_me("c", c)                                        # 180.0
+    print_me("c", c)                                        # 138.7325
 
     # Negate an angle
     d = Angle(13, 30)
@@ -1162,19 +1162,19 @@ def main():
     print_me("   d == e", d == e)                           # False
     print_me("   d != e", d != e)                           # True
     print_me("   d > e", d > e)                             # True
-    print_me("   c >= 180.0", c >= 180.0)                   # True
-    print_me("   c < 180.0", c < 180.0)                     # False
+    print_me("   c >= 180.0", c >= 180.0)                   # False
+    print_me("   c < 180.0", c < 180.0)                     # True
     print_me("   c <= 180.0", c <= 180.0)                   # True
 
     print("")
 
     # It is very easy to add Angles to obtain a new Angle
     e = c + d
-    print_me("   c + d", e)                                 # 193.5
+    print_me("   c + d", e)                                 # 133.7825
 
     # We can also directly add a decimal angle
     e = c + 11.5
-    print_me("   c + 11.5", e)                              # 193.5
+    print_me("   c + 11.5", e)                              # 150.2325
 
     print("")
 
@@ -1189,7 +1189,7 @@ def main():
 
     # Subtraction
     e = c - d
-    print_me("   c - d", e)                                 # 184.95
+    print_me("   c - d", e)                                 # 143.6825
 
     # Multiplication
     c.set(150.0)
@@ -1210,7 +1210,7 @@ def main():
 
     # Division by zero is not allowed
     d.set(0.0)
-    print_me("d", d)                                        # 6.0
+    print_me("d", d)                                        # 0.0
     print('e = c / d')
     try:
         e = c / d
@@ -1235,46 +1235,46 @@ def main():
 
     # Accumulative addition
     c += d
-    print_me("   c += d", c)                                # 156.0
+    print_me("   c += d", c)                                # 167.0
 
     # Accumulative subtraction
-    print_me("b", b)                                        # 180.0
+    print_me("b", b)                                        # 138.7325
     c -= b
-    print_me("   c -= b", c)                                # -24.0
+    print_me("   c -= b", c)                                # 28.2675
 
     # Accumulative multiplication
-    print_me("b", b)                                        # 180.0
+    print_me("b", b)                                        # 138.7325
     c *= b
-    print_me("   c *= b", c)                                # -180.0
+    print_me("   c *= b", c)                                # 321.62094375
 
     # Accumulative division
-    print_me("b", b)                                        # 180.0
+    print_me("b", b)                                        # 138.7325
     d.set(6.0)
     print_me("d", d)                                        # 6.0
     b /= d
-    print_me("   b /= d", b)                                # 30.0
+    print_me("   b /= d", b)                                # 23.1220833333
 
     # Accumulative power
     d.set(2.2)
     print_me("d", d)                                        # 2.2
     c = abs(c)
-    print_me("   c = abs(c)", c)                            # 180.0
+    print_me("   c = abs(c)", c)                            # 321.62094375
     c **= d
-    print_me("   c **= d", c)                               # 97.5978160305
+    print_me("   c **= d", c)                               # 254.307104203
 
     print("")
 
     # The same operation, but by the right side
     e = 3.5 + b
-    print_me("   e = 3.5 + b", e)                           # 33.5
+    print_me("   e = 3.5 + b", e)                           # 26.6220833333
     e = 3.5 - b
-    print_me("   e = 3.5 - b", e)                           # -26.5
+    print_me("   e = 3.5 - b", e)                           # -19.6220833333
     e = 3.5 * b
-    print_me("   e = 3.5 * b", e)                           # 105.0
+    print_me("   e = 3.5 * b", e)                           # 80.9272916667
     e = 3.5 / b
-    print_me("   e = 3.5 / b", e)                           # 0.116666666667
+    print_me("   e = 3.5 / b", e)                           # 0.151370443119
     e = 3.5 ** b
-    print_me("   e = 3.5 ** b", e)                          # 220.0
+    print_me("   e = 3.5 ** b", e)                          # 260.783691406
 
 
 if __name__ == '__main__':
