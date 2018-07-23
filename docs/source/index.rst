@@ -9,13 +9,20 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: API:
 
    base
    Angle
    Interpolation
    CurveFitting
    Epoch
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples:
+
+   ex-base
+   ex-Angle
 
 
 Indices and tables
