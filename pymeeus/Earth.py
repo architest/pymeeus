@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import pi, degrees, radians
+from math import sqrt
 
 
 """
@@ -39,194 +39,146 @@ class Ellipsoid(object):
     def __init__(self, a, f, omega):
         """Ellipsoid constructor.
 
-        :param a: Semi-major or equatorial radius
+        :param a: Semi-major or equatorial radius, in meters
         :type a: float
         :param f: Flattening
         :type f: float
-        :param omega: Angular velocity of the Earth
+        :param omega: Angular velocity of the Earth, in rad/s
         :type omega: float
         """
         self._a = a
         self._f = f
         self._omega = omega
 
+    def __str__(self):
+        """Method used when trying to print the object.
+
+        :returns: Semi-major equatorial radius, flattening and angular velocity
+           as string.
+        :rtype: string
+
+        >>> a = Ellipsoid(6378140.0, 0.0033528132, 7.292e-5)
+        >>> print(a)
+        6378140.0:0.0033528132:7.292e-05
+        """
+        return "{}:{}:{}".format(self._a, self._f, self._omega)
+
+    def b(self):
+        """Method to return the semi-minor radius.
+
+        :returns: Semi-minor radius, in meters
+        :rtype: float
+
+        >>> a = Ellipsoid(6378140.0, 0.0033528132, 7.292e-5)
+        >>> round(a.b(), 3)
+        6356755.288
+        """
+        return self._a*(1.0 - self._f)
+
+    def e(self):
+        """Method to return the eccentricity of the Earth's meridian.
+
+        :returns: Eccentricity of the Earth's meridian
+        :rtype: float
+
+        >>> a = Ellipsoid(6378140.0, 0.0033528132, 7.292e-5)
+        >>> round(a.e(), 8)
+        0.08181922
+        """
+        f = self._f
+        return sqrt(2.0*f - f*f)
+
+
+IAU76 = Ellipsoid(6378140.0, (1.0/298.257), 7.292114992e-5)
+"""Reference ellipsoid defined by the International Astronomic Union in 1976"""
+
+WGS84 = Ellipsoid(6378137.0, (1.0/298.257223563), 7292115e-11)
+"""Reference ellipsoid World Geodetic System 1984, a modern ellipsoid used by
+the GPS system, and the standard in many applications"""
+
 
 class Earth(object):
     """
-    Class Angle deals with angles in either decimal format (d.dd) of in
-    sexagesimal format (d m' s'').
+    Class Earth models the figure of the Earth surface and, with the help of a
+    configurable reference ellipsoid, provides a set of handy method to compute
+    different parameters, like the distance between two points on the surface.
 
-    It provides methods to handle an Angle object like it were a simple float,
-    but adding the functionality associated with an angle.
-
-    The constructor takes decimals and sexagesimal input. The sexagesimal
-    angles can be given as separate degree, minutes, seconds values, or as
-    tuples or lists. It is also possible to provide another Angle object as
-    input.
-
-    Also, if **radians=True** is passed to the constructor, then the input
-    value is considered as in radians, and converted to degrees.
+    Please note that here we depart a little bit from Meeus' book because the
+    Earth class uses the **World Geodetic System 1984 (WGS84)** as the default
+    reference ellipsoid, instead of the International Astronomical Union 1974,
+    which Meeus uses. This change is done because WGS84 is regarded as more
+    modern.
     """
 
-    def __init__(self, *args, **kwargs):
-        """Angle constructor.
+    def __init__(self, ellipsoid=WGS84):
+        """Earth constructor.
 
-        It takes decimals and sexagesimal input. The sexagesimal angles can be
-        given as separate degree, minutes, seconds values, or as tuples or
-        lists. It is also possible to provide another Angle object as input.
+        It takes a reference ellipsoid as input. If not provided, the ellipsoid
+        used is the WGS84 by default.
 
-        If **radians=True** is passed, then the input value is converted from
-        radians to degrees.
+        :param ellipsoid: Reference ellipsoid to be used. WGS84 by default.
+        :type radians: :class:`Ellipsoid`
 
-        If **ra=True** is passed, then the input value is converted from Right
-        Ascension to degrees
+        :returns: Earth object.
+        :rtype: :py:class:`Earth`
+        :raises: TypeError if input value is of wrong type.
 
-        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
-        :param radians: If True, input angle is in radians. False by default.
-        :type radians: bool
-        :param ra: If True, input angle is in Right Ascension. False by default
-        :type ra: bool
-
-        :returns: Angle object.
-        :rtype: :py:class:`Angle`
-        :raises: TypeError if input values are of wrong type.
-
-        >>> a = Angle(-13, 30, 0.0)
-        >>> print(a)
-        -13.5
-        >>> b = Angle(a)
-        >>> print(b)
-        -13.5
+        #>>> a = Angle(-13, 30, 0.0)
+        #>>> print(a)
+        #-13.5
+        #>>> b = Angle(a)
+        #>>> print(b)
+        #-13.5
         """
-        self._deg = 0.0         # Angle value is stored here in decimal format
-        self._tol = TOL
-        self.set(*args, **kwargs)   # Let's use 'set()' method to set angle
+        # Set an invalid ellipsoid by default
+        self._ellip = Ellipsoid(0.0, 0.0, 0.0)
+        self.set(ellipsoid)   # Let's use 'set()' method
 
-    def set(self, *args, **kwargs):
-        """Method used to define the value of the Angle object.
+    def set(self, ellipsoid):
+        """Method used to define an Earth object.
 
-        It takes decimals and sexagesimal input. The sexagesimal angles can be
-        given as separate degree, minutes, seconds values, or as tuples or
-        lists. It is also possible to provide another Angle object as input.
+        It takes a reference ellipsoid as input. If not provided, the ellipsoid
+        used is the WGS84 by default.
 
-        If **radians=True** is passed, then the input value is converted from
-        radians to degrees
+        :param ellipsoid: Reference ellipsoid to be used. WGS84 by default.
+        :type radians: :class:`Ellipsoid`
 
-        If **ra=True** is passed, then the input value is converted from Right
-        Ascension to degrees
-
-        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
-        :param radians: If True, input angle is in radians. False by default.
-        :type radians: bool
-        :param ra: If True, input angle is in Right Ascension. False by default
-        :type ra: bool
-
-        :returns: None.
+        :returns: None
         :rtype: None
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
         """
-        if 'ra' in kwargs:
-            if kwargs['ra']:
-                # Input values are a Right Ascension
-                self.set_ra(*args)
-                return
-        # If no arguments are given, internal angle is set to zero
-        if len(args) == 0:
-            self._deg = 0.0
-            return
-        # If we have only one argument, it can be a single value, a tuple/list
-        # or an Angle
-        elif len(args) == 1:
-            deg = args[0]
-            if isinstance(deg, Angle):                  # Copy constructor
-                self._deg = deg._deg
-                self._tol = deg._tol
-                return
-            if isinstance(deg, (int, float)):
-                if 'radians' in kwargs:
-                    if kwargs['radians']:
-                        # Input value is in radians. Convert to degrees
-                        deg = degrees(deg)
-                # This works for ints, floats and Angles
-                self._deg = Angle.reduce_deg(deg)
-                return
-            elif isinstance(deg, (list, tuple)):
-                if len(deg) == 0:
-                    raise TypeError("Invalid input value")
-                elif len(deg) == 1:
-                    # This is a single value
-                    if 'radians' in kwargs:
-                        if kwargs['radians']:
-                            # Input value is in radians. Convert to degrees
-                            deg[0] = degrees(deg[0])
-                    self._deg = Angle.reduce_deg(deg[0])
-                    return
-                elif len(deg) == 2:
-                    # Seconds value is set to zero
-                    self._deg = Angle.dms2deg(deg[0], deg[1])
-                    return
-                elif len(deg) == 3:
-                    # The first three values are taken into account
-                    self._deg = Angle.dms2deg(deg[0], deg[1], deg[2])
-                    return
-                else:
-                    # Only the first four values are taken into account
-                    sign = -1.0 if deg[0] < 0 or deg[1] < 0 or deg[2] < 0 \
-                        or deg[3] < 0 else 1.0
-                    # If sign < 0, make all values negative, to be sure
-                    deg0 = sign * abs(deg[0])
-                    deg1 = sign * abs(deg[1])
-                    deg2 = sign * abs(deg[2])
-                    self._deg = Angle.dms2deg(deg0, deg1, deg2)
-                    return
-            else:
-                raise TypeError("Invalid input value")
-        elif len(args) == 2:
-            # Seconds value is set to zero
-            self._deg = Angle.dms2deg(args[0], args[1])
-            return
-        elif len(args) == 3:
-            # The first three values are taken into account
-            self._deg = Angle.dms2deg(args[0], args[1], args[2])
-            return
+        if isinstance(ellipsoid, Ellipsoid):
+            self._ellip = ellipsoid
         else:
-            # Only the first four values are taken into account
-            sign = -1.0 if args[0] < 0 or args[1] < 0 or args[2] < 0 \
-                or args[3] < 0 else 1.0
-            # If sign < 0, make all values negative, to be sure
-            args0 = sign * abs(args[0])
-            args1 = sign * abs(args[1])
-            args2 = sign * abs(args[2])
-            self._deg = Angle.dms2deg(args0, args1, args2)
-            return
+            raise TypeError("Invalid input value")
+        return
 
 
 def main():
 
-    # Let's define a small helper function
-    def print_me(msg, val):
-        print("{}: {}".format(msg, val))
-
-    # Let's show some uses of Earth class
-    print('\n' + 35*'*')
-    print("*** Use of Earth class")
-    print(35*'*' + '\n')
-
-    # Create an Angle object, providing degrees, minutes and seconds
-    a = Angle(-23.0, 26.0, 48.999983999)
-
-    # First we print using the __call__ method (note the extra parentheses)
-    print_me("The angle 'a()' is", a())             # -23.44694444
-
-    print("")
-
-    # Use the copy constructor
-    b = Angle(a)
-    print_me("Angle 'b', which is a copy of 'a', is", b)
-
-    print("")
+    pass
+#     # Let's define a small helper function
+#     def print_me(msg, val):
+#         print("{}: {}".format(msg, val))
+#
+#     # Let's show some uses of Earth class
+#     print('\n' + 35*'*')
+#     print("*** Use of Earth class")
+#     print(35*'*' + '\n')
+#
+#     # Create an Angle object, providing degrees, minutes and seconds
+#     a = Angle(-23.0, 26.0, 48.999983999)
+#
+#     # First we print using the __call__ method (note the extra parentheses)
+#     print_me("The angle 'a()' is", a())             # -23.44694444
+#
+#     print("")
+#
+#     # Use the copy constructor
+#     b = Angle(a)
+#     print_me("Angle 'b', which is a copy of 'a', is", b)
+#
+#     print("")
 
 
 if __name__ == '__main__':
