@@ -156,6 +156,7 @@ class Epoch(object):
         >>> print(e)
         2446966.0
         """
+
         # Initialize field
         self._jde = 0.0
         self.set(*args, **kwargs)   # Use 'set()' method to handle the setup
@@ -242,6 +243,7 @@ class Epoch(object):
         >>> print(e)
         2026871.8
         """
+
         # Clean up the internal parameters
         self._jde = 0.0
         # If no arguments are given, return. Internal values are 0.0
@@ -413,6 +415,7 @@ class Epoch(object):
         >>> Epoch.is_julian(1397, 7, 7.0)
         True
         """
+
         if (year < 1582) or (year == 1582 and month < 10) or \
            (year == 1582 and month == 10 and day < 5.0):
             return True
@@ -508,6 +511,7 @@ class Epoch(object):
         >>> Epoch.is_leap(1000)
         True
         """
+
         if isinstance(year, (int, float)):
             # Mind the difference between Julian and Gregorian calendars
             if year >= 1582:
@@ -544,6 +548,7 @@ class Epoch(object):
         >>> Epoch.getDOY(-400, 2, 29.9)
         60.9
         """
+
         # Let's carry out first some basic checks
         if DD < 1 or DD >= 32 or MM < 1 or MM > 12:
             raise ValueError("Invalid input data")
@@ -608,6 +613,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(t[0], t[1], round(t[2], 1)))
         -5/3/1.0
         """
+
         if isinstance(year, (int, float)) and isinstance(doy, (int, float)):
             frac = float(doy % 1)
             doy = int(doy)
@@ -681,6 +687,7 @@ class Epoch(object):
         :returns: Tuple with year, month, day, leap second value.
         :rtype: tuple
         """
+
         list_years = sorted(LEAP_TABLE.keys())
         lyear = list_years[-1]
         lseconds = LEAP_TABLE[lyear]
@@ -710,6 +717,7 @@ class Epoch(object):
         :returns: Difference in seconds between local and UTC time.
         :rtype: float
         """
+
         localhour = datetime.datetime.now().hour
         utchour = datetime.datetime.utcnow().hour
         localminute = datetime.datetime.now().minute
@@ -744,6 +752,7 @@ class Epoch(object):
         >>> Epoch.easter(1243)
         (4, 12)
         """
+
         # This algorithm is describes in pages 67-69 of Meeus book
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
@@ -792,6 +801,7 @@ class Epoch(object):
         >>> Epoch.jewish_pesach(1990)
         (4, 10)
         """
+
         # This algorithm is described in pages 71-73 of Meeus book
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
@@ -839,6 +849,7 @@ class Epoch(object):
         >>> Epoch.moslem2gregorian(1421, 1, 1)
         (2000, 4, 6)
         """
+
         # First, check that input types are correct
         if not isinstance(year, (int, float)) or \
                 not isinstance(month, (int, float)) or \
@@ -906,6 +917,7 @@ class Epoch(object):
         >>> Epoch.gregorian2moslem(1991, 8, 13)
         (1412, 2, 2)
         """
+
         # First, check that input types are correct
         if not isinstance(year, (int, float)) or \
                 not isinstance(month, (int, float)) or \
@@ -980,6 +992,7 @@ class Epoch(object):
         >>> print(e)
         2446966.0
         """
+
         return str(self._jde)
 
     def get_date(self, **kwargs):
@@ -1012,6 +1025,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         -584/5/28.63
         """
+
         jd = self._jde + 0.5
         z = INT(jd)
         f = jd % 1
@@ -1118,6 +1132,7 @@ class Epoch(object):
         >>> round(Epoch.tt2ut(2015, 7), 1)
         69.3
         """
+
         y = year + (month - 0.5)/12.0
         if year < -500:
             u = (year - 1820.0)/100.0
@@ -1207,6 +1222,7 @@ class Epoch(object):
         >>> e.dow(as_string=True)
         'Sunday'
         """
+
         jd = INT(self._jde - 0.5) + 2.0
         doy = INT(jd % 7)
         if not as_string:
@@ -1237,6 +1253,7 @@ class Epoch(object):
         >>> round(e.sidereal_time(), 9)
         0.357605204
         """
+
         jd0 = INT(self()) + 0.5 if self() % 1 >= 0.5 else INT(self()) - 0.5
         t = (jd0 - 2451545.0)/36525.0
         theta0 = 6.0/DAY2HOURS + 41.0/DAY2MIN + 50.54841/DAY2SEC
@@ -1259,6 +1276,7 @@ class Epoch(object):
         >>> e.mjd()
         0.0
         """
+
         return self._jde - 2400000.5
 
     def jde(self):
@@ -1271,6 +1289,7 @@ class Epoch(object):
         >>> print(a.jde())
         1355866.5
         """
+
         return self()
 
     def __call__(self):
@@ -1283,6 +1302,7 @@ class Epoch(object):
         >>> print(a())
         1676497.5
         """
+
         return self._jde
 
     def __add__(self, b):
@@ -1301,6 +1321,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         2018/11/26.0
         """
+
         if isinstance(b, (int, float)):
             return Epoch(self._jde + float(b))
         else:
@@ -1333,6 +1354,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         2002/12/30.5
         """
+
         if isinstance(b, (int, float)):
             return Epoch(self._jde - b)
         elif isinstance(b, Epoch):
@@ -1356,6 +1378,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         2004/2/1.5
         """
+
         if isinstance(b, (int, float)):
             self = self + b
             return self
@@ -1378,6 +1401,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         2000/1/1.0
         """
+
         if isinstance(b, (int, float)):
             self = self - b
             return self
@@ -1400,6 +1424,7 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         2004/3/1.0
         """
+
         if isinstance(b, (int, float)):
             return self.__add__(b)              # It is the same as by the left
         else:
@@ -1415,6 +1440,7 @@ class Epoch(object):
         >>> int(a)
         2434923
         """
+
         return int(self._jde)
 
     def __float__(self):
@@ -1427,6 +1453,7 @@ class Epoch(object):
         >>> float(a)
         2434923.85
         """
+
         return float(self._jde)
 
     def __eq__(self, b):
@@ -1450,6 +1477,7 @@ class Epoch(object):
         >>> a == 2434923.85
         True
         """
+
         if isinstance(b, (int, float)):
             return abs(self._jde - float(b)) < TOL
         elif isinstance(b, Epoch):
@@ -1477,6 +1505,7 @@ class Epoch(object):
         >>> a != 2434923.85
         False
         """
+
         return not self.__eq__(b)           # '!=' == 'not(==)'
 
     def __lt__(self, b):
@@ -1491,6 +1520,7 @@ class Epoch(object):
         >>> a < b
         False
         """
+
         if isinstance(b, (int, float)):
             return self._jde < float(b)
         elif isinstance(b, Epoch):
@@ -1510,6 +1540,7 @@ class Epoch(object):
         >>> a >= b
         True
         """
+
         return not self.__lt__(b)           # '>=' == 'not(<)'
 
     def __gt__(self, b):
@@ -1528,6 +1559,7 @@ class Epoch(object):
         >>> a > b
         False
         """
+
         if isinstance(b, (int, float)):
             return self._jde > float(b)
         elif isinstance(b, Epoch):
@@ -1551,6 +1583,7 @@ class Epoch(object):
         >>> a <= b
         True
         """
+
         return not self.__gt__(b)           # '<=' == 'not(>)'
 
 
