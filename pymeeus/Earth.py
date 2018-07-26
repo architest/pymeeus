@@ -46,6 +46,7 @@ class Ellipsoid(object):
         :param omega: Angular velocity of the Earth, in rad/s
         :type omega: float
         """
+
         self._a = a
         self._f = f
         self._omega = omega
@@ -61,6 +62,7 @@ class Ellipsoid(object):
         >>> print(a)
         6378140.0:0.0033528132:7.292e-05
         """
+
         return "{}:{}:{}".format(self._a, self._f, self._omega)
 
     def b(self):
@@ -73,6 +75,7 @@ class Ellipsoid(object):
         >>> round(a.b(), 3)
         6356755.288
         """
+
         return self._a*(1.0 - self._f)
 
     def e(self):
@@ -85,12 +88,14 @@ class Ellipsoid(object):
         >>> round(a.e(), 8)
         0.08181922
         """
+
         f = self._f
         return sqrt(2.0*f - f*f)
 
 
 IAU76 = Ellipsoid(6378140.0, (1.0/298.257), 7.292114992e-5)
 """Reference ellipsoid defined by the International Astronomic Union in 1976"""
+
 
 WGS84 = Ellipsoid(6378137.0, (1.0/298.257223563), 7292115e-11)
 """Reference ellipsoid World Geodetic System 1984, a modern ellipsoid used by
@@ -130,6 +135,7 @@ class Earth(object):
         #>>> print(b)
         #-13.5
         """
+
         # Set an invalid ellipsoid by default
         self._ellip = Ellipsoid(0.0, 0.0, 0.0)
         self.set(ellipsoid)   # Let's use 'set()' method
@@ -147,6 +153,7 @@ class Earth(object):
         :rtype: None
         :raises: TypeError if input value is of wrong type.
         """
+
         if isinstance(ellipsoid, Ellipsoid):
             self._ellip = ellipsoid
         else:
