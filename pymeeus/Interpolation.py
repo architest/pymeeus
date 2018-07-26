@@ -110,6 +110,7 @@ class Interpolation(object):
         >>> print(k._y)
         [12, 5, -8]
         """
+
         self._x = []
         self._y = []
         self._table = []
@@ -195,6 +196,7 @@ class Interpolation(object):
         >>> print(m._y)
         [12, 5, -8]
         """
+
         # Clean up the internal data tables
         self._x = []
         self._y = []
@@ -289,6 +291,7 @@ class Interpolation(object):
         X: [1, 2, 3, 4, 5, 6]
         Y: [2, 4, 6, 8, 10, 12]
         """
+
         xstr = "X: " + str(self._x) + "\n"
         ystr = "Y: " + str(self._y)
         return xstr + ystr
@@ -301,6 +304,7 @@ class Interpolation(object):
         :returns: Internal tolerance.
         :rtype: float
         """
+
         return self._tol
 
     def set_tolerance(self, tol):
@@ -312,11 +316,13 @@ class Interpolation(object):
         :returns: None
         :rtype: None
         """
+
         self._tol = tol
         return
 
     def _compute_table(self):
         """Method to compute coefficients of Newton interpolation method."""
+
         for i in range(len(self._x)):
             self._table.append(self._newton_diff(0, i))
 
@@ -331,6 +337,7 @@ class Interpolation(object):
         :returns: Resulting value of the element of the Newton table.
         :rtype: float
         """
+
         if abs(end - start) < self._tol:
             val = self._y[start]
         else:
@@ -356,6 +363,7 @@ class Interpolation(object):
         >>> print(y)
         0.876125
         """
+
         # Check if input value is of correct type
         if isinstance(x, (int, float, Angle)):
             # Check if 'x' already belongs to the data table
@@ -394,6 +402,7 @@ class Interpolation(object):
         >>> m.derivative(0.5)
         -1.0
         """
+
         # Check if input value is of correct type
         if isinstance(x, (int, float, Angle)):
             # Check that x is within interpolation table values
@@ -460,6 +469,7 @@ class Interpolation(object):
         >>> round(m.root(), 8)
         -0.72075922
         """
+
         # Get the limits of the interpolation table
         xmin = self._x[0]
         xmax = self._x[-1]
@@ -572,6 +582,7 @@ class Interpolation(object):
         >>> round(m.minmax(), 8)
         0.33333333
         """
+
         # Compute the derivatives for the current data
         x = list(self._x)
         y = []
