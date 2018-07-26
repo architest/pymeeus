@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt
+from math import sqrt, radians, sin, cos, tan, atan
+from Angle import Angle
 
 
 """
@@ -160,32 +161,299 @@ class Earth(object):
             raise TypeError("Invalid input value")
         return
 
+    def rho(self, latitude):
+        """"Method to compute the rho term, which is the observer distance to
+        the center of the Earth, when the observer is at sea level. In this
+        case, the Earth's equatorial radius is taken as unity.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+
+        :returns: Rho: Distance to the center of the Earth from sea level. It
+            is a ratio with respect to Earth equatorial radius.
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.rho(0.0), 1)
+        1.0
+        """
+
+        if not isinstance(latitude, (int, float, Angle)):
+            raise TypeError("Invalid input value")
+        if isinstance(latitude, (int, float)):
+            phi = radians(latitude)         # Convert to radians
+        else:
+            phi = latitude.rad()            # It is an Angle. Call method rad()
+        return 0.9983271 + 0.0016764*cos(2.0*phi) - 0.0000035*cos(4.0*phi)
+
+    def rho_sinphi(self, latitude, height):
+        """"Method to compute the rho*sin(phi') term, needed in the calculation
+        of diurnal parallaxes, eclipses and occulatitions.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+        :param height: Height of the observer above the sea level, in meters
+        :type height: int, float
+
+        :returns: rho*sin(phi') term
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> lat = Angle(33, 21, 22.0)
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.rho_sinphi(lat, 1706), 6)
+        0.546861
+        """
+
+        if not (isinstance(latitude, (int, float, Angle)) and
+                isinstance(height, (int, float))):
+            raise TypeError("Invalid input value")
+        if isinstance(latitude, (int, float)):
+            phi = radians(latitude)         # Convert to radians
+        else:
+            phi = latitude.rad()            # It is an Angle. Call method rad()
+        b_a = self._ellip.b()/self._ellip._a
+        u = atan(b_a*tan(phi))
+        return b_a * sin(u) + height/self._ellip._a * sin(phi)
+
+    def rho_cosphi(self, latitude, height):
+        """"Method to compute the rho*cos(phi') term, needed in the calculation
+        of diurnal parallaxes, eclipses and occulatitions.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+        :param height: Height of the observer above the sea level, in meters
+        :type height: int, float
+
+        :returns: rho*cos(phi') term
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> lat = Angle(33, 21, 22.0)
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.rho_cosphi(lat, 1706), 6)
+        0.836339
+        """
+
+        if not (isinstance(latitude, (int, float, Angle)) and
+                isinstance(height, (int, float))):
+            raise TypeError("Invalid input value")
+        if isinstance(latitude, (int, float)):
+            phi = radians(latitude)         # Convert to radians
+        else:
+            phi = latitude.rad()            # It is an Angle. Call method rad()
+        b_a = self._ellip.b()/self._ellip._a
+        u = atan(b_a*tan(phi))
+        return cos(u) + height/self._ellip._a * cos(phi)
+
+    def rp(self, latitude):
+        """"Method to compute the radius of the parallel circle at latitude.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+
+        :returns: Radius of the parallel circle at latitude, in meters
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.rp(42.0), 1)
+        4747001.2
+        """
+
+        if not isinstance(latitude, (int, float, Angle)):
+            raise TypeError("Invalid input value")
+        if isinstance(latitude, (int, float)):
+            phi = radians(latitude)         # Convert to radians
+        else:
+            phi = latitude.rad()            # It is an Angle. Call method rad()
+        a = self._ellip._a
+        e = self._ellip.e()
+        return (a*cos(phi))/sqrt(1.0 - e*e*sin(phi)*sin(phi))
+
+    def linear_velocity(self, latitude):
+        """"Method to compute the linear velocity of a point at latitude, due
+        to the rotation of the Earth.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+
+        :returns: Linear velocity of a point at latitude, im meters per second
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.linear_velocity(42.0), 2)
+        346.16
+        """
+
+        if not isinstance(latitude, (int, float, Angle)):
+            raise TypeError("Invalid input value")
+        omega = self._ellip._omega
+        return omega*self.rp(latitude)
+
+    def rm(self, latitude):
+        """"Method to compute the radius of curvature of the Earth's meridian
+        at latitude.
+
+        :param latitude: Geodetical or geographical latitude of the observer,
+            in degrees
+        :type latitude: int, float, :class:`Angle`
+
+        :returns: Radius of curvature of the Earth's meridian at latitude, in
+            meters
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> round(e.rm(42.0), 1)
+        6364033.3
+        """
+
+        if not isinstance(latitude, (int, float, Angle)):
+            raise TypeError("Invalid input value")
+        if isinstance(latitude, (int, float)):
+            phi = radians(latitude)         # Convert to radians
+        else:
+            phi = latitude.rad()            # It is an Angle. Call method rad()
+        a = self._ellip._a
+        e = self._ellip.e()
+        return (a*(1.0 - e*e))/(1.0 - e*e*sin(phi)*sin(phi))**1.5
+
+    def distance(self, lon1, lat1, lon2, lat2):
+        """"This method computes the distance between two points on the Earth's
+        surface using the method from H. Andoyer.
+
+        :param lon1: Longitude of the first point, in degrees
+        :type lon1: int, float, :class:`Angle`
+        :param lat1: Geodetical or geographical latitude of the first point,
+            in degrees
+        :type lat1: int, float, :class:`Angle`
+        :param lon2: Longitude of the second point, in degrees
+        :type lon2: int, float, :class:`Angle`
+        :param lat2: Geodetical or geographical latitude of the second point,
+            in degrees
+        :type lat2: int, float, :class:`Angle`
+
+        :returns: Tuple with distance between the two points along Earth's
+            surface, and approximate error, in meters
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> e = Earth(ellipsoid=IAU76)
+        >>> lon1 = Angle(-2, 20, 14.0)
+        >>> lat1 = Angle(48, 50, 11.0)
+        >>> lon2 = Angle(77, 3, 56.0)
+        >>> lat2 = Angle(38, 55, 17.0)
+        >>> dist, error = e.distance(lon1, lat1, lon2, lat2)
+        >>> round(dist, 0)
+        6181628.0
+        >>> error
+        69.0
+        >>> lon1 = Angle(-2.09)
+        >>> lat1 = Angle(41.3)
+        >>> lon2 = Angle(73.99)
+        >>> lat2 = Angle(40.75)
+        >>> dist, error = e.distance(lon1, lat1, lon2, lat2)
+        >>> round(dist, 0)
+        6176760.0
+        >>> error
+        69.0
+        """
+
+        if not (isinstance(lon1, (int, float, Angle)) and
+                isinstance(lat1, (int, float, Angle)) and
+                isinstance(lon2, (int, float, Angle)) and
+                isinstance(lat2, (int, float, Angle))):
+            raise TypeError("Invalid input value")
+        if isinstance(lon1, (int, float)):
+            l1 = radians(lon1)              # Convert to radians
+        else:
+            l1 = lon1.rad()                 # It is an Angle. Call method rad()
+        if isinstance(lat1, (int, float)):
+            phi1 = radians(lat1)            # Convert to radians
+        else:
+            phi1 = lat1.rad()               # It is an Angle. Call method rad()
+        if isinstance(lon2, (int, float)):
+            l2 = radians(lon2)              # Convert to radians
+        else:
+            l2 = lon2.rad()                 # It is an Angle. Call method rad()
+        if isinstance(lat2, (int, float)):
+            phi2 = radians(lat2)            # Convert to radians
+        else:
+            phi2 = lat2.rad()               # It is an Angle. Call method rad()
+        f = (phi1 + phi2)/2.0
+        g = (phi1 - phi2)/2.0
+        lam = (l1 - l2)/2.0
+        sin2g = sin(g)**2
+        cos2g = cos(g)**2
+        cos2f = cos(f)**2
+        sin2f = sin(f)**2
+        sin2lam = sin(lam)**2
+        cos2lam = cos(lam)**2
+        s = sin2g*cos2lam + cos2f*sin2lam
+        c = cos2g*cos2lam + sin2f*sin2lam
+        omega = atan(sqrt(s/c))
+        r = sqrt(s*c)/omega
+        d = 2.0*omega*self._ellip._a
+        h1 = (3.0*r - 1.0)/(2.0*c)
+        h2 = (3.0*r + 1.0)/(2.0*s)
+        fe = self._ellip._f
+        dist = d*(1.0 + fe*(h1*sin2f*cos2g - h2*cos2f*sin2g))
+        error = round(dist*fe*fe, 0)
+        return dist, error
+
 
 def main():
 
-    pass
-#     # Let's define a small helper function
-#     def print_me(msg, val):
-#         print("{}: {}".format(msg, val))
-#
-#     # Let's show some uses of Earth class
-#     print('\n' + 35*'*')
-#     print("*** Use of Earth class")
-#     print(35*'*' + '\n')
-#
-#     # Create an Angle object, providing degrees, minutes and seconds
-#     a = Angle(-23.0, 26.0, 48.999983999)
-#
-#     # First we print using the __call__ method (note the extra parentheses)
-#     print_me("The angle 'a()' is", a())             # -23.44694444
-#
-#     print("")
-#
-#     # Use the copy constructor
-#     b = Angle(a)
-#     print_me("Angle 'b', which is a copy of 'a', is", b)
-#
-#     print("")
+    # Let's define a small helper function
+    def print_me(msg, val):
+        print("{}: {}".format(msg, val))
+
+    # Let's show some uses of Earth class
+    print('\n' + 35*'*')
+    print("*** Use of Earth class")
+    print(35*'*' + '\n')
+
+    # An important concept are the reference ellipsoids, comprising information
+    # about the Earth global model we are going to use.
+
+    # A very important reference ellipsoid is WGS84, predefined here
+    print_me("WGS84", WGS84)
+    # First field is equatorial radius, second field is the flattening, and the
+    # third field is the angular rotation velocity, in radians per second
+
+    # Let's print the semi-minor axis (polar radius)
+    print_me("Polar radius, b", WGS84.b())
+
+    # And now, let's print the eccentricity of Earth's meridian
+    print_me("Eccentricity, e", WGS84.e())
+
+    print("")
+
+    # We create an Earth object with a given reference ellipsoid. By default,
+    # it is WGS84, but we can use another
+    e = Earth(IAU76)
+
+    # Compute the distance to the center of the Earth from a given point at sea
+    # level, and at a certain latitude. It is given as a fraction of equatorial
+    # radius
+    lat = Angle(65, 45, 30.0)               # We can use an Angle for this
+    print_me("Distance to Earth's center", e.rho(lat))
+
+    print("")
+
+    # Parameters rho*sin(lat) and rho*cos(lat) are useful for different
+    # astronomical applications
+    height = 650.0
+    print_me("rho*sin(lat)", e.rho_sinphi(lat, height))
+    print_me("rho*cos(lat)", e.rho_cosphi(lat, height))
 
 
 if __name__ == '__main__':
