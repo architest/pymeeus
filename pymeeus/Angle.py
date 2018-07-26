@@ -79,6 +79,7 @@ class Angle(object):
         >>> print(b)
         -13.5
         """
+
         self._deg = 0.0         # Angle value is stored here in decimal format
         self._tol = TOL
         self.set(*args, **kwargs)   # Let's use 'set()' method to set angle
@@ -99,6 +100,7 @@ class Angle(object):
         >>> print(round(b, 1))
         26.3
         """
+
         if abs(deg) >= 360.0:
             # Extract the sign
             sign = 1.0 if deg >= 0 else -1.0
@@ -126,6 +128,7 @@ class Angle(object):
         >>> print(Angle.reduce_dms(-743.0, 26.0, 49.6))
         (23, 26, 49.6, -1.0)
         """
+
         # If any of the input values is negative, the sign is negative
         sign = -1.0 if (degrees < 0) or (minutes < 0) or (seconds < 0) else 1.0
         degrees = abs(degrees)
@@ -165,6 +168,7 @@ class Angle(object):
         >>> print(Angle.deg2dms(23.44694444))
         (23, 26, 48.999983999997596, 1.0)
         """
+
         deg = Angle.reduce_deg(deg)  # Reduce the degrees to the [0:360) range
         # Extract the sign
         sign = 1.0 if deg >= 0 else -1.0
@@ -193,6 +197,7 @@ class Angle(object):
         >>> print(Angle.dms2deg(-23, 26, 48.999983999997596))
         -23.44694444
         """
+
         (de, mi, se, sign) = Angle.reduce_dms(degrees, minutes, seconds)
         deg = sign * (de + mi/60.0 + se/3600.0)
         return float(deg)
@@ -205,6 +210,7 @@ class Angle(object):
         :returns: Internal tolerance.
         :rtype: float
         """
+
         return self._tol
 
     def set_tolerance(self, tol):
@@ -216,6 +222,7 @@ class Angle(object):
         :returns: None
         :rtype: None
         """
+
         self._tol = tol
         return
 
@@ -229,6 +236,7 @@ class Angle(object):
         >>> print(a())
         54.6
         """
+
         return self._deg
 
     def __str__(self):
@@ -241,6 +249,7 @@ class Angle(object):
         >>> print(a)
         12.5
         """
+
         return str(self._deg)
 
     def __repr__(self):
@@ -270,6 +279,7 @@ class Angle(object):
         :rtype: None
         :raises: TypeError if input values are of wrong type.
         """
+
         if 'ra' in kwargs:
             if kwargs['ra']:
                 # Input values are a Right Ascension
@@ -360,6 +370,7 @@ class Angle(object):
         >>> print(a)
         180.0
         """
+
         self.set(rads, radians=True)
         return
 
@@ -382,6 +393,7 @@ class Angle(object):
         >>> print(a)
         138.7325
         """
+
         self.set(*args)     # Carry out a standard set(), without *kwargs
         self._deg *= 15.0   # Multipy Right Ascension by 15.0 to get degrees
         return
@@ -404,6 +416,7 @@ class Angle(object):
         >>> print(a.dms_str(fancy=False))
         42:45:0.0
         """
+
         d, m, s, sign = Angle.deg2dms(self._deg)
         if fancy:
             if d != 0:
@@ -434,6 +447,7 @@ class Angle(object):
         >>> print(a.get_ra())
         9.25
         """
+
         return self._deg/15.0
 
     def ra_str(self, fancy=True):
@@ -454,6 +468,7 @@ class Angle(object):
         >>> print(a.ra_str(fancy=False))
         9:15:0.0
         """
+
         a = Angle(self())/15.0
         s = a.dms_str(fancy)
         if fancy:
@@ -470,6 +485,7 @@ class Angle(object):
         >>> print(round(a.rad(), 8))
         0.83360416
         """
+
         return radians(self._deg)
 
     def dms_tuple(self):
@@ -479,6 +495,7 @@ class Angle(object):
         :returns: Angle value as (degrees, minutes, seconds, sign).
         :rtype: tuple
         """
+
         return Angle.deg2dms(self())
 
     def ra_tuple(self):
@@ -488,6 +505,7 @@ class Angle(object):
         :returns: Angle value as RA in (hours, minutes, seconds, sign) format.
         :rtype: tuple
         """
+
         return Angle.deg2dms(self()/15.0)
 
     def to_positive(self):
@@ -500,6 +518,7 @@ class Angle(object):
         >>> print(a.to_positive())
         272.68
         """
+
         if self._deg < 0:
             self._deg = 360.0 - abs(self._deg)
         return self
@@ -518,6 +537,7 @@ class Angle(object):
         >>> a == b
         False
         """
+
         if isinstance(b, (int, float)):
             return abs(self._deg - float(b)) < self._tol
         elif isinstance(b, Angle):
@@ -538,6 +558,7 @@ class Angle(object):
         >>> a != b
         True
         """
+
         return not self.__eq__(b)           # '!=' == 'not(==)'
 
     def __lt__(self, b):
@@ -552,6 +573,7 @@ class Angle(object):
         >>> a < b
         False
         """
+
         if isinstance(b, (int, float)):
             return self._deg < float(b)
         elif isinstance(b, Angle):
@@ -571,6 +593,7 @@ class Angle(object):
         >>> a >= b
         True
         """
+
         return not self.__lt__(b)           # '>=' == 'not(<)'
 
     def __gt__(self, b):
@@ -585,6 +608,7 @@ class Angle(object):
         >>> a > b
         True
         """
+
         if isinstance(b, (int, float)):
             return self._deg > float(b)
         elif isinstance(b, Angle):
@@ -604,6 +628,7 @@ class Angle(object):
         >>> a <= b
         True
         """
+
         return not self.__gt__(b)           # '<=' == 'not(>)'
 
     def __neg__(self):
@@ -616,6 +641,7 @@ class Angle(object):
         >>> print(-a)
         11.2
         """
+
         return Angle(-self._deg)
 
     def __abs__(self):
@@ -628,6 +654,7 @@ class Angle(object):
         >>> print(abs(a))
         303.67
         """
+
         return Angle(abs(self._deg))
 
     def __mod__(self, b):
@@ -642,6 +669,7 @@ class Angle(object):
         >>> print(a % b)
         45.0
         """
+
         # Negative values will be treated as if they were positive
         sign = 1.0 if self._deg >= 0.0 else -1.0
         if isinstance(b, (int, float)):
@@ -663,6 +691,7 @@ class Angle(object):
         >>> print(a + b)
         101.5
         """
+
         if isinstance(b, (int, float)):
             return Angle(self._deg + float(b))
         elif isinstance(b, Angle):
@@ -682,6 +711,7 @@ class Angle(object):
         >>> print(a - b)
         15.2
         """
+
         return self.__add__(-b)
 
     def __mul__(self, b):
@@ -696,6 +726,7 @@ class Angle(object):
         >>> print(a * b)
         216.0
         """
+
         if isinstance(b, (int, float)):
             return Angle(self._deg * float(b))
         elif isinstance(b, Angle):
@@ -716,6 +747,7 @@ class Angle(object):
         >>> print(a/b)
         2.0
         """
+
         if b == 0.0:
             raise ZeroDivisionError("Division by zero is not allowed")
         if isinstance(b, (int, float)):
@@ -734,6 +766,7 @@ class Angle(object):
         :raises: TypeError if input values are of wrong type.
         :see: __div__
         """
+
         return self.__div__(b)
 
     def __pow__(self, b):
@@ -748,6 +781,7 @@ class Angle(object):
         >>> print(a ** b)
         294.0625
         """
+
         if isinstance(b, (int, float)):
             return Angle(self._deg**b)
         elif isinstance(b, Angle):
@@ -767,6 +801,7 @@ class Angle(object):
         >>> print(a)
         15.0
         """
+
         # Negative values will be treated as if they were positive
         self = self % b
         return self
@@ -783,6 +818,7 @@ class Angle(object):
         >>> print(a)
         226.7
         """
+
         self = self + b
         return self
 
@@ -798,6 +834,7 @@ class Angle(object):
         >>> print(a)
         58.0
         """
+
         self = self - b
         return self
 
@@ -813,6 +850,7 @@ class Angle(object):
         >>> print(a)
         210.0
         """
+
         self = self * b
         return self
 
@@ -830,6 +868,7 @@ class Angle(object):
         >>> print(a)
         11.0
         """
+
         if b == 0.0:
             raise ZeroDivisionError("Division by zero is not allowed")
         if not isinstance(b, (int, float, Angle)):
@@ -846,6 +885,7 @@ class Angle(object):
         :raises: TypeError if input values are of wrong type.
         :see: __idiv__
         """
+
         return self.__idiv__(b)
 
     def __ipow__(self, b):
@@ -860,6 +900,7 @@ class Angle(object):
         >>> print(a)
         253.0
         """
+
         self = self ** b
         return self
 
@@ -873,6 +914,7 @@ class Angle(object):
         >>> print(350 % a)
         30.0
         """
+
         if isinstance(b, (int, float)):
             b = Angle(b)
         # Negative values will be treated as if they were positive
@@ -889,6 +931,7 @@ class Angle(object):
         >>> print(8.5 + a)
         91.6
         """
+
         return self.__add__(b)  # In this case, it is the same as by the left
 
     def __rsub__(self, b):
@@ -902,6 +945,7 @@ class Angle(object):
         >>> print(24.0 - a)
         -1.0
         """
+
         return -self.__sub__(b)    # b - a = -(a - b)
 
     def __rmul__(self, b):
@@ -915,6 +959,7 @@ class Angle(object):
         >>> print(250.0 * a)
         230.0
         """
+
         return self.__mul__(b)  # In this case, it is the same as by the left
 
     def __rdiv__(self, b):
@@ -929,6 +974,7 @@ class Angle(object):
         >>> print(350 / a)
         4.375
         """
+
         if self == 0.0:
             raise ZeroDivisionError("Division by zero is not allowed")
         if isinstance(b, (int, float)):
@@ -947,6 +993,7 @@ class Angle(object):
         :raises: TypeError if input values are of wrong type.
         :see: __rdiv__
         """
+
         return self.__rdiv__(b)
 
     def __rpow__(self, b):
@@ -960,6 +1007,7 @@ class Angle(object):
         >>> print(24.0 ** a)
         144.0
         """
+
         if isinstance(b, (int, float)):
             return Angle(b**self._deg)
         elif isinstance(b, Angle):
@@ -977,6 +1025,7 @@ class Angle(object):
         >>> float(a)
         213.8
         """
+
         return float(self._deg)
 
     def __int__(self):
@@ -989,6 +1038,7 @@ class Angle(object):
         >>> int(a)
         213
         """
+
         return int(self._deg)
 
     def __round__(self, n=0):
@@ -1001,6 +1051,7 @@ class Angle(object):
         >>> print(round(a, 2))
         11.44
         """
+
         # NOTE: This method is only called in Python 3
         return Angle(round(self._deg, n))
 
