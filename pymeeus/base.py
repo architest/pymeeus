@@ -44,6 +44,7 @@ def machine_accuracy():
     :returns: Number of significant bits, and of significant digits
     :rtype: tuple
     """
+
     j = 0.0
     x = 2.0
     while x + 1.0 != x:
@@ -74,6 +75,7 @@ def get_ordinal_suffix(ordinal):
     >>> get_ordinal_suffix(23)
     'rd'
     """
+
     if not isinstance(ordinal, (int, float)):
         raise TypeError("Invalid input type")
     else:
@@ -107,6 +109,7 @@ def INT(number):
     >>> INT(-2.4)
     -3
     """
+
     if not isinstance(number, (int, float)):
         raise TypeError("Invalid input type")
     else:
