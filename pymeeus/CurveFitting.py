@@ -105,6 +105,7 @@ class CurveFitting(object):
         >>> print(m._y)
         [-8, 12, 5]
         """
+
         # Initialize data table
         self._x = []
         self._y = []
@@ -156,6 +157,7 @@ class CurveFitting(object):
         >>> print(k._y)
         [-8, 12, 5]
         """
+
         # Clean up the internal data tables and parameters
         self._x = []
         self._y = []
@@ -230,6 +232,7 @@ class CurveFitting(object):
 
     def _compute_parameters(self):
         """Method to compute the intermediate parameters using for fitting."""
+
         self._P = 0.0
         self._Q = 0.0
         self._R = 0.0
@@ -263,6 +266,7 @@ class CurveFitting(object):
         X: [5, 3, 6, 1, 2, 4]
         Y: [10, 6, 12, 2, 4, 8]
         """
+
         xstr = "X: " + str(self._x) + "\n"
         ystr = "Y: " + str(self._y)
         return xstr + ystr
@@ -284,6 +288,7 @@ class CurveFitting(object):
         >>> print(round(r, 3))
         -0.767
         """
+
         n = self._N
         sxy = self._U
         sx = self._P
@@ -312,6 +317,7 @@ class CurveFitting(object):
         >>> print("a = {}\tb = {}".format(round(a, 2), round(b, 2)))
         a = -2.49	b = 244.18
         """
+
         n = self._N
         sxy = self._U
         sx = self._P
@@ -344,6 +350,7 @@ class CurveFitting(object):
         ...                                       round(c, 2)))
         a = -2.22; b = 3.76; c = 6.64
         """
+
         n = self._N
         p = self._P
         q = self._Q
@@ -395,6 +402,7 @@ class CurveFitting(object):
         ...                                       round(c, 3)))
         a = 1.016; b = 0.0; c = 0.0
         """
+
         m = 0
         p = 0
         q = 0
