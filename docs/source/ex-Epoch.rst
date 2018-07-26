@@ -164,7 +164,7 @@ The difference between civil day and sidereal day is almost 4 minutes::
 
     # Difference between sidereal time 1987/4/11 and 1987/4/10: 3m 56.555424s
 
-Epoch class can also provide the date of Easter for a given year. Let's spice up the output a little bit, ``calling dow()`` and ``get_month()``::
+Epoch class can also provide the date of Easter for a given year. Let's spice up the output a little bit, calling ``dow()`` and ``get_month()``::
 
     month, day = Epoch.easter(2019)
 
