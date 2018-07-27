@@ -56,7 +56,7 @@ class Ellipsoid(object):
         """Method used when trying to print the object.
 
         :returns: Semi-major equatorial radius, flattening and angular velocity
-           as string.
+           as a string.
         :rtype: string
 
         >>> a = Ellipsoid(6378140.0, 0.0033528132, 7.292e-5)
@@ -160,6 +160,24 @@ class Earth(object):
         else:
             raise TypeError("Invalid input value")
         return
+
+    def __str__(self):
+        """Method used when trying to print the Earth object. It essentially
+        returns the corresponting '__str__()' method from the reference
+        ellipsoid being used.
+
+        :returns: Semi-major equatorial radius, flattening and angular velocity
+           of the current reference ellipsoid, as a string.
+        :rtype: string
+
+        >>> e = Earth()
+        >>> s = str(e)
+        >>> v = s.split(':')
+        >>> print(v[0] + '|' + str(round(float(v[1]), 14)) + '|' + v[2] )
+        6378137.0|0.00335281066475|7.292115e-05
+        """
+
+        return str(self._ellip)
 
     def rho(self, latitude):
         """"Method to compute the rho term, which is the observer distance to
