@@ -16,6 +16,7 @@
    Interpolation
    CurveFitting
    Epoch
+   Earth
 
 .. toctree::
    :maxdepth: 2
@@ -26,6 +27,7 @@
    ex-Interpolation
    ex-CurveFitting
    ex-Epoch
+   ex-Earth
 
 
 Indices and tables
