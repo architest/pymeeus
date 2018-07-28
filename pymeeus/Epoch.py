@@ -71,8 +71,9 @@ class Epoch(object):
     outdated at some point in time. To counter this, you have two options:
 
     - Download an updated version of this Pymeeus package.
-    - Use the argument **leap_seconds** in the constructor or :meth:`set` method
-      to provide the correct number of leap seconds (w.r.t. TAI) to be applied.
+    - Use the argument **leap_seconds** in the constructor or :meth:`set`
+      method to provide the correct number of leap seconds (w.r.t. TAI) to be
+      applied.
 
     For instance, if at some time in the future the TAI-UTC difference is 43
     seconds, you should set **leap_seconds=43** if you don't have an updated
@@ -422,6 +423,25 @@ class Epoch(object):
         else:
             return False
 
+    def julian(self):
+        """This method returns True if this Epoch object holds a date in the
+        Julian calendar.
+
+        :returns: Whether this Epoch object holds a date belonging to Julian
+            calendar or not.
+        :rtype: bool
+
+        >>> e = Epoch(1997, 5, 27.1)
+        >>> e.julian()
+        False
+        >>> e = Epoch(1397, 7, 7.0)
+        >>> e.julian()
+        True
+        """
+
+        y, m, d = self.get_date(leap_seconds=0.0)
+        return Epoch.is_julian(y, m, d)
+
     @staticmethod
     def get_month(month, as_string=False):
         """Method to get the month as a integer in the [1, 12] range, or as a
@@ -521,6 +541,32 @@ class Epoch(object):
                 return (abs(year) % 4) == 0
         else:
             raise ValueError("Invalid value for the input year")
+
+    def leap(self):
+        """This method checks if the current Epoch object holds a leap year.
+
+        :returns: Whether or the year in this Epoch object is a leap year.
+        :rtype: bool
+
+        >>> e = Epoch(2003, 1, 1)
+        >>> e.leap()
+        False
+        >>> e = Epoch(2012, 1, 1)
+        >>> e.leap()
+        True
+        >>> e = Epoch(1900, 1, 1)
+        >>> e.leap()
+        False
+        >>> e = Epoch(-1000, 1, 1)
+        >>> e.leap()
+        True
+        >>> e = Epoch(1000, 1, 1)
+        >>> e.leap()
+        True
+        """
+
+        y, m, d = self.get_date(leap_seconds=0.0)
+        return Epoch.is_leap(y)
 
     @staticmethod
     def getDOY(YYYY, MM, DD):
