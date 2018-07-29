@@ -150,11 +150,11 @@ The difference between civil day and sidereal day is almost 4 minutes::
 
     e = Epoch(1987, 4, 10, leap_seconds=0.0)
 
-    st1 = round(e.sidereal_time(), 9)
+    st1 = round(e.mean_sidereal_time(), 9)
 
     e = Epoch(1987, 4, 11, leap_seconds=0.0)
 
-    st2 = round(e.sidereal_time(), 9)
+    st2 = round(e.mean_sidereal_time(), 9)
 
     ds = (st2 - st1)*DAY2MIN
 
@@ -163,6 +163,16 @@ The difference between civil day and sidereal day is almost 4 minutes::
     print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
 
     # Difference between sidereal time 1987/4/11 and 1987/4/10: 3m 56.555424s
+
+When correcting for nutation-related effects, we get the **apparent** sidereal time::
+
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+
+    print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
+
+             e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
+
+    # e.apparent_sidereal_time(23.44357, (-3.788)/3600.0): 0.549145082637
 
 Epoch class can also provide the date of Easter for a given year. Let's spice up the output a little bit, calling ``dow()`` and ``get_month()``::
 
