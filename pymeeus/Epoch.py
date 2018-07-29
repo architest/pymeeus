@@ -20,7 +20,9 @@
 
 import calendar
 import datetime
+from math import radians, cos
 from base import TOL, get_ordinal_suffix, INT
+from Angle import Angle
 
 
 """
@@ -396,6 +398,59 @@ class Epoch(object):
 
         # We are ready to return the parameters
         return year, month, day, hours, minutes, sec
+
+    @staticmethod
+    def check_input_date(*args, **kwargs):
+        """Method to check that the input is a proper date.
+
+        This method returns an Epoch object, and the **leap_seconds** argument
+        then controls the way the UTC->TT conversion is handled for that new
+        object. If **leap_seconds** argument is set to a value different than
+        zero, then that value will be used for the UTC->TAI conversion, and the
+        internal leap seconds table will be bypassed. On the other hand, if it
+        is set to zero, then the UTC to TT correction is disabled, and it is
+        supposed that the input data is already in TT scale.
+
+        :param \*args: Either Epoch, date, datetime or year, month, day values,
+            by themselves or inside a tuple or list
+        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+            list
+        :param leap_seconds: If different from zero, this is the value to be
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
+        :type leap_seconds: int, float
+
+        :returns: Epoch object corresponding to the input date
+        :rtype: :py:class:`Epoch`
+        :raises: ValueError if input values are in the wrong range.
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        t = Epoch()
+        if len(args) == 0:
+            raise ValueError("Invalid input: No date given")
+        # If we have only one argument, it can be an Epoch, a date, a datetime
+        # or a tuple/list
+        elif len(args) == 1:
+            if isinstance(args[0], Epoch):
+                t = args[0]
+            elif isinstance(args[0], (tuple, list)):
+                if len(args[0]) >= 3:
+                    t = Epoch(args[0][0], args[0][1], args[0][2], **kwargs)
+                else:
+                    raise ValueError("Invalid input")
+            elif isinstance(args[0], datetime.datetime) or \
+                    isinstance(args[0], datetime.date):
+                t = Epoch(args[0].year, args[0].month, args[0].day, **kwargs)
+            else:
+                raise TypeError("Invalid input type")
+        elif len(args) == 2:
+            raise ValueError("Invalid input: Date given is not valid")
+        elif len(args) >= 3:
+            # We will rely on Epoch capacity to handle improper input
+            t = Epoch(args[0], args[1], args[2], **kwargs)
+        return t
 
     @staticmethod
     def is_julian(year, month, day):
@@ -1278,9 +1333,10 @@ class Epoch(object):
                          'Thursday', 'Friday', 'Saturday']
             return day_names[doy]
 
-    def sidereal_time(self):
+    def mean_sidereal_time(self):
         """Method to compute the _mean_ sidereal time at Greenwich for the
-        epoch represented by this object.
+        epoch stored in this object. It represents the Greenwich hour angle of
+        the mean vernal equinox.
 
         .. note:: If you require the result as an angle, you should convert the
            result from this method to hours with decimals (with
@@ -1293,10 +1349,10 @@ class Epoch(object):
         :rtype: float
 
         >>> e = Epoch(1987, 4, 10, leap_seconds=0.0)
-        >>> round(e.sidereal_time(), 9)
+        >>> round(e.mean_sidereal_time(), 9)
         0.549147764
         >>> e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
-        >>> round(e.sidereal_time(), 9)
+        >>> round(e.mean_sidereal_time(), 9)
         0.357605204
         """
 
@@ -1311,6 +1367,50 @@ class Epoch(object):
         else:
             deltajd *= 1.00273790935
             return (theta0 + deltajd) % 1
+
+    def apparent_sidereal_time(self, true_obliquity, nutation_longitude):
+        """Method to compute the _apparent_ sidereal time at Greenwich for the
+        epoch stored in this object. It represents the Greenwich hour angle of
+        the true vernal equinox.
+
+        .. note:: If you require the result as an angle, you should convert the
+           result from this method to hours with decimals (with
+           :const:`DAY2HOURS`), and then multiply by 15 deg/hr. Alternatively,
+           you can convert the result to hours with decimals, and feed this
+           value to an :class:`Angle` object, setting **ra=True**, and making
+           use of :class:`Angle` facilities for further handling.
+
+        :param true_obliquity: The true obliquity of the ecliptic as an int,
+            float or :class:`Angle`, in degrees. You can use the method
+            `Earth.true_obliquity()` to find it.
+        :type true_obliquity: int, float, :class:`Angle`
+        :param nutation_longitude: The nutation in longitude as an int, float
+            or :class:`Angle`, in degrees. You can use method
+            `Earth.nutation_longitude()` to find it.
+        :type nutation_longitude: int, float, :class:`Angle`
+
+        :returns: Apparent sidereal time, in days
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> e = Epoch(1987, 4, 10, leap_seconds=0.0)
+        >>> round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8)
+        0.54914508
+        """
+
+        if not (isinstance(true_obliquity, (int, float, Angle)) and
+                isinstance(nutation_longitude, (int, float, Angle))):
+            raise TypeError("Invalid input value")
+        if isinstance(true_obliquity, Angle):
+            true_obliquity = float(true_obliquity)      # Convert to a float
+        if isinstance(nutation_longitude, Angle):
+            nutation_longitude = float(nutation_longitude)
+        mean_stime = self.mean_sidereal_time()
+        epsilon = radians(true_obliquity)               # Convert to radians
+        delta_psi = nutation_longitude*3600.0  # From degrees to seconds of arc
+        # Correction is in seconds of arc: It must be converted to seconds of
+        # time, and then to days (sidereal time is given here in days)
+        return mean_stime + ((delta_psi*cos(epsilon))/15.0)/DAY2SEC
 
     def mjd(self):
         """This method returns the Modified Julian Day (MJD).
@@ -1731,9 +1831,9 @@ def main():
 
     # The difference between civil day and sidereal day is almost 4 minutes
     e = Epoch(1987, 4, 10, leap_seconds=0.0)
-    st1 = round(e.sidereal_time(), 9)
+    st1 = round(e.mean_sidereal_time(), 9)
     e = Epoch(1987, 4, 11, leap_seconds=0.0)
-    st2 = round(e.sidereal_time(), 9)
+    st2 = round(e.mean_sidereal_time(), 9)
     ds = (st2 - st1)*DAY2MIN
     msg = "{}m {}s".format(INT(ds), (ds % 1)*60.0)
     print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
@@ -1824,6 +1924,13 @@ def main():
     print_me("2007/5/20.0 != 2007/5/20.000001", a != b)
     print_me("2007/5/20.0 > 2007/5/20.000001", a > b)
     print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
+
+    print("")
+
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
+             e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
+    #    0.549145082637
 
 
 if __name__ == '__main__':
