@@ -20,6 +20,7 @@
 
 from math import sqrt, radians, sin, cos, tan, atan
 from Angle import Angle
+from Epoch import Epoch
 
 
 """
@@ -29,6 +30,61 @@ from Angle import Angle
 
 .. moduleauthor:: Dagoberto Salazar
 """
+
+
+NUTATION_ARG_TABLE = [
+    [0, 0, 0, 0, 1], [-2, 0, 0, 2, 2], [0, 0, 0, 2, 2], [0, 0, 0, 0, 2],
+    [0, 1, 0, 0, 0], [0, 0, 1, 0, 0], [-2, 1, 0, 2, 2], [0, 0, 0, 2, 1],
+    [0, 0, 1, 2, 2], [-2, -1, 0, 2, 2], [-2, 0, 1, 0, 0], [-2, 0, 0, 2, 1],
+    [0, 0, -1, 2, 2], [2, 0, 0, 0, 0], [0, 0, 1, 0, 1], [2, 0, -1, 2, 2],
+    [0, 0, -1, 0, 1], [0, 0, 1, 2, 1], [-2, 0, 2, 0, 0], [0, 0, -2, 2, 1],
+    [2, 0, 0, 2, 2], [0, 0, 2, 2, 2], [0, 0, 2, 0, 0], [-2, 0, 1, 2, 2],
+    [0, 0, 0, 2, 0], [-2, 0, 0, 2, 0], [0, 0, -1, 2, 1], [0, 2, 0, 0, 0],
+    [2, 0, -1, 0, 1], [-2, 2, 0, 2, 2], [0, 1, 0, 0, 1], [-2, 0, 1, 0, 1],
+    [0, -1, 0, 0, 1], [0, 0, 2, -2, 0], [2, 0, -1, 2, 1], [2, 0, 1, 2, 2],
+    [0, 1, 0, 2, 2], [-2, 1, 1, 0, 0], [0, -1, 0, 2, 2], [2, 0, 0, 2, 1],
+    [2, 0, 1, 0, 0], [-2, 0, 2, 2, 2], [-2, 0, 1, 2, 1], [2, 0, -2, 0, 1],
+    [2, 0, 0, 0, 1], [0, -1, 1, 0, 0], [-2, -1, 0, 2, 1], [-2, 0, 0, 0, 1],
+    [0, 0, 2, 2, 1], [-2, 0, 2, 0, 1], [-2, 1, 0, 2, 1], [0, 0, 1, -2, 0],
+    [-1, 0, 1, 0, 0], [-2, 1, 0, 0, 0], [1, 0, 0, 0, 0], [0, 0, 1, 2, 0],
+    [0, 0, -2, 2, 2], [-1, -1, 1, 0, 0], [0, 1, 1, 0, 0], [0, -1, 1, 2, 2],
+    [2, -1, -1, 2, 2], [0, 0, 3, 2, 2], [2, -1, 0, 2, 2]]
+"""This table contains the periodic terms for the argument of the nutation. In
+Meeus' book this is Table 22.A and can be found in pages 145-146."""
+
+NUTATION_SINE_COEF_TABLE = [
+    [-171996.0, -174.2], [-13187.0, -1.6], [-2274.0, -0.2], [2062.0, 0.2],
+    [1426.0, -3.4], [712.0, 0.1], [-517.0, 1.2], [-386.0, -0.4], [-301.0, 0.0],
+    [217.0, -0.5], [-158.0, 0.0], [129.0, 0.1], [123.0, 0.0], [63.0, 0.0],
+    [63.0, 0.1], [-59.0, 0.0], [-58.0, -0.1], [-51.0, 0.0], [48.0, 0.0],
+    [46.0, 0.0], [-38.0, 0.0], [-31.0, 0.0], [29.0, 0.0], [29.0, 0.0],
+    [26.0, 0.0], [-22.0, 0.0], [21.0, 0.0], [17.0, -0.1], [16.0, 0.0],
+    [-16.0, 0.1], [-15.0, 0.0], [-13.0, 0.0], [-12.0, 0.0], [11.0, 0.0],
+    [-10.0, 0.0], [-8.0, 0.0], [7.0, 0.0], [-7.0, 0.0], [-7.0, 0.0],
+    [-7.0, 0.0], [6.0, 0.0], [6.0, 0.0], [6.0, 0.0], [-6.0, 0.0], [-6.0, 0.0],
+    [5.0, 0.0], [-5.0, 0.0], [-5.0, 0.0], [-5.0, 0.0], [4.0, 0.0], [4.0, 0.0],
+    [4.0, 0.0], [-4.0, 0.0], [-4.0, 0.0], [-4.0, 0.0], [3.0, 0.0], [-3.0, 0.0],
+    [-3.0, 0.0], [-3.0, 0.0], [-3.0, 0.0], [-3.0, 0.0], [-3.0, 0.0],
+    [-3.0, 0.0]]
+"""This table contains the periodic terms for the coefficients of the sine of
+the argument of the nutation, and they are used to compute Delta psi. Units are
+in 0.0001''. In Meeus' book this is Table 22.A and can be found in pages
+145-146."""
+
+NUTATION_COSINE_COEF_TABLE = [
+    [92025.0, 8.9], [5736.0, -3.1], [977.0, -0.5], [-895.0, 0.5], [54.0, -0.1],
+    [-7.0, 0.0], [224.0, -0.6], [200.0, 0.0], [129.0, -0.1], [-95.0, 0.3],
+    [0.0, 0.0], [-70.0, 0.0], [-53.0, 0.0], [0.0, 0.0], [-33.0, 0.0],
+    [26.0, 0.0], [32.0, 0.0], [27.0, 0.0], [0.0, 0.0], [-24.0, 0.0],
+    [16.0, 0.0], [13.0, 0.0], [0.0, 0.0], [-12.0, 0.0], [0.0, 0.0], [0.0, 0.0],
+    [-10.0, 0.0], [0.0, 0.0], [-8.0, 0.0], [7.0, 0.0], [9.0, 0.0], [7.0, 0.0],
+    [6.0, 0.0], [0.0, 0.0], [5.0, 0.0], [3.0, 0.0], [-3.0, 0.0], [0.0, 0.0],
+    [3.0, 0.0], [3.0, 0.0], [0.0, 0.0], [-3.0, 0.0], [-3.0, 0.0], [3.0, 0.0],
+    [3.0, 0.0], [0.0, 0.0], [3.0, 0.0], [3.0, 0.0], [3.0, 0.0]]
+"""This table contains the periodic terms for the coefficients of the cosine of
+the argument of the nutation, and they are used to compute Delta epsilon. Units
+are in 0.0001''. In Meeus' book this is Table 22.A and can be found in pages
+145-146."""
 
 
 class Ellipsoid(object):
@@ -427,6 +483,254 @@ class Earth(object):
         dist = d*(1.0 + fe*(h1*sin2f*cos2g - h2*cos2f*sin2g))
         error = round(dist*fe*fe, 0)
         return dist, error
+
+    @staticmethod
+    def mean_obliquity(*args, **kwargs):
+        """This method computes the mean obliquity (epsilon0) at the provided
+        date.
+
+        This method internally uses an :class:`Epoch` object, and the
+        **leap_seconds** argument then controls the way the UTC->TT conversion
+        is handled for that object. If **leap_seconds** argument is set to a
+        value different than zero, then that value will be used for the
+        UTC->TAI conversion, and the internal leap seconds table will be
+        bypassed. On the other hand, if it is set to zero, then the UTC to TT
+        correction is disabled, and it is supposed that the input data is
+        already in TT scale.
+
+        :param \*args: Either Epoch, date, datetime or year, month, day values,
+            by themselves or inside a tuple or list
+        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+            list
+        :param leap_seconds: If different from zero, this is the value to be
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
+        :type leap_seconds: int, float
+
+        :returns: The mean obliquity of the ecliptic, as an Angle
+        :rtype: Angle
+        :raises: ValueError if input values are in the wrong range.
+        :raises: TypeError if input values are of wrong type.
+
+        >>> e0 = Earth.mean_obliquity(1987, 4, 10)
+        >>> a = e0.dms_tuple()
+        >>> a[0]
+        23
+        >>> a[1]
+        26
+        >>> round(a[2], 3)
+        27.407
+        """
+
+        # Get the Epoch object corresponding to input parameters
+        t = Epoch.check_input_date(*args, **kwargs)
+        # Let's redefine u in units of 100 Julian centuries from Epoch J2000.0
+        u = (t.jde() - 2451545.0)/3652500.0
+        epsilon0 = Angle(23, 26, 21.448)
+        delta = u*(-4680.93 + u*(-1.55 + u*(1999.25 + u*(-51.38 + u*(-249.67 +
+                   u*(-39.05 + u*(7.12 + u*(27.87 + u*(5.79 + u*2.45)))))))))
+        delta = Angle(0, 0, delta)
+        epsilon0 += delta
+        return epsilon0
+
+    @staticmethod
+    def true_obliquity(*args, **kwargs):
+        """This method computes the true obliquity (epsilon) at the provided
+        date. The true obliquity is the mean obliquity (epsilon0) plus the
+        correction provided by the nutation in obliquity (Delta epsilon).
+
+        This method internally uses an :class:`Epoch` object, and the
+        **leap_seconds** argument then controls the way the UTC->TT conversion
+        is handled for that object. If **leap_seconds** argument is set to a
+        value different than zero, then that value will be used for the
+        UTC->TAI conversion, and the internal leap seconds table will be
+        bypassed. On the other hand, if it is set to zero, then the UTC to TT
+        correction is disabled, and it is supposed that the input data is
+        already in TT scale.
+
+        :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+            day values, by themselves or inside a tuple or list
+        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+            list
+        :param leap_seconds: If different from zero, this is the value to be
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
+        :type leap_seconds: int, float
+
+        :returns: The true obliquity of the ecliptic, as an Angle
+        :rtype: :class:`Angle`
+        :raises: ValueError if input values are in the wrong range.
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epsilon = Earth.true_obliquity(1987, 4, 10, leap_seconds=0.0)
+        >>> a = epsilon.dms_tuple()
+        >>> a[0]
+        23
+        >>> a[1]
+        26
+        >>> round(a[2], 3)
+        36.849
+        """
+
+        epsilon0 = Earth.mean_obliquity(*args, **kwargs)
+        delta_epsilon = Earth.nutation_obliquity(*args, **kwargs)
+        return (epsilon0 + delta_epsilon)
+
+    @staticmethod
+    def nutation_longitude(*args, **kwargs):
+        """This method computes the nutation in longitude (Delta psi) at the
+        provided date.
+
+        This method internally uses an :class:`Epoch` object, and the
+        **leap_seconds** argument then controls the way the UTC->TT conversion
+        is handled for that object. If **leap_seconds** argument is set to a
+        value different than zero, then that value will be used for the
+        UTC->TAI conversion, and the internal leap seconds table will be
+        bypassed. On the other hand, if it is set to zero, then the UTC to TT
+        correction is disabled, and it is supposed that the input data is
+        already in TT scale.
+
+        :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+            day values, by themselves or inside a tuple or list
+        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+            list
+        :param leap_seconds: If different from zero, this is the value to be
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
+        :type leap_seconds: int, float
+
+        :returns: The nutation in longitude (Delta psi), as an Angle
+        :rtype: :class:`Angle`
+        :raises: ValueError if input values are in the wrong range.
+        :raises: TypeError if input values are of wrong type.
+
+        >>> dpsi = Earth.nutation_longitude(1987, 4, 10, leap_seconds=0.0)
+        >>> a = dpsi.dms_tuple()
+        >>> a[0]
+        0
+        >>> a[1]
+        0
+        >>> round(a[2], 3)
+        3.788
+        >>> a[3]
+        -1.0
+        """
+
+        # Get the Epoch object corresponding to input parameters
+        t = Epoch.check_input_date(*args, **kwargs)
+        # Let's redefine t in units of Julian centuries from Epoch J2000.0
+        t = (t.jde() - 2451545.0)/36525.0
+        # Let's compute the mean elongation of the Moon from the Sun
+        d = 297.85036 + t*(445267.111480 + t*(-0.0019142 + t/189474.0))
+        d = Angle(d)            # Convert into an Angle: It is easier to handle
+        # Compute the mean anomaly of the Sun (from Earth)
+        m = 357.52772 + t*(35999.050340 + t*(-0.0001603 - t/300000.0))
+        m = Angle(m)
+        # Compute the mean anomaly of the Moon
+        mprime = 134.96298 + t*(477198.867398 + t*(0.0086972 + t/56250.0))
+        mprime = Angle(mprime)
+        # Now, let's compute the Moon's argument of latitude
+        f = 93.27191 + t*(483202.017538 + t*(-0.0036825 + t/327270.0))
+        f = Angle(f)
+        # And finally, the longitude of the ascending node of the Moon's mean
+        # orbit on the ecliptic, measured from the mean equinox of date
+        omega = 125.04452 + t*(-1934.136261 + t*(0.0020708 + t/450000.0))
+        omega = Angle(omega)
+        # Let's store this results in a list, in preparation for using tables
+        arguments = [d, m, mprime, f, omega]
+        # Now is time of using the nutation tables
+        deltapsi = 0.0
+        for i in range(len(NUTATION_SINE_COEF_TABLE)):
+            argument = Angle()
+            coeff = 0.0
+            for j in range(5):
+                if NUTATION_ARG_TABLE[i][j]:    # Avoid multiplications by zero
+                    argument += NUTATION_ARG_TABLE[i][j] * arguments[j]
+            coeff = NUTATION_SINE_COEF_TABLE[i][0]
+            if NUTATION_SINE_COEF_TABLE[i][1]:
+                coeff += NUTATION_SINE_COEF_TABLE[i][1] * t
+            deltapsi += (coeff*sin(argument.rad()))/10000.0
+        return Angle(0, 0, deltapsi)
+
+    @staticmethod
+    def nutation_obliquity(*args, **kwargs):
+        """This method computes the nutation in obliquity (Delta epsilon) at
+        the provided date.
+
+        This method internally uses an :class:`Epoch` object, and the
+        **leap_seconds** argument then controls the way the UTC->TT conversion
+        is handled for that object. If **leap_seconds** argument is set to a
+        value different than zero, then that value will be used for the
+        UTC->TAI conversion, and the internal leap seconds table will be
+        bypassed. On the other hand, if it is set to zero, then the UTC to TT
+        correction is disabled, and it is supposed that the input data is
+        already in TT scale.
+
+        :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+            day values, by themselves or inside a tuple or list
+        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+            list
+        :param leap_seconds: If different from zero, this is the value to be
+           used in the UTC->TAI conversion. If equals to zero, conversion is
+           disabled. If not given, UTC to TT conversion is carried out
+           (default).
+        :type leap_seconds: int, float
+
+        :returns: The nutation in obliquity (Delta epsilon), as an Angle
+        :rtype: Angle
+        :raises: ValueError if input values are in the wrong range.
+        :raises: TypeError if input values are of wrong type.
+
+        >>> dpsi = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
+        >>> a = dpsi.dms_tuple()
+        >>> a[0]
+        0
+        >>> a[1]
+        0
+        >>> round(a[2], 3)
+        9.443
+        >>> a[3]
+        1.0
+        """
+
+        # Get the Epoch object corresponding to input parameters
+        t = Epoch.check_input_date(*args, **kwargs)
+        # Let's redefine t in units of Julian centuries from Epoch J2000.0
+        t = (t.jde() - 2451545.0)/36525.0
+        # Let's compute the mean elongation of the Moon from the Sun
+        d = 297.85036 + t*(445267.111480 + t*(-0.0019142 + t/189474.0))
+        d = Angle(d)            # Convert into an Angle: It is easier to handle
+        # Compute the mean anomaly of the Sun (from Earth)
+        m = 357.52772 + t*(35999.050340 + t*(-0.0001603 - t/300000.0))
+        m = Angle(m)
+        # Compute the mean anomaly of the Moon
+        mprime = 134.96298 + t*(477198.867398 + t*(0.0086972 + t/56250.0))
+        mprime = Angle(mprime)
+        # Now, let's compute the Moon's argument of latitude
+        f = 93.27191 + t*(483202.017538 + t*(-0.0036825 + t/327270.0))
+        f = Angle(f)
+        # And finally, the longitude of the ascending node of the Moon's mean
+        # orbit on the ecliptic, measured from the mean equinox of date
+        omega = 125.04452 + t*(-1934.136261 + t*(0.0020708 + t/450000.0))
+        omega = Angle(omega)
+        # Let's store this results in a list, in preparation for using tables
+        arguments = [d, m, mprime, f, omega]
+        # Now is time of using the nutation tables
+        deltaepsilon = 0.0
+        for i in range(len(NUTATION_COSINE_COEF_TABLE)):
+            argument = Angle()
+            coeff = 0.0
+            for j in range(5):
+                if NUTATION_ARG_TABLE[i][j]:    # Avoid multiplications by zero
+                    argument += NUTATION_ARG_TABLE[i][j] * arguments[j]
+            coeff = NUTATION_COSINE_COEF_TABLE[i][0]
+            if NUTATION_COSINE_COEF_TABLE[i][1]:
+                coeff += NUTATION_COSINE_COEF_TABLE[i][1] * t
+            deltaepsilon += (coeff*cos(argument.rad()))/10000.0
+        return Angle(0, 0, deltaepsilon)
 
 
 def main():
