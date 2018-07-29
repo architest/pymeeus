@@ -286,16 +286,25 @@ def test_epoch_dow():
         "ERROR: 4th dow() test, output doesn't match"
 
 
-def test_epoch_sidereal_time():
-    """Tests the sidereal_time() method of Epoch class"""
+def test_epoch_mean_sidereal_time():
+    """Tests the mean_sidereal_time() method of Epoch class"""
 
     e = Epoch(1987, 4, 10, leap_seconds=0.0)
-    assert abs(round(e.sidereal_time(), 9) - 0.549147764) < TOL, \
-        "ERROR: 1st sidereal_time() test, output doesn't match"
+    assert abs(round(e.mean_sidereal_time(), 9) - 0.549147764) < TOL, \
+        "ERROR: 1st mean_sidereal_time() test, output doesn't match"
 
     e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
-    assert abs(round(e.sidereal_time(), 9) - 0.357605204) < TOL, \
-        "ERROR: 2nd sidereal_time() test, output doesn't match"
+    assert abs(round(e.mean_sidereal_time(), 9) - 0.357605204) < TOL, \
+        "ERROR: 2nd mean_sidereal_time() test, output doesn't match"
+
+
+def test_epoch_apparent_sidereal_time():
+    """Tests the apparent_sidereal_time() method of Epoch class"""
+
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    assert abs(round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8) -
+               0.54914508) < TOL, \
+        "ERROR: 1st apparent_sidereal_time() test, output doesn't match"
 
 
 def test_epoch_mjd():
