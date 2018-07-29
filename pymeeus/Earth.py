@@ -684,8 +684,8 @@ class Earth(object):
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
-        >>> dpsi = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
-        >>> a = dpsi.dms_tuple()
+        >>> depsilon = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
+        >>> a = depsilon.dms_tuple()
         >>> a[0]
         0
         >>> a[1]
@@ -804,7 +804,7 @@ def main():
 
     print("")
 
-    # Finally, let's compute the distance between two points on the Earth:
+    # Now let's compute the distance between two points on the Earth:
     # Bangkok:          13d 14' 09'' North, 100d 29' 39'' East
     # Buenos Aires:     34d 36' 12'' South,  58d 22' 54'' West
     # NOTE: We will consider that positions 'East' and 'South' are negative
@@ -819,6 +819,31 @@ def main():
              round(dist/1000.0, 2))
     print_me("The approximate error of the estimation is (meters)",
              round(error, 0))
+
+    print("")
+
+    # It follows a series of important parameters related to the angle between
+    # Earth's rotation axis and the ecliptic
+    e0 = Earth.mean_obliquity(1987, 4, 10)
+    print("The mean angle between Earth rotation axis and ecliptic axis for " +
+          "1987/4/10 is:")
+    print_me("Mean obliquity", e0.dms_str())                # 23d 26' 27.407''
+    epsilon = Earth.true_obliquity(1987, 4, 10)
+    print("'True' (instantaneous) angle between those axis for 1987/4/10 is:")
+    print_me("True obliquity", epsilon.dms_str())      # 23d 26' 36.849''
+    epsilon = Earth.true_obliquity(2018, 7, 29)
+    print("'True' (instantaneous) angle between those axis for 2018/7/29 is:")
+    print_me("True obliquity", epsilon.dms_str())      # 23d 26' 7.2157''
+
+    # The nutation effect is separated in two components: One parallel to the
+    # ecliptic (nutation in longitude) and other perpendicular to the ecliptic
+    # (nutation in obliquity)
+    print("Nutation correction in longitude for 1987/4/10:")
+    dpsi = Earth.nutation_longitude(1987, 4, 10)
+    print_me("Nutation in longitude", dpsi.dms_str())       # 0d 0' -3.788''
+    print("Nutation correction in obliquity for 1987/4/10:")
+    depsilon = Earth.nutation_obliquity(1987, 4, 10)
+    print_me("Nutation in obliquity", depsilon.dms_str())   # 0d 0' 9.443''
 
 
 if __name__ == '__main__':
