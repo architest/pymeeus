@@ -46,6 +46,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.1.1
+    * Added methods related to nutation corrections
 * 0.1.0
     * Earth class added
 * 0.0.9
