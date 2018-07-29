@@ -126,3 +126,75 @@ def test_earth_distance():
 
     assert abs(round(error, 0) - 69.0) < TOL, \
         "ERROR: 4th distance() test, output doesn't match"
+
+
+def test_earth_mean_obliquity():
+    """Tests the mean_obliquity() method of Earth class"""
+
+    e0 = Earth.mean_obliquity(1987, 4, 10)
+    a = e0.dms_tuple()
+    assert abs(a[0] - 23.0) < TOL, \
+        "ERROR: 1st mean_obliquity() test, 'degrees' value doesn't match"
+
+    assert abs(a[1] - 26.0) < TOL, \
+        "ERROR: 2nd mean_obliquity() test, 'minutes' value doesn't match"
+
+    assert abs(round(a[2], 3) - 27.407) < TOL, \
+        "ERROR: 3rd mean_obliquity() test, 'seconds value doesn't match"
+
+    assert abs(a[3] - 1.0) < TOL, \
+        "ERROR: 4th mean_obliquity() test, 'sign' value doesn't match"
+
+
+def test_earth_true_obliquity():
+    """Tests the true_obliquity() method of Earth class"""
+
+    epsilon = Earth.true_obliquity(1987, 4, 10, leap_seconds=0.0)
+    a = epsilon.dms_tuple()
+    assert abs(a[0] - 23.0) < TOL, \
+        "ERROR: 1st true_obliquity() test, 'degrees' value doesn't match"
+
+    assert abs(a[1] - 26.0) < TOL, \
+        "ERROR: 2nd true_obliquity() test, 'minutes' value doesn't match"
+
+    assert abs(round(a[2], 3) - 36.849) < TOL, \
+        "ERROR: 3rd true_obliquity() test, 'seconds value doesn't match"
+
+    assert abs(a[3] - 1.0) < TOL, \
+        "ERROR: 4th true_obliquity() test, 'sign' value doesn't match"
+
+
+def test_earth_nutation_longitude():
+    """Tests the nutation_longitude() method of Earth class"""
+
+    dpsi = Earth.nutation_longitude(1987, 4, 10, leap_seconds=0.0)
+    a = dpsi.dms_tuple()
+    assert abs(a[0] - 0.0) < TOL, \
+        "ERROR: 1st nutation_longitude() test, 'degrees' value doesn't match"
+
+    assert abs(a[1] - 0.0) < TOL, \
+        "ERROR: 2nd nutation_longitude() test, 'minutes' value doesn't match"
+
+    assert abs(round(a[2], 3) - 3.788) < TOL, \
+        "ERROR: 3rd nutation_longitude() test, 'seconds value doesn't match"
+
+    assert abs(a[3] - (-1.0)) < TOL, \
+        "ERROR: 4th nutation_longitude() test, 'sign' value doesn't match"
+
+
+def test_earth_nutation_obliquity():
+    """Tests the nutation_obliquity() method of Earth class"""
+
+    depsilon = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
+    a = depsilon.dms_tuple()
+    assert abs(a[0] - 0.0) < TOL, \
+        "ERROR: 1st nutation_obliquity() test, 'degrees' value doesn't match"
+
+    assert abs(a[1] - 0.0) < TOL, \
+        "ERROR: 2nd nutation_obliquity() test, 'minutes' value doesn't match"
+
+    assert abs(round(a[2], 3) - 9.443) < TOL, \
+        "ERROR: 3rd nutation_obliquity() test, 'seconds value doesn't match"
+
+    assert abs(a[3] - 1.0) < TOL, \
+        "ERROR: 4th nutation_obliquity() test, 'sign' value doesn't match"
