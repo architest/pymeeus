@@ -498,8 +498,8 @@ class Earth(object):
         correction is disabled, and it is supposed that the input data is
         already in TT scale.
 
-        :param \*args: Either Epoch, date, datetime or year, month, day values,
-            by themselves or inside a tuple or list
+        :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+            day values, by themselves or inside a tuple or list
         :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
             list
         :param leap_seconds: If different from zero, this is the value to be
@@ -508,8 +508,8 @@ class Earth(object):
            (default).
         :type leap_seconds: int, float
 
-        :returns: The mean obliquity of the ecliptic, as an Angle
-        :rtype: Angle
+        :returns: The mean obliquity of the ecliptic, as an :class:`Angle`
+        :rtype: :class:`Angle`
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
@@ -679,8 +679,9 @@ class Earth(object):
            (default).
         :type leap_seconds: int, float
 
-        :returns: The nutation in obliquity (Delta epsilon), as an Angle
-        :rtype: Angle
+        :returns: The nutation in obliquity (Delta epsilon), as an
+            :class:`Angle`
+        :rtype: :class:`Angle`
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
