@@ -114,3 +114,41 @@ Here we will take advantage of facilities provided by ``Angle`` class::
     print_me("The approximate error of the estimation is (meters)", round(error, 0))
 
     # The approximate error of the estimation is (meters): 189.0
+
+It follows a series of important parameters related to the angle between Earth's rotation axis and the ecliptic.
+
+- The mean angle between Earth rotation axis and ecliptic axis is the **mean obliquity**::
+
+    e0 = Earth.mean_obliquity(1987, 4, 10)
+
+    print_me("Mean obliquity for 1987/4/10", e0.dms_str())
+
+    # Mean obliquity for 1987/4/10: 23d 26' 27.4066466278''
+
+- If we take into account the nutation effect on the obliquity, we get the **true obliquity**::
+
+    epsilon = Earth.true_obliquity(1987, 4, 10)
+
+    print_me("True obliquity for 1987/4/10", epsilon.dms_str())
+
+    # True obliquity for 1987/4/10: 23d 26' 36.8491882378''
+
+    epsilon = Earth.true_obliquity(2018, 7, 29)
+
+    print_me("True obliquity for 2018/7/29", epsilon.dms_str())
+
+    # True obliquity for 2018/7/29: 23d 26' 7.21570241139''
+
+- The nutation effect is separated in two components: One parallel to the ecliptic (nutation in longitude) and other perpendicular to the ecliptic (nutation in obliquity)::
+
+    dpsi = Earth.nutation_longitude(1987, 4, 10)
+
+    print_me("Nutation in longitude for 1987/4/10", dpsi.dms_str())
+
+    # Nutation in longitude for 1987/4/10: -3.78798432292''
+
+    depsilon = Earth.nutation_obliquity(1987, 4, 10)
+
+    print_me("Nutation in obliquity for 1987/4/10", depsilon.dms_str())
+
+    # Nutation in obliquity for 1987/4/10: 9.44254160999''
