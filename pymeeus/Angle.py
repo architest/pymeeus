@@ -1069,6 +1069,7 @@ def main():
 
     # Create an Angle object, providing degrees, minutes and seconds
     a = Angle(-23.0, 26.0, 48.999983999)
+    print("a = Angle(-23.0, 26.0, 48.999983999)")
 
     # First we print using the __call__ method (note the extra parentheses)
     print_me("The angle 'a()' is", a())             # -23.44694444
