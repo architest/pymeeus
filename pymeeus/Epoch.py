@@ -1840,6 +1840,16 @@ def main():
 
     print("")
 
+    print("When correcting for nutation-related effects, we get the " +
+          "'apparent' sidereal time:")
+    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    print("e = Epoch(1987, 4, 10, leap_seconds=0.0)")
+    print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
+             e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
+    #    0.549145082637
+
+    print("")
+
     # Epoch class can also provide the date of Easter for a given year
     # Let's spice up the output a little bit, calling dow() and get_month()
     month, day = Epoch.easter(2019)
@@ -1924,13 +1934,6 @@ def main():
     print_me("2007/5/20.0 != 2007/5/20.000001", a != b)
     print_me("2007/5/20.0 > 2007/5/20.000001", a > b)
     print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
-
-    print("")
-
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
-    print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
-             e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
-    #    0.549145082637
 
 
 if __name__ == '__main__':
