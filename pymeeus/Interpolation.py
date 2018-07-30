@@ -296,6 +296,20 @@ class Interpolation(object):
         ystr = "Y: " + str(self._y)
         return xstr + ystr
 
+    def __len__(self):
+        """This method returns the number of interpolation points (x, y, pairs)
+        stored in this :class:`Interpolation` object.
+
+        :returns: Number of interpolation points internally stored
+        :rtype: int
+
+        >>> i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> len(i)
+        6
+        """
+
+        return len(self._x)
+
     def get_tolerance(self):
         """Gets the internal tolerance value used for comparisons.
 
@@ -611,6 +625,7 @@ def main():
     print("NOTE:")
     print("   a. They are ordered in 'x'")
     print("   b. The extra value in 'x' was dropped")
+
     print("")
 
     # Use the copy constructor
@@ -618,6 +633,12 @@ def main():
     j = Interpolation(i)
     print("j = Interpolation(i)")
     print(j)
+
+    print("")
+
+    # Get the number of interpolation points stored
+    print_me("Number or interpolation points in 'j'", len(j))
+
     print("")
 
     j = Interpolation([0.0, 1.0, 3.0], [-1.0, -2.0, 2.0])
@@ -627,6 +648,7 @@ def main():
     print_me("j(0.5)", j(0.5))
     # Test with a value already in the data table
     print_me("j(1)", j(1))
+
     print("")
 
     # We can interpolate Angles too
@@ -640,6 +662,7 @@ def main():
                        Angle(0, 54, 4.133)])")
 
     print_me("k(28.27777778)", Angle(k(28.1388888889)).dms_str())
+
     print("")
 
     m = Interpolation([-1.0, 0.0, 1.0], [-2.0, 3.0, 2.0])

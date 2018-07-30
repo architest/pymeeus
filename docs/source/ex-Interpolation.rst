@@ -54,6 +54,12 @@ Use the copy constructor. We can easily make a copy of an Interpolation object::
 
     # j(1): -2.0
 
+Get the number of interpolation points internally stored::
+
+    print_me("Number or interpolation points in 'j'", len(j))
+
+    # Number or interpolation points in 'j': 3
+
 We can interpolate Angles too::
 
     k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],
