@@ -56,7 +56,7 @@ class CurveFitting(object):
     """
 
     def __init__(self, *args):
-        """Interpolation constructor.
+        """CurveFitting constructor.
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples, lists
@@ -112,7 +112,7 @@ class CurveFitting(object):
         self.set(*args)         # Let's use 'set()' method to handle the setup
 
     def set(self, *args):
-        """Method used to define the value pairs of Interpolation object.
+        """Method used to define the value pairs of CurveFitting object.
 
         This takes pairs of (x, y) values from the table of interest. These
         pairs of values can be given as a sequence of int/floats, tuples,
@@ -270,6 +270,20 @@ class CurveFitting(object):
         xstr = "X: " + str(self._x) + "\n"
         ystr = "Y: " + str(self._y)
         return xstr + ystr
+
+    def __len__(self):
+        """This method returns the number of value pairs internally stored in
+        this object.
+
+        :returns: Number of value pairs internally stored
+        :rtype: int
+
+        >>> i = CurveFitting([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> len(i)
+        6
+        """
+
+        return len(self._x)
 
     def correlation_coeff(self):
         """This method returns the coefficient of correlation, as a float.
@@ -477,6 +491,11 @@ def main():
     a, b = cf2.linear_fitting()
     print("Linear fitting for cf2:")
     print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+
+    print("")
+
+    # Get the number of value pairs internally stored
+    print_me("Number of value pairs inside 'cf2'", len(cf2))        # 22
 
     print("")
 

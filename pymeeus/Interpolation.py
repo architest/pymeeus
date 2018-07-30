@@ -637,7 +637,7 @@ def main():
     print("")
 
     # Get the number of interpolation points stored
-    print_me("Number or interpolation points in 'j'", len(j))
+    print_me("Number or interpolation points in 'j'", len(j))           # 6
 
     print("")
 

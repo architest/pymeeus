@@ -40,6 +40,12 @@ Use the copy constructor::
 
     #    a = -2.49	b = 244.18
 
+Get the number of value pairs internally stored::
+
+    print_me("Number of value pairs inside 'cf2'", len(cf2))
+
+    # Number of value pairs inside 'cf2': 22
+
 Compute the correlation coefficient::
 
     r = cf1.correlation_coeff()
