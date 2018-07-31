@@ -296,6 +296,21 @@ class Interpolation(object):
         ystr = "Y: " + str(self._y)
         return xstr + ystr
 
+    def __repr__(self):
+        """Method providing the 'official' string representation of the object.
+        It provides a valid expression that could be used to recreate the
+        object.
+
+        :returns: As string with a valid expression to recreate the object
+        :rtype: string
+
+        >>> i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
+        >>> repr(i)
+        'Interpolation([1, 2, 3, 4, 5, 6], [2, 4, 6, 8, 10, 12])'
+        """
+
+        return "{}({}, {})".format(self.__class__.__name__, self._x, self._y)
+
     def __len__(self):
         """This method returns the number of interpolation points (x, y, pairs)
         stored in this :class:`Interpolation` object.

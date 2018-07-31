@@ -1096,6 +1096,21 @@ class Epoch(object):
 
         return str(self._jde)
 
+    def __repr__(self):
+        """Method providing the 'official' string representation of the object.
+        It provides a valid expression that could be used to recreate the
+        object.
+
+        :returns: As string with a valid expression to recreate the object
+        :rtype: string
+
+        >>> e = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+        >>> repr(e)
+        'Epoch(2446966.0)'
+        """
+
+        return "{}({})".format(self.__class__.__name__, self._jde)
+
     def get_date(self, **kwargs):
         """This method converts the internal JDE value back to a date.
 

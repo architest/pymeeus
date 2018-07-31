@@ -122,6 +122,22 @@ class Ellipsoid(object):
 
         return "{}:{}:{}".format(self._a, self._f, self._omega)
 
+    def __repr__(self):
+        """Method providing the 'official' string representation of the object.
+        It provides a valid expression that could be used to recreate the
+        object.
+
+        :returns: As string with a valid expression to recreate the object
+        :rtype: string
+
+        >>> a = Ellipsoid(6378140.0, 0.0033528132, 7.292e-5)
+        >>> repr(a)
+        'Ellipsoid(6378140.0, 0.0033528132, 7.292e-05)'
+        """
+
+        return "{}({}, {}, {})".format(self.__class__.__name__, self._a,
+                                       self._f, self._omega)
+
     def b(self):
         """Method to return the semi-minor radius.
 
