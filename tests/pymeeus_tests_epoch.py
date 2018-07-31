@@ -111,17 +111,17 @@ def test_epoch_is_leap():
         "ERROR: 5th is_leap() test, output doesn't match"
 
 
-def test_epoch_getDOY():
-    """Tests the getDOY() static method of Epoch class"""
+def test_epoch_get_doy():
+    """Tests the get_doy() static method of Epoch class"""
 
-    assert Epoch.getDOY(1978, 11, 14) == 318, \
-        "ERROR: 1st getDOY() test, output doesn't match"
+    assert Epoch.get_doy(1978, 11, 14) == 318, \
+        "ERROR: 1st get_doy() test, output doesn't match"
 
-    assert Epoch.getDOY(2012, 3, 3.1) == 63.1, \
-        "ERROR: 2nd getDOY() test, output doesn't match"
+    assert Epoch.get_doy(2012, 3, 3.1) == 63.1, \
+        "ERROR: 2nd get_doy() test, output doesn't match"
 
-    assert Epoch.getDOY(-400, 2, 29.9) == 60.9, \
-        "ERROR: 3rd getDOY() test, output doesn't match"
+    assert Epoch.get_doy(-400, 2, 29.9) == 60.9, \
+        "ERROR: 3rd get_doy() test, output doesn't match"
 
 
 def test_epoch_doy2date():

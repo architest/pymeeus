@@ -55,11 +55,11 @@ We can also check if a given year is leap or not::
 
 Get the Day Of Year (DOY) corresponding to a given date::
 
-    print_me("Day Of Year (DOY) of 1978/11/14", Epoch.getDOY(1978, 11, 14))
+    print_me("Day Of Year (DOY) of 1978/11/14", Epoch.get_doy(1978, 11, 14))
 
     # Day Of Year (DOY) of 1978/11/14: 318.0
 
-    print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.getDOY(-400, 2, 29.9))
+    print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.get_doy(-400, 2, 29.9))
 
     # Day Of Year (DOY) of -400/2/29.9: 60.9
 

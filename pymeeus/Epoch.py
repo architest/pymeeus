@@ -624,46 +624,46 @@ class Epoch(object):
         return Epoch.is_leap(y)
 
     @staticmethod
-    def getDOY(YYYY, MM, DD):
+    def get_doy(yyyy, mm, dd):
         """This method returns the Day Of Year (DOY) for the given date.
 
-        :param YYYY: Year, in four digits format
-        :type YYYY: int, float
-        :param MM: Month, in numeric format (1 = January, 2 = February, etc)
-        :type MM: int, float
-        :param DD: Day, in numeric format
-        :type DD: int, float
+        :param yyyy: Year, in four digits format
+        :type yyyy: int, float
+        :param mm: Month, in numeric format (1 = January, 2 = February, etc)
+        :type mm: int, float
+        :param dd: Day, in numeric format
+        :type dd: int, float
 
         :returns: Day Of Year (DOY).
         :rtype: float
         :raises: ValueError if input values correspond to a wrong date.
 
-        >>> Epoch.getDOY(1999, 1, 29)
+        >>> Epoch.get_doy(1999, 1, 29)
         29.0
-        >>> Epoch.getDOY(1978, 11, 14)
+        >>> Epoch.get_doy(1978, 11, 14)
         318.0
-        >>> Epoch.getDOY(2017, 12, 31.7)
+        >>> Epoch.get_doy(2017, 12, 31.7)
         365.7
-        >>> Epoch.getDOY(2012, 3, 3.1)
+        >>> Epoch.get_doy(2012, 3, 3.1)
         63.1
-        >>> Epoch.getDOY(-400, 2, 29.9)
+        >>> Epoch.get_doy(-400, 2, 29.9)
         60.9
         """
 
         # Let's carry out first some basic checks
-        if DD < 1 or DD >= 32 or MM < 1 or MM > 12:
+        if dd < 1 or dd >= 32 or mm < 1 or mm > 12:
             raise ValueError("Invalid input data")
-        day = int(DD)
-        frac = DD % 1
-        if YYYY >= 1:                           # datetime's minimum year is 1
+        day = int(dd)
+        frac = dd % 1
+        if yyyy >= 1:                           # datetime's minimum year is 1
             try:
-                d = datetime.date(YYYY, MM, day)
+                d = datetime.date(yyyy, mm, day)
             except ValueError:
                 raise ValueError("Invalid input date")
             doy = d.timetuple().tm_yday
         else:
-            k = 2 if Epoch.is_leap(YYYY) else 1
-            doy = INT((275.0*MM)/9.0) - k*INT((MM + 9.0)/12.0) + day - 30.0
+            k = 2 if Epoch.is_leap(yyyy) else 1
+            doy = INT((275.0*mm)/9.0) - k*INT((mm + 9.0)/12.0) + day - 30.0
         return float(doy + frac)
 
     @staticmethod
@@ -1187,7 +1187,7 @@ class Epoch(object):
                     deltasec += leap_seconds
 
         if deltasec != 0.0:
-            doy = Epoch.getDOY(year, month, day)
+            doy = Epoch.get_doy(year, month, day)
             doy -= deltasec/DAY2SEC
             # Check that we didn't change year
             if doy < 1.0:
@@ -1786,8 +1786,8 @@ def main():
     print("")
 
     # Get the Day Of Year corresponding to a given date
-    print_me("Day Of Year (DOY) of 1978/11/14", Epoch.getDOY(1978, 11, 14))
-    print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.getDOY(-400, 2, 29.9))
+    print_me("Day Of Year (DOY) of 1978/11/14", Epoch.get_doy(1978, 11, 14))
+    print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.get_doy(-400, 2, 29.9))
 
     print("")
 
