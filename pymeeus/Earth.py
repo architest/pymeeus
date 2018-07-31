@@ -251,6 +251,19 @@ class Earth(object):
 
         return str(self._ellip)
 
+    def __repr__(self):
+        """Method providing the 'official' string representation of the object.
+        It provides a valid expression that could be used to recreate the
+        object.
+
+        :returns: As string with a valid expression to recreate the object
+        :rtype: string
+        """
+
+        return "{}(ellipsoid=Ellipsoid({}, {}, {}))".format(
+            self.__class__.__name__, self._ellip._a, self._ellip._f,
+            self._ellip._omega)
+
     def rho(self, latitude):
         """"Method to compute the rho term, which is the observer distance to
         the center of the Earth, when the observer is at sea level. In this
