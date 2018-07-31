@@ -1748,6 +1748,10 @@ class Epoch(object):
         return not self.__gt__(b)           # '<=' == 'not(>)'
 
 
+JDE2000 = Epoch(2000, 1, 1.5, leap_seconds=0.0)
+"""Standard epoch for January 1st, 2000 at 12h corresponding to JDE2451545.0"""
+
+
 def main():
 
     # Let's define a small helper function
