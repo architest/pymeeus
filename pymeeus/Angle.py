@@ -253,7 +253,7 @@ class Angle(object):
         return str(self._deg)
 
     def __repr__(self):
-        return "Angle({})".format(self._deg)
+        return "{}({})".format(self.__class__.__name__, self._deg)
 
     def set(self, *args, **kwargs):
         """Method used to define the value of the Angle object.
