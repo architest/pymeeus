@@ -18,9 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, radians, sin, cos, tan, atan
+from math import sqrt, radians, sin, cos, tan, atan, atan2, asin
 from Angle import Angle
-from Epoch import Epoch
+from Epoch import Epoch, JDE2000
 
 
 """
@@ -761,6 +761,101 @@ class Earth(object):
                 coeff += NUTATION_COSINE_COEF_TABLE[i][1] * t
             deltaepsilon += (coeff*cos(argument.rad()))/10000.0
         return Angle(0, 0, deltaepsilon)
+
+    @staticmethod
+    def precession_equatorial(start_epoch, final_epoch, start_ra, start_dec,
+                              p_motion_ra, p_motion_dec):
+        """This method converts the equatorial coordinates (right ascension and
+        declination) given for an epoch and a equinox, to the corresponding
+        values for another epoch and equinox. Only the **mean** positions, i.e.
+        the effects of precession and proper motion, are considered here.
+
+        :param start_epoch: Initial epoch when initial coordinates are given
+        :type start_epoch: :py:class:`Epoch`
+        :param final_epoch: Final epoch for when coordinates are going to be
+            computed
+        :type final_epoch: :py:class:`Epoch`
+        :param start_ra: Initial right ascension
+        :type start_ra: :py:class:`Angle`
+        :param start_dec: Initial declination
+        :type start_dec: :py:class:`Angle`
+        :param p_motion_ra: Proper motion in right ascension, in degrees per
+            year
+        :type p_motion_ra: :py:class:`Angle`
+        :param p_motion_dec: Proper motion in declination, in degrees per year
+        :type p_motion_dec: :py:class:`Angle`
+
+        :returns: Equatorial coordinates (right ascension, declination)
+            corresponding to the final epoch, given as two :class:`Angle`
+            inside a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> start_epoch = JDE2000
+        >>> final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+        >>> alpha0 = Angle(2, 44, 11.986, ra=True)
+        >>> delta0 = Angle(49, 13, 42.48)
+        >>> pm_ra = Angle(0, 0, 0.03425, ra=True)
+        >>> pm_dec = Angle(0, 0, -0.0895)
+        >>> alpha, delta = Earth.precession_equatorial(start_epoch,
+        ...                                            final_epoch, alpha0,
+        ...                                            delta0, pm_ra, pm_dec)
+        >>> h, m, s, sign = alpha.ra_tuple()
+        >>> h
+        2
+        >>> m
+        46
+        >>> round(s, 3)
+        11.331
+        >>> d, m, s, sign = delta.dms_tuple()
+        >>> d
+        49
+        >>> m
+        20
+        >>> round(s, 2)
+        54.54
+        """
+
+        # First check that input values are of correct types
+        if not(isinstance(start_epoch, Epoch) and
+               isinstance(final_epoch, Epoch) and
+               isinstance(start_ra, Angle) and
+               isinstance(start_dec, Angle) and
+               isinstance(p_motion_ra, Angle) and
+               isinstance(p_motion_dec, Angle)):
+            raise TypeError("Invalid input types")
+        tt = (start_epoch - JDE2000)/36525.0
+        t = (final_epoch - start_epoch)/36525.0
+        # Correct starting coordinates by proper motion
+        start_ra += p_motion_ra*t*100.0
+        start_dec += p_motion_dec*t*100.0
+        # Compute the conversion parameters
+        zeta = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
+                  t*((0.30188 - 0.000344*tt) + 0.017998*t))
+        z = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
+               t*((1.09468 + 0.000066*tt) + 0.018203*t))
+        theta = t*(2004.3109 + tt*(-0.85330 - 0.000217*tt) +
+                   t*(-(0.42665 + 0.000217*tt) - 0.041833*t))
+        # Redefine the former values as Angles
+        zeta = Angle(0, 0, zeta)
+        z = Angle(0, 0, z)
+        theta = Angle(0, 0, theta)
+        a = cos(start_dec.rad())*sin(start_ra.rad() + zeta.rad())
+        b = cos(theta.rad()) * cos(start_dec.rad()) * \
+            cos(start_ra.rad() + zeta.rad()) - \
+            sin(theta.rad()) * sin(start_dec.rad())
+        c = sin(theta.rad()) * cos(start_dec.rad()) * \
+            cos(start_ra.rad() + zeta.rad()) + \
+            cos(theta.rad()) * sin(start_dec.rad())
+        final_ra = atan2(a, b) + z.rad()
+        if start_dec > 85.0:        # Coordinates are close to the pole
+            final_dec = sqrt(a*a + b*b)
+        else:
+            final_dec = asin(c)
+        # Convert results to Angles. Please note results are in radians
+        final_ra = Angle(final_ra, radians=True)
+        final_dec = Angle(final_dec, radians=True)
+        return (final_ra, final_dec)
 
 
 def main():
