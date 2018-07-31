@@ -253,6 +253,18 @@ class Angle(object):
         return str(self._deg)
 
     def __repr__(self):
+        """Method providing the 'official' string representation of the object.
+        It provides a valid expression that could be used to recreate the
+        object.
+
+        :returns: As string with a valid expression to recreate the object
+        :rtype: string
+
+        >>> a = Angle(12.5)
+        >>> repr(a)
+        'Angle(12.5)'
+        """
+
         return "{}({})".format(self.__class__.__name__, self._deg)
 
     def set(self, *args, **kwargs):
