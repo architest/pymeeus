@@ -410,26 +410,38 @@ class Angle(object):
         self._deg *= 15.0   # Multipy Right Ascension by 15.0 to get degrees
         return
 
-    def dms_str(self, fancy=True):
+    def dms_str(self, fancy=True, n_dec=-1):
         """Returns the Angle value as a sexagesimal string.
 
         The parameter **fancy** allows to print in "Dd M' S''" format if True,
-        and in "D:M:S" (easier to parse) if False.
+        and in "D:M:S" (easier to parse) if False. On the other hand, the
+        **n_dec** parameter sets the number of decimals used to print the
+        seconds. Set to a negative integer to disable (default).
 
         :param fancy: Format of output string. True by default.
         :type fancy: bool
+        :param n_dec: Number of decimals used to print the seconds
+        :type fancy: int
 
         :returns: Angle value as string in sexagesimal format.
         :rtype: string
+        :raises: TypeError if input value is of wrong type.
 
         >>> a = Angle(42.75)
         >>> print(a.dms_str())
         42d 45' 0.0''
         >>> print(a.dms_str(fancy=False))
         42:45:0.0
+        >>> a = Angle(49, 13, 42.4817)
+        >>> print(a.dms_str(n_dec=2))
+        49d 13' 42.48''
         """
 
+        if not isinstance(n_dec, int):
+            raise TypeError("Invalid input value")
         d, m, s, sign = Angle.deg2dms(self._deg)
+        if n_dec >= 0:
+            s = round(s, n_dec)
         if fancy:
             if d != 0:
                 return "{}d {}' {}''".format(int(sign*d), m, s)
@@ -462,27 +474,35 @@ class Angle(object):
 
         return self._deg/15.0
 
-    def ra_str(self, fancy=True):
+    def ra_str(self, fancy=True, n_dec=-1):
         """Returns the Angle value as a sexagesimal string in Right Ascension.
 
         The parameter **fancy** allows to print in "Hh M' S''" format if True,
-        and in "H:M:S" (easier to parse) if False.
+        and in "H:M:S" (easier to parse) if False. On the other hand, the
+        **n_dec** parameter sets the number of decimals used to print the
+        seconds. Set to a negative integer to disable (default).
 
         :param fancy: Format of output string. True by default.
         :type fancy: bool
+        :param n_dec: Number of decimals used to print the seconds
+        :type fancy: int
 
         :returns: Angle value as Right Ascension in sexagesimal format.
         :rtype: string
+        :raises: TypeError if input value is of wrong type.
 
         >>> a = Angle(138.75)
         >>> print(a.ra_str())
         9h 15' 0.0''
         >>> print(a.ra_str(fancy=False))
         9:15:0.0
+        >>> a = Angle(2, 44, 11.98581, ra=True)
+        >>> print(a.ra_str(n_dec=3))
+        2h 44' 11.986''
         """
 
         a = Angle(self())/15.0
-        s = a.dms_str(fancy)
+        s = a.dms_str(fancy, n_dec)
         if fancy:
             s = s.replace('d', 'h')
         return s
@@ -1103,10 +1123,10 @@ def main():
     print_me("{Deg}d {Min}' {Sec}''", val)          # 23d 26' 48.999984''
 
     # We can print Angle 'a' directly in sexagesimal format
-    # In 'fancy' format:
-    print_me("{Deg}d {Min}' {Sec}''", a.dms_str())  # -23d 26' 48.999984''
+    # In 'fancy' format:                                # -23d 26' 48.999984''
+    print_me("{Deg}d {Min}' {Sec}''", a.dms_str(n_dec=6))
     # In plain format:
-    print_me("{Deg}:{Min}:{Sec}", a.dms_str(False))  # -23:26:48.999983999
+    print_me("{Deg}:{Min}:{Sec}", a.dms_str(False, 6))  # -23:26:48.999983999
 
     print("")
 
