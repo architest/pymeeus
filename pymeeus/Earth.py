@@ -939,6 +939,61 @@ class Earth(object):
         final_lat = Angle(final_lat, radians=True)
         return (final_lon, final_lat)
 
+    @staticmethod
+    def p_motion_equa2eclip(p_motion_ra, p_motion_dec, ra, dec, lat, epsilon):
+        """It is usual that proper motions are given in equatorial coordinates,
+        not in ecliptical ones. Therefore, this method converts the provided
+        proper motions in equatorial coordinates to the corresponding ones in
+        ecliptical coordinates.
+
+        :param p_motion_ra: Proper motion in right ascension, in degrees per
+            year, as an :class:`Angle` object
+        :type p_motion_ra: :py:class:`Angle`
+        :param p_motion_dec: Proper motion in declination, in degrees per year,
+            as an :class:`Angle` object
+        :type p_motion_dec: :py:class:`Angle`
+        :param ra: Right ascension of the astronomical object, as degrees in an
+            :class:`Angle` object
+        :type ra: :py:class:`Angle`
+        :param dec: Declination of the astronomical object, as degrees in an
+            :class:`Angle` object
+        :type dec: :py:class:`Angle`
+        :param lat: Ecliptical latitude of the astronomical object, as degrees
+            in an :class:`Angle` object
+        :type lat: :py:class:`Angle`
+        :param epsilon: Obliquity of the ecliptic
+        :type epsilon: :py:class:`Angle`
+
+        :returns: Proper motions in ecliptical longitude and latitude (in that
+            order), given as two :class:`Angle` objects inside a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        # First check that input values are of correct types
+        if not(isinstance(p_motion_ra, Angle) and
+               isinstance(p_motion_dec, Angle) and
+               isinstance(ra, Angle) and isinstance(dec, Angle) and
+               isinstance(lat, Angle) and isinstance(epsilon, Angle)):
+            raise TypeError("Invalid input types")
+        pm_ra = p_motion_ra.rad()
+        pm_dec = p_motion_dec.rad()
+        s_eps = sin(epsilon.rad())
+        c_eps = cos(epsilon.rad())
+        s_ra = sin(ra.rad())
+        c_ra = cos(ra.rad())
+        s_dec = sin(dec.rad())
+        c_dec = cos(dec.rad())
+        c_lat = cos(lat.rad())
+        se_ca = s_eps*c_ra
+        se_sd_sa = s_eps*s_dec*s_ra
+        pa_cd = pm_ra*c_dec
+        ce_cd = c_eps*c_dec
+        cl2 = c_lat*c_lat
+        p_motion_lon = (pm_dec*se_ca + pa_cd*(ce_cd + se_sd_sa)) / cl2
+        p_motion_lat = (pm_dec*(ce_cd + se_sd_sa) - pa_cd*se_ca) / c_lat
+        return (p_motion_lon, p_motion_lat)
+
 
 def main():
 
