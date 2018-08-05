@@ -186,3 +186,31 @@ It follows a series of important parameters related to the angle between Earth's
     print_me("Final declination", delta.dms_str(n_dec=2))
 
     # Final declination: 49d 20' 54.54''
+
+Something similar can also be done with the ecliptical coordinates::
+
+    start_epoch = JDE2000
+
+    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+
+    lon0 = Angle(149.48194)
+
+    lat0 = Angle(1.76549)
+
+    print_me("Initial ecliptical longitude", round(lon0(), 5))
+
+    # Initial ecliptical longitude: 149.48194
+
+    print_me("Initial ecliptical latitude", round(lat0(), 5))
+
+    # Initial ecliptical latitude: 1.76549
+
+    lon, lat = Earth.precession_ecliptical(start_epoch, final_epoch, lon0, lat0)
+
+    print_me("Final ecliptical longitude", round(lon(), 3))
+
+    # Final ecliptical longitude: 118.704
+
+    print_me("Final ecliptical latitude", round(lat(), 3))
+
+    # Final ecliptical latitude: 1.615

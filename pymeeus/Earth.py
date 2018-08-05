@@ -764,7 +764,7 @@ class Earth(object):
 
     @staticmethod
     def precession_equatorial(start_epoch, final_epoch, start_ra, start_dec,
-                              p_motion_ra, p_motion_dec):
+                              p_motion_ra=0.0, p_motion_dec=0.0):
         """This method converts the equatorial coordinates (right ascension and
         declination) given for an epoch and a equinox, to the corresponding
         values for another epoch and equinox. Only the **mean** positions, i.e.
@@ -780,14 +780,15 @@ class Earth(object):
         :param start_dec: Initial declination
         :type start_dec: :py:class:`Angle`
         :param p_motion_ra: Proper motion in right ascension, in degrees per
-            year
+            year. Zero by default.
         :type p_motion_ra: :py:class:`Angle`
-        :param p_motion_dec: Proper motion in declination, in degrees per year
+        :param p_motion_dec: Proper motion in declination, in degrees per year.
+            Zero by default.
         :type p_motion_dec: :py:class:`Angle`
 
-        :returns: Equatorial coordinates (right ascension, declination)
-            corresponding to the final epoch, given as two :class:`Angle`
-            inside a tuple
+        :returns: Equatorial coordinates (right ascension, declination, in that
+            order) corresponding to the final epoch, given as two objects
+            :class:`Angle` inside a tuple
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
@@ -800,29 +801,24 @@ class Earth(object):
         >>> alpha, delta = Earth.precession_equatorial(start_epoch,
         ...                                            final_epoch, alpha0,
         ...                                            delta0, pm_ra, pm_dec)
-        >>> h, m, s, sign = alpha.ra_tuple()
-        >>> h
-        2
-        >>> m
-        46
-        >>> round(s, 3)
-        11.331
-        >>> d, m, s, sign = delta.dms_tuple()
-        >>> d
-        49
-        >>> m
-        20
-        >>> round(s, 2)
-        54.54
+        >>> print(alpha.ra_str(False, 3))
+        2:46:11.331
+        >>> print(delta.dms_str(False, 2))
+        49:20:54.54
         """
 
         # First check that input values are of correct types
         if not(isinstance(start_epoch, Epoch) and
                isinstance(final_epoch, Epoch) and
                isinstance(start_ra, Angle) and
-               isinstance(start_dec, Angle) and
-               isinstance(p_motion_ra, Angle) and
-               isinstance(p_motion_dec, Angle)):
+               isinstance(start_dec, Angle)):
+            raise TypeError("Invalid input types")
+        if isinstance(p_motion_ra, (int, float)):
+            p_motion_ra = Angle(p_motion_ra)
+        if isinstance(p_motion_dec, (int, float)):
+            p_motion_dec = Angle(p_motion_dec)
+        if not (isinstance(p_motion_ra, Angle) and
+                isinstance(p_motion_dec, Angle)):
             raise TypeError("Invalid input types")
         tt = (start_epoch - JDE2000)/36525.0
         t = (final_epoch - start_epoch)/36525.0
@@ -856,6 +852,92 @@ class Earth(object):
         final_ra = Angle(final_ra, radians=True)
         final_dec = Angle(final_dec, radians=True)
         return (final_ra, final_dec)
+
+    @staticmethod
+    def precession_ecliptical(start_epoch, final_epoch, start_lon, start_lat,
+                              p_motion_lon=0.0, p_motion_lat=0.0):
+        """This method converts the ecliptical coordinates (longitude and
+        latitude) given for an epoch and a equinox, to the corresponding
+        values for another epoch and equinox. Only the **mean** positions, i.e.
+        the effects of precession and proper motion, are considered here.
+
+        :param start_epoch: Initial epoch when initial coordinates are given
+        :type start_epoch: :py:class:`Epoch`
+        :param final_epoch: Final epoch for when coordinates are going to be
+            computed
+        :type final_epoch: :py:class:`Epoch`
+        :param start_lon: Initial longitude
+        :type start_lon: :py:class:`Angle`
+        :param start_lat: Initial latitude
+        :type start_lat: :py:class:`Angle`
+        :param p_motion_lon: Proper motion in longitude, in degrees per year.
+            Zero by default.
+        :type p_motion_lon: :py:class:`Angle`
+        :param p_motion_lat: Proper motion in latitude, in degrees per year.
+            Zero by default.
+        :type p_motion_lat: :py:class:`Angle`
+
+        :returns: Ecliptical coordinates (longitude, latitude, in that order)
+            corresponding to the final epoch, given as two :class:`Angle`
+            objects inside a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> start_epoch = JDE2000
+        >>> final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+        >>> lon0 = Angle(149.48194)
+        >>> lat0 = Angle(1.76549)
+        >>> lon, lat = Earth.precession_ecliptical(start_epoch, final_epoch,
+        ...                                        lon0, lat0)
+        >>> print(round(lon(), 3))
+        118.704
+        >>> print(round(lat(), 3))
+        1.615
+        """
+
+        # First check that input values are of correct types
+        if not(isinstance(start_epoch, Epoch) and
+               isinstance(final_epoch, Epoch) and
+               isinstance(start_lon, Angle) and
+               isinstance(start_lat, Angle)):
+            raise TypeError("Invalid input types")
+        if isinstance(p_motion_lon, (int, float)):
+            p_motion_lon = Angle(p_motion_lon)
+        if isinstance(p_motion_lat, (int, float)):
+            p_motion_lat = Angle(p_motion_lat)
+        if not (isinstance(p_motion_lon, Angle) and
+                isinstance(p_motion_lat, Angle)):
+            raise TypeError("Invalid input types")
+        tt = (start_epoch - JDE2000)/36525.0
+        t = (final_epoch - start_epoch)/36525.0
+        # Correct starting coordinates by proper motion
+        start_lon += p_motion_lon*t*100.0
+        start_lat += p_motion_lat*t*100.0
+        # Compute the conversion parameters
+        eta = t*((47.0029 + tt*(-0.06603 + 0.000598*tt))
+                 + t*((-0.03302 + 0.000598*tt) + 0.00006*t))
+        pi = tt*(3289.4789 + 0.60622*tt) + t*(-(869.8089 + 0.50491*tt)
+                                              + 0.03536*t)
+        p = t*(5029.0966 + tt*(2.22226 - 0.000042*tt)
+               + t*(1.11113 - 0.000042*tt - 0.000006*t))
+        eta = Angle(0, 0, eta)
+        pi = Angle(0, 0, pi)
+        p = Angle(0, 0, p)
+        # But beware!: There is still a missing constant for pi. We didn't add
+        # it before because of the mismatch between degrees and seconds
+        pi += 174.876384
+        a = cos(eta.rad()) * cos(start_lat.rad()) \
+            * sin(pi.rad() - start_lon.rad()) \
+            - sin(eta.rad()) * sin(start_lat.rad())
+        b = cos(start_lat.rad()) * cos(pi.rad() - start_lon.rad())
+        c = cos(eta.rad()) * sin(start_lat.rad()) + sin(eta.rad()) \
+            * cos(start_lat.rad()) * sin(pi.rad() - start_lon.rad())
+        final_lon = p.rad() + pi.rad() - atan2(a, b)
+        final_lat = asin(c)
+        # Convert results to Angles. Please note results are in radians
+        final_lon = Angle(final_lon, radians=True)
+        final_lat = Angle(final_lat, radians=True)
+        return (final_lon, final_lat)
 
 
 def main():
@@ -988,6 +1070,20 @@ def main():
                                                alpha0, delta0, pm_ra, pm_dec)
     print_me("Final right ascension", alpha.ra_str(n_dec=3))  # 2h 46' 11.331''
     print_me("Final declination", delta.dms_str(n_dec=2))     # 49d 20' 54.54''
+
+    print("")
+
+    # Something similar can also be done with the ecliptical coordinates
+    start_epoch = JDE2000
+    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+    lon0 = Angle(149.48194)
+    lat0 = Angle(1.76549)
+    print_me("Initial ecliptical longitude", round(lon0(), 5))      # 149.48194
+    print_me("Initial ecliptical latitude", round(lat0(), 5))       # 1.76549
+    lon, lat = Earth.precession_ecliptical(start_epoch, final_epoch,
+                                           lon0, lat0)
+    print_me("Final ecliptical longitude", round(lon(), 3))         # 118.704
+    print_me("Final ecliptical latitude", round(lat(), 3))          # 1.615
 
 
 if __name__ == '__main__':
