@@ -888,6 +888,7 @@ def main():
     # We create an Earth object with a given reference ellipsoid. By default,
     # it is WGS84, but we can use another
     e = Earth(IAU76)
+    print("e = Earth(IAU76)")
 
     # Print the parameters of reference ellipsoid being used
     print_me("'e' Earth object parameters", e)
@@ -898,7 +899,7 @@ def main():
     # level, and at a certain latitude. It is given as a fraction of equatorial
     # radius
     lat = Angle(65, 45, 30.0)               # We can use an Angle for this
-    print_me("Distance to Earth's center, from latitude 65d 45' 30''",
+    print_me("Relative distance to Earth's center, from latitude 65d 45' 30''",
              e.rho(lat))
 
     print("")
@@ -906,26 +907,26 @@ def main():
     # Parameters rho*sin(lat) and rho*cos(lat) are useful for different
     # astronomical applications
     height = 650.0
-    print_me("rho*sin(lat)", e.rho_sinphi(lat, height))
-    print_me("rho*cos(lat)", e.rho_cosphi(lat, height))
+    print_me("rho*sin(lat)", round(e.rho_sinphi(lat, height), 6))
+    print_me("rho*cos(lat)", round(e.rho_cosphi(lat, height), 6))
 
     print("")
 
     # Compute the radius of the parallel circle at given latitude
     print_me("Radius of parallel circle at latitude 65d 45' 30'' (meters)",
-             e.rp(lat))
+             round(e.rp(lat), 1))
 
     # Compute the radius of curvature of the Earth's meridian at given latitude
     print_me("Radius of Earth's meridian at latitude 65d 45' 30'' (meters)",
-             e.rm(lat))
+             round(e.rm(lat), 1))
 
     print("")
 
     # It is easy to compute the linear velocity at different latitudes
     print_me("Linear velocity at the Equator (meters/second)",
-             e.linear_velocity(0.0))
+             round(e.linear_velocity(0.0), 3))
     print_me("Linear velocity at latitude 65d 45' 30'' (meters/second)",
-             e.linear_velocity(lat))
+             round(e.linear_velocity(lat), 3))
 
     print("")
 
@@ -952,23 +953,41 @@ def main():
     e0 = Earth.mean_obliquity(1987, 4, 10)
     print("The mean angle between Earth rotation axis and ecliptic axis for " +
           "1987/4/10 is:")
-    print_me("Mean obliquity", e0.dms_str())                # 23d 26' 27.407''
+    print_me("Mean obliquity", e0.dms_str(n_dec=3))         # 23d 26' 27.407''
     epsilon = Earth.true_obliquity(1987, 4, 10)
-    print("'True' (instantaneous) angle between those axis for 1987/4/10 is:")
-    print_me("True obliquity", epsilon.dms_str())      # 23d 26' 36.849''
+    print("'True' (instantaneous) angle between those axes for 1987/4/10 is:")
+    print_me("True obliquity", epsilon.dms_str(n_dec=3))    # 23d 26' 36.849''
     epsilon = Earth.true_obliquity(2018, 7, 29)
-    print("'True' (instantaneous) angle between those axis for 2018/7/29 is:")
-    print_me("True obliquity", epsilon.dms_str())      # 23d 26' 7.2157''
+    print("'True' (instantaneous) angle between those axes for 2018/7/29 is:")
+    print_me("True obliquity", epsilon.dms_str(True, 4))    # 23d 26' 7.2157''
 
     # The nutation effect is separated in two components: One parallel to the
     # ecliptic (nutation in longitude) and other perpendicular to the ecliptic
     # (nutation in obliquity)
     print("Nutation correction in longitude for 1987/4/10:")
     dpsi = Earth.nutation_longitude(1987, 4, 10)
-    print_me("Nutation in longitude", dpsi.dms_str())       # 0d 0' -3.788''
+    print_me("Nutation in longitude", dpsi.dms_str(n_dec=3))   # 0d 0' -3.788''
     print("Nutation correction in obliquity for 1987/4/10:")
-    depsilon = Earth.nutation_obliquity(1987, 4, 10)
-    print_me("Nutation in obliquity", depsilon.dms_str())   # 0d 0' 9.443''
+    depsilon = Earth.nutation_obliquity(1987, 4, 10)            # 0d 0' 9.443''
+    print_me("Nutation in obliquity", depsilon.dms_str(n_dec=3))
+
+    print("")
+
+    # We can compute the effects of precession on the equatorial coordinates of
+    # a given star, taking also into account its proper motion
+
+    start_epoch = JDE2000
+    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+    alpha0 = Angle(2, 44, 11.986, ra=True)
+    delta0 = Angle(49, 13, 42.48)                             # 2h 44' 11.986''
+    print_me("Initial right ascension", alpha0.ra_str(n_dec=3))
+    print_me("Initial declination", delta0.dms_str(n_dec=2))  # 49d 13' 42.48''
+    pm_ra = Angle(0, 0, 0.03425, ra=True)
+    pm_dec = Angle(0, 0, -0.0895)
+    alpha, delta = Earth.precession_equatorial(start_epoch, final_epoch,
+                                               alpha0, delta0, pm_ra, pm_dec)
+    print_me("Final right ascension", alpha.ra_str(n_dec=3))  # 2h 46' 11.331''
+    print_me("Final declination", delta.dms_str(n_dec=2))     # 49d 20' 54.54''
 
 
 if __name__ == '__main__':

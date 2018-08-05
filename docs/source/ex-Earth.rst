@@ -143,12 +143,46 @@ It follows a series of important parameters related to the angle between Earth's
 
     dpsi = Earth.nutation_longitude(1987, 4, 10)
 
-    print_me("Nutation in longitude for 1987/4/10", dpsi.dms_str())
+    print_me("Nutation in longitude for 1987/4/10", dpsi.dms_str(n_dec=3))
 
-    # Nutation in longitude for 1987/4/10: -3.78798432292''
+    # Nutation in longitude for 1987/4/10: -3.788''
 
     depsilon = Earth.nutation_obliquity(1987, 4, 10)
 
-    print_me("Nutation in obliquity for 1987/4/10", depsilon.dms_str())
+    print_me("Nutation in obliquity for 1987/4/10", depsilon.dms_str(n_dec=3))
 
-    # Nutation in obliquity for 1987/4/10: 9.44254160999''
+    # Nutation in obliquity for 1987/4/10: 9.443''
+
+- We can compute the effects of precession on the equatorial coordinates of a given star, taking also into account its proper motion::
+
+    start_epoch = JDE2000
+
+    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+
+    alpha0 = Angle(2, 44, 11.986, ra=True)
+
+    delta0 = Angle(49, 13, 42.48)
+
+    print_me("Initial right ascension", alpha0.ra_str(n_dec=3))
+
+    # Initial right ascension: 2h 44' 11.986''
+
+    print_me("Initial declination", delta0.dms_str(n_dec=2))
+
+    # Initial declination: 49d 13' 42.48''
+
+    pm_ra = Angle(0, 0, 0.03425, ra=True)
+
+    pm_dec = Angle(0, 0, -0.0895)
+
+    alpha, delta = Earth.precession_equatorial(start_epoch, final_epoch,
+
+                                               alpha0, delta0, pm_ra, pm_dec)
+
+    print_me("Final right ascension", alpha.ra_str(n_dec=3))
+
+    # Final right ascension: 2h 46' 11.331''
+
+    print_me("Final declination", delta.dms_str(n_dec=2))
+
+    # Final declination: 49d 20' 54.54''
