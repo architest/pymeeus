@@ -1303,6 +1303,26 @@ def main():
     print_me("Final ecliptical longitude", round(lon(), 3))         # 118.704
     print_me("Final ecliptical latitude", round(lat(), 3))          # 1.615
 
+    print("")
+
+    # It is possible to compute with relative accuracy the proper motion of the
+    # stars, taking into account their distance to Sun and relative velocity
+    ra = Angle(6, 45, 8.871, ra=True)
+    dec = Angle(-16.716108)
+    pm_ra = Angle(0, 0, -0.03847, ra=True)
+    pm_dec = Angle(0, 0, -1.2053)
+    dist = 2.64
+    vel = -7.6
+    alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+                                         pm_ra, pm_dec, -1000.0)
+
+    print_me("Right ascension, year 2000", ra.ra_str(True, 2))
+    print_me("Right ascension, year 1000", alpha.ra_str(True, 2))
+    # 6h 45' 47.16''
+    print_me("Declination, year 2000", dec.dms_str(True, 1))
+    print_me("Declination, year 1000", delta.dms_str(True, 1))
+    # -16d 22' 56.0''
+
 
 if __name__ == '__main__':
 

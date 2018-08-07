@@ -21,6 +21,7 @@
 from pymeeus.base import TOL
 from pymeeus.Earth import Earth, IAU76
 from pymeeus.Angle import Angle
+from pymeeus.Epoch import Epoch, JDE2000
 
 
 # Earth class
@@ -198,6 +199,44 @@ def test_earth_nutation_obliquity():
 
     assert abs(a[3] - 1.0) < TOL, \
         "ERROR: 4th nutation_obliquity() test, 'sign' value doesn't match"
+
+
+def test_earth_precession_equatorial():
+    """Tests the precession_equatorial() method of Earth class"""
+
+    start_epoch = JDE2000
+    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+    alpha0 = Angle(2, 44, 11.986, ra=True)
+    delta0 = Angle(49, 13, 42.48)
+    pm_ra = Angle(0, 0, 0.03425, ra=True)
+    pm_dec = Angle(0, 0, -0.0895)
+
+    alpha, delta = Earth.precession_equatorial(start_epoch, final_epoch,
+                                               alpha0, delta0, pm_ra, pm_dec)
+
+    assert alpha.ra_str(False, 3) == "2:46:11.331", \
+        "ERROR: 1st precession_equatorial test, right ascension doesn't match"
+
+    assert delta.dms_str(False, 2) == "49:20:54.54", \
+        "ERROR: 2nd precession_equatorial() test, 'declination' doesn't match"
+
+
+def test_earth_precession_ecliptical():
+    """Tests the precession_ecliptical() method of Earth class"""
+
+    start_epoch = JDE2000
+    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+    lon0 = Angle(149.48194)
+    lat0 = Angle(1.76549)
+
+    lon, lat = Earth.precession_ecliptical(start_epoch, final_epoch,
+                                           lon0, lat0)
+
+    assert abs(round(lon(), 3) - 118.704) < TOL, \
+        "ERROR: 1st precession_ecliptical() test, 'longitude' doesn't match"
+
+    assert abs(round(lat(), 3) - 1.615) < TOL, \
+        "ERROR: 2nd precession_ecliptical() test, 'latitude' doesn't match"
 
 
 def test_earth_motion_in_space():
