@@ -52,6 +52,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.2
+
+   -  Added precession and proper motion methods, and changed handling
+      of Epoch class
+
 -  0.1.1
 
    -  Added methods related to nutation corrections
