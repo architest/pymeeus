@@ -198,3 +198,41 @@ def test_earth_nutation_obliquity():
 
     assert abs(a[3] - 1.0) < TOL, \
         "ERROR: 4th nutation_obliquity() test, 'sign' value doesn't match"
+
+
+def test_earth_motion_in_space():
+    """Tests the motion_in_space() method of Earth class"""
+
+    ra = Angle(6, 45, 8.871, ra=True)
+    dec = Angle(-16.716108)
+    pm_ra = Angle(0, 0, -0.03847, ra=True)
+    pm_dec = Angle(0, 0, -1.2053)
+    dist = 2.64
+    vel = -7.6
+
+    alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+                                         pm_ra, pm_dec, -2000.0)
+
+    assert alpha.ra_str(False, 2) == "6:46:25.09", \
+        "ERROR: 1st motion_in_space() test, 'right ascension' doesn't match"
+
+    assert delta.dms_str(False, 1) == "-16:3:0.8", \
+        "ERROR: 2nd motion_in_space() test, 'declination' doesn't match"
+
+    alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+                                         pm_ra, pm_dec, -3000.0)
+
+    assert alpha.ra_str(False, 2) == "6:47:2.67", \
+        "ERROR: 3rd motion_in_space() test, 'right ascension' doesn't match"
+
+    assert delta.dms_str(False, 1) == "-15:43:12.3", \
+        "ERROR: 4th motion_in_space() test, 'declination' doesn't match"
+
+    alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+                                         pm_ra, pm_dec, -12000.0)
+
+    assert alpha.ra_str(False, 2) == "6:52:25.72", \
+        "ERROR: 5th motion_in_space() test, 'right ascension' doesn't match"
+
+    assert delta.dms_str(False, 1) == "-12:50:6.7", \
+        "ERROR: 6th motion_in_space() test, 'declination' doesn't match"

@@ -1070,6 +1070,93 @@ class Earth(object):
         final_dec = Angle(final_dec, radians=True)
         return (final_ra, final_dec)
 
+    @staticmethod
+    def motion_in_space(start_ra, start_dec, distance, velocity,
+                        p_motion_ra, p_motion_dec, time):
+        """This method computes the star's true motion through space relative
+        to the Sun, allowing to compute the start proper motion at a given
+        time.
+
+        :param start_ra: Initial right ascension
+        :type start_ra: :py:class:`Angle`
+        :param start_dec: Initial declination
+        :type start_dec: :py:class:`Angle`
+        :param distance: Star's distance to the Sun, in parsecs. If distance is
+            given in light-years, multipy it by 0.3066. If the star's parallax
+            **pi** (in arcseconds) is given, use (1.0/pi).
+        :type distance: float
+        :param velocity: Radial velocity in km/s
+        :type velocity: float
+        :param p_motion_ra: Proper motion in right ascension, in degrees per
+            year.
+        :type p_motion_ra: :py:class:`Angle`
+        :param p_motion_dec: Proper motion in declination, in degrees per year.
+        :type p_motion_dec: :py:class:`Angle`
+        :param time: Number of years since starting epoch, positive in the
+            future, negative in the past
+        :type time: float
+
+        :returns: Equatorial coordinates (right ascension, declination, in that
+            order) corresponding to the final epoch, given as two objects
+            :class:`Angle` inside a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> ra = Angle(6, 45, 8.871, ra=True)
+        >>> dec = Angle(-16.716108)
+        >>> pm_ra = Angle(0, 0, -0.03847, ra=True)
+        >>> pm_dec = Angle(0, 0, -1.2053)
+        >>> dist = 2.64
+        >>> vel = -7.6
+        >>> alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+        ...                                      pm_ra, pm_dec, -1000.0)
+        >>> print(alpha.ra_str(False, 2))
+        6:45:47.16
+        >>> print(delta.dms_str(False, 1))
+        -16:22:56.0
+        >>> alpha, delta = Earth.motion_in_space(ra, dec, dist, vel,
+        ...                                      pm_ra, pm_dec, -4000.0)
+        >>> print(alpha.ra_str(False, 2))
+        6:47:39.91
+        >>> print(delta.dms_str(False, 1))
+        -15:23:30.6
+        """
+        # >>> ra = Angle(101.286962)
+
+        # First check that input values are of correct types
+        if not(isinstance(start_ra, Angle) and
+               isinstance(start_dec, Angle)):
+            raise TypeError("Invalid input types")
+        if isinstance(p_motion_ra, (int, float)):
+            p_motion_ra = Angle(p_motion_ra)
+        if isinstance(p_motion_dec, (int, float)):
+            p_motion_dec = Angle(p_motion_dec)
+        if not (isinstance(p_motion_ra, Angle) and
+                isinstance(p_motion_dec, Angle)):
+            raise TypeError("Invalid input types")
+        if not(isinstance(distance, (int, float)) and
+               isinstance(velocity, (int, float)) and
+               isinstance(time, (int, float))):
+            raise TypeError("Invalid input types")
+        dr = velocity/977792.0
+        x = distance*cos(start_dec.rad())*cos(start_ra.rad())
+        y = distance*cos(start_dec.rad())*sin(start_ra.rad())
+        z = distance*sin(start_dec.rad())
+        dx = (x/distance)*dr - z*p_motion_dec.rad()*cos(start_ra.rad()) \
+            - y*p_motion_ra.rad()
+        dy = (y/distance)*dr - z*p_motion_dec.rad()*sin(start_ra.rad()) \
+            + x*p_motion_ra.rad()
+        dz = (z/distance)*dr + distance*p_motion_dec.rad()*cos(start_dec.rad())
+        xp = x + time*dx
+        yp = y + time*dy
+        zp = z + time*dz
+        final_ra = atan2(yp, xp)
+        final_dec = atan(zp/sqrt(xp*xp + yp*yp))
+        # Convert results to Angles. Please note results are in radians
+        final_ra = Angle(final_ra, radians=True)
+        final_dec = Angle(final_dec, radians=True)
+        return (final_ra, final_dec)
+
 
 def main():
 
