@@ -994,6 +994,82 @@ class Earth(object):
         p_motion_lat = (pm_dec*(ce_cd + se_sd_sa) - pa_cd*se_ca) / c_lat
         return (p_motion_lon, p_motion_lat)
 
+    @staticmethod
+    def precession_newcomb(start_epoch, final_epoch, start_ra, start_dec,
+                           p_motion_ra=0.0, p_motion_dec=0.0):
+        """This method implements the Newcomb precessional equations used in
+        the old FK4 system. It takes equatorial coordinates (right ascension
+        and declination) given for an epoch and a equinox, and converts them to
+        the corresponding values for another epoch and equinox. Only the
+        **mean** positions, i.e. the effects of precession and proper motion,
+        are considered here.
+
+        :param start_epoch: Initial epoch when initial coordinates are given
+        :type start_epoch: :py:class:`Epoch`
+        :param final_epoch: Final epoch for when coordinates are going to be
+            computed
+        :type final_epoch: :py:class:`Epoch`
+        :param start_ra: Initial right ascension
+        :type start_ra: :py:class:`Angle`
+        :param start_dec: Initial declination
+        :type start_dec: :py:class:`Angle`
+        :param p_motion_ra: Proper motion in right ascension, in degrees per
+            year. Zero by default.
+        :type p_motion_ra: :py:class:`Angle`
+        :param p_motion_dec: Proper motion in declination, in degrees per year.
+            Zero by default.
+        :type p_motion_dec: :py:class:`Angle`
+
+        :returns: Equatorial coordinates (right ascension, declination, in that
+            order) corresponding to the final epoch, given as two objects
+            :class:`Angle` inside a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        # First check that input values are of correct types
+        if not(isinstance(start_epoch, Epoch) and
+               isinstance(final_epoch, Epoch) and
+               isinstance(start_ra, Angle) and
+               isinstance(start_dec, Angle)):
+            raise TypeError("Invalid input types")
+        if isinstance(p_motion_ra, (int, float)):
+            p_motion_ra = Angle(p_motion_ra)
+        if isinstance(p_motion_dec, (int, float)):
+            p_motion_dec = Angle(p_motion_dec)
+        if not (isinstance(p_motion_ra, Angle) and
+                isinstance(p_motion_dec, Angle)):
+            raise TypeError("Invalid input types")
+        tt = (start_epoch - 2415020.3135)/36524.2199
+        t = (final_epoch - start_epoch)/36524.2199
+        # Correct starting coordinates by proper motion
+        start_ra += p_motion_ra*t*100.0
+        start_dec += p_motion_dec*t*100.0
+        # Compute the conversion parameters
+        zeta = t*(2304.25 + 1.396*tt + t*(0.302 + 0.018*t))
+        z = zeta + t*t*(0.791 + 0.001*t)
+        theta = t*(2004.682 - 0.853*tt - t*(0.426 + 0.042*t))
+        # Redefine the former values as Angles
+        zeta = Angle(0, 0, zeta)
+        z = Angle(0, 0, z)
+        theta = Angle(0, 0, theta)
+        a = cos(start_dec.rad())*sin(start_ra.rad() + zeta.rad())
+        b = cos(theta.rad()) * cos(start_dec.rad()) * \
+            cos(start_ra.rad() + zeta.rad()) - \
+            sin(theta.rad()) * sin(start_dec.rad())
+        c = sin(theta.rad()) * cos(start_dec.rad()) * \
+            cos(start_ra.rad() + zeta.rad()) + \
+            cos(theta.rad()) * sin(start_dec.rad())
+        final_ra = atan2(a, b) + z.rad()
+        if start_dec > 85.0:        # Coordinates are close to the pole
+            final_dec = sqrt(a*a + b*b)
+        else:
+            final_dec = asin(c)
+        # Convert results to Angles. Please note results are in radians
+        final_ra = Angle(final_ra, radians=True)
+        final_dec = Angle(final_dec, radians=True)
+        return (final_ra, final_dec)
+
 
 def main():
 
