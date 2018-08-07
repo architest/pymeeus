@@ -17,7 +17,7 @@ Let's start creating and Epoch object, and printing it::
 
 Redefine the Epoch object::
 
-    e.set(333, 'Jan', 27, 12, leap_seconds=0.0)
+    e.set(333, 'Jan', 27, 12)
 
     print_me("JDE for 333/1/27.5", e)
 
@@ -27,7 +27,7 @@ We can create an Epoch from a ``date`` or ``datetime`` object::
 
     d = datetime.datetime(837, 4, 10, 7, 12, 0, 0)
 
-    f = Epoch(d, leap_seconds=0.0)
+    f = Epoch(d)
 
     print_me("JDE for 837/4/10.3", f)
 
@@ -148,11 +148,11 @@ Compute DeltaT = TT - UT differences for various dates::
 
 The difference between civil day and sidereal day is almost 4 minutes::
 
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10)
 
     st1 = round(e.mean_sidereal_time(), 9)
 
-    e = Epoch(1987, 4, 11, leap_seconds=0.0)
+    e = Epoch(1987, 4, 11)
 
     st2 = round(e.mean_sidereal_time(), 9)
 
@@ -166,7 +166,7 @@ The difference between civil day and sidereal day is almost 4 minutes::
 
 When correcting for nutation-related effects, we get the **apparent** sidereal time::
 
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10)
 
     print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
 

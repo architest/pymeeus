@@ -593,7 +593,7 @@ class Earth(object):
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
-        >>> epsilon = Earth.true_obliquity(1987, 4, 10, leap_seconds=0.0)
+        >>> epsilon = Earth.true_obliquity(1987, 4, 10)
         >>> a = epsilon.dms_tuple()
         >>> a[0]
         23
@@ -636,7 +636,7 @@ class Earth(object):
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
-        >>> dpsi = Earth.nutation_longitude(1987, 4, 10, leap_seconds=0.0)
+        >>> dpsi = Earth.nutation_longitude(1987, 4, 10)
         >>> a = dpsi.dms_tuple()
         >>> a[0]
         0
@@ -714,7 +714,7 @@ class Earth(object):
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
-        >>> depsilon = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
+        >>> depsilon = Earth.nutation_obliquity(1987, 4, 10)
         >>> a = depsilon.dms_tuple()
         >>> a[0]
         0
@@ -793,7 +793,7 @@ class Earth(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> start_epoch = JDE2000
-        >>> final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+        >>> final_epoch = Epoch(2028, 11, 13.19)
         >>> alpha0 = Angle(2, 44, 11.986, ra=True)
         >>> delta0 = Angle(49, 13, 42.48)
         >>> pm_ra = Angle(0, 0, 0.03425, ra=True)
@@ -884,7 +884,7 @@ class Earth(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> start_epoch = JDE2000
-        >>> final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+        >>> final_epoch = Epoch(-214, 6, 30.0)
         >>> lon0 = Angle(149.48194)
         >>> lat0 = Angle(1.76549)
         >>> lon, lat = Earth.precession_ecliptical(start_epoch, final_epoch,
@@ -1277,7 +1277,7 @@ def main():
     # a given star, taking also into account its proper motion
 
     start_epoch = JDE2000
-    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+    final_epoch = Epoch(2028, 11, 13.19)
     alpha0 = Angle(2, 44, 11.986, ra=True)
     delta0 = Angle(49, 13, 42.48)                             # 2h 44' 11.986''
     print_me("Initial right ascension", alpha0.ra_str(n_dec=3))
@@ -1293,7 +1293,7 @@ def main():
 
     # Something similar can also be done with the ecliptical coordinates
     start_epoch = JDE2000
-    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+    final_epoch = Epoch(-214, 6, 30.0)
     lon0 = Angle(149.48194)
     lat0 = Angle(1.76549)
     print_me("Initial ecliptical longitude", round(lon0(), 5))      # 149.48194

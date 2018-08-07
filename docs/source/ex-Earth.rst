@@ -157,7 +157,7 @@ It follows a series of important parameters related to the angle between Earth's
 
     start_epoch = JDE2000
 
-    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+    final_epoch = Epoch(2028, 11, 13.19)
 
     alpha0 = Angle(2, 44, 11.986, ra=True)
 
@@ -191,7 +191,7 @@ Something similar can also be done with the ecliptical coordinates::
 
     start_epoch = JDE2000
 
-    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+    final_epoch = Epoch(-214, 6, 30.0)
 
     lon0 = Angle(149.48194)
 

@@ -27,23 +27,23 @@ from pymeeus.Epoch import Epoch
 def test_epoch_constructor():
     """Tests the constructor of Epoch class"""
 
-    a = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+    a = Epoch(1987, 6, 19.5)
     assert abs(a._jde - 2446966.0) < TOL, \
         "ERROR: 1st constructor test, JDE value doesn't match"
 
-    a = Epoch(1988, 6, 19.5, leap_seconds=0.0)
+    a = Epoch(1988, 6, 19.5)
     assert abs(a._jde - 2447332.0) < TOL, \
         "ERROR: 2nd constructor test, JDE value doesn't match"
 
-    a = Epoch(1600, 'jan', 1.0, leap_seconds=0.0)
+    a = Epoch(1600, 'jan', 1.0)
     assert abs(a._jde - 2305447.5) < TOL, \
         "ERROR: 3rd constructor test, JDE value doesn't match"
 
-    a = Epoch(-123, 'DECEMBER', 31.0, leap_seconds=0.0)
+    a = Epoch(-123, 'DECEMBER', 31.0)
     assert abs(a._jde - 1676496.5) < TOL, \
         "ERROR: 4th constructor test, JDE value doesn't match"
 
-    a = Epoch(-4712, 1, 1.5, leap_seconds=0.0)
+    a = Epoch(-4712, 1, 1.5)
     assert abs(a._jde - 0.0) < TOL, \
         "ERROR: 5th constructor test, JDE value doesn't match"
 
@@ -230,17 +230,17 @@ def test_epoch_get_date():
     """Tests the get_date() method of Epoch class"""
 
     e = Epoch(2436116.31)
-    t = e.get_date(leap_seconds=0.0)
+    t = e.get_date()
     assert t[0] == 1957 and t[1] == 10 and abs(t[2] - 4.81) < TOL, \
         "ERROR: 1st get_date() test, output doesn't match"
 
     e = Epoch(1842713.0)
-    t = e.get_date(leap_seconds=0.0)
+    t = e.get_date()
     assert t[0] == 333 and t[1] == 1 and abs(t[2] - 27.5) < TOL, \
         "ERROR: 2nd get_date() test, output doesn't match"
 
     e = Epoch(1507900.13)
-    t = e.get_date(leap_seconds=0.0)
+    t = e.get_date()
     assert t[0] == -584 and t[1] == 5 and abs(round(t[2], 2) - 28.63) < TOL, \
         "ERROR: 3rd get_date() test, output doesn't match"
 
@@ -289,11 +289,11 @@ def test_epoch_dow():
 def test_epoch_mean_sidereal_time():
     """Tests the mean_sidereal_time() method of Epoch class"""
 
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10)
     assert abs(round(e.mean_sidereal_time(), 9) - 0.549147764) < TOL, \
         "ERROR: 1st mean_sidereal_time() test, output doesn't match"
 
-    e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10, 19, 21, 0.0)
     assert abs(round(e.mean_sidereal_time(), 9) - 0.357605204) < TOL, \
         "ERROR: 2nd mean_sidereal_time() test, output doesn't match"
 
@@ -301,7 +301,7 @@ def test_epoch_mean_sidereal_time():
 def test_epoch_apparent_sidereal_time():
     """Tests the apparent_sidereal_time() method of Epoch class"""
 
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10)
     assert abs(round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8) -
                0.54914508) < TOL, \
         "ERROR: 1st apparent_sidereal_time() test, output doesn't match"
@@ -310,21 +310,21 @@ def test_epoch_apparent_sidereal_time():
 def test_epoch_mjd():
     """Tests the mjd() method of Epoch class"""
 
-    e = Epoch(1858, 'NOVEMBER', 17, leap_seconds=0.0)
+    e = Epoch(1858, 'NOVEMBER', 17)
     assert e.mjd() == 0.0, "ERROR: 1st mjd() test, output doesn't match"
 
 
 def test_epoch_jde():
     """Tests the jde() method of Epoch class"""
 
-    e = Epoch(-1000, 2, 29.0, leap_seconds=0.0)
+    e = Epoch(-1000, 2, 29.0)
     assert e.jde() == 1355866.5, "ERROR: 1st jde() test, output doesn't match"
 
 
 def test_epoch_call():
     """Tests the __call__() method of Epoch class"""
 
-    e = Epoch(-122, 1, 1.0, leap_seconds=0.0)
+    e = Epoch(-122, 1, 1.0)
     assert e() == 1676497.5, "ERROR: 1st __call__() test, output doesn't match"
 
 

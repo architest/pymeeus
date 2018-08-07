@@ -150,7 +150,7 @@ def test_earth_mean_obliquity():
 def test_earth_true_obliquity():
     """Tests the true_obliquity() method of Earth class"""
 
-    epsilon = Earth.true_obliquity(1987, 4, 10, leap_seconds=0.0)
+    epsilon = Earth.true_obliquity(1987, 4, 10)
     a = epsilon.dms_tuple()
     assert abs(a[0] - 23.0) < TOL, \
         "ERROR: 1st true_obliquity() test, 'degrees' value doesn't match"
@@ -168,7 +168,7 @@ def test_earth_true_obliquity():
 def test_earth_nutation_longitude():
     """Tests the nutation_longitude() method of Earth class"""
 
-    dpsi = Earth.nutation_longitude(1987, 4, 10, leap_seconds=0.0)
+    dpsi = Earth.nutation_longitude(1987, 4, 10)
     a = dpsi.dms_tuple()
     assert abs(a[0] - 0.0) < TOL, \
         "ERROR: 1st nutation_longitude() test, 'degrees' value doesn't match"
@@ -186,7 +186,7 @@ def test_earth_nutation_longitude():
 def test_earth_nutation_obliquity():
     """Tests the nutation_obliquity() method of Earth class"""
 
-    depsilon = Earth.nutation_obliquity(1987, 4, 10, leap_seconds=0.0)
+    depsilon = Earth.nutation_obliquity(1987, 4, 10)
     a = depsilon.dms_tuple()
     assert abs(a[0] - 0.0) < TOL, \
         "ERROR: 1st nutation_obliquity() test, 'degrees' value doesn't match"
@@ -205,7 +205,7 @@ def test_earth_precession_equatorial():
     """Tests the precession_equatorial() method of Earth class"""
 
     start_epoch = JDE2000
-    final_epoch = Epoch(2028, 11, 13.19, leap_seconds=0.0)
+    final_epoch = Epoch(2028, 11, 13.19)
     alpha0 = Angle(2, 44, 11.986, ra=True)
     delta0 = Angle(49, 13, 42.48)
     pm_ra = Angle(0, 0, 0.03425, ra=True)
@@ -225,7 +225,7 @@ def test_earth_precession_ecliptical():
     """Tests the precession_ecliptical() method of Earth class"""
 
     start_epoch = JDE2000
-    final_epoch = Epoch(-214, 6, 30.0, leap_seconds=0.0)
+    final_epoch = Epoch(-214, 6, 30.0)
     lon0 = Angle(149.48194)
     lat0 = Angle(1.76549)
 

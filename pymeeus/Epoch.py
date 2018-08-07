@@ -60,22 +60,32 @@ class Epoch(object):
     """
     Class Epoch deals with the tasks related to time handling.
 
-    The constructor takes either a single JDE value, or a series of values
-    representing year, month, day, hours, minutes, seconds. This series of
-    values is supposed to be in UTC time (civil time). It is also possible to
-    provide another Epoch object as input of the constructor.
+    The constructor takes either a single JDE value, another Epoch object, or a
+    series of values representing year, month, day, hours, minutes, seconds.
+    This series of values are by default supposed to be in **Terrestial Time**
+    (TT).
 
-    When a UTC time is provided, it is converted to International Atomic Time
-    (TAI) using an internal table of leap seconds, and from there, it is
-    converted to (and stored as) Terrestrial Time (TT). Given that leap seconds
-    are added or subtracted in an irregular basis, it is not possible to
-    predict them in advance, and the internal leap second table will become
-    outdated at some point in time. To counter this, you have two options:
+    This is not necesarily the truth, though. For instance, the time of a
+    current observation is tipically in UTC time (civil time), not in TT, and
+    there is some offset between those two time references.
+
+    When a UTC time is provided, the parameter **utc=True** must be given.
+    Then, the input is converted to International Atomic Time (TAI) using an
+    internal table of leap seconds, and from there, it is converted to (and
+    stored as) Terrestrial Time (TT).
+
+    Given that leap seconds are added or subtracted in a rather irregular
+    basis, it is not possible to predict them in advance, and the internal leap
+    second table will become outdated at some point in time. To counter this,
+    you have two options:
 
     - Download an updated version of this Pymeeus package.
     - Use the argument **leap_seconds** in the constructor or :meth:`set`
       method to provide the correct number of leap seconds (w.r.t. TAI) to be
       applied.
+
+    .. note:: Providing the **leap_seconds** argument will automatically set
+       the argument **utc** to True.
 
     For instance, if at some time in the future the TAI-UTC difference is 43
     seconds, you should set **leap_seconds=43** if you don't have an updated
@@ -84,32 +94,27 @@ class Epoch(object):
     In order to know which is the most updated leap second value stored in this
     class, you may use the :meth:`get_last_leap_second()` method.
 
-    The UTC to TT correction is done by default, but you may disable it by
-    setting **leap_seconds=0**. In that case, it is supposed that the input
-    data is already in TT scale.
-
-    .. note:: As said above, UTC to TT correction is done by default, but the
-       current version of UTC was implemented in January 1st, 1972. Therefore,
-       for dates before the correction in NOT carried out, and it is supposed
-       that the input data is already in TT scale.
+    .. note:: The current version of UTC was implemented in January 1st, 1972.
+       Therefore, for dates before the correction in **NOT** carried out, even
+       if the **utc** argument is set to True, and it is supposed that the
+       input data is already in TT scale.
 
     .. note:: For conversions between TT and Universal Time (UT), please use
        the method :meth:`tt2ut`.
 
     .. note:: Internally, time values are stored as a Julian Ephemeris Day
-       (JDE), based on the uniform scale of Dynamical Time, or morei
+       (JDE), based on the uniform scale of Dynamical Time, or more
        specifically, Terrestial Time (TT) (itself the redefinition of
        Terrestrial Dynamical Time, TDT).
 
     .. note:: The UTC-TT conversion is composed of three corrections:
 
-       a. TT-TAI, composed of 32.184 s,
+       a. TT-TAI, comprising 32.184 s,
        b. TAI-UTC(1972), 10 s, and
-       c. UTC(1972)-UTC(Now)
+       c. UTC(1972)-UTC(target)
 
-       which is the current amount of leap seconds. When you do, for instance,
-       **leap_seconds=43**, you modify the c. part, while when you do
-       *leap_seconds=0.0*, you disable the three corrections.
+       item c. is the corresponding amount of leap seconds to the target Epoch.
+       When you do, for instance, **leap_seconds=43**, you modify the c. part.
 
     .. note:: Given that this class stores the epoch as JDE, if the JDE value
        is in the order of millions of days then, for a computer with 15-digit
@@ -120,34 +125,39 @@ class Epoch(object):
     def __init__(self, *args, **kwargs):
         """Epoch constructor.
 
-        This constructor takes either a single JDE value, or a series of values
-        representing year, month, day, hours, minutes, seconds. This series of
-        values is supposed to be in UTC time (civil time).
+        This constructor takes either a single JDE value, another Epoch object,
+        or a series of values representing year, month, day, hours, minutes,
+        seconds. This series of values are by default supposed to be in
+        **Terrestial Time** (TT).
 
-        It is also possible to provide another Epoch object as input for the
-        constructor, or the year, month, etc. arguments can be provided in a
-        tuple or list. Moreover, it is also possible provide :class:`date` or
+        It is also possible that the year, month, etc. arguments be provided in
+        a tuple or list. Moreover, it is also possible provide :class:`date` or
         :class:`datetime` objects for initialization.
 
         The **month** value can be provided as an integer (1 = January, 2 =
-        February, etc), or it can be provided as short (Jan, Feb, ...) or long
-        (January, February, ...) names. Also, hours, minutes, seconds can be
+        February, etc), or it can be provided with short (Jan, Feb,...) or long
+        (January, February,...) names. Also, hours, minutes, seconds can be
         provided separately, or as decimals of the day value.
 
-        If **leap_seconds** argument is set to a value different than zero,
-        then that value will be used for the UTC->TAI conversion, and the
-        internal leap seconds table will be bypassed. On the other hand, if it
-        is set to zero, then the UTC to TT correction is disabled, and it is
-        supposed that the input data is already in TT scale.
+        When a UTC time is provided, the parameter **utc=True** must be given.
+        Then, the input is converted to International Atomic Time (TAI) using
+        an internal table of leap seconds, and from there, it is converted to
+        (and stored as) Terrestrial Time (TT). If **utc** is not provided, it
+        is supposed that the input data is already in TT scale.
+
+        If a value is provided with the **leap_seconds** argument, then that
+        value will be used for the UTC->TAI conversion, and the internal leap
+        seconds table will be bypassed.
 
         :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
            hours, minutes, seconds values, by themselves or inside a tuple or
            list
         :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
            datetime
-        :param leap_seconds: If different from zero, this is the value to be
-           used in the UTC->TAI conversion. If equals to zero, conversion is
-           disabled.
+        :param utc: Whether the provided epoch is a civil time (UTC)
+        :type utc: bool
+        :param leap_seconds: This is the value to be used in the UTC->TAI
+            conversion, instead of taking it from internal leap seconds table.
         :type leap_seconds: int, float
 
         :returns: Epoch object.
@@ -155,7 +165,7 @@ class Epoch(object):
         :raises: ValueError if input values are in the wrong range.
         :raises: TypeError if input values are of wrong type.
 
-        >>> e = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+        >>> e = Epoch(1987, 6, 19.5)
         >>> print(e)
         2446966.0
         """
@@ -169,7 +179,7 @@ class Epoch(object):
 
         This method takes either a single JDE value, or a series of values
         representing year, month, day, hours, minutes, seconds. This series of
-        values is supposed to be in UTC time (civil time).
+        values are by default supposed to be in **Terrestial Time** (TT).
 
         It is also possible to provide another Epoch object as input for the
         :meth:`set` method, or the year, month, etc arguments can be provided
@@ -181,11 +191,15 @@ class Epoch(object):
         (January, February, ...) names. Also, hours, minutes, seconds can be
         provided separately, or as decimals of the day value.
 
-        If **leap_seconds** argument is set to a value different than zero,
-        then that value will be used for the UTC->TAI conversion, and the
-        internal leap seconds table will be bypassed. On the other hand, if it
-        is set to zero, then the UTC to TT correction is disabled, and it is
-        supposed that the input data is already in TT scale.
+        When a UTC time is provided, the parameter **utc=True** must be given.
+        Then, the input is converted to International Atomic Time (TAI) using
+        an internal table of leap seconds, and from there, it is converted to
+        (and stored as) Terrestrial Time (TT). If **utc** is not provided, it
+        is supposed that the input data is already in TT scale.
+
+        If a value is provided with the **leap_seconds** argument, then that
+        value will be used for the UTC->TAI conversion, and the internal leap
+        seconds table will be bypassed.
 
         .. note:: The UTC to TT correction is only carried out for dates after
            January 1st, 1972.
@@ -195,10 +209,10 @@ class Epoch(object):
            list
         :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
            datetime
-        :param leap_seconds: If different from zero, this is the value to be
-           used in the UTC->TAI conversion. If equals to zero, conversion is
-           disabled. If not given, UTC to TT conversion is carried out
-           (default).
+        :param utc: Whether the provided epoch is a civil time (UTC)
+        :type utc: bool
+        :param leap_seconds: This is the value to be used in the UTC->TAI
+            conversion, instead of taking it from internal leap seconds table.
         :type leap_seconds: int, float
 
         :returns: None.
@@ -207,42 +221,42 @@ class Epoch(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> e = Epoch()
-        >>> e.set(1987, 6, 19.5, leap_seconds=0.0)
+        >>> e.set(1987, 6, 19.5)
         >>> print(e)
         2446966.0
-        >>> e.set(1977, 'Apr', 26.4, leap_seconds=0.0)
+        >>> e.set(1977, 'Apr', 26.4)
         >>> print(e)
         2443259.9
-        >>> e.set(1957, 'October', 4.81, leap_seconds=0.0)
+        >>> e.set(1957, 'October', 4.81)
         >>> print(e)
         2436116.31
-        >>> e.set(333, 'Jan', 27, 12, leap_seconds=0.0)
+        >>> e.set(333, 'Jan', 27, 12)
         >>> print(e)
         1842713.0
-        >>> e.set(1900, 'Jan', 1, leap_seconds=0.0)
+        >>> e.set(1900, 'Jan', 1)
         >>> print(e)
         2415020.5
-        >>> e.set(-1001, 'august', 17.9, leap_seconds=0.0)
+        >>> e.set(-1001, 'august', 17.9)
         >>> print(e)
         1355671.4
-        >>> e.set(-4712, 1, 1.5, leap_seconds=0.0)
+        >>> e.set(-4712, 1, 1.5)
         >>> print(e)
         0.0
-        >>> e.set((1600, 12, 31), leap_seconds=0.0)
+        >>> e.set((1600, 12, 31))
         >>> print(e)
         2305812.5
-        >>> e.set([1988, 'JUN', 19, 12], leap_seconds=0.0)
+        >>> e.set([1988, 'JUN', 19, 12])
         >>> print(e)
         2447332.0
         >>> d = datetime.date(2000, 1, 1)
-        >>> e.set(d, leap_seconds=0.0)
+        >>> e.set(d)
         >>> print(e)
         2451544.5
-        >>> e.set(837, 'Apr', 10, 7, 12, leap_seconds=0.0)
+        >>> e.set(837, 'Apr', 10, 7, 12)
         >>> print(e)
         2026871.8
         >>> d = datetime.datetime(837, 4, 10, 7, 12, 0, 0)
-        >>> e.set(d, leap_seconds=0.0)
+        >>> e.set(d)
         >>> print(e)
         2026871.8
         """
@@ -285,8 +299,11 @@ class Epoch(object):
             # Compute JDE
             self._jde = self._compute_jde(year, month, day, utc2tt=False,
                                           leap_seconds=kwargs['leap_seconds'])
+        elif 'utc' in kwargs:
+            self._jde = self._compute_jde(year, month, day,
+                                          utc2tt=kwargs['utc'])
         else:
-            self._jde = self._compute_jde(year, month, day)
+            self._jde = self._compute_jde(year, month, day, utc2tt=False)
 
     def _compute_jde(self, y, m, d, utc2tt=True, leap_seconds=0.0):
         """Method to compute the Julian Ephemeris Day (JDE).
@@ -494,7 +511,7 @@ class Epoch(object):
         True
         """
 
-        y, m, d = self.get_date(leap_seconds=0.0)
+        y, m, d = self.get_date()
         return Epoch.is_julian(y, m, d)
 
     @staticmethod
@@ -620,7 +637,7 @@ class Epoch(object):
         True
         """
 
-        y, m, d = self.get_date(leap_seconds=0.0)
+        y, m, d = self.get_date()
         return Epoch.is_leap(y)
 
     @staticmethod
@@ -1089,7 +1106,7 @@ class Epoch(object):
         :returns: Internal JDE value as a string.
         :rtype: string
 
-        >>> e = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+        >>> e = Epoch(1987, 6, 19.5)
         >>> print(e)
         2446966.0
         """
@@ -1104,7 +1121,7 @@ class Epoch(object):
         :returns: As string with a valid expression to recreate the object
         :rtype: string
 
-        >>> e = Epoch(1987, 6, 19.5, leap_seconds=0.0)
+        >>> e = Epoch(1987, 6, 19.5)
         >>> repr(e)
         'Epoch(2446966.0)'
         """
@@ -1114,10 +1131,12 @@ class Epoch(object):
     def get_date(self, **kwargs):
         """This method converts the internal JDE value back to a date.
 
-        Use **leap_seconds=0.0** to disable the automatic TT to UTC conversion
-        mechanism, or provide a non zero value to **leap_seconds** to apply a
-        specific leap seconds value.
+        Use **utc=True** to enable the TT to UTC conversion mechanism, or
+        provide a non zero value to **leap_seconds** to apply a specific leap
+        seconds value.
 
+        :param utc: Whether the TT to UTC conversion mechanism will be enabled
+        :type utc: bool
         :param leap_seconds: Optional value for leap seconds.
         :type leap_seconds: int, float
 
@@ -1125,7 +1144,7 @@ class Epoch(object):
         :rtype: tuple
 
         >>> e = Epoch(2436116.31)
-        >>> y, m, d = e.get_date(leap_seconds=0.0)
+        >>> y, m, d = e.get_date()
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         1957/10/4.81
         >>> e = Epoch(1988, 1, 27)
@@ -1133,11 +1152,11 @@ class Epoch(object):
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         1988/1/27.0
         >>> e = Epoch(1842713.0)
-        >>> y, m, d = e.get_date(leap_seconds=0.0)
+        >>> y, m, d = e.get_date()
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         333/1/27.5
         >>> e = Epoch(1507900.13)
-        >>> y, m, d = e.get_date(leap_seconds=0.0)
+        >>> y, m, d = e.get_date()
         >>> print("{}/{}/{}".format(y, m, round(d, 2)))
         -584/5/28.63
         """
@@ -1166,10 +1185,14 @@ class Epoch(object):
         year = int(year)
         month = int(month)
 
-        tt2utc = True
+        tt2utc = False
+        if 'utc' in kwargs:
+            tt2utc = kwargs['utc']
         if 'leap_seconds' in kwargs:
             tt2utc = False
             leap_seconds = kwargs['leap_seconds']
+        else:
+            leap_seconds = 0.0
         # If enabled, let's convert from TT to UTC, subtracting needed seconds
         deltasec = 0.0
         # In this case, TT to UTC correction is applied automatically, but only
@@ -1363,10 +1386,10 @@ class Epoch(object):
         :returns: Mean sidereal time, in days
         :rtype: float
 
-        >>> e = Epoch(1987, 4, 10, leap_seconds=0.0)
+        >>> e = Epoch(1987, 4, 10)
         >>> round(e.mean_sidereal_time(), 9)
         0.549147764
-        >>> e = Epoch(1987, 4, 10, 19, 21, 0.0, leap_seconds=0.0)
+        >>> e = Epoch(1987, 4, 10, 19, 21, 0.0)
         >>> round(e.mean_sidereal_time(), 9)
         0.357605204
         """
@@ -1408,7 +1431,7 @@ class Epoch(object):
         :rtype: float
         :raises: TypeError if input value is of wrong type.
 
-        >>> e = Epoch(1987, 4, 10, leap_seconds=0.0)
+        >>> e = Epoch(1987, 4, 10)
         >>> round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8)
         0.54914508
         """
@@ -1433,7 +1456,7 @@ class Epoch(object):
         :returns: Modified Julian Day (MJD).
         :rtype: float
 
-        >>> e = Epoch(1858, 'NOVEMBER', 17, leap_seconds=0.0)
+        >>> e = Epoch(1858, 'NOVEMBER', 17)
         >>> e.mjd()
         0.0
         """
@@ -1446,7 +1469,7 @@ class Epoch(object):
         :returns: The internal value of the Julian Ephemeris Day.
         :rtype: float
 
-        >>> a = Epoch(-1000, 2, 29.0, leap_seconds=0.0)
+        >>> a = Epoch(-1000, 2, 29.0)
         >>> print(a.jde())
         1355866.5
         """
@@ -1459,7 +1482,7 @@ class Epoch(object):
         :returns: The internal value of the Julian Ephemeris Day.
         :rtype: float
 
-        >>> a = Epoch(-122, 1, 1.0, leap_seconds=0.0)
+        >>> a = Epoch(-122, 1, 1.0)
         >>> print(a())
         1676497.5
         """
@@ -1748,7 +1771,7 @@ class Epoch(object):
         return not self.__gt__(b)           # '<=' == 'not(>)'
 
 
-JDE2000 = Epoch(2000, 1, 1.5, leap_seconds=0.0)
+JDE2000 = Epoch(2000, 1, 1.5)
 """Standard epoch for January 1st, 2000 at 12h corresponding to JDE2451545.0"""
 
 
@@ -1767,12 +1790,12 @@ def main():
     print_me("JDE for 1987/6/19.5", e)
 
     # Redefine the Epoch object
-    e.set(333, 'Jan', 27, 12, leap_seconds=0.0)
+    e.set(333, 'Jan', 27, 12)
     print_me("JDE for 333/1/27.5", e)
 
     # We can create an Epoch from a 'date' or 'datetime' object
     d = datetime.datetime(837, 4, 10, 7, 12, 0, 0)
-    f = Epoch(d, leap_seconds=0.0)
+    f = Epoch(d)
     print_me("JDE for 837/4/10.3", f)
 
     print("")
@@ -1849,9 +1872,9 @@ def main():
     print("")
 
     # The difference between civil day and sidereal day is almost 4 minutes
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
+    e = Epoch(1987, 4, 10)
     st1 = round(e.mean_sidereal_time(), 9)
-    e = Epoch(1987, 4, 11, leap_seconds=0.0)
+    e = Epoch(1987, 4, 11)
     st2 = round(e.mean_sidereal_time(), 9)
     ds = (st2 - st1)*DAY2MIN
     msg = "{}m {}s".format(INT(ds), (ds % 1)*60.0)
@@ -1861,8 +1884,8 @@ def main():
 
     print("When correcting for nutation-related effects, we get the " +
           "'apparent' sidereal time:")
-    e = Epoch(1987, 4, 10, leap_seconds=0.0)
-    print("e = Epoch(1987, 4, 10, leap_seconds=0.0)")
+    e = Epoch(1987, 4, 10)
+    print("e = Epoch(1987, 4, 10)")
     print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
              e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
     #    0.549145082637
