@@ -13,10 +13,11 @@
 
    base
    Angle
-   Interpolation
+   Coordinates
    CurveFitting
-   Epoch
    Earth
+   Epoch
+   Interpolation
 
 .. toctree::
    :maxdepth: 2
@@ -24,10 +25,11 @@
 
    ex-base
    ex-Angle
-   ex-Interpolation
+   ex-Coordinates
    ex-CurveFitting
-   ex-Epoch
    ex-Earth
+   ex-Epoch
+   ex-Interpolation
 
 
 Indices and tables
