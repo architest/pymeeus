@@ -3,3 +3,5 @@
 *.swp
 docs/build
 __pycache__
+venv
+env
