@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, sin, cos, atan, atan2, asin
+from math import sqrt, sin, cos, tan, atan, atan2, asin
 from Angle import Angle
 from Epoch import Epoch, JDE2000
 
@@ -724,6 +724,295 @@ def motion_in_space(start_ra, start_dec, distance, velocity,
     final_ra = Angle(final_ra, radians=True)
     final_dec = Angle(final_dec, radians=True)
     return (final_ra, final_dec)
+
+
+def equatorial2ecliptical(right_ascension, declination, obliquity):
+    """This method converts from equatorial coordinated (right ascension and
+    declination) to ecliptical coordinates (longitude and latitude).
+
+    :param right_ascension: Right ascension, as an Angle object
+    :type start_epoch: :py:class:`Angle`
+    :param declination: Declination, as an Angle object
+    :type start_epoch: :py:class:`Angle`
+    :param obliquity: Obliquity of the ecliptic, as an Angle object
+    :type obliquity: :py:class:`Angle`
+
+    :returns: Ecliptical coordinates (longitude, latitude, in that order),
+        given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> ra = Angle(7, 45, 18.946, ra=True)
+    >>> dec = Angle(28, 1, 34.26)
+    >>> epsilon = Angle(23.4392911)
+    >>> lon, lat = equatorial2ecliptical(ra, dec, epsilon)
+    >>> print(round(lon(), 5))
+    113.21563
+    >>> print(round(lat(), 5))
+    6.68417
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(right_ascension, Angle) and
+           isinstance(declination, Angle) and
+           isinstance(obliquity, Angle)):
+        raise TypeError("Invalid input types")
+    ra = right_ascension.rad()
+    dec = declination.rad()
+    eps = obliquity.rad()
+    lon = atan2((sin(ra)*cos(eps) + tan(dec)*sin(eps)), cos(ra))
+    lat = asin(sin(dec)*cos(eps) - cos(dec)*sin(eps)*sin(ra))
+    lon = Angle(lon, radians=True)
+    lat = Angle(lat, radians=True)
+    return (lon, lat)
+
+
+def ecliptical2equatorial(longitude, latitude, obliquity):
+    """This method converts from ecliptical coordinates (longitude and
+    latitude) to equatorial coordinated (right ascension and declination).
+
+    :param longitude: Ecliptical longitude, as an Angle object
+    :type start_epoch: :py:class:`Angle`
+    :param latitude: Ecliptical latitude, as an Angle object
+    :type start_epoch: :py:class:`Angle`
+    :param obliquity: Obliquity of the ecliptic, as an Angle object
+    :type obliquity: :py:class:`Angle`
+
+    :returns: Equatorial coordinates (right ascension, declination, in that
+        order), given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> lon = Angle(113.21563)
+    >>> lat = Angle(6.68417)
+    >>> epsilon = Angle(23.4392911)
+    >>> ra, dec = ecliptical2equatorial(lon, lat, epsilon)
+    >>> print(ra.ra_str(n_dec=3))
+    7h 45' 18.946''
+    >>> print(dec.dms_str(n_dec=2))
+    28d 1' 34.26''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(longitude, Angle) and
+           isinstance(latitude, Angle) and
+           isinstance(obliquity, Angle)):
+        raise TypeError("Invalid input types")
+    lon = longitude.rad()
+    lat = latitude.rad()
+    eps = obliquity.rad()
+    ra = atan2((sin(lon)*cos(eps) - tan(lat)*sin(eps)), cos(lon))
+    dec = asin(sin(lat)*cos(eps) + cos(lat)*sin(eps)*sin(lon))
+    ra = Angle(ra, radians=True)
+    dec = Angle(dec, radians=True)
+    return (ra, dec)
+
+
+def equatorial2horizontal(hour_angle, declination, geo_latitude):
+    """This method converts from equatorial coordinates (right ascension and
+    declination) to local horizontal coordinates (azimuth and elevation).
+
+    Following Meeus' convention, the azimuth is measured westward from the
+    SOUTH. If you want the azimuth to be measured from the north (common custom
+    between navigators and meteorologits), you should add 180 degrees.
+
+    The hour angle (H) comprises information about the sidereal time, the
+    observer's geodetic longitude (positive west from Greenwich) and the right
+    ascension. If theta is the local sidereal time, theta0 the sidereal time at
+    Greenwich, lon the observer's longitude and ra the right ascension, the
+    following expressions hold:
+
+        H = theta - ra
+        H = theta0 - lon - ra
+
+    :param hour_angle: Hour angle, as an Angle object
+    :type hour_angle: :py:class:`Angle`
+    :param declination: Declination, as an Angle object
+    :type declination: :py:class:`Angle`
+    :param geo_latitude: Geodetic latitude of the observer, as an Angle object
+    :type geo_latitude: :py:class:`Angle`
+
+    :returns: Local horizontal coordinates (azimuth, elevation, in that order),
+        given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> lon = Angle(77, 3, 56)
+    >>> lat = Angle(38, 55, 17)
+    >>> ra = Angle(23, 9, 16.641, ra=True)
+    >>> dec = Angle(-6, 43, 11.61)
+    >>> theta0 = Angle(8, 34, 57.0896, ra=True)
+    >>> eps = Angle(23, 26, 36.87)
+    >>> delta = Angle(0, 0, ((-3.868*cos(eps.rad()))/15.0), ra=True)
+    >>> theta0 += delta
+    >>> h = theta0 - lon - ra
+    >>> azi, ele = equatorial2horizontal(h, dec, lat)
+    >>> print(round(azi, 3))
+    68.034
+    >>> print(round(ele, 3))
+    15.125
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(hour_angle, Angle) and
+           isinstance(declination, Angle) and
+           isinstance(geo_latitude, Angle)):
+        raise TypeError("Invalid input types")
+    h = hour_angle.rad()
+    dec = declination.rad()
+    lat = geo_latitude.rad()
+    azi = atan2(sin(h), (cos(h)*sin(lat) - tan(dec)*cos(lat)))
+    ele = asin(sin(lat)*sin(dec) + cos(lat)*cos(dec)*cos(h))
+    azi = Angle(azi, radians=True)
+    ele = Angle(ele, radians=True)
+    return (azi, ele)
+
+
+def horizontal2equatorial(azimuth, elevation, geo_latitude):
+    """This method converts from local horizontal coordinates (azimuth and
+    elevation) to equatorial coordinates (right ascension and declination).
+
+    Following Meeus' convention, the azimuth is measured westward from the
+    SOUTH.
+
+    This method returns the hour angle and the declination. The hour angle (H)
+    comprises information about the sidereal time, the observer's geodetic
+    longitude (positive west from Greenwich) and the right ascension. If theta
+    is the local sidereal time, theta0 the sidereal time at Greenwich, lon the
+    observer's longitude and ra the right ascension, the following expressions
+    hold:
+
+        H = theta - ra
+        H = theta0 - lon - ra
+
+    :param azimuth: Azimuth, measured westward from south, as an Angle object
+    :type azimuth: :py:class:`Angle`
+    :param elevation: Elevation from the horizon, as an Angle object
+    :type elevation: :py:class:`Angle`
+    :param geo_latitude: Geodetic latitude of the observer, as an Angle object
+    :type geo_latitude: :py:class:`Angle`
+
+    :returns: Equatorial coordinates (as hour angle and declination, in that
+        order), given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> azi = Angle(68.0337)
+    >>> ele = Angle(15.1249)
+    >>> lat = Angle(38, 55, 17)
+    >>> h, dec = horizontal2equatorial(azi, ele, lat)
+    >>> print(round(h, 4))
+    64.3521
+    >>> print(dec.dms_str(n_dec=0))
+    -6d 43' 12.0''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(azimuth, Angle) and
+           isinstance(elevation, Angle) and
+           isinstance(geo_latitude, Angle)):
+        raise TypeError("Invalid input types")
+    azi = azimuth.rad()
+    ele = elevation.rad()
+    lat = geo_latitude.rad()
+    h = atan2(sin(azi), (cos(azi)*sin(lat) + tan(ele)*cos(lat)))
+    dec = asin(sin(lat)*sin(ele) - cos(lat)*cos(ele)*cos(azi))
+    h = Angle(h, radians=True)
+    dec = Angle(dec, radians=True)
+    return (h, dec)
+
+
+def equatorial2galactic(right_ascension, declination):
+    """This method converts from equatorial coordinates (right ascension and
+    declination) to galactic coordinates (longitude and latitude).
+
+    The current galactic system of coordinates was defined by the International
+    Astronomical Union in 1959, using the standard equatorial system of epoch
+    B1950.0.
+
+    :param right_ascension: Right ascension, as an Angle object
+    :type right_ascension: :py:class:`Angle`
+    :param declination: Declination, as an Angle object
+    :type declination: :py:class:`Angle`
+
+    :returns: Galactic coordinates (longitude and latitude, in that order),
+        given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> ra = Angle(17, 48, 59.74, ra=True)
+    >>> dec = Angle(-14, 43, 8.2)
+    >>> lon, lat = equatorial2galactic(ra, dec)
+    >>> print(round(lon, 4))
+    12.9593
+    >>> print(round(lat, 4))
+    6.0463
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(right_ascension, Angle) and
+           isinstance(declination, Angle)):
+        raise TypeError("Invalid input types")
+    ra = right_ascension.rad()
+    dec = declination.rad()
+    c1 = Angle(192.25)
+    c1 = c1.rad()
+    c1ra = c1 - ra
+    c2 = Angle(27.4)
+    c2 = c2.rad()
+    x = atan2(sin(c1ra), (cos(c1ra)*sin(c2) - tan(dec)*cos(c2)))
+    lon = Angle(-x, radians=True)
+    lon = 303.0 + lon
+    lat = asin(sin(dec)*sin(c2) + cos(dec)*cos(c2)*cos(c1ra))
+    lat = Angle(lat, radians=True)
+    return (lon, lat)
+
+
+def galactic2equatorial(longitude, latitude):
+    """This method converts from galactic coordinates (longitude and latitude)
+    to equatorial coordinates (right ascension and declination).
+
+    The current galactic system of coordinates was defined by the International
+    Astronomical Union in 1959, using the standard equatorial system of epoch
+    B1950.0.
+
+    :param longitude: Longitude, as an Angle object
+    :type longitude: :py:class:`Angle`
+    :param latitude: Latitude, as an Angle object
+    :type latitude: :py:class:`Angle`
+
+    :returns: Equatorial coordinates (right ascension and declination, in that
+        order), given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> lon = Angle(12.9593)
+    >>> lat = Angle(6.0463)
+    >>> ra, dec = galactic2equatorial(lon, lat)
+    >>> print(ra.ra_str(n_dec=1))
+    17h 48' 59.7''
+    >>> print(dec.dms_str(n_dec=0))
+    -14d 43' 8.0''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(longitude, Angle) and
+           isinstance(latitude, Angle)):
+        raise TypeError("Invalid input types")
+    lon = longitude.rad()
+    lat = latitude.rad()
+    c1 = Angle(123.0)
+    c1 = c1.rad()
+    c2 = Angle(27.4)
+    c2 = c2.rad()
+    lc1 = lon - c1
+    y = atan2(sin(lc1), (cos(lc1)*sin(c2) - tan(lat)*cos(c2)))
+    y = Angle(y, radians=True)
+    ra = y + 12.25
+    ra.to_positive()
+    dec = asin(sin(lat)*sin(c2) + cos(lat)*cos(c2)*cos(lc1))
+    dec = Angle(dec, radians=True)
+    return (ra, dec)
 
 
 def main():
