@@ -69,6 +69,10 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.4
+
+   -  Added several conversion functions to Coordinates module
+
 -  0.1.3
 
    -  Added Coordinates module
