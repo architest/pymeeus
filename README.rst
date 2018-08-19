@@ -4,15 +4,32 @@ PyMeeus
     **Library of astronomical algorithms in Python**.
 
 PyMeeus is a Python implementation of the astronomical algorithms
-described in the classical book "Astronomical Algorithms, 2nd Edition
-(1998)" by Jean Meeus.
+described in the classical book "Astronomical Algorithms, 2nd Edition,
+Willmann-Bell Inc. (1998)" by Jean Meeus.
 
 There are great astronomical libraries out there. For instance, if
 you're looking for high precision and speed you should take a look at
-`libnova <http://libnova.sourceforge.net/>`__. However, the advantages
+`libnova <http://libnova.sourceforge.net/>`__. For a set of python
+modules aimed at professional astronomers, you should look at
+`Astropy <http://www.astropy.org/>`__. On the other hand, the advantages
 of PyMeeus are its simplicity, ease of use, ease of reading, ease of
-installation (it has the minimum amount of dependencies), abundant
-documentation, and it is written in Python :-).
+installation (it has the minimum amount of dependencies) and abundant
+documentation.
+
+Installation
+------------
+
+The easiest way of installing PyMeeus is using pip:
+
+.. code:: sh
+
+    pip install pymeeus
+
+Or, for a per-user installation:
+
+.. code:: sh
+
+    pip install --user pymeeus
 
 Meta
 ----
