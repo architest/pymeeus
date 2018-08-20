@@ -21,9 +21,12 @@
 from pymeeus.base import TOL
 from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         nutation_longitude, nutation_obliquity, precession_equatorial, \
-        precession_ecliptical, motion_in_space
+        precession_ecliptical, motion_in_space, equatorial2ecliptical, \
+        ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
+        equatorial2galactic, galactic2equatorial
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
+from math import cos
 
 
 # Coordinates module
@@ -170,3 +173,97 @@ def test_coordinates_motion_in_space():
 
     assert delta.dms_str(False, 1) == "-12:50:6.7", \
         "ERROR: 6th motion_in_space() test, 'declination' doesn't match"
+
+
+def test_coordinates_equatorial2ecliptical():
+    """Tests the equatorial2ecliptical() method of Coordinates module"""
+
+    ra = Angle(7, 45, 18.946, ra=True)
+    dec = Angle(28, 1, 34.26)
+    epsilon = Angle(23.4392911)
+    lon, lat = equatorial2ecliptical(ra, dec, epsilon)
+
+    assert abs(round(lon(), 5) - 113.21563) < TOL, \
+        "ERROR: 1st equatorial2ecliptical() test, 'longitude' doesn't match"
+
+    assert abs(round(lat(), 5) - 6.68417) < TOL, \
+        "ERROR: 2nd equatorial2ecliptical() test, 'latitude' doesn't match"
+
+
+def test_coordinates_ecliptical2equatorial():
+    """Tests the ecliptical2equatorial() method of Coordinates module"""
+
+    lon = Angle(113.21563)
+    lat = Angle(6.68417)
+    epsilon = Angle(23.4392911)
+    ra, dec = ecliptical2equatorial(lon, lat, epsilon)
+
+    assert ra.ra_str(n_dec=3) == "7h 45' 18.946''", \
+        "ERROR: 1st ecliptical2equatorial() test, 'ra' doesn't match"
+
+    assert dec.dms_str(n_dec=2) == "28d 1' 34.26''", \
+        "ERROR: 2nd ecliptical2equatorial() test, 'declination' doesn't match"
+
+
+def test_coordinates_equatorial2horizontal():
+    """Tests the equatorial2horizontal() method of Coordinates module"""
+
+    lon = Angle(77, 3, 56)
+    lat = Angle(38, 55, 17)
+    ra = Angle(23, 9, 16.641, ra=True)
+    dec = Angle(-6, 43, 11.61)
+    theta0 = Angle(8, 34, 57.0896, ra=True)
+    eps = Angle(23, 26, 36.87)
+    delta = Angle(0, 0, ((-3.868*cos(eps.rad()))/15.0), ra=True)
+    theta0 += delta
+    h = theta0 - lon - ra
+    azi, ele = equatorial2horizontal(h, dec, lat)
+
+    assert abs(round(azi, 3) - 68.034) < TOL, \
+        "ERROR: 1st equatorial2horizontal() test, 'azimuth' doesn't match"
+
+    assert abs(round(ele, 3) - 15.125) < TOL, \
+        "ERROR: 2nd equatorial2horizontal() test, 'elevation' doesn't match"
+
+
+def test_coordinates_horizontal2equatorial():
+    """Tests the horizontal2equatorial() method of Coordinates module"""
+
+    azi = Angle(68.0337)
+    ele = Angle(15.1249)
+    lat = Angle(38, 55, 17)
+    h, dec = horizontal2equatorial(azi, ele, lat)
+
+    assert abs(round(h, 4) - 64.3521) < TOL, \
+        "ERROR: 1st horizontal2equatorial() test, 'hour angle' doesn't match"
+
+    assert dec.dms_str(n_dec=0) == "-6d 43' 12.0''", \
+        "ERROR: 2nd horizontal2equatorial() test, 'declination' match"
+
+
+def test_coordinates_equatorial2galactic():
+    """Tests the equatorial2galactic() method of Coordinates module"""
+
+    ra = Angle(17, 48, 59.74, ra=True)
+    dec = Angle(-14, 43, 8.2)
+    lon, lat = equatorial2galactic(ra, dec)
+
+    assert abs(round(lon, 4) - 12.9593) < TOL, \
+        "ERROR: 1st equatorial2galactic() test, 'longitude' doesn't match"
+
+    assert abs(round(lat, 4) - 6.0463) < TOL, \
+        "ERROR: 2nd equatorial2galactic() test, 'latitude' doesn't match"
+
+
+def test_coordinates_galactic2equatorial():
+    """Tests the galactic2equatorial() method of Coordinates module"""
+
+    lon = Angle(12.9593)
+    lat = Angle(6.0463)
+    ra, dec = galactic2equatorial(lon, lat)
+
+    assert ra.ra_str(n_dec=1) == "17h 48' 59.7''", \
+        "ERROR: 1st galactic2equatorial() test, 'ra' doesn't match"
+
+    assert dec.dms_str(n_dec=0) == "-14d 43' 8.0''", \
+        "ERROR: 2nd galactic2equatorial() test, 'declination' doesn't match"
