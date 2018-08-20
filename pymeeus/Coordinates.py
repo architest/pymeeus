@@ -1101,7 +1101,7 @@ def main():
 
     print("")
 
-    # This module provides a series of methods to convert between equatorial,
+    # This module provides a series of functions to convert between equatorial,
     # ecliptical, horizontal and galactic coordinates
 
     ra = Angle(7, 45, 18.946, ra=True)
@@ -1132,6 +1132,7 @@ def main():
     dec = Angle(-6, 43, 11.61)
     theta0 = Angle(8, 34, 57.0896, ra=True)
     eps = Angle(23, 26, 36.87)
+    # Compute correction to convert from mean to apparent sidereal time
     delta = Angle(0, 0, ((-3.868*cos(eps.rad()))/15.0), ra=True)
     theta0 += delta
     h = theta0 - lon - ra
