@@ -1099,6 +1099,74 @@ def main():
     print_me("Declination, year 1000", delta.dms_str(True, 1))
     # -16d 22' 56.0''
 
+    print("")
+
+    # This module provides a series of methods to convert between equatorial,
+    # ecliptical, horizontal and galactic coordinates
+
+    ra = Angle(7, 45, 18.946, ra=True)
+    dec = Angle(28, 1, 34.26)
+    epsilon = Angle(23.4392911)
+    lon, lat = equatorial2ecliptical(ra, dec, epsilon)
+    print_me("Equatorial to ecliptical. Longitude", round(lon(), 5))
+    # 113.21563
+    print_me("Equatorial to ecliptical. Latitude", round(lat(), 5))
+    # 6.68417
+
+    print("")
+
+    lon = Angle(113.21563)
+    lat = Angle(6.68417)
+    epsilon = Angle(23.4392911)
+    ra, dec = ecliptical2equatorial(lon, lat, epsilon)
+    print_me("Ecliptical to equatorial. Right ascension", ra.ra_str(n_dec=3))
+    # 7h 45' 18.946''
+    print_me("Ecliptical to equatorial. Declination", dec.dms_str(n_dec=2))
+    # 28d 1' 34.26''
+
+    print("")
+
+    lon = Angle(77, 3, 56)
+    lat = Angle(38, 55, 17)
+    ra = Angle(23, 9, 16.641, ra=True)
+    dec = Angle(-6, 43, 11.61)
+    theta0 = Angle(8, 34, 57.0896, ra=True)
+    eps = Angle(23, 26, 36.87)
+    delta = Angle(0, 0, ((-3.868*cos(eps.rad()))/15.0), ra=True)
+    theta0 += delta
+    h = theta0 - lon - ra
+    azi, ele = equatorial2horizontal(h, dec, lat)
+    print_me("Equatorial to horizontal: Azimuth", round(azi, 3))    # 68.034
+    print_me("Equatorial to horizontal: Elevation", round(ele, 3))  # 15.125
+
+    print("")
+
+    azi = Angle(68.0337)
+    ele = Angle(15.1249)
+    lat = Angle(38, 55, 17)
+    h, dec = horizontal2equatorial(azi, ele, lat)
+    print_me("Horizontal to equatorial. Hour angle", round(h, 4))   # 64.3521
+    print_me("Horizontal to equatorial. Declination", dec.dms_str(n_dec=0))
+    # -6d 43' 12.0''
+
+    print("")
+
+    ra = Angle(17, 48, 59.74, ra=True)
+    dec = Angle(-14, 43, 8.2)
+    lon, lat = equatorial2galactic(ra, dec)
+    print_me("Equatorial to galactic. Longitude", round(lon, 4))    # 12.9593
+    print_me("Equatorial to galactic. Latitude", round(lat, 4))     # 6.0463
+
+    print("")
+
+    lon = Angle(12.9593)
+    lat = Angle(6.0463)
+    ra, dec = galactic2equatorial(lon, lat)
+    print_me("Galactic to equatorial. Right ascension", ra.ra_str(n_dec=1))
+    # 17h 48' 59.7''
+    print_me("Galactic to equatorial. Declination", dec.dms_str(n_dec=0))
+    # -14d 43' 8.0''
+
 
 if __name__ == '__main__':
 
