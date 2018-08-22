@@ -1357,7 +1357,7 @@ def main():
     dec = Angle(23.44)
     lat = Angle(40.0)
     j = diurnal_path_horizon(dec, lat)
-    print_me("Angle of diurnal path vs. horizon at time of rising and setting",
+    print_me("Diurnal path vs. horizon angle at time of rising and setting",
              j.dms_str(n_dec=1))                            # 45d 31' 28.4''
 
 
