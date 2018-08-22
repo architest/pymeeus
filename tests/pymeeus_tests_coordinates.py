@@ -23,7 +23,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         nutation_longitude, nutation_obliquity, precession_equatorial, \
         precession_ecliptical, motion_in_space, equatorial2ecliptical, \
         ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
-        equatorial2galactic, galactic2equatorial
+        equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
+        diurnal_path_horizon
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -267,3 +268,32 @@ def test_coordinates_galactic2equatorial():
 
     assert dec.dms_str(n_dec=0) == "-14d 43' 8.0''", \
         "ERROR: 2nd galactic2equatorial() test, 'declination' doesn't match"
+
+
+def test_coordinates_ecliptic_horizon():
+    """Tests the ecliptic_horizon() method of Coordinates module"""
+
+    sidereal_time = Angle(5.0, ra=True)
+    lat = Angle(51.0)
+    epsilon = Angle(23.44)
+    lon1, lon2, i = ecliptic_horizon(sidereal_time, lat, epsilon)
+
+    assert lon1.dms_str(n_dec=1) == "169d 21' 29.9''", \
+        "ERROR: 1st ecliptic_horizon() test, 'lon1' doesn't match"
+
+    assert lon2.dms_str(n_dec=1) == "349d 21' 29.9''", \
+        "ERROR: 2nd ecliptic_horizon() test, 'lon2' doesn't match"
+
+    assert abs(round(i, 0) - 62.0) < TOL, \
+        "ERROR: 3rd ecliptic_horizon() test, 'i' angle doesn't match"
+
+
+def test_coordinates_diurnal_path_horizon():
+    """Tests the diurnal_path_horizon() method of Coordinates module"""
+
+    dec = Angle(23.44)
+    lat = Angle(40.0)
+    j = diurnal_path_horizon(dec, lat)
+
+    assert j.dms_str(n_dec=1) == "45d 31' 28.4''", \
+        "ERROR: 1st diurnal_path_horizon() test, 'j' angle doesn't match"
