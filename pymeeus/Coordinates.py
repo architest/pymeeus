@@ -102,7 +102,7 @@ def mean_obliquity(*args, **kwargs):
         day values, by themselves or inside a tuple or list
     :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
-    :param utc: Whether the provided epoch is a civil time (UTC)
+    :param utc: Whether the provided epoch is a civil time (UTC) or TT
     :type utc: bool
     :param leap_seconds: This is the value to be used in the UTC->TAI
         conversion, instead of taking it from internal leap seconds table.
@@ -140,23 +140,20 @@ def true_obliquity(*args, **kwargs):
     date. The true obliquity is the mean obliquity (epsilon0) plus the
     correction provided by the nutation in obliquity (Delta epsilon).
 
-    This function internally uses an :class:`Epoch` object, and the
-    **leap_seconds** argument then controls the way the UTC->TT conversion
-    is handled for that object. If **leap_seconds** argument is set to a
-    value different than zero, then that value will be used for the
-    UTC->TAI conversion, and the internal leap seconds table will be
-    bypassed. On the other hand, if it is set to zero, then the UTC to TT
-    correction is disabled, and it is supposed that the input data is
-    already in TT scale.
+    This function internally uses an :class:`Epoch` object, and the **utc**
+    argument then controls the way the UTC->TT conversion is handled for that
+    object. If **leap_seconds** argument is set to a value different than zero,
+    then that value will be used for the UTC->TAI conversion, and the internal
+    leap seconds table will be bypassed.
 
     :param \*args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
     :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
-    :param leap_seconds: If different from zero, this is the value to be
-       used in the UTC->TAI conversion. If equals to zero, conversion is
-       disabled. If not given, UTC to TT conversion is carried out
-       (default).
+    :param utc: Whether the provided epoch is a civil time (UTC) or TT
+    :type utc: bool
+    :param leap_seconds: This is the value to be used in the UTC->TAI
+        conversion, instead of taking it from internal leap seconds table.
     :type leap_seconds: int, float
 
     :returns: The true obliquity of the ecliptic, as an Angle
@@ -183,23 +180,20 @@ def nutation_longitude(*args, **kwargs):
     """This function computes the nutation in longitude (Delta psi) at the
     provided date.
 
-    This function internally uses an :class:`Epoch` object, and the
-    **leap_seconds** argument then controls the way the UTC->TT conversion
-    is handled for that object. If **leap_seconds** argument is set to a
-    value different than zero, then that value will be used for the
-    UTC->TAI conversion, and the internal leap seconds table will be
-    bypassed. On the other hand, if it is set to zero, then the UTC to TT
-    correction is disabled, and it is supposed that the input data is
-    already in TT scale.
+    This function internally uses an :class:`Epoch` object, and the **utc**
+    argument then controls the way the UTC->TT conversion is handled for that
+    object. If **leap_seconds** argument is set to a value different than zero,
+    then that value will be used for the UTC->TAI conversion, and the internal
+    leap seconds table will be bypassed.
 
     :param \*args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
     :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
-    :param leap_seconds: If different from zero, this is the value to be
-       used in the UTC->TAI conversion. If equals to zero, conversion is
-       disabled. If not given, UTC to TT conversion is carried out
-       (default).
+    :param utc: Whether the provided epoch is a civil time (UTC) or TT
+    :type utc: bool
+    :param leap_seconds: This is the value to be used in the UTC->TAI
+        conversion, instead of taking it from internal leap seconds table.
     :type leap_seconds: int, float
 
     :returns: The nutation in longitude (Delta psi), as an Angle
@@ -260,23 +254,20 @@ def nutation_obliquity(*args, **kwargs):
     """This function computes the nutation in obliquity (Delta epsilon) at
     the provided date.
 
-    This function internally uses an :class:`Epoch` object, and the
-    **leap_seconds** argument then controls the way the UTC->TT conversion
-    is handled for that object. If **leap_seconds** argument is set to a
-    value different than zero, then that value will be used for the
-    UTC->TAI conversion, and the internal leap seconds table will be
-    bypassed. On the other hand, if it is set to zero, then the UTC to TT
-    correction is disabled, and it is supposed that the input data is
-    already in TT scale.
+    This function internally uses an :class:`Epoch` object, and the **utc**
+    argument then controls the way the UTC->TT conversion is handled for that
+    object. If **leap_seconds** argument is set to a value different than zero,
+    then that value will be used for the UTC->TAI conversion, and the internal
+    leap seconds table will be bypassed.
 
     :param \*args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
     :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
-    :param leap_seconds: If different from zero, this is the value to be
-       used in the UTC->TAI conversion. If equals to zero, conversion is
-       disabled. If not given, UTC to TT conversion is carried out
-       (default).
+    :param utc: Whether the provided epoch is a civil time (UTC) or TT
+    :type utc: bool
+    :param leap_seconds: This is the value to be used in the UTC->TAI
+        conversion, instead of taking it from internal leap seconds table.
     :type leap_seconds: int, float
 
     :returns: The nutation in obliquity (Delta epsilon), as an
