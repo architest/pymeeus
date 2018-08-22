@@ -69,6 +69,13 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.5
+
+   -  Add functions for parallactic angle, ecliptic points in the
+      horizon, angle between north celestial pole and north pole of the
+      ecliptic, and diurnal path vs. the horizon at time of rising or
+      setting
+
 -  0.1.4
 
    -  Added several conversion functions to Coordinates module
