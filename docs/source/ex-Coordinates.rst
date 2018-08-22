@@ -250,3 +250,37 @@ This module ``Coordinates`` also provides a series of functions to convert betwe
     print_me("Galactic to equatorial. Declination", dec.dms_str(n_dec=0))
 
     # Galactic to equatorial. Declination: -14d 43' 8.0''
+
+In addition, there is a function to compute the ecliptic longitudes of the two points of the ecliptic which are on the horizon, as well as the angle between the ecliptic and the horizon::
+
+    sidereal_time = Angle(5.0, ra=True)
+
+    lat = Angle(51.0)
+
+    epsilon = Angle(23.44)
+
+    lon1, lon2, i = ecliptic_horizon(sidereal_time, lat, epsilon)
+
+    print_me("Longitude of ecliptic point #1 on the horizon", lon1.dms_str(n_dec=1))
+
+    # Longitude of ecliptic point #1 on the horizon: 169d 21' 29.9''
+
+    print_me("Longitude of ecliptic point #2 on the horizon", lon2.dms_str(n_dec=1))
+
+    # Longitude of ecliptic point #2 on the horizon: 349d 21' 29.9''
+
+    print_me("Angle between the ecliptic and the horizon", round(i, 0))
+
+    # Angle between the ecliptic and the horizon: 62.0
+
+Also, it is possible to compute the angle of the diurnal path of a celestial body relative to the horizon at the time of rising and setting::
+
+    dec = Angle(23.44)
+
+    lat = Angle(40.0)
+
+    j = diurnal_path_horizon(dec, lat)
+
+    print_me("Diurnal path vs. horizon angle at time of rising and setting", j.dms_str(n_dec=1))
+
+    # Diurnal path vs. horizon angle at time of rising and setting: 45d 31' 28.4''
