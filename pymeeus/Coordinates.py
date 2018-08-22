@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, sin, cos, tan, atan, atan2, asin
+from math import sqrt, sin, cos, tan, atan, atan2, asin, acos
+from base import TOL
 from Angle import Angle
 from Epoch import Epoch, JDE2000
 
@@ -135,11 +136,11 @@ def mean_obliquity(*args, **kwargs):
 
 
 def true_obliquity(*args, **kwargs):
-    """This method computes the true obliquity (epsilon) at the provided
+    """This function computes the true obliquity (epsilon) at the provided
     date. The true obliquity is the mean obliquity (epsilon0) plus the
     correction provided by the nutation in obliquity (Delta epsilon).
 
-    This method internally uses an :class:`Epoch` object, and the
+    This function internally uses an :class:`Epoch` object, and the
     **leap_seconds** argument then controls the way the UTC->TT conversion
     is handled for that object. If **leap_seconds** argument is set to a
     value different than zero, then that value will be used for the
@@ -179,10 +180,10 @@ def true_obliquity(*args, **kwargs):
 
 
 def nutation_longitude(*args, **kwargs):
-    """This method computes the nutation in longitude (Delta psi) at the
+    """This function computes the nutation in longitude (Delta psi) at the
     provided date.
 
-    This method internally uses an :class:`Epoch` object, and the
+    This function internally uses an :class:`Epoch` object, and the
     **leap_seconds** argument then controls the way the UTC->TT conversion
     is handled for that object. If **leap_seconds** argument is set to a
     value different than zero, then that value will be used for the
@@ -256,10 +257,10 @@ def nutation_longitude(*args, **kwargs):
 
 
 def nutation_obliquity(*args, **kwargs):
-    """This method computes the nutation in obliquity (Delta epsilon) at
+    """This function computes the nutation in obliquity (Delta epsilon) at
     the provided date.
 
-    This method internally uses an :class:`Epoch` object, and the
+    This function internally uses an :class:`Epoch` object, and the
     **leap_seconds** argument then controls the way the UTC->TT conversion
     is handled for that object. If **leap_seconds** argument is set to a
     value different than zero, then that value will be used for the
@@ -335,7 +336,7 @@ def nutation_obliquity(*args, **kwargs):
 
 def precession_equatorial(start_epoch, final_epoch, start_ra, start_dec,
                           p_motion_ra=0.0, p_motion_dec=0.0):
-    """This method converts the equatorial coordinates (right ascension and
+    """This function converts the equatorial coordinates (right ascension and
     declination) given for an epoch and a equinox, to the corresponding
     values for another epoch and equinox. Only the **mean** positions, i.e.
     the effects of precession and proper motion, are considered here.
@@ -425,7 +426,7 @@ def precession_equatorial(start_epoch, final_epoch, start_ra, start_dec,
 
 def precession_ecliptical(start_epoch, final_epoch, start_lon, start_lat,
                           p_motion_lon=0.0, p_motion_lat=0.0):
-    """This method converts the ecliptical coordinates (longitude and
+    """This function converts the ecliptical coordinates (longitude and
     latitude) given for an epoch and a equinox, to the corresponding
     values for another epoch and equinox. Only the **mean** positions, i.e.
     the effects of precession and proper motion, are considered here.
@@ -510,7 +511,7 @@ def precession_ecliptical(start_epoch, final_epoch, start_lon, start_lat,
 
 def p_motion_equa2eclip(p_motion_ra, p_motion_dec, ra, dec, lat, epsilon):
     """It is usual that proper motions are given in equatorial coordinates,
-    not in ecliptical ones. Therefore, this method converts the provided
+    not in ecliptical ones. Therefore, this function converts the provided
     proper motions in equatorial coordinates to the corresponding ones in
     ecliptical coordinates.
 
@@ -565,7 +566,7 @@ def p_motion_equa2eclip(p_motion_ra, p_motion_dec, ra, dec, lat, epsilon):
 
 def precession_newcomb(start_epoch, final_epoch, start_ra, start_dec,
                        p_motion_ra=0.0, p_motion_dec=0.0):
-    """This method implements the Newcomb precessional equations used in
+    """This function implements the Newcomb precessional equations used in
     the old FK4 system. It takes equatorial coordinates (right ascension
     and declination) given for an epoch and a equinox, and converts them to
     the corresponding values for another epoch and equinox. Only the
@@ -641,7 +642,7 @@ def precession_newcomb(start_epoch, final_epoch, start_ra, start_dec,
 
 def motion_in_space(start_ra, start_dec, distance, velocity,
                     p_motion_ra, p_motion_dec, time):
-    """This method computes the star's true motion through space relative
+    """This function computes the star's true motion through space relative
     to the Sun, allowing to compute the start proper motion at a given
     time.
 
@@ -727,7 +728,7 @@ def motion_in_space(start_ra, start_dec, distance, velocity,
 
 
 def equatorial2ecliptical(right_ascension, declination, obliquity):
-    """This method converts from equatorial coordinated (right ascension and
+    """This function converts from equatorial coordinated (right ascension and
     declination) to ecliptical coordinates (longitude and latitude).
 
     :param right_ascension: Right ascension, as an Angle object
@@ -768,13 +769,13 @@ def equatorial2ecliptical(right_ascension, declination, obliquity):
 
 
 def ecliptical2equatorial(longitude, latitude, obliquity):
-    """This method converts from ecliptical coordinates (longitude and
+    """This function converts from ecliptical coordinates (longitude and
     latitude) to equatorial coordinated (right ascension and declination).
 
     :param longitude: Ecliptical longitude, as an Angle object
-    :type start_epoch: :py:class:`Angle`
+    :type longitude: :py:class:`Angle`
     :param latitude: Ecliptical latitude, as an Angle object
-    :type start_epoch: :py:class:`Angle`
+    :type latitude: :py:class:`Angle`
     :param obliquity: Obliquity of the ecliptic, as an Angle object
     :type obliquity: :py:class:`Angle`
 
@@ -809,7 +810,7 @@ def ecliptical2equatorial(longitude, latitude, obliquity):
 
 
 def equatorial2horizontal(hour_angle, declination, geo_latitude):
-    """This method converts from equatorial coordinates (right ascension and
+    """This function converts from equatorial coordinates (right ascension and
     declination) to local horizontal coordinates (azimuth and elevation).
 
     Following Meeus' convention, the azimuth is measured westward from the
@@ -869,14 +870,14 @@ def equatorial2horizontal(hour_angle, declination, geo_latitude):
 
 
 def horizontal2equatorial(azimuth, elevation, geo_latitude):
-    """This method converts from local horizontal coordinates (azimuth and
+    """This function converts from local horizontal coordinates (azimuth and
     elevation) to equatorial coordinates (right ascension and declination).
 
     Following Meeus' convention, the azimuth is measured westward from the
     SOUTH.
 
-    This method returns the hour angle and the declination. The hour angle (H)
-    comprises information about the sidereal time, the observer's geodetic
+    This function returns the hour angle and the declination. The hour angle
+    (H) comprises information about the sidereal time, the observer's geodetic
     longitude (positive west from Greenwich) and the right ascension. If theta
     is the local sidereal time, theta0 the sidereal time at Greenwich, lon the
     observer's longitude and ra the right ascension, the following expressions
@@ -923,7 +924,7 @@ def horizontal2equatorial(azimuth, elevation, geo_latitude):
 
 
 def equatorial2galactic(right_ascension, declination):
-    """This method converts from equatorial coordinates (right ascension and
+    """This function converts from equatorial coordinates (right ascension and
     declination) to galactic coordinates (longitude and latitude).
 
     The current galactic system of coordinates was defined by the International
@@ -969,7 +970,7 @@ def equatorial2galactic(right_ascension, declination):
 
 
 def galactic2equatorial(longitude, latitude):
-    """This method converts from galactic coordinates (longitude and latitude)
+    """This function converts from galactic coordinates (longitude and latitude)
     to equatorial coordinates (right ascension and declination).
 
     The current galactic system of coordinates was defined by the International
@@ -1013,6 +1014,173 @@ def galactic2equatorial(longitude, latitude):
     dec = asin(sin(lat)*sin(c2) + cos(lat)*cos(c2)*cos(lc1))
     dec = Angle(dec, radians=True)
     return (ra, dec)
+
+
+def parallactic_angle(hour_angle, declination, geo_latitude):
+    """This function computes the parallactic angle, an apparent rotation that
+    appears because celestial bodies move along parallel circles. By
+    convention, the parallactic angle is negative before the passage through
+    the southern meridian (in the north hemisphere), and positive afterwards.
+    Exactly on the meridian, its value is zero.
+
+    Please note that when the celestial body is exactly at the zenith, the
+    parallactic angle is not defined, and this function will return 'None'.
+
+    The hour angle (H) comprises information about the sidereal time, the
+    observer's geodetic longitude (positive west from Greenwich) and the right
+    ascension. If theta is the local sidereal time, theta0 the sidereal time at
+    Greenwich, lon the observer's longitude and ra the right ascension, the
+    following expressions hold:
+
+        H = theta - ra
+        H = theta0 - lon - ra
+
+    :param hour_angle: Hour angle, as an Angle object
+    :type hour_angle: :py:class:`Angle`
+    :param declination: Declination, as an Angle object
+    :type declination: :py:class:`Angle`
+    :param geo_latitude: Geodetic latitude of the observer, as an Angle object
+    :type geo_latitude: :py:class:`Angle`
+
+    :returns: Local horizontal coordinates (azimuth, elevation, in that order),
+        given as two :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(hour_angle, Angle) and
+           isinstance(declination, Angle) and
+           isinstance(geo_latitude, Angle)):
+        raise TypeError("Invalid input types")
+    h = hour_angle.rad()
+    dec = declination.rad()
+    lat = geo_latitude.rad()
+    den = tan(lat)*cos(dec) - sin(dec)*cos(h)
+    if abs(den) < TOL:
+        return None
+    q = atan2(sin(h), den)
+    q = Angle(q, radians=True)
+    return q
+
+
+def ecliptic_horizon(local_sidereal_time, geo_latitude, obliquity):
+    """This function returns the longitudes of the two points of the ecliptic
+    which are on the horizon, as well as the angle between the ecliptic and the
+    horizon.
+
+    :param local_sidereal_time: Local sidereal time, as an Angle object
+    :type local_sidereal_time: :py:class:`Angle`
+    :param geo_latitude: Geodetic latitude, as an Angle object
+    :type geo_latitude: :py:class:`Angle`
+    :param obliquity: Obliquity of the ecliptic, as an Angle object
+    :type obliquity: :py:class:`Angle`
+
+    :returns: Longitudes of the two points of the ecliptic which are on the
+        horizon, and the angle between the ecliptic and the horizon (in that
+        order), given as three :class:`Angle` objects inside a tuple
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> sidereal_time = Angle(5.0, ra=True)
+    >>> lat = Angle(51.0)
+    >>> epsilon = Angle(23.44)
+    >>> lon1, lon2, i = ecliptic_horizon(sidereal_time, lat, epsilon)
+    >>> print(lon1.dms_str(n_dec=1))
+    169d 21' 29.9''
+    >>> print(lon2.dms_str(n_dec=1))
+    349d 21' 29.9''
+    >>> print(round(i, 0))
+    62.0
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(local_sidereal_time, Angle) and
+           isinstance(geo_latitude, Angle) and
+           isinstance(obliquity, Angle)):
+        raise TypeError("Invalid input types")
+    theta = local_sidereal_time.rad()
+    lat = geo_latitude.rad()
+    eps = obliquity.rad()
+    # First, let's compute the longitudes of the ecliptic points on the horizon
+    lon1 = atan2(-cos(theta), (sin(eps)*tan(lat) + cos(eps)*sin(theta)))
+    lon1 = Angle(lon1, radians=True)
+    lon1.to_positive()
+    # Get the second point, which is 180 degrees apart
+    if lon1 < 180.0:
+        lon2 = lon1 + 180.0
+    else:
+        lon2 = lon1
+        lon1 = lon2 - 180.0
+    # Now, compute the angle between the ecliptic and the horizon
+    i = acos(cos(eps)*sin(lat) - sin(eps)*cos(lat)*sin(theta))
+    i = Angle(i, radians=True)
+    return (lon1, lon2, i)
+
+
+def ecliptic_equator(longitude, latitude, obliquity):
+    """This function returns the angle between the direction of the northern
+    celestial pole and the direction of the north pole of the ecliptic, taking
+    as reference the point whose ecliptic longitude and latitude are given.
+
+    Please note that if we make latitude=0, the result is the angle between the
+    ecliptic (at the given ecliptical longitude) and the east-west direction on
+    the celestial sphere.
+
+    :param longitude: Ecliptical longitude, as an Angle object
+    :type longitude: :py:class:`Angle`
+    :param latitude: Ecliptical latitude, as an Angle object
+    :type latitude: :py:class:`Angle`
+    :param obliquity: Obliquity of the ecliptic, as an Angle object
+    :type obliquity: :py:class:`Angle`
+
+    :returns: Angle between the direction of the northern celestial pole and
+        the direction of the north pole of the ecliptic, given as one
+        :class:`Angle` object
+    :rtype: :class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(longitude, Angle) and
+           isinstance(latitude, Angle) and
+           isinstance(obliquity, Angle)):
+        raise TypeError("Invalid input types")
+    lon = longitude.rad()
+    lat = latitude.rad()
+    eps = obliquity.rad()
+    q = atan2((cos(lon)*tan(eps)), (sin(lat)*sin(lon)*tan(eps) - cos(lat)))
+    q = Angle(q, radians=True)
+    return q
+
+
+def diurnal_path_horizon(declination, geo_latitude):
+    """This function returns the angle of the diurnal path of a celestial body
+    relative to the horizon at the time of its rising or setting.
+
+    :param declination: Declination, as an Angle object
+    :type declination: :py:class:`Angle`
+    :param geo_latitude: Geodetic latitude, as an Angle object
+    :type geo_latitude: :py:class:`Angle`
+
+    :returns: Angle of the diurnal path of the celestial body relative to the
+        horizon at the time of rising or setting, given as one
+        :class:`Angle` object
+    :rtype: :class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(declination, Angle) and
+           isinstance(geo_latitude, Angle)):
+        raise TypeError("Invalid input types")
+    dec = declination.rad()
+    lat = geo_latitude.rad()
+    b = tan(dec)*tan(lat)
+    c = sqrt(1.0 - b*b)
+    j = atan2(c*cos(dec), tan(lat))
+    j = Angle(j, radians=True)
+    return j
 
 
 def main():
@@ -1167,6 +1335,30 @@ def main():
     # 17h 48' 59.7''
     print_me("Galactic to equatorial. Declination", dec.dms_str(n_dec=0))
     # -14d 43' 8.0''
+
+    print("")
+
+    # Get the ecliptic longitudes of the two points of the ecliptic which are
+    # on the horizon, as well as the angle between the ecliptic and the horizon
+    sidereal_time = Angle(5.0, ra=True)
+    lat = Angle(51.0)
+    epsilon = Angle(23.44)
+    lon1, lon2, i = ecliptic_horizon(sidereal_time, lat, epsilon)
+    print_me("Longitude of ecliptic point #1 on the horizon",
+             lon1.dms_str(n_dec=1))                         # 169d 21' 29.9''
+    print_me("Longitude of ecliptic point #2 on the horizon",
+             lon2.dms_str(n_dec=1))                         # 349d 21' 29.9''
+    print_me("Angle between the ecliptic and the horizon", round(i, 0))  # 62.0
+
+    print("")
+
+    # Let's compute the angle of the diurnal path of a celestial body relative
+    # to the horizon at the time of rising and setting
+    dec = Angle(23.44)
+    lat = Angle(40.0)
+    j = diurnal_path_horizon(dec, lat)
+    print_me("Angle of diurnal path vs. horizon at time of rising and setting",
+             j.dms_str(n_dec=1))                            # 45d 31' 28.4''
 
 
 if __name__ == '__main__':
