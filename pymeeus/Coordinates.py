@@ -1174,6 +1174,150 @@ def diurnal_path_horizon(declination, geo_latitude):
     return j
 
 
+def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
+                           alpha3, delta3, h0, deltaT, theta0):
+    """This function computes the times (in Universal Time UT) of rising,
+    transit and setting of a given celestial body.
+
+    .. note:: If the body is circumpolar there are no rising, transit nor
+        setting times. In such a case a tuple with None's is returned
+
+    :param longitude: Geodetic longitude, as an Angle object. It is measured
+        positively west from Greenwich, and negatively to the east.
+    :type longitude: :py:class:`Angle`
+    :param latitude: Geodetic latitude, as an Angle object
+    :type latitude: :py:class:`Angle`
+    :param alpha1: Apparent right ascension the previous day at 0h TT, as an
+        Angle object
+    :type alpha1: :py:class:`Angle`
+    :param delta1: Apparent declination the previous day at 0h TT, as an Angle
+        object
+    :type delta1: :py:class:`Angle`
+    :param alpha2: Apparent right ascension the current day at 0h TT, as an
+        Angle object
+    :type alpha2: :py:class:`Angle`
+    :param delta2: Apparent declination the current day at 0h TT, as an Angle
+        object
+    :type delta2: :py:class:`Angle`
+    :param alpha3: Apparent right ascension the following day at 0h TT, as an
+        Angle object
+    :type alpha3: :py:class:`Angle`
+    :param delta3: Apparent declination the following day at 0h TT, as an Angle
+        object
+    :type delta3: :py:class:`Angle`
+    :param h0: 'Standard' altitude: the geometric altitude of the center of the
+        body at the time of apparent rising or setting, as degrees in an Angle
+        object. It should be -0.5667 deg for stars and planets, -0.8333 deg
+        for the Sun, and 0.125 deg for the Moon.
+    :type h0: :py:class:`Angle`
+    :param deltaT: The difference between Terrestrial Time and Universal Time
+        (TT - UT) in seconds of time
+    :type deltaT: float
+    :param theta0: Apparent sidereal time at 0h TT on the current day for the
+        meridian of Greenwich, as degrees in an Angle object
+    :type theta0: :py:class:`Angle`
+
+    :returns: A tuple with the times of rising, transit and setting, in that
+        order, as hours in UT.
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> longitude = Angle(71, 5, 0.0)
+    >>> latitude = Angle(42, 20, 0.0)
+    >>> alpha1 = Angle(2, 42, 43.25, ra=True)
+    >>> delta1 = Angle(18, 2, 51.4)
+    >>> alpha2 = Angle(2, 46, 55.51, ra=True)
+    >>> delta2 = Angle(18, 26, 27.3)
+    >>> alpha3 = Angle(2, 51, 7.69, ra=True)
+    >>> delta3 = Angle(18, 49, 38.7)
+    >>> h0 = Angle(-0.5667)
+    >>> deltaT = 56.0
+    >>> theta0 = Angle(11, 50, 58.1, ra=True)
+    >>> rising, transit, setting = times_rise_transit_set(longitude, latitude,\
+                                                          alpha1, delta1, \
+                                                          alpha2, delta2, \
+                                                          alpha3, delta3, h0, \
+                                                          deltaT, theta0)
+    >>> print(rising)
+    12.42384
+    >>> print(transit)
+    19.6752
+    >>> print(setting)
+    2.9112
+    """
+
+    def check_value(m):
+        while m < 0 or m > 1.0:
+            if m < 0.0:
+                m += 1
+            elif m > 1.0:
+                m -= 1
+        return m
+
+    def interpol(y2, n, a, b, c):
+        return y2 + n*(a + b + n*c)/2.0
+
+    # First check that input values are of correct types
+    if not(isinstance(longitude, Angle) and isinstance(latitude, Angle) and
+           isinstance(alpha1, Angle) and isinstance(delta1, Angle) and
+           isinstance(alpha2, Angle) and isinstance(delta2, Angle) and
+           isinstance(alpha3, Angle) and isinstance(delta3, Angle) and
+           isinstance(h0, Angle) and isinstance(theta0, Angle) and
+           isinstance(deltaT, (int, float))):
+        raise TypeError("Invalid input types")
+    # Let's start computing approximate times
+    h = h0.rad()
+    lat = latitude.rad()
+    d2 = delta2.rad()
+    hh0 = (sin(h) - sin(lat)*sin(d2))/(cos(lat)*cos(d2))
+    # Check if the body is circumpolar. In such case, there are no rising,
+    # transit nor setting times, and a tuple with None's is returned
+    if abs(hh0) > 1.0:
+        return (None, None, None)
+    hh0 = acos(hh0)
+    hh0 = Angle(hh0, radians=True)
+    hh0.to_positive()
+    m0 = (alpha2 + longitude - theta0)/360.0
+    m0 = m0()                               # m0 is an Angle. Convert to float
+    m1 = m0 - hh0()/360.0
+    m2 = m0 + hh0()/360.0
+    m0 = check_value(m0)
+    m1 = check_value(m1)
+    m2 = check_value(m2)
+    theta = theta0 + 360.985647*m0
+    # Interpolate alpha and delta values for each (m0, m1, m2)
+    aalpha = alpha2 - alpha1
+    balpha = alpha3 - alpha2
+    calpha = balpha - aalpha
+    adelta = delta2 - delta1
+    bdelta = delta3 - delta2
+    cdelta = bdelta - adelta
+    n = m0 + deltaT/86400.0
+    transit_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
+    n = m1 + deltaT/86400.0
+    rise_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
+    rise_delta = interpol(delta2, n, adelta, bdelta, cdelta)
+    n = m2 + deltaT/86400.0
+    set_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
+    set_delta = interpol(delta2, n, adelta, bdelta, cdelta)
+    # Compute the hour angles
+    transit_ha = theta - longitude - transit_alpha
+    delta_transit = transit_ha/(-360.0)
+    rise_ha = theta - longitude - rise_alpha
+    set_ha = theta - longitude - set_alpha
+    # We need the elevations
+    azi, rise_ele = equatorial2horizontal(rise_ha, rise_delta, latitude)
+    azi, set_ele = equatorial2horizontal(set_ha, set_delta, latitude)
+    delta_rise = (rise_ele - h0)/(360.0 * cos(rise_delta.rad()) *
+                                  cos(lat) * sin(rise_ha.rad()))
+    delta_set = (set_ele - h0)/(360.0 * cos(set_delta.rad()) *
+                                cos(lat) * sin(set_ha.rad()))
+    m0 += delta_transit()
+    m1 += delta_rise()
+    m2 += delta_set()
+    return (m1*24.0, m0*24.0, m2*24.0)
+
+
 def main():
 
     # Let's define a small helper function
