@@ -33,7 +33,7 @@ from base import TOL
 
 class Angle(object):
     """
-    Class Angle deals with angles in either decimal format (d.dd) of in
+    Class Angle deals with angles in either decimal format (d.dd) or in
     sexagesimal format (d m' s'').
 
     It provides methods to handle an Angle object like it were a simple float,
