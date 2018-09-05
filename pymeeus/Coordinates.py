@@ -1175,7 +1175,7 @@ def diurnal_path_horizon(declination, geo_latitude):
 
 
 def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
-                           alpha3, delta3, h0, deltaT, theta0):
+                           alpha3, delta3, h0, delta_t, theta0):
     """This function computes the times (in Universal Time UT) of rising,
     transit and setting of a given celestial body.
 
@@ -1216,9 +1216,9 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
         object. It should be -0.5667 deg for stars and planets, -0.8333 deg
         for the Sun, and 0.125 deg for the Moon.
     :type h0: :py:class:`Angle`
-    :param deltaT: The difference between Terrestrial Time and Universal Time
+    :param delta_t: The difference between Terrestrial Time and Universal Time
         (TT - UT) in seconds of time
-    :type deltaT: float
+    :type delta_t: float
     :param theta0: Apparent sidereal time at 0h TT on the current day for the
         meridian of Greenwich, as degrees in an Angle object
     :type theta0: :py:class:`Angle`
@@ -1237,13 +1237,13 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
     >>> alpha3 = Angle(2, 51, 7.69, ra=True)
     >>> delta3 = Angle(18, 49, 38.7)
     >>> h0 = Angle(-0.5667)
-    >>> deltaT = 56.0
+    >>> delta_t = 56.0
     >>> theta0 = Angle(11, 50, 58.1, ra=True)
     >>> rising, transit, setting = times_rise_transit_set(longitude, latitude,\
                                                           alpha1, delta1, \
                                                           alpha2, delta2, \
                                                           alpha3, delta3, h0, \
-                                                          deltaT, theta0)
+                                                          delta_t, theta0)
     >>> print(round(rising, 4))
     12.4238
     >>> print(round(transit, 3))
@@ -1272,7 +1272,7 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
            isinstance(alpha2, Angle) and isinstance(delta2, Angle) and
            isinstance(alpha3, Angle) and isinstance(delta3, Angle) and
            isinstance(h0, Angle) and isinstance(theta0, Angle) and
-           isinstance(deltaT, (int, float))):
+           isinstance(delta_t, (int, float))):
         raise TypeError("Invalid input types")
     # Let's start computing approximate times
     h = h0.rad()
@@ -1296,12 +1296,12 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
     # Carry out this procedure twice
     for _ in range(2):
         # Interpolate alpha and delta values for each (m0, m1, m2)
-        n = m0 + deltaT/86400.0
+        n = m0 + delta_t/86400.0
         transit_alpha = interpol(n, alpha1, alpha2, alpha3)
-        n = m1 + deltaT/86400.0
+        n = m1 + delta_t/86400.0
         rise_alpha = interpol(n, alpha1, alpha2, alpha3)
         rise_delta = interpol(n, delta1, delta2, delta3)
-        n = m2 + deltaT/86400.0
+        n = m2 + delta_t/86400.0
         set_alpha = interpol(n, alpha1, alpha2, alpha3)
         set_delta = interpol(n, delta1, delta2, delta3)
         # Compute the hour angles
