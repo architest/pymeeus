@@ -1182,6 +1182,12 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
     .. note:: If the body is circumpolar there are no rising, transit nor
         setting times. In such a case a tuple with None's is returned
 
+    .. note:: Care must be taken when interpreting the results. For instance,
+        if the setting time is **smaller** than the rising time, it means that
+        it belongs to the **following** day. Also, if the rising time is
+        **bigger** than the setting time, it belong to the **previous** day.
+        The same applies to the transit time.
+
     :param longitude: Geodetic longitude, as an Angle object. It is measured
         positively west from Greenwich, and negatively to the east.
     :type longitude: :py:class:`Angle`
@@ -1238,12 +1244,12 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
                                                           alpha2, delta2, \
                                                           alpha3, delta3, h0, \
                                                           deltaT, theta0)
-    >>> print(rising)
-    12.42384
-    >>> print(transit)
-    19.6752
-    >>> print(setting)
-    2.9112
+    >>> print(round(rising, 4))
+    12.4238
+    >>> print(round(transit, 3))
+    19.675
+    >>> print(round(setting, 3))
+    2.911
     """
 
     def check_value(m):
@@ -1254,7 +1260,10 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
                 m -= 1
         return m
 
-    def interpol(y2, n, a, b, c):
+    def interpol(n, y1, y2, y3):
+        a = y2 - y1
+        b = y3 - y2
+        c = b - a
         return y2 + n*(a + b + n*c)/2.0
 
     # First check that input values are of correct types
@@ -1284,37 +1293,35 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
     m0 = check_value(m0)
     m1 = check_value(m1)
     m2 = check_value(m2)
-    theta = theta0 + 360.985647*m0
-    # Interpolate alpha and delta values for each (m0, m1, m2)
-    aalpha = alpha2 - alpha1
-    balpha = alpha3 - alpha2
-    calpha = balpha - aalpha
-    adelta = delta2 - delta1
-    bdelta = delta3 - delta2
-    cdelta = bdelta - adelta
-    n = m0 + deltaT/86400.0
-    transit_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
-    n = m1 + deltaT/86400.0
-    rise_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
-    rise_delta = interpol(delta2, n, adelta, bdelta, cdelta)
-    n = m2 + deltaT/86400.0
-    set_alpha = interpol(alpha2, n, aalpha, balpha, calpha)
-    set_delta = interpol(delta2, n, adelta, bdelta, cdelta)
-    # Compute the hour angles
-    transit_ha = theta - longitude - transit_alpha
-    delta_transit = transit_ha/(-360.0)
-    rise_ha = theta - longitude - rise_alpha
-    set_ha = theta - longitude - set_alpha
-    # We need the elevations
-    azi, rise_ele = equatorial2horizontal(rise_ha, rise_delta, latitude)
-    azi, set_ele = equatorial2horizontal(set_ha, set_delta, latitude)
-    delta_rise = (rise_ele - h0)/(360.0 * cos(rise_delta.rad()) *
-                                  cos(lat) * sin(rise_ha.rad()))
-    delta_set = (set_ele - h0)/(360.0 * cos(set_delta.rad()) *
-                                cos(lat) * sin(set_ha.rad()))
-    m0 += delta_transit()
-    m1 += delta_rise()
-    m2 += delta_set()
+    # Carry out this procedure twice
+    for _ in range(2):
+        # Interpolate alpha and delta values for each (m0, m1, m2)
+        n = m0 + deltaT/86400.0
+        transit_alpha = interpol(n, alpha1, alpha2, alpha3)
+        n = m1 + deltaT/86400.0
+        rise_alpha = interpol(n, alpha1, alpha2, alpha3)
+        rise_delta = interpol(n, delta1, delta2, delta3)
+        n = m2 + deltaT/86400.0
+        set_alpha = interpol(n, alpha1, alpha2, alpha3)
+        set_delta = interpol(n, delta1, delta2, delta3)
+        # Compute the hour angles
+        theta = theta0 + 360.985647*m0
+        transit_ha = theta - longitude - transit_alpha
+        delta_transit = transit_ha/(-360.0)
+        theta = theta0 + 360.985647*m1
+        rise_ha = theta - longitude - rise_alpha
+        theta = theta0 + 360.985647*m2
+        set_ha = theta - longitude - set_alpha
+        # We need the elevations
+        azi, rise_ele = equatorial2horizontal(rise_ha, rise_delta, latitude)
+        azi, set_ele = equatorial2horizontal(set_ha, set_delta, latitude)
+        delta_rise = (rise_ele - h0)/(360.0 * cos(rise_delta.rad()) *
+                                      cos(lat) * sin(rise_ha.rad()))
+        delta_set = (set_ele - h0)/(360.0 * cos(set_delta.rad()) *
+                                    cos(lat) * sin(set_ha.rad()))
+        m0 += delta_transit()
+        m1 += delta_rise()
+        m2 += delta_set()
     return (m1*24.0, m0*24.0, m2*24.0)
 
 
