@@ -69,9 +69,13 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.6
+
+   -  Added function 'times\_rise\_transit\_set()' to Coordinates module
+
 -  0.1.5
 
-   -  Add functions for parallactic angle, ecliptic points in the
+   -  Added functions for parallactic angle, ecliptic points in the
       horizon, angle between north celestial pole and north pole of the
       ecliptic, and diurnal path vs. the horizon at time of rising or
       setting
