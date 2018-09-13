@@ -1325,6 +1325,100 @@ def times_rise_transit_set(longitude, latitude, alpha1, delta1, alpha2, delta2,
     return (m1*24.0, m0*24.0, m2*24.0)
 
 
+def refraction_apparent2true(apparent_elevation, pressure=1010.0,
+                             temperature=10.0):
+    """This function computes the atmospheric refraction converting from the
+    apparent elevation (i.e., the observed elevation through the air) to the
+    true, 'airless', elevation.
+
+    .. note:: This function, by default, assumes that the atmospheric pressure
+        is 1010 milibars, and the air temperature is 10 Celsius.
+
+    .. note:: Due to the numerous factors that may affect the atmospheric
+        refreaction, the values given by this function are approximate values.
+
+    :param apparent_elevation: The elevation, in degrees and as an Angle
+        object, of a given celestial object when observed through the
+        normal atmosphere
+    :type apparent_elevation: :py:class:`Angle`
+    :param pressure: Atmospheric pressure at the observation point, in milibars
+    :type pressure: float
+    :param temperature: Atmospheric temperature at the observation point, in
+        degrees Celsius
+    :type temperature: :float
+
+    :returns: An Angle object with the true, 'airless' elevation of the
+        celestial object
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> apparent_elevation = Angle(0, 30, 0.0)
+    >>> true_elevation = refraction_apparent2true(apparent_elevation)
+    >>> print(true_elevation.dms_str(n_dec=2))
+    1' 14.78''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(apparent_elevation, Angle) and
+           isinstance(pressure, (int, float)) and
+           isinstance(temperature, (int, float))):
+        raise TypeError("Invalid input types")
+    x = apparent_elevation + 7.31/(apparent_elevation + 4.4)
+    r = 1.0/tan(x.rad())
+    r = Angle(r/60.0)                   # The 'r' value is in minutes of arc
+    if pressure != 1010.0 or temperature != 10.0:
+        r = r * pressure/1010.0 * 283.0/(273.0 + temperature)
+    return apparent_elevation - r
+
+
+def refraction_true2apparent(true_elevation, pressure=1010.0,
+                             temperature=10.0):
+    """This function computes the atmospheric refraction converting from the
+    true, 'airless', elevation (i.e., the one computed from celestial
+    coordinates) to the apparent elevation (the observed elevation through the
+    air)
+
+    .. note:: This function, by default, assumes that the atmospheric pressure
+        is 1010 milibars, and the air temperature is 10 Celsius.
+
+    .. note:: Due to the numerous factors that may affect the atmospheric
+        refreaction, the values given by this function are approximate values.
+
+    :param true_elevation: The elevation, in degrees and as an Angle
+        object, of a given celestial object when computed from celestial
+        coordinates, and assuming there is no atmospheric refraction due to the
+        air
+    :type true_elevation: :py:class:`Angle`
+    :param pressure: Atmospheric pressure at the observation point, in milibars
+    :type pressure: float
+    :param temperature: Atmospheric temperature at the observation point, in
+        degrees Celsius
+    :type temperature: :float
+
+    :returns: An Angle object with the aparent, 'with air' elevation of the
+        celestial object
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> true_elevation = Angle(0, 33, 14.76)
+    >>> apparent_elevation = refraction_true2apparent(true_elevation)
+    >>> print(apparent_elevation.dms_str(n_dec=2))
+    57' 51.85''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(true_elevation, Angle) and
+           isinstance(pressure, (int, float)) and
+           isinstance(temperature, (int, float))):
+        raise TypeError("Invalid input types")
+    x = true_elevation + 10.3/(true_elevation + 5.11)
+    r = 1.02/tan(x.rad())
+    r = Angle(r/60.0)                   # The 'r' value is in minutes of arc
+    if pressure != 1010.0 or temperature != 10.0:
+        r = r * pressure/1010.0 * 283.0/(273.0 + temperature)
+    return true_elevation + r
+
+
 def main():
 
     # Let's define a small helper function
