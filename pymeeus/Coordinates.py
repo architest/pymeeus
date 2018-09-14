@@ -1600,6 +1600,31 @@ def main():
 
     print("")
 
+    # There is a function to compute the times (in hours of the day) of rising,
+    # transit and setting of a given celestial body
+    longitude = Angle(71, 5, 0.0)
+    latitude = Angle(42, 20, 0.0)
+    alpha1 = Angle(2, 42, 43.25, ra=True)
+    delta1 = Angle(18, 2, 51.4)
+    alpha2 = Angle(2, 46, 55.51, ra=True)
+    delta2 = Angle(18, 26, 27.3)
+    alpha3 = Angle(2, 51, 7.69, ra=True)
+    delta3 = Angle(18, 49, 38.7)
+    h0 = Angle(-0.5667)
+    delta_t = 56.0
+    theta0 = Angle(11, 50, 58.1, ra=True)
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,
+                                                      alpha1, delta1, alpha2,
+                                                      delta2, alpha3, delta3,
+                                                      h0, delta_t, theta0)
+
+    print_me("Time of rising (hours of day)", round(rising, 4))     # 12.4238
+    print_me("Time of transit (hours of day)", round(transit, 3))   # 19.675
+    print_me("Time of setting (hours of day, next day)", round(setting, 3))
+    # 2.911
+
+    print("")
+
     # The air in the atmosphere introduces an error in the elevation due to the
     # refraction. We can compute the true (airless) elevation from the apparent
     # elevation, and viceversa
