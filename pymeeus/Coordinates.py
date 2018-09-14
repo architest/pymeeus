@@ -1335,7 +1335,8 @@ def refraction_apparent2true(apparent_elevation, pressure=1010.0,
         is 1010 milibars, and the air temperature is 10 Celsius.
 
     .. note:: Due to the numerous factors that may affect the atmospheric
-        refreaction, the values given by this function are approximate values.
+        refraction, especially near the horizon, the values given by this
+        function are approximate values.
 
     :param apparent_elevation: The elevation, in degrees and as an Angle
         object, of a given celestial object when observed through the
@@ -1354,8 +1355,8 @@ def refraction_apparent2true(apparent_elevation, pressure=1010.0,
 
     >>> apparent_elevation = Angle(0, 30, 0.0)
     >>> true_elevation = refraction_apparent2true(apparent_elevation)
-    >>> print(true_elevation.dms_str(n_dec=2))
-    1' 14.78''
+    >>> print(true_elevation.dms_str(n_dec=1))
+    1' 14.7''
     """
 
     # First check that input values are of correct types
@@ -1364,7 +1365,7 @@ def refraction_apparent2true(apparent_elevation, pressure=1010.0,
            isinstance(temperature, (int, float))):
         raise TypeError("Invalid input types")
     x = apparent_elevation + 7.31/(apparent_elevation + 4.4)
-    r = 1.0/tan(x.rad())
+    r = 1.0/tan(x.rad()) + 0.0013515
     r = Angle(r/60.0)                   # The 'r' value is in minutes of arc
     if pressure != 1010.0 or temperature != 10.0:
         r = r * pressure/1010.0 * 283.0/(273.0 + temperature)
@@ -1382,7 +1383,8 @@ def refraction_true2apparent(true_elevation, pressure=1010.0,
         is 1010 milibars, and the air temperature is 10 Celsius.
 
     .. note:: Due to the numerous factors that may affect the atmospheric
-        refreaction, the values given by this function are approximate values.
+        refraction, especially near the horizon, the values given by this
+        function are approximate values.
 
     :param true_elevation: The elevation, in degrees and as an Angle
         object, of a given celestial object when computed from celestial
@@ -1403,7 +1405,7 @@ def refraction_true2apparent(true_elevation, pressure=1010.0,
     >>> true_elevation = Angle(0, 33, 14.76)
     >>> apparent_elevation = refraction_true2apparent(true_elevation)
     >>> print(apparent_elevation.dms_str(n_dec=2))
-    57' 51.85''
+    57' 51.96''
     """
 
     # First check that input values are of correct types
@@ -1412,7 +1414,7 @@ def refraction_true2apparent(true_elevation, pressure=1010.0,
            isinstance(temperature, (int, float))):
         raise TypeError("Invalid input types")
     x = true_elevation + 10.3/(true_elevation + 5.11)
-    r = 1.02/tan(x.rad())
+    r = 1.02/tan(x.rad()) + 0.0019279
     r = Angle(r/60.0)                   # The 'r' value is in minutes of arc
     if pressure != 1010.0 or temperature != 10.0:
         r = r * pressure/1010.0 * 283.0/(273.0 + temperature)
@@ -1595,6 +1597,21 @@ def main():
     j = diurnal_path_horizon(dec, lat)
     print_me("Diurnal path vs. horizon angle at time of rising and setting",
              j.dms_str(n_dec=1))                            # 45d 31' 28.4''
+
+    print("")
+
+    # The air in the atmosphere introduces an error in the elevation due to the
+    # refraction. We can compute the true (airless) elevation from the apparent
+    # elevation, and viceversa
+    apparent_elevation = Angle(0, 30, 0.0)
+    true_elevation = refraction_apparent2true(apparent_elevation)
+    print_me("True elevation for an apparent elevation of 30'",
+             true_elevation.dms_str(n_dec=1))               # 1' 14.7''
+
+    true_elevation = Angle(0, 33, 14.76)
+    apparent_elevation = refraction_true2apparent(true_elevation)
+    print_me("Apparent elevation for a true elevation of 33' 14.76''",
+             apparent_elevation.dms_str(n_dec=2))           # 57' 51.96''
 
 
 if __name__ == '__main__':
