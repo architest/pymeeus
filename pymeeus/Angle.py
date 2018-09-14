@@ -442,6 +442,14 @@ class Angle(object):
         d, m, s, sign = Angle.deg2dms(self._deg)
         if n_dec >= 0:
             s = round(s, n_dec)
+            if abs(s - 60.0) < TOL:
+                s = 0.0
+                m += 1
+            if abs(m - 60.0) < TOL:
+                m = 0
+                d += 1.0
+            if d >= 360.0:
+                d -= 360.0
         if fancy:
             if d != 0:
                 return "{}d {}' {}''".format(int(sign*d), m, s)
