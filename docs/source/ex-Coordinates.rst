@@ -284,3 +284,71 @@ Also, it is possible to compute the angle of the diurnal path of a celestial bod
     print_me("Diurnal path vs. horizon angle at time of rising and setting", j.dms_str(n_dec=1))
 
     # Diurnal path vs. horizon angle at time of rising and setting: 45d 31' 28.4''
+
+The times (in hours of the day) of rising, transit and setting of a given celestial body can be computed with the appropriate function::
+
+    longitude = Angle(71, 5, 0.0)
+
+    latitude = Angle(42, 20, 0.0)
+
+    alpha1 = Angle(2, 42, 43.25, ra=True)
+
+    delta1 = Angle(18, 2, 51.4)
+
+    alpha2 = Angle(2, 46, 55.51, ra=True)
+
+    delta2 = Angle(18, 26, 27.3)
+
+    alpha3 = Angle(2, 51, 7.69, ra=True)
+
+    delta3 = Angle(18, 49, 38.7)
+
+    h0 = Angle(-0.5667)
+
+    delta_t = 56.0
+
+    theta0 = Angle(11, 50, 58.1, ra=True)
+
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,alpha1, delta1, \
+
+                                                      alpha2, delta2, alpha3, delta3, h0, \
+
+                                                      delta_t, theta0)
+
+    print_me("Time of rising (hours of day)", round(rising, 4))
+
+    # Time of rising (hours of day): 12.4238
+
+    print_me("Time of transit (hours of day)", round(transit, 3))
+
+    # Time of transit (hours of day): 19.675
+
+    print_me("Time of setting (hours of day, next day)", round(setting, 3))
+
+    # Time of setting (hours of day, next day): 2.911
+
+The air in the atmosphere introduces an error in the elevation due to the refraction. We can compute the true (airless) elevation from the apparent elevation, and viceversa.
+
+- Apparent elevation to true (airless) elevation::
+
+    apparent_elevation = Angle(0, 30, 0.0)
+
+    true_elevation = refraction_apparent2true(apparent_elevation)
+
+    print_me("True elevation for an apparent elevation of 30'",
+
+             true_elevation.dms_str(n_dec=1))
+
+    # True elevation for an apparent elevation of 30': 1' 14.7''
+
+- True elevation to apparent elevation::
+
+    true_elevation = Angle(0, 33, 14.76)
+
+    apparent_elevation = refraction_true2apparent(true_elevation)
+
+    print_me("Apparent elevation for a true elevation of 33' 14.76''",
+
+             apparent_elevation.dms_str(n_dec=2))
+
+    # Apparent elevation for a true elevation of 33' 14.76'': 57' 51.96''
