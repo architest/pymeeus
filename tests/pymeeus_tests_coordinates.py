@@ -24,7 +24,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         precession_ecliptical, motion_in_space, equatorial2ecliptical, \
         ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
         equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
-        diurnal_path_horizon
+        diurnal_path_horizon, times_rise_transit_set, \
+        refraction_apparent2true, refraction_true2apparent
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -297,3 +298,53 @@ def test_coordinates_diurnal_path_horizon():
 
     assert j.dms_str(n_dec=1) == "45d 31' 28.4''", \
         "ERROR: 1st diurnal_path_horizon() test, 'j' angle doesn't match"
+
+
+def test_times_rise_transit_set():
+    """Tests the times_rise_transit_set() method of Coordinates module"""
+
+    longitude = Angle(71, 5, 0.0)
+    latitude = Angle(42, 20, 0.0)
+    alpha1 = Angle(2, 42, 43.25, ra=True)
+    delta1 = Angle(18, 2, 51.4)
+    alpha2 = Angle(2, 46, 55.51, ra=True)
+    delta2 = Angle(18, 26, 27.3)
+    alpha3 = Angle(2, 51, 7.69, ra=True)
+    delta3 = Angle(18, 49, 38.7)
+    h0 = Angle(-0.5667)
+    delta_t = 56.0
+    theta0 = Angle(11, 50, 58.1, ra=True)
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,
+                                                      alpha1, delta1,
+                                                      alpha2, delta2,
+                                                      alpha3, delta3, h0,
+                                                      delta_t, theta0)
+
+    assert round(rising, 4) == 12.4238, \
+        "ERROR: 1st times_rise_transit_set() test, 'rising' time doesn't match"
+
+    assert round(transit, 3) == 19.675, \
+        "ERROR: 2nd times_rise_transit_set() test, 'transit' doesn't match"
+
+    assert round(setting, 3) == 2.911, \
+        "ERROR: 3rd times_rise_transit_set() test, 'setting' doesn't match"
+
+
+def test_refraction_apparent2true():
+    """Tests the refraction_apparent2true() method of Coordinates module"""
+
+    apparent_elevation = Angle(0, 30, 0.0)
+    true = refraction_apparent2true(apparent_elevation)
+
+    assert true.dms_str(n_dec=1) == "1' 14.7''", \
+        "ERROR: 1st refraction_apparent2true() test, 'true' doesn't match"
+
+
+def test_refraction_true2apparent():
+    """Tests the refraction_true2apparent() method of Coordinates module"""
+
+    true_elevation = Angle(0, 33, 14.76)
+    apparent = refraction_true2apparent(true_elevation)
+
+    assert apparent.dms_str(n_dec=2) == "57' 51.96''", \
+        "ERROR: 1st refraction_true2apparent() test, 'apparent' doesn't match"
