@@ -69,6 +69,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.7
+
+   -  Added functions to compute atmospheric refraction to Coordinates
+      module
+
 -  0.1.6
 
    -  Added function 'times\_rise\_transit\_set()' to Coordinates module
