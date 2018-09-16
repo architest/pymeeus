@@ -1421,6 +1421,57 @@ def refraction_true2apparent(true_elevation, pressure=1010.0,
     return true_elevation + r
 
 
+def angular_separation(alpha1, delta1, alpha2, delta2):
+    """This function computes the angular distance between two celestial bodies
+    whose right ascensions and declinations are given.
+
+    .. note:: It is possible to use this formula with ecliptial (celestial)
+        longitudes and latitudes instead of right ascensions and declinations,
+        resspectively.
+
+    :param alpha1: Right ascension of celestial body #1, as an Angle object
+    :type alpha1: :py:class:`Angle`
+    :param delta1: Declination of celestial body #1, as an Angle object
+    :type delta1: :py:class:`Angle`
+    :param alpha2: Right ascension of celestial body #2, as an Angle object
+    :type alpha2: :py:class:`Angle`
+    :param delta2: Declination of celestial body #2, as an Angle object
+    :type delta2: :py:class:`Angle`
+
+    :returns: An Angle object with the angular separation between the given
+        celestial objects
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1 = Angle(14, 15, 39.7, ra=True)
+    >>> delta1 = Angle(19, 10, 57.0)
+    >>> alpha2 = Angle(13, 25, 11.6, ra=True)
+    >>> delta2 = Angle(-11, 9, 41.0)
+    >>> sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
+    >>> print(round(sep_ang, 3))
+    32.793
+    """
+
+    # Let's define an auxiliary function
+    def hav(theta):
+        """Function to compute the haversine (hav)"""
+        return (1.0 - cos(theta))/2.0
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1, Angle) and isinstance(delta1, Angle) and
+           isinstance(alpha2, Angle) and isinstance(delta2, Angle)):
+        raise TypeError("Invalid input types")
+    dalpha = alpha1 - alpha2
+    dalpha = dalpha.rad()
+    ddelta = delta1 - delta2
+    ddelta = ddelta.rad()
+    d1 = delta1.rad()
+    d2 = delta2.rad()
+    theta = 2.0*asin(sqrt(hav(ddelta) + cos(d1)*cos(d2)*hav(dalpha)))
+    theta = Angle(theta, radians=True)
+    return theta
+
+
 def main():
 
     # Let's define a small helper function
