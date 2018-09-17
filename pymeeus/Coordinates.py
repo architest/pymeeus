@@ -1033,10 +1033,16 @@ def parallactic_angle(hour_angle, declination, geo_latitude):
     :param geo_latitude: Geodetic latitude of the observer, as an Angle object
     :type geo_latitude: :py:class:`Angle`
 
-    :returns: Local horizontal coordinates (azimuth, elevation, in that order),
-        given as two :class:`Angle` objects inside a tuple
-    :rtype: tuple
+    :returns: Parallactic angle as an py:class:`Angle` object
+    :rtype: :py:class:`Angle`
     :raises: TypeError if input values are of wrong type.
+
+    >>> hour_angle = Angle(0.0)
+    >>> declination = Angle(45.0)
+    >>> latitude = Angle(50.0)
+    >>> q = parallactic_angle(hour_angle, declination, latitude)
+    >>> print(q.dms_str(n_dec=1))
+    0d 0' 0.0''
     """
 
     # First check that input values are of correct types
@@ -1130,6 +1136,13 @@ def ecliptic_equator(longitude, latitude, obliquity):
         :class:`Angle` object
     :rtype: :class:`Angle`
     :raises: TypeError if input values are of wrong type.
+
+    >>> lon = Angle(0.0)
+    >>> lat = Angle(0.0)
+    >>> eps = Angle(23.5)
+    >>> ang_ecl_equ = ecliptic_equator(lon, lat, eps)
+    >>> print(ang_ecl_equ.dms_str(n_dec=1))
+    156d 30' 0.0''
     """
 
     # First check that input values are of correct types
@@ -1159,6 +1172,12 @@ def diurnal_path_horizon(declination, geo_latitude):
         :class:`Angle` object
     :rtype: :class:`Angle`
     :raises: TypeError if input values are of wrong type.
+
+    >>> declination = Angle(23.44)
+    >>> latitude = Angle(40.0)
+    >>> path_angle = diurnal_path_horizon(declination, latitude)
+    >>> print(path_angle.dms_str(n_dec=1))
+    45d 31' 28.4''
     """
 
     # First check that input values are of correct types
@@ -1688,6 +1707,19 @@ def main():
     apparent_elevation = refraction_true2apparent(true_elevation)
     print_me("Apparent elevation for a true elevation of 33' 14.76''",
              apparent_elevation.dms_str(n_dec=2))           # 57' 51.96''
+
+    print("")
+
+    # The angular separation between two celestial objects can be easily
+    # computed with the 'angular_separation()' function
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+    delta1 = Angle(19, 10, 57.0)
+    alpha2 = Angle(13, 25, 11.6, ra=True)
+    delta2 = Angle(-11, 9, 41.0)
+    sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
+    print_me("Angular separation between two given celestial bodies (degrees)",
+             round(sep_ang, 3))                             # 32.793
 
 
 if __name__ == '__main__':
