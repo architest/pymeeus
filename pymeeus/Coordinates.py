@@ -1491,6 +1491,118 @@ def angular_separation(alpha1, delta1, alpha2, delta2):
     return theta
 
 
+def minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
+                               alpha1_3, delta1_3, alpha2_1, delta2_1,
+                               alpha2_2, delta2_2, alpha2_3, delta2_3):
+    """Given the positions at three different instants of times of two
+    celestial objects, this function computes the minimum angular distance that
+    will be achieved within that interval of time.
+
+    .. note:: Suffix '1_' is for the first celestial object, and '2_' is for
+        the second one.
+
+    :param alpha1_1: First right ascension of celestial body #1, as an Angle
+        object
+    :type alpha1_1: :py:class:`Angle`
+    :param delta1_1: First declination of celestial body #1, as an Angle object
+    :type delta1_1: :py:class:`Angle`
+    :param alpha1_2: Second right ascension of celestial body #1, as an Angle
+        object
+    :type alpha1_2: :py:class:`Angle`
+    :param delta1_2: Second declination of celestial body #1, as Angle object
+    :type delta1_2: :py:class:`Angle`
+    :param alpha1_3: Third right ascension of celestial body #1, as an Angle
+        object
+    :type alpha1_3: :py:class:`Angle`
+    :param delta1_3: Third declination of celestial body #1, as an Angle object
+    :type delta1_3: :py:class:`Angle`
+    :param alpha2_1: First right ascension of celestial body #2, as an Angle
+        object
+    :type alpha2_1: :py:class:`Angle`
+    :param delta2_1: First declination of celestial body #2, as an Angle object
+    :type delta2_1: :py:class:`Angle`
+    :param alpha2_2: Second right ascension of celestial body #2, as an Angle
+        object
+    :type alpha2_2: :py:class:`Angle`
+    :param delta2_2: Second declination of celestial body #2, as Angle object
+    :type delta2_2: :py:class:`Angle`
+    :param alpha2_3: Third right ascension of celestial body #2, as an Angle
+        object
+    :type alpha2_3: :py:class:`Angle`
+    :param delta2_3: Third declination of celestial body #2, as an Angle object
+    :type delta2_3: :py:class:`Angle`
+
+XXX   :returns: An Angle object with the minimum angular separation between the
+        given celestial objects
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1_1 = Angle(10, 29, 44.27, ra=True)
+    >>> delta1_1 = Angle(11, 2, 5.9)
+    >>> alpha2_1 = Angle(10, 33, 29.64, ra=True)
+    >>> delta2_1 = Angle(10, 40, 13.2)
+    >>> alpha1_2 = Angle(0, 0, 0.0, ra=True)
+    >>> delta1_2 = Angle(0, 0, 0.0)
+    >>> alpha2_2 = Angle(0, 0, 0.0, ra=True)
+    >>> delta2_2 = Angle(0, 0, 0.0)
+    >>> alpha1_3 = Angle(0, 0, 0.0, ra=True)
+    >>> delta1_3 = Angle(0, 0, 0.0)
+    >>> alpha2_3 = Angle(0, 0, 0.0, ra=True)
+    >>> delta2_3 = Angle(0, 0, 0.0)
+    >>> t = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,\
+                                       alpha1_3, delta1_3, alpha2_1, delta2_1,\
+                                       alpha2_2, delta2_2, alpha2_3, delta2_3)
+    >>> print(u)
+    "u"
+    >>> print(v)
+    "v"
+    """
+
+    # Let's define some auxiliary functions
+    def k_factor(d1, d_a):
+        """This auxiliary function returns arcseconds, input is in radians"""
+        return 206264.8062/(1.0 + sin(d1)*sin(d1)*tan(d_a)*tan(d_a/2.0))
+
+    def u_factor(k, d1, d_a, d_d):
+        """Input is in radians, except for k (arcseconds)"""
+        return -k*(1.0 - tan(d1)*sin(d_d))*cos(d1)*tan(d_a)
+
+    def v_factor(k, d1, d_a, d_d):
+        """Input is in radians, except for k (arcseconds)"""
+        return k*(sin(d_d) + sin(d1)*cos(d1)*tan(d_a)*tan(d_a/2.0))
+
+    def prime(n, u1, u2, u3):
+        return (u3 - u1)/2.0 + n*(u1 + u3 - 2.0*u2)
+
+    def delta_n(u, u_p, v, v_p):
+        return -(u*u_p + v*v_p)/(u_p*u_p + v_p*v_p)
+
+    def interpol(n, y1, y2, y3):
+        """This is formula 3.3 from Meeus book"""
+        a = y2 - y1
+        b = y3 - y2
+        c = b - a
+        return y2 + n*(a + b + n*c)/2.0
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1_1, Angle) and isinstance(delta1_1, Angle) and
+           isinstance(alpha1_2, Angle) and isinstance(delta1_2, Angle) and
+           isinstance(alpha1_3, Angle) and isinstance(delta1_3, Angle) and
+           isinstance(alpha2_1, Angle) and isinstance(delta2_1, Angle) and
+           isinstance(alpha2_2, Angle) and isinstance(delta2_2, Angle) and
+           isinstance(alpha2_3, Angle) and isinstance(delta2_3, Angle)):
+        raise TypeError("Invalid input types")
+    d1 = delta1_1.rad()
+    d_a = alpha2_1.rad() - alpha1_1.rad()
+    d_d = delta2_1.rad() - delta1_1.rad()
+    k = k_factor(d1, d_a)
+    u = u_factor(k, d1, d_a, d_d)
+    v = v_factor(k, d1, d_a, d_d)
+    return u, v
+
+    # XXX
+
+
 def main():
 
     # Let's define a small helper function
