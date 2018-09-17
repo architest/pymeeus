@@ -352,3 +352,20 @@ The air in the atmosphere introduces an error in the elevation due to the refrac
              apparent_elevation.dms_str(n_dec=2))
 
     # Apparent elevation for a true elevation of 33' 14.76'': 57' 51.96''
+
+This module provides a function to compute the angular separation between two celestial bodies::
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+
+    delta1 = Angle(19, 10, 57.0)
+
+    alpha2 = Angle(13, 25, 11.6, ra=True)
+
+    delta2 = Angle(-11, 9, 41.0)
+
+    sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
+
+    print_me("Angular separation between two given celestial bodies, in degrees",
+             round(sep_ang, 3))
+
+    # Angular separation between two given celestial bodies, in degrees: 32.793
