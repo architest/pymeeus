@@ -25,7 +25,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
         equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
         diurnal_path_horizon, times_rise_transit_set, \
-        refraction_apparent2true, refraction_true2apparent
+        refraction_apparent2true, refraction_true2apparent, angular_separation
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -320,13 +320,13 @@ def test_times_rise_transit_set():
                                                       alpha3, delta3, h0,
                                                       delta_t, theta0)
 
-    assert round(rising, 4) == 12.4238, \
+    assert abs(round(rising, 4) - 12.4238) < TOL, \
         "ERROR: 1st times_rise_transit_set() test, 'rising' time doesn't match"
 
-    assert round(transit, 3) == 19.675, \
+    assert abs(round(transit, 3) - 19.675) < TOL, \
         "ERROR: 2nd times_rise_transit_set() test, 'transit' doesn't match"
 
-    assert round(setting, 3) == 2.911, \
+    assert abs(round(setting, 3) - 2.911) < TOL, \
         "ERROR: 3rd times_rise_transit_set() test, 'setting' doesn't match"
 
 
@@ -348,3 +348,17 @@ def test_refraction_true2apparent():
 
     assert apparent.dms_str(n_dec=2) == "57' 51.96''", \
         "ERROR: 1st refraction_true2apparent() test, 'apparent' doesn't match"
+
+
+def test_angular_separation():
+    """Tests the angular_separation() method of Coordinates module"""
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+    delta1 = Angle(19, 10, 57.0)
+    alpha2 = Angle(13, 25, 11.6, ra=True)
+    delta2 = Angle(-11, 9, 41.0)
+    sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
+    print(round(sep_ang, 3))
+
+    assert abs(round(sep_ang, 3) - 32.793) < TOL, \
+        "ERROR: 1st angular_separation() test, 'sep_ang' value doesn't match"
