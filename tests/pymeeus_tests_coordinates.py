@@ -24,8 +24,9 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         precession_ecliptical, motion_in_space, equatorial2ecliptical, \
         ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
         equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
-        diurnal_path_horizon, times_rise_transit_set, \
-        refraction_apparent2true, refraction_true2apparent, angular_separation
+        parallactic_angle, ecliptic_equator, diurnal_path_horizon, \
+        times_rise_transit_set, refraction_apparent2true, \
+        refraction_true2apparent, angular_separation
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -271,6 +272,18 @@ def test_coordinates_galactic2equatorial():
         "ERROR: 2nd galactic2equatorial() test, 'declination' doesn't match"
 
 
+def test_coordinates_parallactic_angle():
+    """Tests the parallactic_angle() method of Coordinates module"""
+
+    hour_angle = Angle(0.0)
+    declination = Angle(45.0)
+    latitude = Angle(50.0)
+    q = parallactic_angle(hour_angle, declination, latitude)
+
+    assert q.dms_str(n_dec=1) == "0d 0' 0.0''", \
+        "ERROR: 1st parallactic_angle() test, 'lon1' doesn't match"
+
+
 def test_coordinates_ecliptic_horizon():
     """Tests the ecliptic_horizon() method of Coordinates module"""
 
@@ -289,6 +302,18 @@ def test_coordinates_ecliptic_horizon():
         "ERROR: 3rd ecliptic_horizon() test, 'i' angle doesn't match"
 
 
+def test_coordinates_ecliptic_equator():
+    """Tests the ecliptic_equator() method of Coordinates module"""
+
+    lon = Angle(0.0)
+    lat = Angle(0.0)
+    eps = Angle(23.5)
+    ang_ecl_equ = ecliptic_equator(lon, lat, eps)
+
+    assert ang_ecl_equ.dms_str(n_dec=1) == "156d 30' 0.0''", \
+        "ERROR: 1st ecliptic_equator() test, 'ang_ecl_equ' doesn't match"
+
+
 def test_coordinates_diurnal_path_horizon():
     """Tests the diurnal_path_horizon() method of Coordinates module"""
 
@@ -300,7 +325,7 @@ def test_coordinates_diurnal_path_horizon():
         "ERROR: 1st diurnal_path_horizon() test, 'j' angle doesn't match"
 
 
-def test_times_rise_transit_set():
+def test_coordinates_times_rise_transit_set():
     """Tests the times_rise_transit_set() method of Coordinates module"""
 
     longitude = Angle(71, 5, 0.0)
@@ -330,7 +355,7 @@ def test_times_rise_transit_set():
         "ERROR: 3rd times_rise_transit_set() test, 'setting' doesn't match"
 
 
-def test_refraction_apparent2true():
+def test_coordinates_refraction_apparent2true():
     """Tests the refraction_apparent2true() method of Coordinates module"""
 
     apparent_elevation = Angle(0, 30, 0.0)
@@ -340,7 +365,7 @@ def test_refraction_apparent2true():
         "ERROR: 1st refraction_apparent2true() test, 'true' doesn't match"
 
 
-def test_refraction_true2apparent():
+def test_coordinates_refraction_true2apparent():
     """Tests the refraction_true2apparent() method of Coordinates module"""
 
     true_elevation = Angle(0, 33, 14.76)
@@ -350,7 +375,7 @@ def test_refraction_true2apparent():
         "ERROR: 1st refraction_true2apparent() test, 'apparent' doesn't match"
 
 
-def test_angular_separation():
+def test_coordinates_angular_separation():
     """Tests the angular_separation() method of Coordinates module"""
 
     alpha1 = Angle(14, 15, 39.7, ra=True)
