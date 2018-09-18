@@ -69,6 +69,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.8
+
+   -  Added functions to compute angular separation to Coordinates
+      module
+
 -  0.1.7
 
    -  Added functions to compute atmospheric refraction to Coordinates
