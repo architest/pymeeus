@@ -369,3 +369,55 @@ This module provides a function to compute the angular separation between two ce
              round(sep_ang, 3))
 
     # Angular separation between two given celestial bodies, in degrees: 32.793
+
+We can compute the minimum angular separation achieved between two celestial objects. For that, we must provide the positions at three equidistant epochs::
+
+    # EPOCH: Sep 13th, 1978, 0h TT:
+
+    alpha1_1 = Angle(10, 29, 44.27, ra=True)
+
+    delta1_1 = Angle(11, 2, 5.9)
+
+    alpha2_1 = Angle(10, 33, 29.64, ra=True)
+
+    delta2_1 = Angle(10, 40, 13.2)
+
+    # EPOCH: Sep 14th, 1978, 0h TT:
+
+    alpha1_2 = Angle(10, 36, 19.63, ra=True)
+
+    delta1_2 = Angle(10, 29, 51.7)
+
+    alpha2_2 = Angle(10, 33, 57.97, ra=True)
+
+    delta2_2 = Angle(10, 37, 33.4)
+
+    # EPOCH: Sep 15th, 1978, 0h TT:
+
+    alpha1_3 = Angle(10, 43, 1.75, ra=True)
+
+    delta1_3 = Angle(9, 55, 16.7)
+
+    alpha2_3 = Angle(10, 34, 26.22, ra=True)
+
+    delta2_3 = Angle(10, 34, 53.9)
+
+    a = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
+
+                                   alpha1_3, delta1_3, alpha2_1, delta2_1,
+
+                                   alpha2_2, delta2_2, alpha2_3, delta2_3)
+
+    print_me("Minimum angular separation, epoch fraction", round(a[0], 6))
+
+    # Minimum angular separation, epoch fraction: -0.370726
+
+    # NOTE: Given that 'n' is negative, and Sep 14th is the middle epoch (n=0),
+
+    # then the minimum angular separation is achieved on Sep 13th, specifically
+
+    # at: 1.0 - 0.370726 = 0.629274 => Sep 13.629274 = Sep 13th, 15h 6' 9''
+
+    print_me("Minimum angular separation", a[1].dms_str(n_dec=0))
+
+    # Minimum angular separation: 3' 44.0''
