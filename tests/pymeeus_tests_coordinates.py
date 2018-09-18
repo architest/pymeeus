@@ -27,7 +27,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         parallactic_angle, ecliptic_equator, diurnal_path_horizon, \
         times_rise_transit_set, refraction_apparent2true, \
         refraction_true2apparent, angular_separation, \
-        minimum_angular_separation
+        minimum_angular_separation, relative_position_angle
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -413,3 +413,25 @@ def test_coordinates_minimum_angular_separation():
 
     assert d.dms_str(n_dec=0) == "3' 44.0''", \
         "ERROR: 2nd minimum_angular_separation() test, 'd' value doesn't match"
+
+
+def test_coordinates_relative_position_angle():
+    """Tests the relative_position_angle() method of Coordinates module"""
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+    delta1 = Angle(19, 10, 57.0)
+    alpha2 = Angle(14, 15, 39.7, ra=True)
+    delta2 = Angle(-11, 9, 41.0)
+    pos_ang = relative_position_angle(alpha1, delta1, alpha2, delta2)
+
+    assert abs(round(pos_ang, 1) - 0.0) < TOL, \
+        "ERROR: 1st relative_position_angle() test, 'pos_ang' doesn't match"
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+    delta1 = Angle(-19, 10, 57.0)
+    alpha2 = Angle(14, 15, 39.7, ra=True)
+    delta2 = Angle(11, 9, 41.0)
+    pos_ang = relative_position_angle(alpha1, delta1, alpha2, delta2)
+
+    assert abs(round(pos_ang, 1) - 180.0) < TOL, \
+        "ERROR: 2nd relative_position_angle() test, 'pos_ang' doesn't match"
