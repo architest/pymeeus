@@ -676,7 +676,7 @@ def main():
                        Angle(0, 54, 15.486), Angle(0, 54, 8.694),\n\
                        Angle(0, 54, 4.133)])")
 
-    print_me("k(28.27777778)", Angle(k(28.1388888889)).dms_str())
+    print_me("k(28.278)", Angle(k(28.278)).dms_str())
 
     print("")
 
