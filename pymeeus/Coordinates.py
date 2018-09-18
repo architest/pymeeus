@@ -1494,12 +1494,18 @@ def angular_separation(alpha1, delta1, alpha2, delta2):
 def minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
                                alpha1_3, delta1_3, alpha2_1, delta2_1,
                                alpha2_2, delta2_2, alpha2_3, delta2_3):
-    """Given the positions at three different instants of times of two
-    celestial objects, this function computes the minimum angular distance that
-    will be achieved within that interval of time.
+    """Given the positions at three different instants of times (equidistant)
+    of two celestial objects, this function computes the minimum angular
+    distance that will be achieved within that interval of time.
 
     .. note:: Suffix '1_' is for the first celestial object, and '2_' is for
         the second one.
+
+    .. note:: This function provides as output the 'n' fraction of time when
+        the minimum angular separation is achieved. For that, the epoch in the
+        middle is assigned the value "n = 0". Therefore, n < 0 is for times
+        **before** the middle epoch, and n > 0 is for times **after** the
+        middle epoch.
 
     :param alpha1_1: First right ascension of celestial body #1, as an Angle
         object
@@ -1532,30 +1538,32 @@ def minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
     :param delta2_3: Third declination of celestial body #2, as an Angle object
     :type delta2_3: :py:class:`Angle`
 
-XXX   :returns: An Angle object with the minimum angular separation between the
-        given celestial objects
-    :rtype: :py:class:`Angle`
+    :returns: A tuple with two components: The first component is a float
+        containing the 'n' fraction of time when the minimum angular separation
+        is achieved. The second component is an Angle object containing the
+        minimum angular separation between the given celestial objects
+    :rtype: tuple
     :raises: TypeError if input values are of wrong type.
 
     >>> alpha1_1 = Angle(10, 29, 44.27, ra=True)
     >>> delta1_1 = Angle(11, 2, 5.9)
     >>> alpha2_1 = Angle(10, 33, 29.64, ra=True)
     >>> delta2_1 = Angle(10, 40, 13.2)
-    >>> alpha1_2 = Angle(0, 0, 0.0, ra=True)
-    >>> delta1_2 = Angle(0, 0, 0.0)
-    >>> alpha2_2 = Angle(0, 0, 0.0, ra=True)
-    >>> delta2_2 = Angle(0, 0, 0.0)
-    >>> alpha1_3 = Angle(0, 0, 0.0, ra=True)
-    >>> delta1_3 = Angle(0, 0, 0.0)
-    >>> alpha2_3 = Angle(0, 0, 0.0, ra=True)
-    >>> delta2_3 = Angle(0, 0, 0.0)
-    >>> t = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,\
+    >>> alpha1_2 = Angle(10, 36, 19.63, ra=True)
+    >>> delta1_2 = Angle(10, 29, 51.7)
+    >>> alpha2_2 = Angle(10, 33, 57.97, ra=True)
+    >>> delta2_2 = Angle(10, 37, 33.4)
+    >>> alpha1_3 = Angle(10, 43, 1.75, ra=True)
+    >>> delta1_3 = Angle(9, 55, 16.7)
+    >>> alpha2_3 = Angle(10, 34, 26.22, ra=True)
+    >>> delta2_3 = Angle(10, 34, 53.9)
+    >>> a = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,\
                                        alpha1_3, delta1_3, alpha2_1, delta2_1,\
                                        alpha2_2, delta2_2, alpha2_3, delta2_3)
-    >>> print(u)
-    "u"
-    >>> print(v)
-    "v"
+    >>> print(round(a[0], 6))
+    -0.370726
+    >>> print(a[1].dms_str(n_dec=0))
+    3' 44.0''
     """
 
     # Let's define some auxiliary functions
@@ -1571,8 +1579,8 @@ XXX   :returns: An Angle object with the minimum angular separation between the
         """Input is in radians, except for k (arcseconds)"""
         return k*(sin(d_d) + sin(d1)*cos(d1)*tan(d_a)*tan(d_a/2.0))
 
-    def prime(n, u1, u2, u3):
-        return (u3 - u1)/2.0 + n*(u1 + u3 - 2.0*u2)
+    def u_prime(n, u1, u2, u3):
+        return ((u3 - u1)/2.0 + n*(u1 + u3 - 2.0*u2))
 
     def delta_n(u, u_p, v, v_p):
         return -(u*u_p + v*v_p)/(u_p*u_p + v_p*v_p)
@@ -1592,15 +1600,44 @@ XXX   :returns: An Angle object with the minimum angular separation between the
            isinstance(alpha2_2, Angle) and isinstance(delta2_2, Angle) and
            isinstance(alpha2_3, Angle) and isinstance(delta2_3, Angle)):
         raise TypeError("Invalid input types")
+    # Let's define two dictionaries to store the intermediate results
+    u = {}
+    v = {}
+    # Compute intermediate results for first epoch
     d1 = delta1_1.rad()
     d_a = alpha2_1.rad() - alpha1_1.rad()
     d_d = delta2_1.rad() - delta1_1.rad()
     k = k_factor(d1, d_a)
-    u = u_factor(k, d1, d_a, d_d)
-    v = v_factor(k, d1, d_a, d_d)
-    return u, v
-
-    # XXX
+    u[1] = u_factor(k, d1, d_a, d_d)
+    v[1] = v_factor(k, d1, d_a, d_d)
+    # Compute intermediate results for second epoch
+    d1 = delta1_2.rad()
+    d_a = alpha2_2.rad() - alpha1_2.rad()
+    d_d = delta2_2.rad() - delta1_2.rad()
+    k = k_factor(d1, d_a)
+    u[2] = u_factor(k, d1, d_a, d_d)
+    v[2] = v_factor(k, d1, d_a, d_d)
+    # Compute intermediate results for third epoch
+    d1 = delta1_3.rad()
+    d_a = alpha2_3.rad() - alpha1_3.rad()
+    d_d = delta2_3.rad() - delta1_3.rad()
+    k = k_factor(d1, d_a)
+    u[3] = u_factor(k, d1, d_a, d_d)
+    v[3] = v_factor(k, d1, d_a, d_d)
+    # Iterate to find the solution
+    n = 0.0
+    dn = 999999.9
+    while abs(dn) > 0.000001:
+        uu = interpol(n, u[1], u[2], u[3])
+        vv = interpol(n, v[1], v[2], v[3])
+        up = u_prime(n, u[1], u[2], u[3])
+        vp = u_prime(n, v[1], v[2], v[3])
+        dn = delta_n(uu, up, vv, vp)
+        n += dn
+    # Let's compute the minimum distance, in arcseconds
+    arcsec = sqrt(uu*uu + vv*vv)
+    d = Angle(0, 0, arcsec)                 # Convert to an Angle object
+    return n, d
 
 
 def main():
@@ -1832,6 +1869,40 @@ def main():
     sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
     print_me("Angular separation between two given celestial bodies (degrees)",
              round(sep_ang, 3))                             # 32.793
+
+    print("")
+
+    # We can compute the minimum angular separation achieved between two
+    # celestial objects. For that, we must provide the positions at three
+    # equidistant epochs:
+
+    # EPOCH: Sep 13th, 1978, 0h TT:
+    alpha1_1 = Angle(10, 29, 44.27, ra=True)
+    delta1_1 = Angle(11, 2, 5.9)
+    alpha2_1 = Angle(10, 33, 29.64, ra=True)
+    delta2_1 = Angle(10, 40, 13.2)
+    # EPOCH: Sep 14th, 1978, 0h TT:
+    alpha1_2 = Angle(10, 36, 19.63, ra=True)
+    delta1_2 = Angle(10, 29, 51.7)
+    alpha2_2 = Angle(10, 33, 57.97, ra=True)
+    delta2_2 = Angle(10, 37, 33.4)
+    # EPOCH: Sep 15th, 1978, 0h TT:
+    alpha1_3 = Angle(10, 43, 1.75, ra=True)
+    delta1_3 = Angle(9, 55, 16.7)
+    alpha2_3 = Angle(10, 34, 26.22, ra=True)
+    delta2_3 = Angle(10, 34, 53.9)
+    a = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
+                                   alpha1_3, delta1_3, alpha2_1, delta2_1,
+                                   alpha2_2, delta2_2, alpha2_3, delta2_3)
+    # Epoch fraction:
+    print_me("Minimum angular separation, epoch fraction", round(a[0], 6))
+    # -0.370726
+    # NOTE: Given that 'n' is negative, and Sep 14th is the middle epoch (n=0),
+    # then the minimum angular separation is achieved on Sep 13th, specifically
+    # at: 1.0 - 0.370726 = 0.629274 => Sep 13.629274 = Sep 13th, 15h 6' 9''
+
+    # Minimum angular separation:
+    print_me("Minimum angular separation", a[1].dms_str(n_dec=0))   # 3' 44.0''
 
 
 if __name__ == '__main__':
