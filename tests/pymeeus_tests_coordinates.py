@@ -26,7 +26,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
         parallactic_angle, ecliptic_equator, diurnal_path_horizon, \
         times_rise_transit_set, refraction_apparent2true, \
-        refraction_true2apparent, angular_separation
+        refraction_true2apparent, angular_separation, \
+        minimum_angular_separation
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -383,7 +384,32 @@ def test_coordinates_angular_separation():
     alpha2 = Angle(13, 25, 11.6, ra=True)
     delta2 = Angle(-11, 9, 41.0)
     sep_ang = angular_separation(alpha1, delta1, alpha2, delta2)
-    print(round(sep_ang, 3))
 
     assert abs(round(sep_ang, 3) - 32.793) < TOL, \
         "ERROR: 1st angular_separation() test, 'sep_ang' value doesn't match"
+
+
+def test_coordinates_minimum_angular_separation():
+    """Tests the minimum_angular_separation() method of Coordinates module"""
+
+    alpha1_1 = Angle(10, 29, 44.27, ra=True)
+    delta1_1 = Angle(11, 2, 5.9)
+    alpha2_1 = Angle(10, 33, 29.64, ra=True)
+    delta2_1 = Angle(10, 40, 13.2)
+    alpha1_2 = Angle(10, 36, 19.63, ra=True)
+    delta1_2 = Angle(10, 29, 51.7)
+    alpha2_2 = Angle(10, 33, 57.97, ra=True)
+    delta2_2 = Angle(10, 37, 33.4)
+    alpha1_3 = Angle(10, 43, 1.75, ra=True)
+    delta1_3 = Angle(9, 55, 16.7)
+    alpha2_3 = Angle(10, 34, 26.22, ra=True)
+    delta2_3 = Angle(10, 34, 53.9)
+    n, d = minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
+                                      alpha1_3, delta1_3, alpha2_1, delta2_1,
+                                      alpha2_2, delta2_2, alpha2_3, delta2_3)
+
+    assert abs(round(n, 6) + 0.370726) < TOL, \
+        "ERROR: 1st minimum_angular_separation() test, 'n' value doesn't match"
+
+    assert d.dms_str(n_dec=0) == "3' 44.0''", \
+        "ERROR: 2nd minimum_angular_separation() test, 'd' value doesn't match"
