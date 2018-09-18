@@ -70,9 +70,9 @@ We can interpolate Angles too::
 
                        Angle(0, 54, 4.133)])
 
-    print_me("k(28.27777778)", Angle(k(28.1388888889)).dms_str())
+    print_me("k(28.278)", Angle(k(28.278)).dms_str())
 
-    # k(28.27777778): 54' 13.3694807756''
+    # k(28.278): 54' 11.4279073579''
 
 Let's work with a new Interpolation object::
 
