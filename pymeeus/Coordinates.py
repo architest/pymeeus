@@ -1640,6 +1640,46 @@ def minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
     return n, d
 
 
+def relative_position_angle(alpha1, delta1, alpha2, delta2):
+    """This function computes the position angle P of a body with respect to
+    another body.
+
+    :param alpha1: Right ascension of celestial body #1, as an Angle object
+    :type alpha1: :py:class:`Angle`
+    :param delta1: Declination of celestial body #1, as an Angle object
+    :type delta1: :py:class:`Angle`
+    :param alpha2: Right ascension of celestial body #2, as an Angle object
+    :type alpha2: :py:class:`Angle`
+    :param delta2: Declination of celestial body #2, as an Angle object
+    :type delta2: :py:class:`Angle`
+
+    :returns: An Angle object with the relative position angle between the
+        given celestial objects
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1 = Angle(14, 15, 39.7, ra=True)
+    >>> delta1 = Angle(19, 10, 57.0)
+    >>> alpha2 = Angle(14, 15, 39.7, ra=True)
+    >>> delta2 = Angle(-11, 9, 41.0)
+    >>> pos_ang = relative_position_angle(alpha1, delta1, alpha2, delta2)
+    >>> print(round(pos_ang, 1))
+    0.0
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1, Angle) and isinstance(delta1, Angle) and
+           isinstance(alpha2, Angle) and isinstance(delta2, Angle)):
+        raise TypeError("Invalid input types")
+    da = alpha1 - alpha2
+    da = da.rad()
+    d1 = delta1.rad()
+    d2 = delta2.rad()
+    p = atan2(sin(da), (cos(d2)*tan(d1) - sin(d2)*cos(da)))
+    p = Angle(p, radians=True)
+    return p
+
+
 def main():
 
     # Let's define a small helper function
