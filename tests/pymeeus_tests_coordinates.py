@@ -28,7 +28,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         times_rise_transit_set, refraction_apparent2true, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
-        planetary_conjunction
+        planetary_conjunction, planet_star_conjunction
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -473,3 +473,30 @@ def test_coordinates_planetary_conjunction():
 
     assert pc[1].dms_str(n_dec=1) == "2d 8' 21.8''", \
         "ERROR: 2nd planetary_conjunction() test, 'pc[1]' doesn't match"
+
+
+def test_coordinates_planet_star_conjunction():
+    """Tests the planet_star_conjunction() method of Coordinates module"""
+
+    alpha_1 = Angle(15,  3, 51.937, ra=True)
+    delta_1 = Angle(-8, 57, 34.51)
+    alpha_2 = Angle(15,  9, 57.327, ra=True)
+    delta_2 = Angle(-9,  9,  3.88)
+    alpha_3 = Angle(15, 15, 37.898, ra=True)
+    delta_3 = Angle(-9, 17, 37.94)
+    alpha_4 = Angle(15, 20, 50.632, ra=True)
+    delta_4 = Angle(-9, 23, 16.25)
+    alpha_5 = Angle(15, 25, 32.695, ra=True)
+    delta_5 = Angle(-9, 26,  1.01)
+    alpha_star = Angle(15, 17, 0.446, ra=True)
+    delta_star = Angle(-9, 22, 58.47)
+    alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    pc = planet_star_conjunction(alpha_list, delta_list,
+                                 alpha_star, delta_star)
+
+    assert abs(round(pc[0], 4) - 0.2551) < TOL, \
+        "ERROR: 1st planet_star_conjunction() test, 'pc[0]' doesn't match"
+
+    assert pc[1].dms_str(n_dec=0) == "3' 38.0''", \
+        "ERROR: 2nd planet_star_conjunction() test, 'pc[1]' doesn't match"

@@ -2163,6 +2163,30 @@ def main():
     print_me("Difference in declination at conjunction",
              pc[1].dms_str(n_dec=1))                            # 2d 8' 21.8''
 
+    print("")
+
+    # A planetary conjunction with a star is a little bit simpler
+    alpha_1 = Angle(15,  3, 51.937, ra=True)
+    delta_1 = Angle(-8, 57, 34.51)
+    alpha_2 = Angle(15,  9, 57.327, ra=True)
+    delta_2 = Angle(-9,  9,  3.88)
+    alpha_3 = Angle(15, 15, 37.898, ra=True)
+    delta_3 = Angle(-9, 17, 37.94)
+    alpha_4 = Angle(15, 20, 50.632, ra=True)
+    delta_4 = Angle(-9, 23, 16.25)
+    alpha_5 = Angle(15, 25, 32.695, ra=True)
+    delta_5 = Angle(-9, 26,  1.01)
+    alpha_star = Angle(15, 17, 0.446, ra=True)
+    delta_star = Angle(-9, 22, 58.47)
+    alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    pc = planet_star_conjunction(alpha_list, delta_list,
+                                 alpha_star, delta_star)
+    print_me("Epoch fraction 'n' for planetary conjunction with star",
+             round(pc[0], 4))                                       # 0.2551
+    print_me("Difference in declination with star at conjunction",
+             pc[1].dms_str(n_dec=0))                                # 3' 38.0''
+
 
 if __name__ == '__main__':
 
