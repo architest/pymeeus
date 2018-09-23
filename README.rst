@@ -69,6 +69,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.1.9
+
+   -  Added functions to compute relative position angles and
+      conjunctions
+
 -  0.1.8
 
    -  Added functions to compute angular separation to Coordinates
