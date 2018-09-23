@@ -1682,9 +1682,9 @@ def relative_position_angle(alpha1, delta1, alpha2, delta2):
 
 
 def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
-    """Given five positions of two planets passing near each other, this
+    """Given the positions of two planets passing near each other, this
     function computes the time of conjunction in right ascension, and the
-    difference in declinationi of the two bodies at that time.
+    difference in declination of the two bodies at that time.
 
     .. note:: This function provides as output the 'n' fraction of time when
         the minimum angular separation is achieved. For that, the epoch in the
@@ -1698,7 +1698,7 @@ def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
 
     :param alpha1_list: List (or tuple) containing the right ascensions (as
         Angle objects) for object #1 (minimum 3 entries)
-    :type alpha1_1: list, tuple of :py:class:`Angle`
+    :type alpha1_list: list, tuple of :py:class:`Angle`
     :param delta1_list: List (or tuple) containing the declinations (as Angle
         objects) for object #1 (minimum 3 entries)
     :type delta1_list: list, tuple of :py:class:`Angle`
@@ -1710,9 +1710,9 @@ def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
     :type delta2_list: list, tuple of :py:class:`Angle`
 
     :returns: A tuple with two components: The first component is a float
-        containing the 'n' fraction of time when the minimum angular separation
-        is achieved. The second component is an Angle object containing the
-        declination separation between the given objects at conjunction time
+        containing the 'n' fraction of time when the conjunction occurs. The
+        second component is an Angle object containing the declination
+        separation between the given objects at conjunction epoch
     :rtype: tuple
     :raises: ValueError if input values have less than three entries or they
         don't have the same number of entries.
@@ -1786,6 +1786,72 @@ def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
     dd = i_delta(n_0)
     # We are done, let's return
     return n_0, dd
+
+
+def planet_star_conjunction(alpha_list, delta_list, alpha_star, delta_star):
+    """Given the positions of one planet passing near a star, this function
+    computes the time of conjunction in right ascension, and the difference in
+    declination of the two bodies at that time.
+
+    .. note:: This function provides as output the 'n' fraction of time when
+        the minimum angular separation is achieved. For that, the epoch in the
+        middle is assigned the value "n = 0". Therefore, n < 0 is for times
+        **before** the middle epoch, and n > 0 is for times **after** the
+        middle epoch.
+
+    .. note:: When the entries in the input values for the planet are more than
+        three and pair, the last entry is discarted and an odd number of
+        entries will be used.
+
+    :param alpha_list: List (or tuple) containing the right ascensions (as
+        Angle objects) for the planet (minimum 3 entries)
+    :type alpha_list: list, tuple of :py:class:`Angle`
+    :param delta_list: List (or tuple) containing the declinations (as Angle
+        objects) for the planet (minimum 3 entries)
+    :type delta_list: list, tuple of :py:class:`Angle`
+    :param alpha_star: Right ascension, as an Angle object, of the star
+    :type alpha_star: :py:class:`Angle`
+    :param delta_star: Declination, as an Angle object, of the star
+    :type delta_star: :py:class:`Angle`
+
+    :returns: A tuple with two components: The first component is a float
+        containing the 'n' fraction of time when the conjunction occurs. The
+        second component is an Angle object containing the declination
+        separation between the given objects at conjunction epoch
+    :rtype: tuple
+    :raises: ValueError if input values for plante have less than three entries
+        or they don't have the same number of entries.
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha_1 = Angle(15,  3, 51.937, ra=True)
+    >>> delta_1 = Angle(-8, 57, 34.51)
+    >>> alpha_2 = Angle(15,  9, 57.327, ra=True)
+    >>> delta_2 = Angle(-9,  9,  3.88)
+    >>> alpha_3 = Angle(15, 15, 37.898, ra=True)
+    >>> delta_3 = Angle(-9, 17, 37.94)
+    >>> alpha_4 = Angle(15, 20, 50.632, ra=True)
+    >>> delta_4 = Angle(-9, 23, 16.25)
+    >>> alpha_5 = Angle(15, 25, 32.695, ra=True)
+    >>> delta_5 = Angle(-9, 26,  1.01)
+    >>> alpha_star = Angle(15, 17, 0.446, ra=True)
+    >>> delta_star = Angle(-9, 22, 58.47)
+    >>> alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    >>> delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    >>> pc = planet_star_conjunction(alpha_list, delta_list, \
+                                     alpha_star, delta_star)
+    >>> print(round(pc[0], 4))
+    0.2551
+    >>> print(pc[1].dms_str(n_dec=0))
+    3' 38.0''
+    """
+
+    # Build the corresponding lists for the star
+    n_entries = len(alpha_list)
+    alpha_star_list = [alpha_star for _ in range(n_entries)]
+    delta_star_list = [delta_star for _ in range(n_entries)]
+    # Call the 'planetary_conjunction()' function. It handles everything else
+    return planetary_conjunction(alpha_list, delta_list,
+                                 alpha_star_list, delta_star_list)
 
 
 def main():
