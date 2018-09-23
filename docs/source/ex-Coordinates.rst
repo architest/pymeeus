@@ -437,3 +437,19 @@ There is a function to compute the position angle P of a body with respect to an
     print_me("Relative position angle between the two bodies", round(pos_ang, 1))
 
     # Relative position angle between the two bodies: 0.0
+
+Also, it is possible to compute the relative position angle. In this example, given that the two objects have the same right ascension, then the relative position angle between them must be 0 (or 180)::
+
+    alpha1 = Angle(14, 15, 39.7, ra=True)
+
+    delta1 = Angle(19, 10, 57.0)
+
+    alpha2 = Angle(14, 15, 39.7, ra=True)                   # Same as alpha1
+
+    delta2 = Angle(-11, 9, 41.0)
+
+    pos_ang = relative_position_angle(alpha1, delta1, alpha2, delta2)
+
+    print_me("Relative position angle", round(pos_ang, 1))
+
+    # Relative position angle: 0.0
