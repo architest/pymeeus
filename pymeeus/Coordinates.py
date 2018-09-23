@@ -1728,15 +1728,15 @@ def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
     >>> delta1_4 = Angle( 5, 46, 27.07)
     >>> alpha1_5 = Angle(10, 24, 41.185, ra=True)
     >>> delta1_5 = Angle( 5, 37, 48.45)
-    >>> alpha2_1 = Angle(10, 27, 27.175, ra= True)
+    >>> alpha2_1 = Angle(10, 27, 27.175, ra=True)
     >>> delta2_1 = Angle( 4,  4, 41.83)
-    >>> alpha2_2 = Angle(10, 26, 32.410, ra= True)
+    >>> alpha2_2 = Angle(10, 26, 32.410, ra=True)
     >>> delta2_2 = Angle( 3, 55, 54.66)
-    >>> alpha2_3 = Angle(10, 25, 29.042, ra= True)
+    >>> alpha2_3 = Angle(10, 25, 29.042, ra=True)
     >>> delta2_3 = Angle( 3, 48,  3.51)
-    >>> alpha2_4 = Angle(10, 24, 17.191, ra= True)
+    >>> alpha2_4 = Angle(10, 24, 17.191, ra=True)
     >>> delta2_4 = Angle( 3, 41, 10.25)
-    >>> alpha2_5 = Angle(10, 22, 57.024, ra= True)
+    >>> alpha2_5 = Angle(10, 22, 57.024, ra=True)
     >>> delta2_5 = Angle( 3, 35, 16.61)
     >>> alpha1_list = [alpha1_1, alpha1_2, alpha1_3, alpha1_4, alpha1_5]
     >>> delta1_list = [delta1_1, delta1_2, delta1_3, delta1_4, delta1_5]
@@ -2062,6 +2062,40 @@ def main():
     delta2 = Angle(-11, 9, 41.0)
     pos_ang = relative_position_angle(alpha1, delta1, alpha2, delta2)
     print_me("Relative position angle", round(pos_ang, 1))             # 0.0
+
+    print("")
+
+    # Planetary conjunctions may be computed with the appropriate function
+    alpha1_1 = Angle(10, 24, 30.125, ra=True)
+    delta1_1 = Angle(6, 26, 32.05)
+    alpha1_2 = Angle(10, 25,  0.342, ra=True)
+    delta1_2 = Angle(6, 10, 57.72)
+    alpha1_3 = Angle(10, 25, 12.515, ra=True)
+    delta1_3 = Angle(5, 57, 33.08)
+    alpha1_4 = Angle(10, 25,  6.235, ra=True)
+    delta1_4 = Angle(5, 46, 27.07)
+    alpha1_5 = Angle(10, 24, 41.185, ra=True)
+    delta1_5 = Angle(5, 37, 48.45)
+    alpha2_1 = Angle(10, 27, 27.175, ra=True)
+    delta2_1 = Angle(4,  4, 41.83)
+    alpha2_2 = Angle(10, 26, 32.410, ra=True)
+    delta2_2 = Angle(3, 55, 54.66)
+    alpha2_3 = Angle(10, 25, 29.042, ra=True)
+    delta2_3 = Angle(3, 48,  3.51)
+    alpha2_4 = Angle(10, 24, 17.191, ra=True)
+    delta2_4 = Angle(3, 41, 10.25)
+    alpha2_5 = Angle(10, 22, 57.024, ra=True)
+    delta2_5 = Angle(3, 35, 16.61)
+    alpha1_list = [alpha1_1, alpha1_2, alpha1_3, alpha1_4, alpha1_5]
+    delta1_list = [delta1_1, delta1_2, delta1_3, delta1_4, delta1_5]
+    alpha2_list = [alpha2_1, alpha2_2, alpha2_3, alpha2_4, alpha2_5]
+    delta2_list = [delta2_1, delta2_2, delta2_3, delta2_4, delta2_5]
+    pc = planetary_conjunction(alpha1_list, delta1_list,
+                               alpha2_list, delta2_list)
+    print_me("Epoch fraction 'n' for planetary conjunction", round(pc[0], 5))
+    # 0.23797
+    print_me("Difference in declination at conjunction",
+             pc[1].dms_str(n_dec=1))                            # 2d 8' 21.8''
 
 
 if __name__ == '__main__':
