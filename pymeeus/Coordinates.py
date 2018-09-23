@@ -22,6 +22,7 @@ from math import sqrt, sin, cos, tan, atan, atan2, asin, acos
 from base import TOL
 from Angle import Angle
 from Epoch import Epoch, JDE2000
+from Interpolation import Interpolation
 
 
 """
@@ -1678,6 +1679,113 @@ def relative_position_angle(alpha1, delta1, alpha2, delta2):
     p = atan2(sin(da), (cos(d2)*tan(d1) - sin(d2)*cos(da)))
     p = Angle(p, radians=True)
     return p
+
+
+def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
+    """Given five positions of two planets passing near each other, this
+    function computes the time of conjunction in right ascension, and the
+    difference in declinationi of the two bodies at that time.
+
+    .. note:: This function provides as output the 'n' fraction of time when
+        the minimum angular separation is achieved. For that, the epoch in the
+        middle is assigned the value "n = 0". Therefore, n < 0 is for times
+        **before** the middle epoch, and n > 0 is for times **after** the
+        middle epoch.
+
+    .. note:: When the entries in the input values are more than three and
+        pair, the last entry is discarted and an odd number of entries will be
+        used.
+
+    :param alpha1_list: List (or tuple) containing the right ascensions (as
+        Angle objects) for object #1 (minimum 3 entries)
+    :type alpha1_1: list, tuple of :py:class:`Angle`
+    :param delta1_list: List (or tuple) containing the declinations (as Angle
+        objects) for object #1 (minimum 3 entries)
+    :type delta1_list: list, tuple of :py:class:`Angle`
+    :param alpha2_list: List (or tuple) containing the right ascensions (as
+        Angle objects) for object #2 (minimum 3 entries)
+    :type alpha2_list: list, tuple of :py:class:`Angle`
+    :param delta2_list: List (or tuple) containing the declinations (as Angle
+        objects) for object #2 (minimum 3 entries)
+    :type delta2_list: list, tuple of :py:class:`Angle`
+
+    :returns: A tuple with two components: The first component is a float
+        containing the 'n' fraction of time when the minimum angular separation
+        is achieved. The second component is an Angle object containing the
+        declination separation between the given objects at conjunction time
+    :rtype: tuple
+    :raises: ValueError if input values have less than three entries or they
+        don't have the same number of entries.
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1_1 = Angle(10, 24, 30.125, ra=True)
+    >>> delta1_1 = Angle( 6, 26, 32.05)
+    >>> alpha1_2 = Angle(10, 25,  0.342, ra=True)
+    >>> delta1_2 = Angle( 6, 10, 57.72)
+    >>> alpha1_3 = Angle(10, 25, 12.515, ra=True)
+    >>> delta1_3 = Angle( 5, 57, 33.08)
+    >>> alpha1_4 = Angle(10, 25,  6.235, ra=True)
+    >>> delta1_4 = Angle( 5, 46, 27.07)
+    >>> alpha1_5 = Angle(10, 24, 41.185, ra=True)
+    >>> delta1_5 = Angle( 5, 37, 48.45)
+    >>> alpha2_1 = Angle(10, 27, 27.175, ra= True)
+    >>> delta2_1 = Angle( 4,  4, 41.83)
+    >>> alpha2_2 = Angle(10, 26, 32.410, ra= True)
+    >>> delta2_2 = Angle( 3, 55, 54.66)
+    >>> alpha2_3 = Angle(10, 25, 29.042, ra= True)
+    >>> delta2_3 = Angle( 3, 48,  3.51)
+    >>> alpha2_4 = Angle(10, 24, 17.191, ra= True)
+    >>> delta2_4 = Angle( 3, 41, 10.25)
+    >>> alpha2_5 = Angle(10, 22, 57.024, ra= True)
+    >>> delta2_5 = Angle( 3, 35, 16.61)
+    >>> alpha1_list = [alpha1_1, alpha1_2, alpha1_3, alpha1_4, alpha1_5]
+    >>> delta1_list = [delta1_1, delta1_2, delta1_3, delta1_4, delta1_5]
+    >>> alpha2_list = [alpha2_1, alpha2_2, alpha2_3, alpha2_4, alpha2_5]
+    >>> delta2_list = [delta2_1, delta2_2, delta2_3, delta2_4, delta2_5]
+    >>> pc = planetary_conjunction(alpha1_list, delta1_list, \
+                                   alpha2_list, delta2_list)
+    >>> print(round(pc[0], 5))
+    0.23797
+    >>> print(pc[1].dms_str(n_dec=1))
+    2d 8' 21.8''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1_list, (list, tuple)) and
+           isinstance(delta1_list, (list, tuple)) and
+           isinstance(alpha2_list, (list, tuple)) and
+           isinstance(delta2_list, (list, tuple))):
+        raise TypeError("Invalid input types")
+    if (len(alpha1_list) < 3 or len(delta1_list) < 3 or
+            len(alpha2_list) < 3 or len(delta2_list) < 3):
+        raise ValueError("Invalid number of entries")
+    if (len(alpha1_list) != len(delta1_list) or
+            len(alpha1_list) != len(alpha2_list) or
+            len(alpha1_list) != len(delta2_list)):
+        raise ValueError("Uneven number of entries")
+    n_entries = len(alpha1_list)
+    if n_entries % 2 != 1:                  # Check if number of entries is odd
+        alpha1_list = alpha1_list[:-1]      # Drop the last entry
+        delta1_list = delta1_list[:-1]
+        alpha2_list = alpha2_list[:-1]
+        delta2_list = delta2_list[:-1]
+        n_entries = len(alpha1_list)
+    half_entries = n_entries // 2
+    # Compute the list with the time ('n') entries
+    n_list = [i - half_entries for i in range(n_entries)]
+    # Compute lists with differences between right ascensions and declinations
+    # for objects #1 and #2
+    dalpha = [alpha1_list[i] - alpha2_list[i] for i in range(n_entries)]
+    ddelta = [delta1_list[i] - delta2_list[i] for i in range(n_entries)]
+    # Build the interpolation objects
+    i_alpha = Interpolation(n_list, dalpha)
+    i_delta = Interpolation(n_list, ddelta)
+    # Find when the dalphas are 0 (i.e., the 'root')
+    n_0 = i_alpha.root()
+    # Now, let's find the declination difference with the newly found 'n_0'
+    dd = i_delta(n_0)
+    # We are done, let's return
+    return n_0, dd
 
 
 def main():
