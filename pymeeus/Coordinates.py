@@ -1953,6 +1953,89 @@ def planet_stars_in_line(alpha_list, delta_list, alpha_star1, delta_star1,
     return n_0
 
 
+def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
+    """This function computes if three celestial bodies are in a straight line,
+    providing the angle with which the bodies differ from a great circle.
+
+    :param alpha1: Right ascension, as an Angle object, of celestial body #1
+    :type alpha1: :py:class:`Angle`
+    :param delta1: Declination, as an Angle object, of celestial body #1
+    :type delta1: :py:class:`Angle`
+    :param alpha2: Right ascension, as an Angle object, of celestial body #2
+    :type alpha2: :py:class:`Angle`
+    :param delta2: Declination, as an Angle object, of celestial body #2
+    :type delta2: :py:class:`Angle`
+    :param alpha3: Right ascension, as an Angle object, of celestial body #3
+    :type alpha3: :py:class:`Angle`
+    :param delta3: Declination, as an Angle object, of celestial body #3
+    :type delta3: :py:class:`Angle`
+
+    :returns: An Angle object with which the bodies differ from a great circle.
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1 = Angle( 5, 32,  0.40, ra=True)
+    >>> delta1 = Angle(0, -17, 56.9)
+    >>> alpha2 = Angle( 5, 36, 12.81, ra=True)
+    >>> delta2 = Angle(-1, 12,  7.0)
+    >>> alpha3 = Angle( 5, 40, 45.52, ra=True)
+    >>> delta3 = Angle(-1, 56, 33.3)
+    >>> psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    >>> print(psi.dms_str(n_dec=0))
+    7d 31' 1.0''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1, Angle) and isinstance(delta1, Angle) and
+           isinstance(alpha2, Angle) and isinstance(delta2, Angle) and
+           isinstance(alpha3, Angle) and isinstance(delta3, Angle)):
+        raise TypeError("Invalid input types")
+    # We need to order the input according to right ascension
+    a = [alpha1.rad(), alpha2.rad(), alpha3.rad()]
+    d = [delta1.rad(), delta2.rad(), delta3.rad()]
+    anew = []
+    dnew = []
+    amax = max(a) + 1.0
+    for _ in range(len(a)):
+        # Get the index of the minimum value
+        imin = a.index(min(a))
+        # Append the current minimum value to the new 'a' list
+        anew.append(a[imin])
+        # Store the *position* of the current minimum value to new 'd' list
+        dnew.append(imin)
+        # The current minimum value will no longer be the minimum
+        a[imin] = amax
+
+    # In the new 'd' list, substitute the positions by the real values
+    for i in range(len(a)):
+        dnew[i] = d[dnew[i]]
+    # Substitute the new values in the original list
+    a = anew
+    d = dnew
+    # Compute the parameters
+    a1 = cos(d[0])*cos(a[0])
+    a2 = cos(d[1])*cos(a[1])
+    a3 = cos(d[2])*cos(a[2])
+    b1 = cos(d[0])*sin(a[0])
+    b2 = cos(d[1])*sin(a[1])
+    b3 = cos(d[2])*sin(a[2])
+    c1 = sin(d[0])
+    c2 = sin(d[1])
+    c3 = sin(d[2])
+    l1 = b1*c2 - b2*c1
+    l2 = b2*c3 - b3*c2
+    # l3 = b1*c3 - b3*c1
+    m1 = c1*a2 - c2*a1
+    m2 = c2*a3 - c3*a2
+    # m3 = c1*a3 - c3*a1
+    n1 = a1*b2 - a2*b1
+    n2 = a2*b3 - a3*b2
+    # n3 = a1*b3 - a3*b1
+    psi = acos((l1*l2 + m1*m2 + n1*n2) /
+               (sqrt(l1*l1 + m1*m1 + n1*n1)*sqrt(l2*l2 + m2*m2 + n2*n2)))
+    return Angle(psi, radians=True)
+
+
 def main():
 
     # Let's define a small helper function
@@ -2310,6 +2393,20 @@ def main():
                              alpha_star2, delta_star2)
     print_me("Epoch fraction 'n' when bodies are in a straight line",
              round(n, 4))                                           # 0.2233
+
+    print("")
+
+    # The function 'straight_line()' computes if three celestial bodies are in
+    # line providing the angle with which the bodies differ from a great circle
+    alpha1 = Angle(5, 32,  0.40, ra=True)
+    delta1 = Angle(0, -17, 56.9)
+    alpha2 = Angle(5, 36, 12.81, ra=True)
+    delta2 = Angle(-1, 12,  7.0)
+    alpha3 = Angle(5, 40, 45.52, ra=True)
+    delta3 = Angle(-1, 56, 33.3)
+    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    print_me("Angle deviation from a straight line", psi.dms_str(n_dec=0))
+    # 7d 31' 1.0''
 
 
 if __name__ == '__main__':

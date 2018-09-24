@@ -579,3 +579,23 @@ It is possible to compute when a planet and two other stars will be in a straigh
     print_me("Epoch fraction 'n' when bodies are in a straight line", round(n, 4))
 
     # Epoch fraction 'n' when bodies are in a straight line: 0.2233
+
+The function 'straight_line()' computes if three celestial bodies are in line providing the angle with which the bodies differ from a great circle::
+
+    alpha1 = Angle(5, 32,  0.40, ra=True)
+
+    delta1 = Angle(0, -17, 56.9)
+
+    alpha2 = Angle(5, 36, 12.81, ra=True)
+
+    delta2 = Angle(-1, 12,  7.0)
+
+    alpha3 = Angle(5, 40, 45.52, ra=True)
+
+    delta3 = Angle(-1, 56, 33.3)
+
+    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+
+    print_me("Angle deviation from a straight line", psi.dms_str(n_dec=0))
+
+    # Angle deviation from a straight line: 7d 31' 1.0''

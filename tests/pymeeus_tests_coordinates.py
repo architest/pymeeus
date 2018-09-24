@@ -28,7 +28,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         times_rise_transit_set, refraction_apparent2true, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
-        planetary_conjunction, planet_star_conjunction, planet_stars_in_line
+        planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
+        straight_line
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -526,3 +527,18 @@ def test_coordinates_planet_stars_in_line():
 
     assert abs(round(n, 4) - 0.2233) < TOL, \
         "ERROR: 1st planet_stars_in_line() test, 'n' value doesn't match"
+
+
+def test_coordinates_straight_line():
+    """Tests the straight_line() method of Coordinates module"""
+
+    alpha1 = Angle(5, 32,  0.40, ra=True)
+    delta1 = Angle(0, -17, 56.9)
+    alpha2 = Angle(5, 36, 12.81, ra=True)
+    delta2 = Angle(-1, 12,  7.0)
+    alpha3 = Angle(5, 40, 45.52, ra=True)
+    delta3 = Angle(-1, 56, 33.3)
+    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+
+    assert psi.dms_str(n_dec=0) == "7d 31' 1.0''", \
+        "ERROR: 1st straight_line() test, 'psi' value doesn't match"
