@@ -537,3 +537,45 @@ If the planetary conjunction is with a star, it is a little bit simpler::
     print_me("Difference in declination with star at conjunction", pc[1].dms_str(n_dec=0))
 
     # Difference in declination with star at conjunction: 3' 38.0''
+
+It is possible to compute when a planet and two other stars will be in a straight line::
+
+    alpha_1 = Angle(7, 55, 55.36, ra=True)
+
+    delta_1 = Angle(21, 41,  3.0)
+
+    alpha_2 = Angle(7, 58, 22.55, ra=True)
+
+    delta_2 = Angle(21, 35, 23.4)
+
+    alpha_3 = Angle(8,  0, 48.99, ra=True)
+
+    delta_3 = Angle(21, 29, 38.2)
+
+    alpha_4 = Angle(8,  3, 14.66, ra=True)
+
+    delta_4 = Angle(21, 23, 47.5)
+
+    alpha_5 = Angle(8,  5, 39.54, ra=True)
+
+    delta_5 = Angle(21, 17, 51.4)
+
+    alpha_star1 = Angle(7, 34, 16.40, ra=True)
+
+    delta_star1 = Angle(31, 53, 51.2)
+
+    alpha_star2 = Angle(7, 45,  0.10, ra=True)
+
+    delta_star2 = Angle(28,  2, 12.5)
+
+    alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+
+    delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+
+    n = planet_stars_in_line(alpha_list, delta_list, alpha_star1, delta_star1,
+
+                             alpha_star2, delta_star2)
+
+    print_me("Epoch fraction 'n' when bodies are in a straight line", round(n, 4))
+
+    # Epoch fraction 'n' when bodies are in a straight line: 0.2233

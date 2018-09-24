@@ -28,7 +28,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         times_rise_transit_set, refraction_apparent2true, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
-        planetary_conjunction, planet_star_conjunction
+        planetary_conjunction, planet_star_conjunction, planet_stars_in_line
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -500,3 +500,29 @@ def test_coordinates_planet_star_conjunction():
 
     assert pc[1].dms_str(n_dec=0) == "3' 38.0''", \
         "ERROR: 2nd planet_star_conjunction() test, 'pc[1]' doesn't match"
+
+
+def test_coordinates_planet_stars_in_line():
+    """Tests the planet_stars_in_line() method of Coordinates module"""
+
+    alpha_1 = Angle(7, 55, 55.36, ra=True)
+    delta_1 = Angle(21, 41,  3.0)
+    alpha_2 = Angle(7, 58, 22.55, ra=True)
+    delta_2 = Angle(21, 35, 23.4)
+    alpha_3 = Angle(8,  0, 48.99, ra=True)
+    delta_3 = Angle(21, 29, 38.2)
+    alpha_4 = Angle(8,  3, 14.66, ra=True)
+    delta_4 = Angle(21, 23, 47.5)
+    alpha_5 = Angle(8,  5, 39.54, ra=True)
+    delta_5 = Angle(21, 17, 51.4)
+    alpha_star1 = Angle(7, 34, 16.40, ra=True)
+    delta_star1 = Angle(31, 53, 51.2)
+    alpha_star2 = Angle(7, 45,  0.10, ra=True)
+    delta_star2 = Angle(28,  2, 12.5)
+    alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    n = planet_stars_in_line(alpha_list, delta_list, alpha_star1, delta_star1,
+                             alpha_star2, delta_star2)
+
+    assert abs(round(n, 4) - 0.2233) < TOL, \
+        "ERROR: 1st planet_stars_in_line() test, 'n' value doesn't match"

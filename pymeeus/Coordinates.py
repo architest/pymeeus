@@ -1819,7 +1819,7 @@ def planet_star_conjunction(alpha_list, delta_list, alpha_star, delta_star):
         second component is an Angle object containing the declination
         separation between the given objects at conjunction epoch
     :rtype: tuple
-    :raises: ValueError if input values for plante have less than three entries
+    :raises: ValueError if input values for planet have less than three entries
         or they don't have the same number of entries.
     :raises: TypeError if input values are of wrong type.
 
@@ -1852,6 +1852,105 @@ def planet_star_conjunction(alpha_list, delta_list, alpha_star, delta_star):
     # Call the 'planetary_conjunction()' function. It handles everything else
     return planetary_conjunction(alpha_list, delta_list,
                                  alpha_star_list, delta_star_list)
+
+
+def planet_stars_in_line(alpha_list, delta_list, alpha_star1, delta_star1,
+                         alpha_star2, delta_star2):
+    """Given the positions of one planet, this function computes the time when
+    it is in a straight line with two other stars.
+
+    .. note:: This function provides as output the 'n' fraction of time when
+        the minimum angular separation is achieved. For that, the epoch in the
+        middle is assigned the value "n = 0". Therefore, n < 0 is for times
+        **before** the middle epoch, and n > 0 is for times **after** the
+        middle epoch.
+
+    .. note:: When the entries in the input values for the planet are more than
+        three and pair, the last entry is discarted and an odd number of
+        entries will be used.
+
+    :param alpha_list: List (or tuple) containing the right ascensions (as
+        Angle objects) for the planet (minimum 3 entries)
+    :type alpha_list: list, tuple of :py:class:`Angle`
+    :param delta_list: List (or tuple) containing the declinations (as Angle
+        objects) for the planet (minimum 3 entries)
+    :type delta_list: list, tuple of :py:class:`Angle`
+    :param alpha_star1: Right ascension, as an Angle object, of star #1
+    :type alpha_star1: :py:class:`Angle`
+    :param delta_star1: Declination, as an Angle object, of star #1
+    :type delta_star1: :py:class:`Angle`
+    :param alpha_star2: Right ascension, as an Angle object, of star #2
+    :type alpha_star2: :py:class:`Angle`
+    :param delta_star2: Declination, as an Angle object, of star #2
+    :type delta_star2: :py:class:`Angle`
+
+    :returns: A float containing the 'n' fraction of time when the alignment
+        occurs.
+    :rtype: float
+    :raises: ValueError if input values for planet have less than three entries
+        or they don't have the same number of entries.
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha_1 = Angle( 7, 55, 55.36, ra=True)
+    >>> delta_1 = Angle(21, 41,  3.0)
+    >>> alpha_2 = Angle( 7, 58, 22.55, ra=True)
+    >>> delta_2 = Angle(21, 35, 23.4)
+    >>> alpha_3 = Angle( 8,  0, 48.99, ra=True)
+    >>> delta_3 = Angle(21, 29, 38.2)
+    >>> alpha_4 = Angle( 8,  3, 14.66, ra=True)
+    >>> delta_4 = Angle(21, 23, 47.5)
+    >>> alpha_5 = Angle( 8,  5, 39.54, ra=True)
+    >>> delta_5 = Angle(21, 17, 51.4)
+    >>> alpha_star1 = Angle( 7, 34, 16.40, ra=True)
+    >>> delta_star1 = Angle(31, 53, 51.2)
+    >>> alpha_star2 = Angle( 7, 45,  0.10, ra=True)
+    >>> delta_star2 = Angle(28,  2, 12.5)
+    >>> alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    >>> delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    >>> n = planet_stars_in_line(alpha_list, delta_list, alpha_star1, \
+                                 delta_star1, alpha_star2, delta_star2)
+    >>> print(round(n, 4))
+    0.2233
+    """
+
+    # Define an auxiliary function
+    def straight(alpha1, delta1, alpha2, delta2, alpha3, delta3):
+        a1 = alpha1.rad()
+        d1 = delta1.rad()
+        a2 = alpha2.rad()
+        d2 = delta2.rad()
+        a3 = alpha3.rad()
+        d3 = delta3.rad()
+        return tan(d1)*sin(a2-a3) + tan(d2)*sin(a3-a1) + tan(d3)*sin(a1-a2)
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha_list, (list, tuple)) and
+           isinstance(delta_list, (list, tuple)) and
+           isinstance(alpha_star1, Angle) and
+           isinstance(delta_star1, Angle) and
+           isinstance(alpha_star2, Angle) and
+           isinstance(delta_star2, Angle)):
+        raise TypeError("Invalid input types")
+    if (len(alpha_list) < 3 or len(delta_list) < 3):
+        raise ValueError("Invalid number of entries")
+    if (len(alpha_list) != len(delta_list)):
+        raise ValueError("Uneven number of entries")
+    n_entries = len(alpha_list)
+    if n_entries % 2 != 1:                  # Check if number of entries is odd
+        alpha_list = alpha_list[:-1]        # Drop the last entry
+        delta_list = delta_list[:-1]
+        n_entries = len(alpha_list)
+    half_entries = n_entries // 2
+    # Compute the list with the time ('n') entries
+    n_list = [i - half_entries for i in range(n_entries)]
+    # Use auxiliary function 'straight()' to compute the values to interpolate
+    dx = [straight(alpha_list[i], delta_list[i], alpha_star1, delta_star1,
+                   alpha_star2, delta_star2) for i in range(n_entries)]
+    # Build the interpolation objects
+    i = Interpolation(n_list, dx)
+    # Find when the dx's are 0 (i.e., the 'root')
+    n_0 = i.root()
+    return n_0
 
 
 def main():
@@ -2186,6 +2285,31 @@ def main():
              round(pc[0], 4))                                       # 0.2551
     print_me("Difference in declination with star at conjunction",
              pc[1].dms_str(n_dec=0))                                # 3' 38.0''
+
+    print("")
+
+    # It is possible to compute when a planet and two other stars will be in a
+    # straight line
+    alpha_1 = Angle(7, 55, 55.36, ra=True)
+    delta_1 = Angle(21, 41,  3.0)
+    alpha_2 = Angle(7, 58, 22.55, ra=True)
+    delta_2 = Angle(21, 35, 23.4)
+    alpha_3 = Angle(8,  0, 48.99, ra=True)
+    delta_3 = Angle(21, 29, 38.2)
+    alpha_4 = Angle(8,  3, 14.66, ra=True)
+    delta_4 = Angle(21, 23, 47.5)
+    alpha_5 = Angle(8,  5, 39.54, ra=True)
+    delta_5 = Angle(21, 17, 51.4)
+    alpha_star1 = Angle(7, 34, 16.40, ra=True)
+    delta_star1 = Angle(31, 53, 51.2)
+    alpha_star2 = Angle(7, 45,  0.10, ra=True)
+    delta_star2 = Angle(28,  2, 12.5)
+    alpha_list = [alpha_1, alpha_2, alpha_3, alpha_4, alpha_5]
+    delta_list = [delta_1, delta_2, delta_3, delta_4, delta_5]
+    n = planet_stars_in_line(alpha_list, delta_list, alpha_star1, delta_star1,
+                             alpha_star2, delta_star2)
+    print_me("Epoch fraction 'n' when bodies are in a straight line",
+             round(n, 4))                                           # 0.2233
 
 
 if __name__ == '__main__':
