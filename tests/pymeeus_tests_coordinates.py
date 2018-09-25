@@ -29,7 +29,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
-        straight_line
+        straight_line, circle_diameter
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from math import cos
@@ -545,3 +545,29 @@ def test_coordinates_straight_line():
 
     assert omega.dms_str(n_dec=0) == "-5' 24.0''", \
         "ERROR: 2nd straight_line() test, 'omega' value doesn't match"
+
+
+def test_coordinates_circle_diameter():
+    """Tests the circle_diameter() method of Coordinates module"""
+
+    alpha1 = Angle(12, 41,  8.63, ra=True)
+    delta1 = Angle(-5, 37, 54.2)
+    alpha2 = Angle(12, 52,  5.21, ra=True)
+    delta2 = Angle(-4, 22, 26.2)
+    alpha3 = Angle(12, 39, 28.11, ra=True)
+    delta3 = Angle(-1, 50,  3.7)
+    d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+
+    assert d.dms_str(n_dec=0) == "4d 15' 49.0''", \
+        "ERROR: 1st circle_diameter() test, 'd' value doesn't match"
+
+    alpha1 = Angle(9,  5, 41.44, ra=True)
+    delta1 = Angle(18, 30, 30.0)
+    alpha2 = Angle(9,  9, 29.0, ra=True)
+    delta2 = Angle(17, 43, 56.7)
+    alpha3 = Angle(8, 59, 47.14, ra=True)
+    delta3 = Angle(17, 49, 36.8)
+    d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+
+    assert d.dms_str(n_dec=0) == "2d 18' 38.0''", \
+        "ERROR: 2nd circle_diameter() test, 'd' value doesn't match"

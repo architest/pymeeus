@@ -603,3 +603,23 @@ The function 'straight_line()' computes if three celestial bodies are in line pr
     print_me("Angular distance of central point to the straight line", omega.dms_str(n_dec=0))
 
     # Angular distance of central point to the straight line: -5' 24.0''
+
+Now let's compute the size of the smallest circle that contains three given celestial bodies::
+
+    alpha1 = Angle(12, 41,  8.63, ra=True)
+
+    delta1 = Angle(-5, 37, 54.2)
+
+    alpha2 = Angle(12, 52,  5.21, ra=True)
+
+    delta2 = Angle(-4, 22, 26.2)
+
+    alpha3 = Angle(12, 39, 28.11, ra=True)
+
+    delta3 = Angle(-1, 50,  3.7)
+
+    d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+
+    print_me("Diameter of smallest circle containing three celestial bodies", d.dms_str(n_dec=0))
+
+    # Diameter of smallest circle containing three celestial bodies: 4d 15' 49.0''

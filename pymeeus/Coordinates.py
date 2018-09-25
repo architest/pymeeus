@@ -1447,7 +1447,7 @@ def angular_separation(alpha1, delta1, alpha2, delta2):
 
     .. note:: It is possible to use this formula with ecliptial (celestial)
         longitudes and latitudes instead of right ascensions and declinations,
-        resspectively.
+        respectively.
 
     :param alpha1: Right ascension of celestial body #1, as an Angle object
     :type alpha1: :py:class:`Angle`
@@ -2043,6 +2043,75 @@ def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     return Angle(psi, radians=True), Angle(omega, radians=True)
 
 
+def circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3):
+    """This function computes the diameter of the smallest circle that contains
+    three celestial bodies.
+
+    :param alpha1: Right ascension, as an Angle object, of celestial body #1
+    :type alpha1: :py:class:`Angle`
+    :param delta1: Declination, as an Angle object, of celestial body #1
+    :type delta1: :py:class:`Angle`
+    :param alpha2: Right ascension, as an Angle object, of celestial body #2
+    :type alpha2: :py:class:`Angle`
+    :param delta2: Declination, as an Angle object, of celestial body #2
+    :type delta2: :py:class:`Angle`
+    :param alpha3: Right ascension, as an Angle object, of celestial body #3
+    :type alpha3: :py:class:`Angle`
+    :param delta3: Declination, as an Angle object, of celestial body #3
+    :type delta3: :py:class:`Angle`
+
+    :returns: The diameter (as an Angle object) of the smallest circle
+        containing the three bodies.
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> alpha1 = Angle(12, 41,  8.63, ra=True)
+    >>> delta1 = Angle(-5, 37, 54.2)
+    >>> alpha2 = Angle(12, 52,  5.21, ra=True)
+    >>> delta2 = Angle(-4, 22, 26.2)
+    >>> alpha3 = Angle(12, 39, 28.11, ra=True)
+    >>> delta3 = Angle(-1, 50,  3.7)
+    >>> d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    >>> print(d.dms_str(n_dec=0))
+    4d 15' 49.0''
+    >>> alpha1 = Angle(9,  5, 41.44, ra=True)
+    >>> delta1 = Angle(18, 30, 30.0)
+    >>> alpha2 = Angle(9,  9, 29.0, ra=True)
+    >>> delta2 = Angle(17, 43, 56.7)
+    >>> alpha3 = Angle(8, 59, 47.14, ra=True)
+    >>> delta3 = Angle(17, 49, 36.8)
+    >>> d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    >>> print(d.dms_str(n_dec=0))
+    2d 18' 38.0''
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(alpha1, Angle) and isinstance(delta1, Angle) and
+           isinstance(alpha2, Angle) and isinstance(delta2, Angle) and
+           isinstance(alpha3, Angle) and isinstance(delta3, Angle)):
+        raise TypeError("Invalid input types")
+    d12 = angular_separation(alpha1, delta1, alpha2, delta2)
+    d13 = angular_separation(alpha1, delta1, alpha3, delta3)
+    d23 = angular_separation(alpha2, delta2, alpha3, delta3)
+    if d12 >= d13 and d12 >= d23:
+        a = d12()
+        b = d13()
+        c = d23()
+    elif d13 >= d12 and d13 >= d23:
+        a = d13()
+        b = d12()
+        c = d23()
+    else:
+        a = d23()
+        b = d12()
+        c = d13()
+    if a >= sqrt(b*b + c*c):
+        d = a
+    else:
+        d = (2.0*a*b*c)/sqrt((a+b+c)*(a+b-c)*(b+c-a)*(a+c-b))
+    return Angle(d)
+
+
 def main():
 
     # Let's define a small helper function
@@ -2416,6 +2485,19 @@ def main():
     # 7d 31' 1.0''
     print_me("Angular distance of central point to the straight line",
              omega.dms_str(n_dec=0))                            # -5' 24.0''
+
+    print("")
+
+    # Let's compute the size of the smallest circle that contains three bodies
+    alpha1 = Angle(12, 41,  8.63, ra=True)
+    delta1 = Angle(-5, 37, 54.2)
+    alpha2 = Angle(12, 52,  5.21, ra=True)
+    delta2 = Angle(-4, 22, 26.2)
+    alpha3 = Angle(12, 39, 28.11, ra=True)
+    delta3 = Angle(-1, 50,  3.7)
+    d = circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    print_me("Diameter of smallest circle containing three celestial bodies",
+             d.dms_str(n_dec=0))                                # 4d 15' 49.0''
 
 
 if __name__ == '__main__':
