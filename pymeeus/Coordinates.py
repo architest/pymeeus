@@ -1499,7 +1499,7 @@ def minimum_angular_separation(alpha1_1, delta1_1, alpha1_2, delta1_2,
     of two celestial objects, this function computes the minimum angular
     distance that will be achieved within that interval of time.
 
-    .. note:: Suffix '1_' is for the first celestial object, and '2_' is for
+    .. note:: Suffix '1 _' is for the first celestial object, and '2 _' is for
         the second one.
 
     .. note:: This function provides as output the 'n' fraction of time when
@@ -1970,8 +1970,11 @@ def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     :param delta3: Declination, as an Angle object, of celestial body #3
     :type delta3: :py:class:`Angle`
 
-    :returns: An Angle object with which the bodies differ from a great circle.
-    :rtype: float
+    :returns: A tuple with two components. The first element is an angle (as
+        Angle object) with which the bodies differ from a great circle. The
+        second element is the Angular distance of central point to the straight
+        line (also as Angle object).
+    :rtype: tuple
     :raises: TypeError if input values are of wrong type.
 
     >>> alpha1 = Angle( 5, 32,  0.40, ra=True)
@@ -1980,9 +1983,11 @@ def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     >>> delta2 = Angle(-1, 12,  7.0)
     >>> alpha3 = Angle( 5, 40, 45.52, ra=True)
     >>> delta3 = Angle(-1, 56, 33.3)
-    >>> psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    >>> psi, om = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
     >>> print(psi.dms_str(n_dec=0))
     7d 31' 1.0''
+    >>> print(om.dms_str(n_dec=0))
+    -5' 24.0''
     """
 
     # First check that input values are of correct types
@@ -2024,16 +2029,18 @@ def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     c3 = sin(d[2])
     l1 = b1*c2 - b2*c1
     l2 = b2*c3 - b3*c2
-    # l3 = b1*c3 - b3*c1
+    l3 = b1*c3 - b3*c1
     m1 = c1*a2 - c2*a1
     m2 = c2*a3 - c3*a2
-    # m3 = c1*a3 - c3*a1
+    m3 = c1*a3 - c3*a1
     n1 = a1*b2 - a2*b1
     n2 = a2*b3 - a3*b2
-    # n3 = a1*b3 - a3*b1
+    n3 = a1*b3 - a3*b1
     psi = acos((l1*l2 + m1*m2 + n1*n2) /
                (sqrt(l1*l1 + m1*m1 + n1*n1)*sqrt(l2*l2 + m2*m2 + n2*n2)))
-    return Angle(psi, radians=True)
+    omega = asin((a2*l3 + b2*m3 + c2*n3) /
+                 (sqrt(a2*a2 + b2*b2 + c2*c2)*sqrt(l3*l3 + m3*m3 + n3*n3)))
+    return Angle(psi, radians=True), Angle(omega, radians=True)
 
 
 def main():
@@ -2404,9 +2411,11 @@ def main():
     delta2 = Angle(-1, 12,  7.0)
     alpha3 = Angle(5, 40, 45.52, ra=True)
     delta3 = Angle(-1, 56, 33.3)
-    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    psi, omega = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
     print_me("Angle deviation from a straight line", psi.dms_str(n_dec=0))
     # 7d 31' 1.0''
+    print_me("Angular distance of central point to the straight line",
+             omega.dms_str(n_dec=0))                            # -5' 24.0''
 
 
 if __name__ == '__main__':

@@ -594,8 +594,12 @@ The function 'straight_line()' computes if three celestial bodies are in line pr
 
     delta3 = Angle(-1, 56, 33.3)
 
-    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    psi, omega = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
 
     print_me("Angle deviation from a straight line", psi.dms_str(n_dec=0))
 
     # Angle deviation from a straight line: 7d 31' 1.0''
+
+    print_me("Angular distance of central point to the straight line", omega.dms_str(n_dec=0))
+
+    # Angular distance of central point to the straight line: -5' 24.0''

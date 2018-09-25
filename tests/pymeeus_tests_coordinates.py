@@ -538,7 +538,10 @@ def test_coordinates_straight_line():
     delta2 = Angle(-1, 12,  7.0)
     alpha3 = Angle(5, 40, 45.52, ra=True)
     delta3 = Angle(-1, 56, 33.3)
-    psi = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
+    psi, omega = straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3)
 
     assert psi.dms_str(n_dec=0) == "7d 31' 1.0''", \
         "ERROR: 1st straight_line() test, 'psi' value doesn't match"
+
+    assert omega.dms_str(n_dec=0) == "-5' 24.0''", \
+        "ERROR: 2nd straight_line() test, 'omega' value doesn't match"
