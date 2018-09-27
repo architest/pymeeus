@@ -19,6 +19,7 @@
 
 
 from math import sqrt, radians, sin, cos, tan, atan
+
 from Angle import Angle
 
 

@@ -19,6 +19,7 @@
 
 
 from math import sqrt, radians, fsum, sin
+
 from base import TOL
 from Angle import Angle
 

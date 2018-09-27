@@ -19,6 +19,7 @@
 
 
 from math import sqrt, degrees
+
 from base import TOL
 from Angle import Angle
 

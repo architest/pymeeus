@@ -19,6 +19,7 @@
 
 
 from math import sqrt, sin, cos, tan, atan, atan2, asin, acos
+
 from base import TOL
 from Angle import Angle
 from Epoch import Epoch, JDE2000
@@ -2118,7 +2119,7 @@ def main():
     def print_me(msg, val):
         print("{}: {}".format(msg, val))
 
-    # Let's show some uses of Earth class
+    # Let's show some uses of Coordinate functions
     print('\n' + 35*'*')
     print("*** Use of Coordinate functions")
     print(35*'*' + '\n')
