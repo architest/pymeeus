@@ -43,6 +43,15 @@ Documentation: https://pymeeus.readthedocs.io/en/latest/
 
 GitHub: https://github.com/architest/pymeeus
 
+If you have Sphinx installed, you can generate your own, latest
+documentation going to directory 'docs' and issuing:
+
+.. code:: sh
+
+    make html
+
+Then the HTML pages can be found in 'build/html'.
+
 Contributing
 ------------
 
@@ -68,6 +77,11 @@ documentation to your new code. This also includes in-line comments!!!.
 
 What's new
 ----------
+
+-  0.1.10
+
+   -  Added functions to compute if three objects are in a straight
+      line, and the smallest diameter of a circle containing them.
 
 -  0.1.9
 
