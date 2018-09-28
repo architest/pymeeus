@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.2.0
+    * Added Sun module
 * 0.1.10
     * Added functions to compute if three objects are in a straight line, and the smallest diameter of a circle containing them.
 * 0.1.9
