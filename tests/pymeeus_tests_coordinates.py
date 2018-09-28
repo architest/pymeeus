@@ -18,6 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+from math import cos
+
 from pymeeus.base import TOL
 from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         nutation_longitude, nutation_obliquity, precession_equatorial, \
@@ -32,7 +34,6 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         straight_line, circle_diameter
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
-from math import cos
 
 
 # Coordinates module

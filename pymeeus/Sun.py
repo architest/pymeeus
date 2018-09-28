@@ -18,11 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos
+from math import sin, cos, atan2, asin
 
-# from base import TOL
 from Angle import Angle
 from Epoch import Epoch, JDE2000
+from Coordinates import mean_obliquity
 
 
 """
@@ -36,13 +36,13 @@ from Epoch import Epoch, JDE2000
 
 def sun_true_longitude_coarse(epoch):
     """This function provides the Sun's true longitude with a relatively low
-    accuracy of 0.01 degree.
+    accuracy of about 0.01 degree.
 
     :param epoch: Epoch to compute the position of the Sun
     :type epoch: :py:class:`Epoch`
 
-    :returns: A tuple containing the true (ecliptical) longitude and the radius
-        vector in astronomical units.
+    :returns: A tuple containing the true (ecliptical) longitude (as an Angle
+        object) and the radius vector in astronomical units.
     :rtype: tuple
     :raises: TypeError if input value is of wrong type.
 
@@ -81,6 +81,78 @@ def sun_true_longitude_coarse(epoch):
     return (true_lon, r)
 
 
+def sun_apparent_longitude_coarse(epoch):
+    """This function provides the Sun's apparent longitude with a relatively
+    low accuracy of about 0.01 degree.
+
+    :param epoch: Epoch to compute the position of the Sun
+    :type epoch: :py:class:`Epoch`
+
+    :returns: A tuple containing the sun_apparent (ecliptical) longitude (as an
+        Angle object) and the radius vector in astronomical units.
+    :rtype: tuple
+    :raises: TypeError if input value is of wrong type.
+
+    >>> epoch = Epoch(1992, 10, 13)
+    >>> app_lon, r = sun_apparent_longitude_coarse(epoch)
+    >>> print(app_lon.dms_str(n_dec=0))
+    199d 54' 32.0''
+    >>> print(round(r, 5))
+    0.99766
+    """
+
+    # First find the true longitude
+    true_lon, r = sun_true_longitude_coarse(epoch)
+    # Compute the time in Julian centuries
+    t = (epoch - JDE2000)/36525.0
+    # Then correct for nutation and aberration
+    omega = 125.04 - 1934.136*t
+    omega = Angle(omega)
+    lambd = true_lon - 0.00569 - 0.00478*sin(omega.rad())
+    return (lambd, r)
+
+
+def sun_apparent_rightascension_declination_coarse(epoch):
+    """This function provides the Sun's apparent right ascension and
+    declination with a relatively low accuracy of about 0.01 degree.
+
+    :param epoch: Epoch to compute the position of the Sun
+    :type epoch: :py:class:`Epoch`
+
+    :returns: A tuple containing the right ascension and the declination (as
+        Angle objects) and the radius vector in astronomical units.
+    :rtype: tuple
+    :raises: TypeError if input value is of wrong type.
+
+    >>> epoch = Epoch(1992, 10, 13)
+    >>> ra, delta, r = sun_apparent_rightascension_declination_coarse(epoch)
+    >>> print(ra.ra_str(n_dec=1))
+    13h 13' 31.4''
+    >>> print(delta.dms_str(n_dec=0))
+    -7d 47' 6.0''
+    >>> print(round(r, 5))
+    0.99766
+    """
+
+    # First find the apparent longitude
+    app_lon, r = sun_apparent_longitude_coarse(epoch)
+    # Compute the obliquity of the ecliptic
+    e0 = mean_obliquity(epoch)
+    # Compute the time in Julian centuries
+    t = (epoch - JDE2000)/36525.0
+    # Then correct for nutation and aberration
+    omega = 125.04 - 1934.136*t
+    omega = Angle(omega)
+    # Correct the obliquity
+    e = e0 + 0.00256*cos(omega.rad())
+    alpha = atan2(cos(e.rad())*sin(app_lon.rad()), cos(app_lon.rad()))
+    alpha = Angle(alpha, radians=True)
+    alpha.to_positive()
+    delta = asin(sin(e.rad())*sin(app_lon.rad()))
+    delta = Angle(delta, radians=True)
+    return (alpha, delta, r)
+
+
 def main():
 
     # Let's define a small helper function
@@ -92,30 +164,28 @@ def main():
     print("*** Use of Sun functions")
     print(35*'*' + '\n')
 
-    # Here follows a series of important parameters related to the angle
-    # between Earth's rotation axis and the ecliptic
-#    e0 = mean_obliquity(1987, 4, 10)
-#    print("The mean angle between Earth rotation axis and ecliptic axis for "+
-#          "1987/4/10 is:")
-#    print_me("Mean obliquity", e0.dms_str(n_dec=3))         # 23d 26' 27.407''
-#    epsilon = true_obliquity(1987, 4, 10)
-#    print("'True' (instantaneous) angle between those axes for 1987/4/10 is:")
-#    print_me("True obliquity", epsilon.dms_str(n_dec=3))    # 23d 26' 36.849''
-#    epsilon = true_obliquity(2018, 7, 29)
-#    print("'True' (instantaneous) angle between those axes for 2018/7/29 is:")
-#    print_me("True obliquity", epsilon.dms_str(True, 4))    # 23d 26' 7.2157''
-#
-#    # The nutation effect is separated in two components: One parallel to the
-#    # ecliptic (nutation in longitude) and other perpendicular to the ecliptic
-#    # (nutation in obliquity)
-#    print("Nutation correction in longitude for 1987/4/10:")
-#    dpsi = nutation_longitude(1987, 4, 10)
-#    print_me("Nutation in longitude", dpsi.dms_str(n_dec=3))  # 0d 0' -3.788''
-#    print("Nutation correction in obliquity for 1987/4/10:")
-#    depsilon = nutation_obliquity(1987, 4, 10)            # 0d 0' 9.443''
-#    print_me("Nutation in obliquity", depsilon.dms_str(n_dec=3))
+    # Compute an approximation of the Sun's true longitude
+    epoch = Epoch(1992, 10, 13)
+    true_lon, r = sun_true_longitude_coarse(epoch)
+    print_me("Sun's approximate true longitude", true_lon.dms_str(n_dec=0))
+    # 199d 54' 36.0''
+    print_me("Sun's radius vector", round(r, 5))                    # 0.99766
 
     print("")
+
+    # Now let's compute the Sun's approximate apparent longitude
+    app_lon, r = sun_apparent_longitude_coarse(epoch)
+    print_me("Sun's approximate apparent longitude", app_lon.dms_str(n_dec=0))
+    # 199d 54' 32.0''
+
+    print("")
+
+    # And now is the turn for the apparent right ascension and declination
+    ra, delta, r = sun_apparent_rightascension_declination_coarse(epoch)
+    print_me("Sun's apparent right ascension", ra.ra_str(n_dec=1))
+    # 13h 13' 31.4''
+    print_me("Sun's apparent declination", delta.dms_str(n_dec=0))
+    # -7d 47' 6.0''
 
 
 if __name__ == '__main__':

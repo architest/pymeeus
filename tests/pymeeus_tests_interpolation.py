@@ -19,6 +19,7 @@
 
 
 from math import sqrt, degrees
+
 from pymeeus.base import TOL
 from pymeeus.Angle import Angle
 from pymeeus.Interpolation import Interpolation

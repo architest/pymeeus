@@ -19,6 +19,7 @@
 
 
 from math import pi
+
 from pymeeus.base import TOL
 from pymeeus.Angle import Angle
 

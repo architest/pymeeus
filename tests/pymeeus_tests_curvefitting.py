@@ -19,6 +19,7 @@
 
 
 from math import sqrt, radians, sin
+
 from pymeeus.base import TOL
 from pymeeus.CurveFitting import CurveFitting
 

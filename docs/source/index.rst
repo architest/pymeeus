@@ -18,6 +18,7 @@
    Earth
    Epoch
    Interpolation
+   Sun
 
 .. toctree::
    :maxdepth: 2
@@ -30,6 +31,7 @@
    ex-Earth
    ex-Epoch
    ex-Interpolation
+   ex-Sun
 
 
 Indices and tables
