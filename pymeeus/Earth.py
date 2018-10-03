@@ -145,13 +145,6 @@ class Earth(object):
         :returns: Earth object.
         :rtype: :py:class:`Earth`
         :raises: TypeError if input value is of wrong type.
-
-        #>>> a = Angle(-13, 30, 0.0)
-        #>>> print(a)
-        #-13.5
-        #>>> b = Angle(a)
-        #>>> print(b)
-        #-13.5
         """
 
         # Set an invalid ellipsoid by default
@@ -378,6 +371,9 @@ class Earth(object):
     def distance(self, lon1, lat1, lon2, lat2):
         """"This method computes the distance between two points on the Earth's
         surface using the method from H. Andoyer.
+
+        .. note:: We will consider that positions 'East' and 'South' are
+            negative.
 
         :param lon1: Longitude of the first point, in degrees
         :type lon1: int, float, :class:`Angle`
