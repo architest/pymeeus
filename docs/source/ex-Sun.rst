@@ -11,7 +11,7 @@ It is possible to compute an approximation of the Sun's **true** ecliptical long
 
     epoch = Epoch(1992, 10, 13)
 
-    true_lon, r = sun_true_longitude_coarse(epoch)
+    true_lon, r = Sun.true_longitude_coarse(epoch)
 
     print_me("Sun's approximate true longitude", true_lon.dms_str(n_dec=0))
 
@@ -25,7 +25,7 @@ Now let's compute the Sun's approximate **apparent** ecliptical longitude::
 
     epoch = Epoch(1992, 10, 13)
 
-    app_lon, r = sun_apparent_longitude_coarse(epoch)
+    app_lon, r = Sun.apparent_longitude_coarse(epoch)
 
     print_me("Sun's approximate apparent longitude", app_lon.dms_str(n_dec=0))
 
@@ -35,7 +35,7 @@ And now is the turn for the **apparent** right ascension and declination::
 
     epoch = Epoch(1992, 10, 13)
 
-    ra, delta, r = sun_apparent_rightascension_declination_coarse(epoch)
+    ra, delta, r = Sun.apparent_rightascension_declination_coarse(epoch)
 
     print_me("Sun's apparent right ascension", ra.ra_str(n_dec=1))
 

@@ -19,45 +19,44 @@
 
 
 from pymeeus.base import TOL
-from pymeeus.Sun import sun_apparent_rightascension_declination_coarse, \
-        sun_true_longitude_coarse, sun_apparent_longitude_coarse
+from pymeeus.Sun import Sun
 from pymeeus.Epoch import Epoch
 
 
-# Coordinates module
+# Sun module
 
 def test_sun_true_longitude_coarse():
-    """Tests the sun_true_longitude_coarse() method of Coordinates module"""
+    """Tests the true_longitude_coarse() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13)
-    true_lon, r = sun_true_longitude_coarse(epoch)
+    true_lon, r = Sun.true_longitude_coarse(epoch)
 
     assert true_lon.dms_str(n_dec=0) == "199d 54' 36.0''", \
-        "ERROR: 1st sun_true_longitude_coarse() test, 'true_lon' doesn't match"
+        "ERROR: 1st true_longitude_coarse() test, 'true_lon' doesn't match"
 
     assert abs(round(r, 5) - 0.99766) < TOL, \
-        "ERROR: 2nd sun_true_longitude_coarse() test, 'r' value doesn't match"
+        "ERROR: 2nd true_longitude_coarse() test, 'r' value doesn't match"
 
 
 def test_sun_apparent_longitude_coarse():
-    """Tests sun_apparent_longitude_coarse() method of Coordinates module"""
+    """Tests apparent_longitude_coarse() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13)
-    alon, r = sun_apparent_longitude_coarse(epoch)
+    alon, r = Sun.apparent_longitude_coarse(epoch)
 
     assert alon.dms_str(n_dec=0) == "199d 54' 32.0''", \
-        "ERROR: 1st sun_apparent_longitude_coarse() test, 'alon' doesn't match"
+        "ERROR: 1st apparent_longitude_coarse() test, 'alon' doesn't match"
 
 
 def test_sun_apparent_rightascension_declination_coarse():
-    """Tests sun_apparent_rightascension_declination_coarse() method of
-    Coordinates module"""
+    """Tests apparent_rightascension_declination_coarse() method of Sun
+    class"""
 
     epoch = Epoch(1992, 10, 13)
-    ra, delta, r = sun_apparent_rightascension_declination_coarse(epoch)
+    ra, delta, r = Sun.apparent_rightascension_declination_coarse(epoch)
 
     assert ra.ra_str(n_dec=1) == "13h 13' 31.4''", \
-        "ERROR: 1st sun_rightascension_declination_coarse() test doesn't match"
+        "ERROR: 1st rightascension_declination_coarse() test doesn't match"
 
     assert delta.dms_str(n_dec=0) == "-7d 47' 6.0''", \
-        "ERROR: 2nd sun_rightascension_declination_coarse() test doesn't match"
+        "ERROR: 2nd rightascension_declination_coarse() test doesn't match"
