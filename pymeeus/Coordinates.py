@@ -2113,6 +2113,86 @@ def circle_diameter(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     return Angle(d)
 
 
+def vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
+    """This function computes the position of a celestial body at a given epoch
+    when its VSOP87 periodic term tables are provided.
+
+    :param epoch: Epoch to compute the position, given as an :class:`Epoch`
+        object
+    :type epoch: :py:class:`Epoch`
+    :param vsop_l: Table of VSOP87 terms for the heliocentric longitude
+    :type vsop_l: list
+    :param vsop_b: Table of VSOP87 terms for the heliocentric latitude
+    :type vsop_b: list
+    :param vsop_r: Table of VSOP87 terms for the radius vector
+    :type vsop_r: list
+
+    :returns: A tuple with the heliocentric longitude and latitude (as
+        :py:class:`Angle` objects), and the radius vector (as a float,
+        in astronomical units), in that order
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> e0 = mean_obliquity(1987, 4, 10)
+    >>> a = e0.dms_tuple()
+    >>> a[0]
+    23
+    >>> a[1]
+    26
+    >>> round(a[2], 3)
+    27.407
+    """
+
+    # First check that input values are of correct types
+    if not(isinstance(epoch, Epoch) and isinstance(vsop_l, list) and
+           isinstance(vsop_b, list) and isinstance(vsop_r, list)):
+        raise TypeError("Invalid input types")
+    # Let's redefine u in units of 100 Julian centuries from Epoch J2000.0
+    t = (epoch.jde() - 2451545.0)/365250.0
+    sum_list = []
+    for i in range(len(vsop_l)):
+        s = 0.0
+        for k in range(len(vsop_l[i])):
+            s += vsop_l[i][k][0] * cos(vsop_l[i][k][1] + vsop_l[i][k][2]*t)
+        sum_list.append(s)
+    lon = 0.0
+    # Sum the longitude terms, while multiplying by 't' at the same time
+    for i in range(len(sum_list) - 1, 0, -1):
+        lon = (lon + sum_list[i])*t
+    # Add the L0 term, which is NOT multiplied by 't'
+    lon += sum_list[0]
+    lon /= 1E8
+    lon = Angle(lon, radians=True)
+    sum_list = []
+    for i in range(len(vsop_b)):
+        s = 0.0
+        for k in range(len(vsop_b[i])):
+            s += vsop_b[i][k][0] * cos(vsop_b[i][k][1] + vsop_b[i][k][2]*t)
+        sum_list.append(s)
+    lat = 0.0
+    # Sum the latitude terms, while multiplying by 't' at the same time
+    for i in range(len(sum_list) - 1, 0, -1):
+        lat = (lat + sum_list[i])*t
+    # Add the B0 term, which is NOT multiplied by 't'
+    lat += sum_list[0]
+    lat /= 1E8
+    lat = Angle(lat, radians=True)
+    sum_list = []
+    for i in range(len(vsop_r)):
+        s = 0.0
+        for k in range(len(vsop_r[i])):
+            s += vsop_r[i][k][0] * cos(vsop_r[i][k][1] + vsop_r[i][k][2]*t)
+        sum_list.append(s)
+    r = 0.0
+    # Sum the radius vector terms, while multiplying by 't' at the same time
+    for i in range(len(sum_list) - 1, 0, -1):
+        r = (r + sum_list[i])*t
+    # Add the R0 term, which is NOT multiplied by 't'
+    r += sum_list[0]
+    r /= 1E8
+    return (lon, lat, r)
+
+
 def main():
 
     # Let's define a small helper function
