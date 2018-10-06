@@ -49,7 +49,7 @@ VSOP87_L = [
      [206., 4.806, 2544.314], [205., 1.869, 5573.143], [202., 2.458, 6069.777],
      [156., 0.833, 213.299], [132., 3.411, 2942.463], [126., 1.083, 20.775],
      [115., 0.645, 0.98], [103., 0.636, 4694.003], [102., 0.976, 15720.839],
-     [102., 4.267, 7.114], [99., 6.21, 2146.17], [98., 0.68, 115.42],
+     [102., 4.267, 7.114], [99., 6.21, 2146.17], [98., 0.68, 155.42],
      [86., 5.98, 161000.69], [85., 1.3, 6275.96], [85., 3.67, 71430.7],
      [80., 1.81, 17260.15], [79., 3.04, 12036.46], [75., 1.76, 5088.63],
      [74., 3.5, 3154.69], [74., 4.68, 801.82], [70., 0.83, 9437.76],
@@ -575,8 +575,8 @@ class Earth(object):
         return dist, error
 
     def heliocentric_position(self, epoch):
-        """"This method computes the heliocentric position of the Earth for a
-        given epoch, using the VSOP87 theory.
+        """"This method computes the geometric heliocentric position of the
+        Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
