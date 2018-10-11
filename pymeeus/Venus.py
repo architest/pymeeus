@@ -174,8 +174,6 @@ def main():
     print("*** Use of Venus class")
     print(35*'*' + '\n')
 
-    print("")
-
     # Let's now compute the heliocentric position for a given epoch
     v = Venus()
     epoch = Epoch(1992, 12, 20.0)
