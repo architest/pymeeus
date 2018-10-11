@@ -22,7 +22,7 @@ from math import sqrt, radians, sin, cos, tan, atan
 
 from Angle import Angle
 from Epoch import Epoch
-from Coordinates import vsop_pos, nutation_longitude
+from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
 """
@@ -607,14 +607,7 @@ class Earth(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
-        lon, lat, r = vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
-        # Apply small correction for conversion to the FK5 system
-        t = (epoch.jde() - 2451545.0)/36525.0
-        lambda_p = lon - t*(1.397 + 0.00031*t)
-        delta_lon = Angle(0, 0, -0.09033)
-        delta_beta = 0.03916*(cos(lambda_p.rad()) - sin(lambda_p.rad()))
-        delta_beta = Angle(0, 0, delta_beta)
-        return lon + delta_lon, lat + delta_beta, r
+        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
     def apparent_heliocentric_position(self, epoch):
         """"This method computes the apparent heliocentric position of the
@@ -644,13 +637,7 @@ class Earth(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
-        lon, lat, r = self.geometric_heliocentric_position(epoch)
-        dpsi = nutation_longitude(epoch)
-        lon += dpsi
-        delta = -20.4898/r
-        delta = Angle(0, 0, delta)
-        lon += delta
-        return lon, lat, r
+        return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
 
 def main():
