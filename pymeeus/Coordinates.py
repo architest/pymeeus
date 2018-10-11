@@ -2132,15 +2132,6 @@ def vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
         in astronomical units), in that order
     :rtype: tuple
     :raises: TypeError if input values are of wrong type.
-
-    >>> e0 = mean_obliquity(1987, 4, 10)
-    >>> a = e0.dms_tuple()
-    >>> a[0]
-    23
-    >>> a[1]
-    26
-    >>> round(a[2], 3)
-    27.407
     """
 
     # First check that input values are of correct types
