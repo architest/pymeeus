@@ -574,12 +574,15 @@ class Earth(object):
         error = round(dist*fe*fe, 0)
         return dist, error
 
-    def geometric_heliocentric_position(self, epoch):
+    def geometric_heliocentric_position(self, epoch, toFK5=True):
         """"This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
+        :param toFK5: Whether or not the small correction to convert to the FK5
+            system will be applied or not
+        :type toFK5: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -607,7 +610,7 @@ class Earth(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
-        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
+        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
 
     def apparent_heliocentric_position(self, epoch):
         """"This method computes the apparent heliocentric position of the
