@@ -22,7 +22,7 @@
 
 # from Angle import Angle
 from Epoch import Epoch
-from Coordinates import geometric_vsop_pos
+from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
 """
@@ -164,6 +164,26 @@ class Venus(object):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
         return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
+
+    def apparent_heliocentric_position(self, epoch):
+        """"This method computes the apparent heliocentric position of planet
+        Venus for a given epoch, using the VSOP87 theory.
+
+        :param epoch: Epoch to compute Earth position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the heliocentric longitude and latitude (as
+            :py:class:`Angle` objects), and the radius vector (as a float,
+            in astronomical units), in that order
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Second, call auxiliary function in charge of computations
+        return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
 
 def main():
