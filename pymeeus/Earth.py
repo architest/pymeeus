@@ -22,7 +22,7 @@ from math import sqrt, radians, sin, cos, tan, atan
 
 from Angle import Angle
 from Epoch import Epoch
-from Coordinates import vsop_pos
+from Coordinates import vsop_pos, nutation_longitude
 
 
 """
@@ -574,7 +574,7 @@ class Earth(object):
         error = round(dist*fe*fe, 0)
         return dist, error
 
-    def heliocentric_position(self, epoch):
+    def geometric_heliocentric_position(self, epoch):
         """"This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
@@ -587,32 +587,70 @@ class Earth(object):
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
-        >>> e = Earth(ellipsoid=IAU76)
-        >>> lon1 = Angle(-2, 20, 14.0)
-        >>> lat1 = Angle(48, 50, 11.0)
-        >>> lon2 = Angle(77, 3, 56.0)
-        >>> lat2 = Angle(38, 55, 17.0)
-        >>> dist, error = e.distance(lon1, lat1, lon2, lat2)
-        >>> round(dist, 0)
-        6181628.0
-        >>> error
-        69.0
-        >>> lon1 = Angle(-2.09)
-        >>> lat1 = Angle(41.3)
-        >>> lon2 = Angle(73.99)
-        >>> lat2 = Angle(40.75)
-        >>> dist, error = e.distance(lon1, lat1, lon2, lat2)
-        >>> round(dist, 0)
-        6176760.0
-        >>> error
-        69.0
+        >>> e = Earth()
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> lon, lat, r = e.geometric_heliocentric_position(epoch)
+        >>> print(round(lon.to_positive(), 6))
+        19.905991
+        >>> print(lat.dms_str(n_dec=3))
+        -0.621''
+        >>> print(round(r, 8))
+        0.99760775
+        """
+
+        # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
+        # (19.907373 degrees) as the one presented above (19.905991 degrees).
+        # After many checks and tests, I came to the conclusion that the result
+        # above is the right one, and Meeus' result is wrong
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Second, call auxiliary function in charge of computations
+        lon, lat, r = vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
+        # Apply small correction for conversion to the FK5 system
+        t = (epoch.jde() - 2451545.0)/36525.0
+        lambda_p = lon - t*(1.397 + 0.00031*t)
+        delta_lon = Angle(0, 0, -0.09033)
+        delta_beta = 0.03916*(cos(lambda_p.rad()) - sin(lambda_p.rad()))
+        delta_beta = Angle(0, 0, delta_beta)
+        return lon + delta_lon, lat + delta_beta, r
+
+    def apparent_heliocentric_position(self, epoch):
+        """"This method computes the apparent heliocentric position of the
+        Earth for a given epoch, using the VSOP87 theory.
+
+        :param epoch: Epoch to compute Earth position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the heliocentric longitude and latitude (as
+            :py:class:`Angle` objects), and the radius vector (as a float,
+            in astronomical units), in that order
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> e = Earth()
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> lon, lat, r = e.apparent_heliocentric_position(epoch)
+        >>> print(round(lon.to_positive(), 6))
+        19.904705
+        >>> print(lat.dms_str(n_dec=3))
+        -0.621''
+        >>> print(round(r, 8))
+        0.99760775
         """
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
-        return vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
+        lon, lat, r = self.geometric_heliocentric_position(epoch)
+        dpsi = nutation_longitude(epoch)
+        lon += dpsi
+        delta = -20.4898/r
+        delta = Angle(0, 0, delta)
+        lon += delta
+        return lon, lat, r
 
 
 def main():
@@ -707,11 +745,18 @@ def main():
 
     # Let's now compute the heliocentric position for a given epoch
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = e.heliocentric_position(epoch)
-    lon += 180.0
-    lat = -lat
-    print_me("Heliocentric Longitude", lon.to_positive())
-    print_me("Heliocentric Latitude", lat.dms_str(n_dec=3))
+    lon, lat, r = e.geometric_heliocentric_position(epoch)
+    print_me("Geometric Heliocentric Longitude", lon.to_positive())
+    print_me("Geometric Heliocentric Latitude", lat.dms_str(n_dec=3))
+    print_me("Radius vector", r)
+
+    print("")
+
+    # Let's now compute the heliocentric position for a given epoch
+    epoch = Epoch(1992, 10, 13.0)
+    lon, lat, r = e.apparent_heliocentric_position(epoch)
+    print_me("Apparent Heliocentric Longitude", lon.to_positive())
+    print_me("Apparent Heliocentric Latitude", lat.dms_str(n_dec=3))
     print_me("Radius vector", r)
 
 
