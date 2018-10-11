@@ -127,3 +127,37 @@ def test_earth_distance():
 
     assert abs(round(error, 0) - 69.0) < TOL, \
         "ERROR: 4th distance() test, output doesn't match"
+
+
+def test_earth_geometric_heliocentric_position():
+    """Tests the geometric_heliocentric_position() method of Earth class"""
+
+    e = Earth()
+    epoch = Epoch(1992, 10, 13.0)
+    lon, lat, r = e.geometric_heliocentric_position(epoch)
+
+    assert abs(round(lon.to_positive(), 6) - 19.905991) < TOL, \
+        "ERROR: 1st geometric_heliocentric_position() test doesn't match"
+
+    assert lat.dms_str(n_dec=3) == "-0.621''", \
+        "ERROR: 2nd geometric_heliocentric_position() test doesn't match"
+
+    assert abs(round(r, 8) - 0.99760775) < TOL, \
+        "ERROR: 3rd geometric_heliocentric_position() test doesn't match"
+
+
+def test_earth_apparent_heliocentric_position():
+    """Tests the apparent_heliocentric_position() method of Earth class"""
+
+    e = Earth()
+    epoch = Epoch(1992, 10, 13.0)
+    lon, lat, r = e.apparent_heliocentric_position(epoch)
+
+    assert abs(round(lon.to_positive(), 6) - 19.904705) < TOL, \
+        "ERROR: 1st apparent_heliocentric_position() test doesn't match"
+
+    assert lat.dms_str(n_dec=3) == "-0.621''", \
+        "ERROR: 2nd apparent_heliocentric_position() test doesn't match"
+
+    assert abs(round(r, 8) - 0.99760775) < TOL, \
+        "ERROR: 3rd apparent_heliocentric_position() test doesn't match"
