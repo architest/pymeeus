@@ -592,17 +592,17 @@ class Earth(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> lon, lat, r = Earth.geometric_heliocentric_position(epoch)
-        >>> print(round(lon.to_positive(), 6))
-        19.905991
-        >>> print(lat.dms_str(n_dec=3))
-        -0.621''
+        >>> l, b, r = Earth.geometric_heliocentric_position(epoch, toFK5=False)
+        >>> print(round(l.to_positive(), 6))
+        19.906016
+        >>> print(b.dms_str(n_dec=3))
+        -0.644''
         >>> print(round(r, 8))
         0.99760775
         """
 
         # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
-        # (19.907373 degrees) as the one presented above (19.905991 degrees).
+        # (19.907372 degrees) as the one presented above (19.906016 degrees).
         # After many checks and tests, I came to the conclusion that the result
         # above is the right one, and Meeus' result is wrong
 
