@@ -287,20 +287,20 @@ def main():
     # Let's compute Sun's postion, but more accurately
     epoch = Epoch(1992, 10, 13.0)
     l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
-    print_me("Geometric Geocentric Position", round(l.to_positive(), 6))
+    print_me("Geometric Geocentric Longitude", round(l.to_positive(), 6))
     # 199.906016
-    print_me("Geometric Geocentric Position", b.dms_str(n_dec=3))
+    print_me("Geometric Geocentric Latitude", b.dms_str(n_dec=3))
     # 0.644''
     print_me("Radius vector", round(r, 8))
     # 0.99760775
 
     print("")
 
-    # Compute Sun's aaparent postion
+    # Compute Sun's apparent postion
     l, b, r = Sun.apparent_geocentric_position(epoch)
-    print_me("Apparent Geocentric Position", l.to_positive().dms_str(n_dec=3))
+    print_me("Apparent Geocentric Longitude", l.to_positive().dms_str(n_dec=3))
     # 199d 54' 16.937''
-    print_me("Apparent Geocentric Position", b.dms_str(n_dec=3))
+    print_me("Apparent Geocentric Latitude", b.dms_str(n_dec=3))
     # 0.621''
     print_me("Radius vector", round(r, 8))
     # 0.99760775
