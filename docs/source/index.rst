@@ -19,6 +19,7 @@
    Epoch
    Interpolation
    Sun
+   Venus
 
 .. toctree::
    :maxdepth: 2
@@ -32,6 +33,7 @@
    ex-Epoch
    ex-Interpolation
    ex-Sun
+   ex-Venus
 
 
 Indices and tables

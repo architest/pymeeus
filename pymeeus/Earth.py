@@ -733,7 +733,7 @@ def main():
 
     print("")
 
-    # Let's now compute the heliocentric position for a given epoch
+    # Let's now compute the geometric heliocentric position for a given epoch
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Earth.geometric_heliocentric_position(epoch)
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
@@ -742,7 +742,7 @@ def main():
 
     print("")
 
-    # Let's now compute the heliocentric position for a given epoch
+    # And now, compute the apparent heliocentric position for the same epoch
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Earth.apparent_heliocentric_position(epoch)
     print_me("Apparent Heliocentric Longitude", lon.to_positive())

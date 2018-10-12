@@ -88,7 +88,7 @@ It is easy to compute the linear velocity at different latitudes::
 
     # Linear velocity at latitude 65d 45' 30'' (meters/second): 191.497860977
 
-Finally, let's compute the distance between two points on the Earth:
+And now, let's compute the distance between two points on the Earth:
 
 - Bangkok: 13d 14' 09'' North, 100d 29' 39'' East
 - Buenos Aires: 34d 36' 12'' South,  58d 22' 54'' West
@@ -114,3 +114,39 @@ Here we will take advantage of facilities provided by ``Angle`` class::
     print_me("The approximate error of the estimation is (meters)", round(error, 0))
 
     # The approximate error of the estimation is (meters): 189.0
+
+Let's now compute the geometric heliocentric position for a given epoch::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    lon, lat, r = Earth.geometric_heliocentric_position(epoch)
+
+    print_me("Geometric Heliocentric Longitude", lon.to_positive())
+
+    # Geometric Heliocentric Longitude: 19.905991
+
+    print_me("Geometric Heliocentric Latitude", lat.dms_str(n_dec=3))
+
+    # Geometric Heliocentric Latitude: -0.621''
+
+    print_me("Radius vector", r)
+
+    # Radius vector: 0.99760775
+
+And now, compute the apparent heliocentric position for the same epoch::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    lon, lat, r = Earth.apparent_heliocentric_position(epoch)
+
+    print_me("Apparent Heliocentric Longitude", lon.to_positive())
+
+    # Apparent Heliocentric Longitude: 19.904705
+
+    print_me("Apparent Heliocentric Latitude", lat.dms_str(n_dec=3))
+
+    # Apparent Heliocentric Latitude: -0.621''
+
+    print_me("Radius vector", r)
+
+    # Radius vector: 0.99760775
