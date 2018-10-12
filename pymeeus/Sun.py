@@ -23,6 +23,7 @@ from math import sin, cos, atan2, asin
 from Angle import Angle
 from Epoch import Epoch, JDE2000
 from Coordinates import mean_obliquity
+from Earth import Earth
 
 
 """
@@ -166,6 +167,47 @@ class Sun(object):
         delta = asin(sin(e.rad())*sin(app_lon.rad()))
         delta = Angle(delta, radians=True)
         return (alpha, delta, r)
+
+    @staticmethod
+    def geometric_geocentric_position(epoch, toFK5=True):
+        """"This method computes the geometric geocentric position of the Sun
+        for a given epoch, using the VSOP87 theory.
+
+        :param epoch: Epoch to compute Venus position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+        :param toFK5: Whether or not the small correction to convert to the FK5
+            system will be applied or not
+        :type toFK5: bool
+
+        :returns: A tuple with the geocentric longitude and latitude (as
+            :py:class:`Angle` objects), and the radius vector (as a float,
+            in astronomical units), in that order
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+        >>> print(round(l.to_positive(), 6))
+        199.906016
+        >>> print(b.dms_str(n_dec=3))
+        0.644''
+        >>> print(round(r, 8))
+        0.99760775
+        """
+
+        # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
+        # (199.907372 degrees) as the one presented above (199.906016 degrees).
+        # After many checks and tests, I came to the conclusion that the result
+        # above is the right one, and Meeus' result is wrong
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Use Earth heliocentric position to compute Sun's geocentric position
+        lon, lat, r = Earth.geometric_heliocentric_position(epoch, toFK5)
+        lon = lon.to_positive() + 180.0
+        lat = -lat
+        return lon, lat, r
 
 
 def main():
