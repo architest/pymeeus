@@ -28,9 +28,8 @@ from pymeeus.Epoch import Epoch
 def test_venus_geometric_heliocentric_position():
     """Tests the geometric_heliocentric_position() method of Venus class"""
 
-    v = Venus()
     epoch = Epoch(1992, 12, 20.0)
-    lon, lat, r = v.geometric_heliocentric_position(epoch, toFK5=False)
+    lon, lat, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
 
     assert abs(round(lon.to_positive(), 5) - 26.11428) < TOL, \
         "ERROR: 1st geometric_heliocentric_position() test doesn't match"

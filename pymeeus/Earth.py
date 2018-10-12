@@ -574,7 +574,8 @@ class Earth(object):
         error = round(dist*fe*fe, 0)
         return dist, error
 
-    def geometric_heliocentric_position(self, epoch, toFK5=True):
+    @staticmethod
+    def geometric_heliocentric_position(epoch, toFK5=True):
         """"This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
@@ -590,9 +591,8 @@ class Earth(object):
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
-        >>> e = Earth()
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> lon, lat, r = e.geometric_heliocentric_position(epoch)
+        >>> lon, lat, r = Earth.geometric_heliocentric_position(epoch)
         >>> print(round(lon.to_positive(), 6))
         19.905991
         >>> print(lat.dms_str(n_dec=3))
@@ -612,7 +612,8 @@ class Earth(object):
         # Second, call auxiliary function in charge of computations
         return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
 
-    def apparent_heliocentric_position(self, epoch):
+    @staticmethod
+    def apparent_heliocentric_position(epoch):
         """"This method computes the apparent heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
@@ -625,9 +626,8 @@ class Earth(object):
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
-        >>> e = Earth()
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> lon, lat, r = e.apparent_heliocentric_position(epoch)
+        >>> lon, lat, r = Earth.apparent_heliocentric_position(epoch)
         >>> print(round(lon.to_positive(), 6))
         19.904705
         >>> print(lat.dms_str(n_dec=3))
@@ -735,7 +735,7 @@ def main():
 
     # Let's now compute the heliocentric position for a given epoch
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = e.geometric_heliocentric_position(epoch)
+    lon, lat, r = Earth.geometric_heliocentric_position(epoch)
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat.dms_str(n_dec=3))
     print_me("Radius vector", r)
@@ -744,7 +744,7 @@ def main():
 
     # Let's now compute the heliocentric position for a given epoch
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = e.apparent_heliocentric_position(epoch)
+    lon, lat, r = Earth.apparent_heliocentric_position(epoch)
     print_me("Apparent Heliocentric Longitude", lon.to_positive())
     print_me("Apparent Heliocentric Latitude", lat.dms_str(n_dec=3))
     print_me("Radius vector", r)

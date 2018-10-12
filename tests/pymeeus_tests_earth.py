@@ -132,9 +132,8 @@ def test_earth_distance():
 def test_earth_geometric_heliocentric_position():
     """Tests the geometric_heliocentric_position() method of Earth class"""
 
-    e = Earth()
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = e.geometric_heliocentric_position(epoch)
+    lon, lat, r = Earth.geometric_heliocentric_position(epoch)
 
     assert abs(round(lon.to_positive(), 6) - 19.905991) < TOL, \
         "ERROR: 1st geometric_heliocentric_position() test doesn't match"
@@ -149,9 +148,8 @@ def test_earth_geometric_heliocentric_position():
 def test_earth_apparent_heliocentric_position():
     """Tests the apparent_heliocentric_position() method of Earth class"""
 
-    e = Earth()
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = e.apparent_heliocentric_position(epoch)
+    lon, lat, r = Earth.apparent_heliocentric_position(epoch)
 
     assert abs(round(lon.to_positive(), 6) - 19.904705) < TOL, \
         "ERROR: 1st apparent_heliocentric_position() test doesn't match"

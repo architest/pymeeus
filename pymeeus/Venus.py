@@ -132,7 +132,8 @@ class Venus(object):
     Class Venus models that planet.
     """
 
-    def geometric_heliocentric_position(self, epoch, toFK5=True):
+    @staticmethod
+    def geometric_heliocentric_position(epoch, toFK5=True):
         """"This method computes the geometric heliocentric position of planet
         Venus for a given epoch, using the VSOP87 theory.
 
@@ -148,12 +149,11 @@ class Venus(object):
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
-        >>> v = Venus()
         >>> epoch = Epoch(1992, 12, 20.0)
-        >>> lon, lat, r = v.geometric_heliocentric_position(epoch, toFK5=False)
-        >>> print(round(lon.to_positive(), 5))
+        >>> l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        >>> print(round(l.to_positive(), 5))
         26.11428
-        >>> print(round(lat, 4))
+        >>> print(round(b, 4))
         -2.6207
         >>> print(round(r, 6))
         0.724603
@@ -165,7 +165,8 @@ class Venus(object):
         # Second, call auxiliary function in charge of computations
         return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
 
-    def apparent_heliocentric_position(self, epoch):
+    @staticmethod
+    def apparent_heliocentric_position(epoch):
         """"This method computes the apparent heliocentric position of planet
         Venus for a given epoch, using the VSOP87 theory.
 
@@ -198,9 +199,8 @@ def main():
     print(35*'*' + '\n')
 
     # Let's now compute the heliocentric position for a given epoch
-    v = Venus()
     epoch = Epoch(1992, 12, 20.0)
-    lon, lat, r = v.geometric_heliocentric_position(epoch)
+    lon, lat, r = Venus.geometric_heliocentric_position(epoch)
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
