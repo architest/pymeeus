@@ -44,3 +44,37 @@ And now is the turn for the **apparent** right ascension and declination::
     print_me("Sun's apparent declination", delta.dms_str(n_dec=0))
 
     # Sun's apparent declination: -7d 47' 6.0''
+
+Now, let's compute Sun's true (**geometric**) position again, but more accurately::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+
+    print_me("Geometric Geocentric Longitude", round(l.to_positive(), 6))
+
+    # Geometric Geocentric Longitude: 199.906016
+
+    print_me("Geometric Geocentric Latitude", b.dms_str(n_dec=3))
+
+    # Geometric Geocentric Latitude: 0.644''
+
+    print_me("Radius vector", round(r, 8))
+
+    # Radius vector: 0.99760775
+
+Compute Sun's apparent postion accurately::
+
+    l, b, r = Sun.apparent_geocentric_position(epoch)
+
+    print_me("Apparent Geocentric Longitude", l.to_positive().dms_str(n_dec=3))
+
+    # Apparent Geocentric Longitude: 199d 54' 16.937''
+
+    print_me("Apparent Geocentric Latitude", b.dms_str(n_dec=3))
+
+    # Apparent Geocentric Latitude; 0.621''
+
+    print_me("Radius vector", round(r, 8))
+
+    # Radius vector: 0.99760775
