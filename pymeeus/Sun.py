@@ -173,7 +173,7 @@ class Sun(object):
         """"This method computes the geometric geocentric position of the Sun
         for a given epoch, using the VSOP87 theory.
 
-        :param epoch: Epoch to compute Venus position, as an Epoch object
+        :param epoch: Epoch to compute Sun position, as an Epoch object
         :type epoch: :py:class:`Epoch`
         :param toFK5: Whether or not the small correction to convert to the FK5
             system will be applied or not
@@ -205,6 +205,44 @@ class Sun(object):
             raise TypeError("Invalid input types")
         # Use Earth heliocentric position to compute Sun's geocentric position
         lon, lat, r = Earth.geometric_heliocentric_position(epoch, toFK5)
+        lon = lon.to_positive() + 180.0
+        lat = -lat
+        return lon, lat, r
+
+    @staticmethod
+    def apparent_geocentric_position(epoch):
+        """"This method computes the apparent geocentric position of the Sun
+        for a given epoch, using the VSOP87 theory.
+
+        :param epoch: Epoch to compute Sun position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the heliocentric longitude and latitude (as
+            :py:class:`Angle` objects), and the radius vector (as a float,
+            in astronomical units), in that order
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> lon, lat, r = Sun.apparent_geocentric_position(epoch)
+        >>> print(lon.to_positive().dms_str(n_dec=3))
+        199d 54' 16.937''
+        >>> print(lat.dms_str(n_dec=3))
+        0.621''
+        >>> print(round(r, 8))
+        0.99760775
+        """
+
+        # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
+        # (199d 54' 21.818'') as the one presented above (199d 54' 16.937'').
+        # After many checks and tests, I came to the conclusion that the result
+        # above is the right one, and Meeus' result is wrong
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Use Earth heliocentric position to compute Sun's geocentric position
+        lon, lat, r = Earth.apparent_heliocentric_position(epoch)
         lon = lon.to_positive() + 180.0
         lat = -lat
         return lon, lat, r
@@ -243,6 +281,29 @@ def main():
     # 13h 13' 31.4''
     print_me("Sun's apparent declination", delta.dms_str(n_dec=0))
     # -7d 47' 6.0''
+
+    print("")
+
+    # Let's compute Sun's postion, but more accurately
+    epoch = Epoch(1992, 10, 13.0)
+    l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+    print_me("Geometric Geocentric Position", round(l.to_positive(), 6))
+    # 199.906016
+    print_me("Geometric Geocentric Position", b.dms_str(n_dec=3))
+    # 0.644''
+    print_me("Radius vector", round(r, 8))
+    # 0.99760775
+
+    print("")
+
+    # Compute Sun's aaparent postion
+    l, b, r = Sun.apparent_geocentric_position(epoch)
+    print_me("Apparent Geocentric Position", l.to_positive().dms_str(n_dec=3))
+    # 199d 54' 16.937''
+    print_me("Apparent Geocentric Position", b.dms_str(n_dec=3))
+    # 0.621''
+    print_me("Radius vector", round(r, 8))
+    # 0.99760775
 
 
 if __name__ == '__main__':
