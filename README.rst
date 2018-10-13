@@ -78,6 +78,10 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.1
+
+   -  Added Venus module and VSOP87-based positioning methods
+
 -  0.2.0
 
    -  Added Sun module
