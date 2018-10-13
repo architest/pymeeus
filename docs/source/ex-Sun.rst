@@ -63,7 +63,7 @@ Now, let's compute Sun's true (**geometric**) position again, but more accuratel
 
     # Radius vector: 0.99760775
 
-Compute Sun's apparent postion accurately::
+Compute Sun's **apparent** postion accurately::
 
     l, b, r = Sun.apparent_geocentric_position(epoch)
 
