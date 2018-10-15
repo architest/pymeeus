@@ -338,6 +338,49 @@ class Sun(object):
         z = 0.397776982902*y + 0.917482137087*z
         return x, y, z
 
+    @staticmethod
+    def rectangular_coordinates_B1950(epoch):
+        """"This method computes the rectangular geocentric equatorial
+        coordinates (X, Y, Z) of the Sun, referred to the mean equinox of
+        B1950.0. The X axis is directed towards the vernal equinox (longitude
+        0), the Y axis lies in the plane of the equator and is directed towards
+        longitude 90, and the Z axis is directed towards the north celestial
+        pole.
+
+        :param epoch: Epoch to compute Sun position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the X, Y, Z values in astronomical units
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+        >>> print(round(x, 8))
+        -0.93740412
+        >>> print(round(y, 8))
+        -0.31314716
+        >>> print(round(z, 8))
+        -0.12456636
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Second, compute Earth heliocentric position referred to J2000.0
+        lon, lat, r = Earth.geometric_heliocentric_position_J2000(epoch)
+        # Third, convert from Earth's heliocentric to Sun's geocentric
+        lon = lon.to_positive() + 180.0
+        lat = -lat
+        x = r*cos(lat.rad())*cos(lon.rad())
+        y = r*cos(lat.rad())*sin(lon.rad())
+        z = r*sin(lat.rad())
+        x = 0.999925702634*x + 0.012189716217*y + 0.000011134016*z
+        y = y
+        z = z
+        return x, y, z
+# XXX
+
 
 def main():
 
