@@ -355,13 +355,13 @@ class Sun(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+        >>> x, y, z = Sun.rectangular_coordinates_B1950(epoch)
         >>> print(round(x, 8))
-        -0.93740412
+        -0.94149484
         >>> print(round(y, 8))
-        -0.31314716
+        -0.30259898
         >>> print(round(z, 8))
-        -0.12456636
+        -0.11578686
         """
 
         # First check that input values are of correct types
@@ -376,10 +376,74 @@ class Sun(object):
         y = r*cos(lat.rad())*sin(lon.rad())
         z = r*sin(lat.rad())
         x = 0.999925702634*x + 0.012189716217*y + 0.000011134016*z
-        y = y
-        z = z
+        y = -0.011179418036*x + 0.917413998946*y - 0.397777041885*z
+        z = -0.004859003787*x + 0.397747363646*y + 0.917482111428*z
         return x, y, z
-# XXX
+
+    @staticmethod
+    def rectangular_coordinates_equinox(epoch, equinox_epoch):
+        """"This method computes the rectangular geocentric equatorial
+        coordinates (X, Y, Z) of the Sun, referred to an arbitrary mean
+        equinox. The X axis is directed towards the vernal equinox (longitude
+        0), the Y axis lies in the plane of the equator and is directed towards
+        longitude 90, and the Z axis is directed towards the north celestial
+        pole.
+
+        :param epoch: Epoch to compute Sun position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+        :param equinox_epoch: Epoch corresponding to the mean equinox
+        :type equinox_epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the X, Y, Z values in astronomical units
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> e_equinox = Epoch(2467616.0)
+        >>> x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
+        >>> print(round(x, 8))
+        -0.93373705
+        >>> print(round(y, 8))
+        -0.32235084
+        >>> print(round(z, 8))
+        -0.12856699
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Second, compute Sun's rectangular coordinates w.r.t. J2000.0
+        x0, y0, z0 = Sun.rectangular_coordinates_J2000(epoch)
+        # Third, computed auxiliary angles
+        t = (equinox_epoch - JDE2000)/36525.0
+        tt = (epoch - equinox_epoch)/36525.0
+        # Compute the conversion parameters
+        zeta = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
+                  t*((0.30188 - 0.000344*tt) + 0.017998*t))
+        z = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
+               t*((1.09468 + 0.000066*tt) + 0.018203*t))
+        theta = t*(2004.3109 + tt*(-0.85330 - 0.000217*tt) +
+                   t*(-(0.42665 + 0.000217*tt) - 0.041833*t))
+        # Redefine the former values as Angles, and compute them in radians
+        zeta = Angle(0, 0, zeta)
+        zetar = zeta.rad()
+        z = Angle(0, 0, z)
+        zr = z.rad()
+        theta = Angle(0, 0, theta)
+        thetar = theta.rad()
+        xx = cos(zetar)*cos(zr)*cos(thetar) - sin(zetar)*sin(zr)
+        xy = sin(zetar)*cos(zr) + cos(zetar)*sin(zr)*cos(thetar)
+        xz = cos(zetar)*sin(thetar)
+        yx = -cos(zetar)*sin(zr) - sin(zetar)*cos(zr)*cos(thetar)
+        yy = cos(zetar)*cos(zr) - sin(zetar)*sin(zr)*cos(thetar)
+        yz = -sin(zetar)*sin(thetar)
+        zx = -cos(zr)*sin(thetar)
+        zy = -sin(zr)*sin(thetar)
+        zz = cos(thetar)
+        xp = xx*x0 + yx*y0 + zx*z0
+        yp = xy*x0 + yy*y0 + zy*z0
+        zp = xz*x0 + yz*y0 + zz*z0
+        return xp, yp, zp
 
 
 def main():
