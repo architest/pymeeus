@@ -135,13 +135,13 @@ def test_earth_geometric_heliocentric_position():
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Earth.geometric_heliocentric_position(epoch)
 
-    assert abs(round(lon.to_positive(), 6) - 19.905991) < TOL, \
+    assert abs(round(lon.to_positive(), 6) - 19.907272) < TOL, \
         "ERROR: 1st geometric_heliocentric_position() test doesn't match"
 
-    assert lat.dms_str(n_dec=3) == "-0.621''", \
+    assert lat.dms_str(n_dec=3) == "-0.721''", \
         "ERROR: 2nd geometric_heliocentric_position() test doesn't match"
 
-    assert abs(round(r, 8) - 0.99760775) < TOL, \
+    assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd geometric_heliocentric_position() test doesn't match"
 
 
@@ -151,11 +151,11 @@ def test_earth_apparent_heliocentric_position():
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Earth.apparent_heliocentric_position(epoch)
 
-    assert abs(round(lon.to_positive(), 6) - 19.904705) < TOL, \
+    assert abs(round(lon.to_positive(), 6) - 19.905986) < TOL, \
         "ERROR: 1st apparent_heliocentric_position() test doesn't match"
 
-    assert lat.dms_str(n_dec=3) == "-0.621''", \
+    assert lat.dms_str(n_dec=3) == "-0.721''", \
         "ERROR: 2nd apparent_heliocentric_position() test doesn't match"
 
-    assert abs(round(r, 8) - 0.99760775) < TOL, \
+    assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd apparent_heliocentric_position() test doesn't match"

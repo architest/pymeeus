@@ -188,17 +188,20 @@ class Sun(object):
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
         >>> print(round(l.to_positive(), 6))
-        199.906016
+        199.907297
         >>> print(b.dms_str(n_dec=3))
-        0.644''
+        0.744''
         >>> print(round(r, 8))
-        0.99760775
+        0.99760852
         """
 
         # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
-        # (199.907372 degrees) as the one presented above (199.906016 degrees).
+        # (199.907372 degrees) as the one presented above (199.907297 degrees).
         # After many checks and tests, I came to the conclusion that the result
-        # above is the right one, and Meeus' result is wrong
+        # above is the right one, and Meeus' result is wrong.
+        # On the other hand, the difference in LATITUDE may be due to the fact
+        # that this software uses the complete set of VSOP87C terms, instead of
+        # the abridged version in Meeus' book.
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
@@ -226,17 +229,20 @@ class Sun(object):
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> lon, lat, r = Sun.apparent_geocentric_position(epoch)
         >>> print(lon.to_positive().dms_str(n_dec=3))
-        199d 54' 16.937''
+        199d 54' 21.548''
         >>> print(lat.dms_str(n_dec=3))
-        0.621''
+        0.721''
         >>> print(round(r, 8))
-        0.99760775
+        0.99760852
         """
 
         # NOTE: In page 169, Meeus gives a different value for the LONGITUDE
-        # (199d 54' 21.818'') as the one presented above (199d 54' 16.937'').
+        # (199d 54' 21.818'') as the one presented above (199d 54' 21.548'').
         # After many checks and tests, I came to the conclusion that the result
-        # above is the right one, and Meeus' result is wrong
+        # above is the right one, and Meeus' result is wrong.
+        # On the other hand, the difference in LATITUDE may be due to the fact
+        # that this software uses the complete set of VSOP87C terms, instead of
+        # the abridged version in Meeus' book.
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
@@ -266,18 +272,17 @@ class Sun(object):
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
         >>> print(round(x, 7))
-        -0.9380032
+        -0.9379963
         >>> print(round(y, 6))
-        -0.311634
+        -0.311654
         >>> print(round(z, 7))
-        -0.1351127
+        -0.1351207
         """
 
-        # NOTE: In page 172, Meeus gives a different value for the LONGITUDE
-        # (199.907347 degrees) as the one internally computed in the example
-        # above (199.905991 degrees). After many checks and tests, I came to
-        # the conclusion that the results above are the right one, and Meeus'
-        # results are wrong
+        # NOTE: In page 172, Meeus gives slightly different values for x, y, z
+        # as the ones internally computed in the example above. After many
+        # checks and tests, I came to the conclusion that the results above are
+        # the right ones, and Meeus' results are wrong.
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
@@ -315,11 +320,11 @@ class Sun(object):
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> x, y, z = Sun.rectangular_coordinates_J2000(epoch)
         >>> print(round(x, 8))
-        -0.93740412
+        -0.93740485
         >>> print(round(y, 8))
-        -0.31314716
+        -0.3131474
         >>> print(round(z, 8))
-        -0.12456636
+        -0.12456646
         """
 
         # First check that input values are of correct types
@@ -357,11 +362,11 @@ class Sun(object):
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> x, y, z = Sun.rectangular_coordinates_B1950(epoch)
         >>> print(round(x, 8))
-        -0.94149484
+        -0.94149557
         >>> print(round(y, 8))
-        -0.30259898
+        -0.30259922
         >>> print(round(z, 8))
-        -0.11578686
+        -0.11578695
         """
 
         # First check that input values are of correct types
@@ -402,11 +407,11 @@ class Sun(object):
         >>> e_equinox = Epoch(2467616.0)
         >>> x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
         >>> print(round(x, 8))
-        -0.93373705
+        -0.93373777
         >>> print(round(y, 8))
-        -0.32235084
+        -0.32235109
         >>> print(round(z, 8))
-        -0.12856699
+        -0.12856709
         """
 
         # First check that input values are of correct types

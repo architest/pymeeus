@@ -68,13 +68,13 @@ def test_sun_geometric_geocentric_position():
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
 
-    assert abs(round(lon.to_positive(), 6) - 199.906016) < TOL, \
+    assert abs(round(lon.to_positive(), 6) - 199.907297) < TOL, \
         "ERROR: 1st geometric_geocentric_position() test, 'lon' doesn't match"
 
-    assert lat.dms_str(n_dec=3) == "0.644''", \
+    assert lat.dms_str(n_dec=3) == "0.744''", \
         "ERROR: 2nd geometric_geocentric_position() test, 'lat' doesn't match"
 
-    assert abs(round(r, 8) - 0.99760775) < TOL, \
+    assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd geometric_geocentric_position() test, 'r' doesn't match"
 
 
@@ -84,11 +84,11 @@ def test_sun_apparent_geocentric_position():
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Sun.apparent_geocentric_position(epoch)
 
-    assert lon.to_positive().dms_str(n_dec=3) == "199d 54' 16.937''", \
+    assert lon.to_positive().dms_str(n_dec=3) == "199d 54' 21.548''", \
         "ERROR: 1st apparent_geocentric_position() test, 'lon' doesn't match"
 
-    assert lat.dms_str(n_dec=3) == "0.621''", \
+    assert lat.dms_str(n_dec=3) == "0.721''", \
         "ERROR: 2nd apparent_geocentric_position() test, 'lat' doesn't match"
 
-    assert abs(round(r, 8) - 0.99760775) < TOL, \
+    assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd apparent_geocentric_position() test, 'r' doesn't match"
