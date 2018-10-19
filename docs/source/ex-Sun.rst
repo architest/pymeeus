@@ -53,15 +53,15 @@ Now, let's compute Sun's true (**geometric**) position again, but more accuratel
 
     print_me("Geometric Geocentric Longitude", round(l.to_positive(), 6))
 
-    # Geometric Geocentric Longitude: 199.906016
+    # Geometric Geocentric Longitude: 199.907297
 
     print_me("Geometric Geocentric Latitude", b.dms_str(n_dec=3))
 
-    # Geometric Geocentric Latitude: 0.644''
+    # Geometric Geocentric Latitude: 0.744''
 
     print_me("Radius vector", round(r, 8))
 
-    # Radius vector: 0.99760775
+    # Radius vector: 0.99760852
 
 Compute Sun's **apparent** postion accurately::
 
@@ -71,15 +71,15 @@ Compute Sun's **apparent** postion accurately::
 
     print_me("Apparent Geocentric Longitude", l.to_positive().dms_str(n_dec=3))
 
-    # Apparent Geocentric Longitude: 199d 54' 16.937''
+    # Apparent Geocentric Longitude: 199d 54' 21.548''
 
     print_me("Apparent Geocentric Latitude", b.dms_str(n_dec=3))
 
-    # Apparent Geocentric Latitude; 0.621''
+    # Apparent Geocentric Latitude; 0.721''
 
     print_me("Radius vector", round(r, 8))
 
-    # Radius vector: 0.99760775
+    # Radius vector: 0.99760852
 
 We can compute rectangular coordinates referred to mean equinox of date::
 

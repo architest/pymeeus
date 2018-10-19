@@ -123,15 +123,15 @@ Let's now compute the geometric heliocentric position for a given epoch::
 
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
 
-    # Geometric Heliocentric Longitude: 19.905991
+    # Geometric Heliocentric Longitude: 19.9072721503
 
     print_me("Geometric Heliocentric Latitude", lat.dms_str(n_dec=3))
 
-    # Geometric Heliocentric Latitude: -0.621''
+    # Geometric Heliocentric Latitude: -0.721''
 
     print_me("Radius vector", r)
 
-    # Radius vector: 0.99760775
+    # Radius vector: 0.997608520236
 
 And now, compute the apparent heliocentric position for the same epoch::
 
@@ -141,12 +141,12 @@ And now, compute the apparent heliocentric position for the same epoch::
 
     print_me("Apparent Heliocentric Longitude", lon.to_positive())
 
-    # Apparent Heliocentric Longitude: 19.904705
+    # Apparent Heliocentric Longitude: 19.9059856939
 
     print_me("Apparent Heliocentric Latitude", lat.dms_str(n_dec=3))
 
-    # Apparent Heliocentric Latitude: -0.621''
+    # Apparent Heliocentric Latitude: -0.721''
 
     print_me("Radius vector", r)
 
-    # Radius vector: 0.99760775
+    # Radius vector: 0.997608520236
