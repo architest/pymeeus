@@ -65,6 +65,8 @@ Now, let's compute Sun's true (**geometric**) position again, but more accuratel
 
 Compute Sun's **apparent** postion accurately::
 
+    epoch = Epoch(1992, 10, 13.0)
+
     l, b, r = Sun.apparent_geocentric_position(epoch)
 
     print_me("Apparent Geocentric Longitude", l.to_positive().dms_str(n_dec=3))
@@ -78,3 +80,77 @@ Compute Sun's **apparent** postion accurately::
     print_me("Radius vector", round(r, 8))
 
     # Radius vector: 0.99760775
+
+We can compute rectangular coordinates referred to mean equinox of date::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
+
+    print_me("X", round(x, 7))
+
+    # X: -0.9379963
+
+    print_me("Y", round(y, 6))
+
+    # Y: -0.311654
+
+    print_me("Z", round(z, 7))
+
+    # Z: -0.1351207
+
+Now, compute rectangular coordinates w.r.t. standard equinox J2000.0::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+
+    print_me("X", round(x, 8))
+
+    # X: -0.93740485
+
+    print_me("Y", round(y, 8))
+
+    # Y: -0.3131474
+
+    print_me("Z", round(z, 8))
+
+    # Z: -0.12456646
+
+Compute rectangular coordinates w.r.t. mean equinox of B1950.0::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+
+    print_me("X", round(x, 8))
+
+    # X: -0.94149557
+
+    print_me("Y", round(y, 8))
+
+    # Y: -0.30259922
+
+    print_me("Z", round(z, 8))
+
+    # Z: -0.11578695
+
+And compute rectangular coordinates w.r.t. an arbitrary mean equinox::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    e_equinox = Epoch(2467616.0)
+
+    x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
+
+    print_me("X", round(x, 8))
+
+    # X: -0.93373777
+
+    print_me("Y", round(y, 8))
+
+    # Y: -0.32235109
+
+    print_me("Z", round(z, 8))
+
+    # Z: -0.12856709

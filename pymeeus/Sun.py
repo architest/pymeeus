@@ -257,7 +257,7 @@ class Sun(object):
     def rectangular_coordinates_mean_equinox(epoch):
         """"This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the mean equinox of the
-        data. The X axis is directed towards the vernal equinox (longitude 0),
+        date. The X axis is directed towards the vernal equinox (longitude 0),
         the Y axis lies in the plane of the equator and is directed towards
         longitude 90, and the Z axis is directed towards the north celestial
         pole.
@@ -507,6 +507,43 @@ def main():
     # 0.621''
     print_me("Radius vector", round(r, 8))
     # 0.99760775
+
+    print("")
+
+    # We can compute rectangular coordinates referred to mean equinox of date
+    x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
+    print("Rectangular coordinates referred to mean equinox of date:")
+    print_me("X", round(x, 7))                                  # -0.9379963
+    print_me("Y", round(y, 6))                                  # -0.311654
+    print_me("Z", round(z, 7))                                  # -0.1351207
+
+    print("")
+
+    # Now, compute rectangular coordinates w.r.t. standard equinox J2000.0
+    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+    print("Rectangular coordinates w.r.t. standard equinox J2000.0:")
+    print_me("X", round(x, 8))                                  # -0.93740485
+    print_me("Y", round(y, 8))                                  # -0.3131474
+    print_me("Z", round(z, 8))                                  # -0.12456646
+
+    print("")
+
+    # Compute rectangular coordinates w.r.t. mean equinox of B1950.0
+    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+    print("Rectangular coordinates w.r.t. mean equinox of B1950.0:")
+    print_me("X", round(x, 8))                                  # -0.94149557
+    print_me("Y", round(y, 8))                                  # -0.30259922
+    print_me("Z", round(z, 8))                                  # -0.11578695
+
+    print("")
+
+    # Compute rectangular coordinates w.r.t. an arbitrary mean equinox
+    e_equinox = Epoch(2467616.0)
+    x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
+    print("Rectangular coordinates w.r.t. an arbitrary mean equinox:")
+    print_me("X", round(x, 8))                                  # -0.93373777
+    print_me("Y", round(y, 8))                                  # -0.32235109
+    print_me("Z", round(z, 8))                                  # -0.12856709
 
 
 if __name__ == '__main__':
