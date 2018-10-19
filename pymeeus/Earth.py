@@ -3095,7 +3095,7 @@ class Earth(object):
     def geometric_heliocentric_position_J2000(epoch, toFK5=True):
         """"This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory, referred to the
-        equinox J2000.0..
+        equinox J2000.0.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
