@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.2.2
+    * Added heliocentric position method for J2000.0 (Earth) and rectangular coordinates methods (Sun)
 * 0.2.1
     * Added Venus module and VSOP87-based positioning methods
 * 0.2.0
