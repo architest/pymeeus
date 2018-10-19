@@ -92,3 +92,68 @@ def test_sun_apparent_geocentric_position():
 
     assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd apparent_geocentric_position() test, 'r' doesn't match"
+
+
+def test_rectangular_coordinates_mean_equinox():
+    """Tests rectangular_coordinates_mean_equinox() method of Earth class"""
+
+    epoch = Epoch(1992, 10, 13.0)
+    x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
+
+    assert abs(round(x, 7) - (-0.9379963)) < TOL, \
+        "ERROR: 1st rectangular_coordinates_mean_equinox(), 'x' doesn't match"
+
+    assert abs(round(y, 6) - (-0.311654)) < TOL, \
+        "ERROR: 2nd rectangular_coordinates_mean_equinox(), 'y' doesn't match"
+
+    assert abs(round(z, 7) - (-0.1351207)) < TOL, \
+        "ERROR: 3rd rectangular_coordinates_mean_equinox(), 'z' doesn't match"
+
+
+def test_rectangular_coordinates_J2000():
+    """Tests rectangular_coordinates_J2000() method of Earth class"""
+
+    epoch = Epoch(1992, 10, 13.0)
+    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+
+    assert abs(round(x, 8) - (-0.93740485)) < TOL, \
+        "ERROR: 1st rectangular_coordinates_J2000() test, 'x' doesn't match"
+
+    assert abs(round(y, 8) - (-0.3131474)) < TOL, \
+        "ERROR: 2nd rectangular_coordinates_J2000() test, 'y' doesn't match"
+
+    assert abs(round(z, 8) - (-0.12456646)) < TOL, \
+        "ERROR: 3rd rectangular_coordinates_J2000() test, 'z' doesn't match"
+
+
+def test_rectangular_coordinates_B1950():
+    """Tests rectangular_coordinates_B1950() method of Earth class"""
+
+    epoch = Epoch(1992, 10, 13.0)
+    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+
+    assert abs(round(x, 8) - (-0.94149557)) < TOL, \
+        "ERROR: 1st rectangular_coordinates_B1950() test, 'x' doesn't match"
+
+    assert abs(round(y, 8) - (-0.30259922)) < TOL, \
+        "ERROR: 2nd rectangular_coordinates_B1950() test, 'y' doesn't match"
+
+    assert abs(round(z, 8) - (-0.11578695)) < TOL, \
+        "ERROR: 3rd rectangular_coordinates_B1950() test, 'z' doesn't match"
+
+
+def test_rectangular_coordinates_equinox():
+    """Tests rectangular_coordinates_equinox() method of Earth class"""
+
+    epoch = Epoch(1992, 10, 13.0)
+    e_equinox = Epoch(2467616.0)
+    x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
+
+    assert abs(round(x, 8) - (-0.93373777)) < TOL, \
+        "ERROR: 1st rectangular_coordinates_equinox() test, 'x' doesn't match"
+
+    assert abs(round(y, 8) - (-0.32235109)) < TOL, \
+        "ERROR: 2nd rectangular_coordinates_equinox() test, 'y' doesn't match"
+
+    assert abs(round(z, 8) - (-0.12856709)) < TOL, \
+        "ERROR: 3rd rectangular_coordinates_equinox() test, 'z' doesn't match"
