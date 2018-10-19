@@ -1220,6 +1220,48 @@ class Epoch(object):
             year, month, day = Epoch.doy2date(year, doy)
         return year, month, day
 
+    def get_full_date(self, **kwargs):
+        """This method converts the internal JDE value back to a full date.
+
+        Use **utc=True** to enable the TT to UTC conversion mechanism, or
+        provide a non zero value to **leap_seconds** to apply a specific leap
+        seconds value.
+
+        :param utc: Whether the TT to UTC conversion mechanism will be enabled
+        :type utc: bool
+        :param leap_seconds: Optional value for leap seconds.
+        :type leap_seconds: int, float
+
+        :returns: Year, month, day, hours, minutes, seconds in a tuple
+        :rtype: tuple
+
+        >>> e = Epoch(2436116.31)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 1)))
+        1957/10/4 19:26:24.0
+        >>> e = Epoch(1988, 1, 27)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 1)))
+        1988/1/27 0:0:0.0
+        >>> e = Epoch(1842713.0)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 1)))
+        333/1/27 12:0:0.0
+        >>> e = Epoch(1507900.13)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 1)))
+        -584/5/28 15:7:12.0
+        """
+
+        y, m, d = self.get_date(**kwargs)
+        r = d % 1
+        d = int(d)
+        h = int(r*24.0)
+        r = r*24 - h
+        mi = int(r*60.0)
+        s = 60.0*(r*60.0 - mi)
+        return y, m, d, h, mi, s
+
     @staticmethod
     def tt2ut(year, month):
         """This method provides an approximation of the difference, in seconds,
