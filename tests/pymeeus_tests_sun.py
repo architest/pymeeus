@@ -157,3 +157,14 @@ def test_rectangular_coordinates_equinox():
 
     assert abs(round(z, 8) - (-0.12856709)) < TOL, \
         "ERROR: 3rd rectangular_coordinates_equinox() test, 'z' doesn't match"
+
+
+def test_sun_get_equinox_solstice():
+    """Tests the get_equinox_solstice() method of Earth class"""
+
+    epoch = Sun.get_equinox_solstice(1962, target="summer")
+    y, m, d, h, mi, s = epoch.get_full_date()
+    st = "{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0))
+
+    assert st == "1962/6/21 21:24:42.0", \
+        "ERROR: 1st get_equinox_solstice() test, time stamp doesn't match"

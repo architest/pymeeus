@@ -154,3 +154,15 @@ And compute rectangular coordinates w.r.t. an arbitrary mean equinox::
     print_me("Z", round(z, 8))
 
     # Z: -0.12856709
+
+It is possible to compute the date of equinoxes and solstices::
+
+    epoch = Sun.get_equinox_solstice(1962, target="summer")
+
+    y, m, d, h, mi, s = epoch.get_full_date()
+
+    print("The summer solstice of 1962:")
+
+    print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+
+    # 1962/6/21 21:24:42.0

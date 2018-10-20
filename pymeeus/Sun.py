@@ -450,6 +450,89 @@ class Sun(object):
         zp = xz*x0 + yz*y0 + zz*z0
         return xp, yp, zp
 
+    @staticmethod
+    def get_equinox_solstice(year, target="spring"):
+        """"This method computes the times of the equinoxes or the solstices.
+
+        :param year: Year we want to compute the equinox or solstice for
+        :type year: int
+        :param target: Corresponding equinox or solstice. It can be "spring",
+            "summer", "autumn", "winter"
+        :type target: str
+
+        :returns: The instant of time when the equinox or solstice happens
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of wrong type.
+        :raises: ValueError if 'target' value is invalid.
+
+        >>> epoch = Sun.get_equinox_solstice(1962, target="summer")
+        >>> y, m, d, h, mi, s = epoch.get_full_date()
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+        1962/6/21 21:24:42.0
+        """
+
+        # NOTE: The results from the previous example are computed using the
+        # complete VSOP87 theory. The results provided by Meeus in exercises
+        # 27.a and 27.b are computed with lower accuracy
+
+        # First check that input values are of correct types
+        if not (isinstance(year, int) and isinstance(target, str)):
+            raise TypeError("Invalid input types")
+        # Second, check that the target is correct
+        if (target != "spring") and (target != "summer") and \
+           (target != "autumn") and (target != "winter"):
+            raise ValueError("'target' value is invalid")
+        # Now we can start computing an approximate value (Tables 27.A, 27.B)
+        if (year >= -1000) and (year < 1000):
+            y = year/1000.0
+            if target == "spring":
+                jde0 = 1721139.29189 + y*(365242.1374
+                                          + y*(0.06134 +
+                                               y*(0.00111 - y*0.00071)))
+            elif target == "summer":
+                jde0 = 1721233.25401 + y*(365241.72562
+                                          + y*(-0.05323 +
+                                               y*(0.00907 + y*0.00025)))
+            elif target == "autumn":
+                jde0 = 1721325.70455 + y*(365242.49558
+                                          + y*(-0.11677 +
+                                               y*(-0.00297 + y*0.00074)))
+            elif target == "winter":
+                jde0 = 1721414.39987 + y*(363242.88257
+                                          + y*(-0.00769 +
+                                               y*(-0.00933 - y*0.00006)))
+        elif (year >= 1000) and (year <= 3000):
+            y = (year - 2000.0)/1000.0
+            if target == "spring":
+                jde0 = 2451623.80984 + y*(365242.37404
+                                          + y*(0.05169 +
+                                               y*(-0.00411 - y*0.00057)))
+            elif target == "summer":
+                jde0 = 2451716.56767 + y*(365241.62603
+                                          + y*(0.00325 +
+                                               y*(0.00888 - y*0.0003)))
+            elif target == "autumn":
+                jde0 = 2451810.21715 + y*(365242.01767
+                                          + y*(-0.11575 +
+                                               y*(0.00337 + y*0.00078)))
+            elif target == "winter":
+                jde0 = 2451900.05952 + y*(365242.74049
+                                          + y*(-0.06223 +
+                                               y*(-0.00823 + y*0.00032)))
+        else:
+            raise ValueError("'year' value out of range")
+        k = ['spring', 'summer', 'autumn', 'winter'].index(target)
+        epoch = Epoch(jde0)
+        corr = 1.0
+        while abs(corr) > 0.0000025:
+            lon, lat, r = Sun.apparent_geocentric_position(epoch)
+            arg = k*90.0 - lon.to_positive()
+            arg = Angle(arg)
+            corr = 58.0 * sin(arg.rad())
+            epoch += corr
+        epoch -= corr
+        return epoch
+
 
 def main():
 
@@ -544,6 +627,21 @@ def main():
     print_me("X", round(x, 8))                                  # -0.93373777
     print_me("Y", round(y, 8))                                  # -0.32235109
     print_me("Z", round(z, 8))                                  # -0.12856709
+
+    print("")
+
+    # We can compute the date of equinoxes and solstices
+    epoch = Sun.get_equinox_solstice(1962, target="summer")
+    y, m, d, h, mi, s = epoch.get_full_date()
+    print("The summer solstice of 1962:")
+    print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    # 1962/6/21 21:24:42.0
+
+    epoch = Sun.get_equinox_solstice(2018, target="autumn")
+    y, m, d, h, mi, s = epoch.get_full_date()
+    print("The autumn equinox of 2018:")
+    print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    # 2018/9/23 1:55:14.0
 
 
 if __name__ == '__main__':
