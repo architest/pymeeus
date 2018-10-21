@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.2.3
+    * Added the complete list of VSOP87 parameters to Venus, method to compute dates of equinoxes and solstices, and the Equation of Time
 * 0.2.2
     * Added heliocentric position method for J2000.0 (Earth) and rectangular coordinates methods (Sun)
 * 0.2.1
