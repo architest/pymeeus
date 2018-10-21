@@ -22,7 +22,8 @@ from math import sin, cos, atan2, asin
 
 from Angle import Angle
 from Epoch import Epoch, JDE2000
-from Coordinates import mean_obliquity
+from Coordinates import mean_obliquity, true_obliquity, nutation_longitude, \
+        ecliptical2equatorial
 from Earth import Earth
 
 
@@ -533,6 +534,55 @@ class Sun(object):
         epoch -= corr
         return epoch
 
+    @staticmethod
+    def equation_of_time(epoch):
+        """"This method computes the equation of time for a given epoch,
+        understood as the difference between apparent and mean time, or the
+        difference between the hour angle of the true Sun and the mean Sun.
+
+        :param epoch: Epoch to compute the equation of time, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Difference between apparent and mean time, as a tuple, in
+            minutes and seconds of time
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> m, s = Sun.equation_of_time(epoch)
+        >>> print(m)
+        13
+        >>> print(round(s, 1))
+        42.6
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Compute time in Julian millenia from J2000.0
+        t = (epoch - JDE2000)/365250
+        l0 = 280.4664567 + t*(360007.6982779
+                              + t*(0.03032028 +
+                                   t*(1.0/49931.0 +
+                                      t*(-1.0/15300.0 - t*1.0/2000000.0))))
+        l0 = Angle(l0)
+        l0 = l0.to_positive()
+        # Compute the apparent position of the Sun
+        lon, lat, r = Sun.apparent_geocentric_position(epoch)
+        # Now, get the true obliquity
+        epsilon = true_obliquity(epoch)
+        # Transform from eclliptical to equatorial coordinates
+        alpha, dec = ecliptical2equatorial(lon, lat, epsilon)
+        alpha = alpha.to_positive()
+        # Now we need the nutation in longitude
+        deltapsi = nutation_longitude(epoch)
+        e = l0() - 0.0057183 - alpha + deltapsi*cos(epsilon.rad())
+        e *= 4.0
+        # Extract seconds
+        s = (abs(e) % 1)*60.0
+        m = int(e)
+        return m, s
+
 
 def main():
 
@@ -642,6 +692,15 @@ def main():
     print("The autumn equinox of 2018:")
     print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
     # 2018/9/23 1:55:14.0
+
+    print("")
+
+    # The equation of time, i.e., the difference between apparent and mean
+    # time, can be easily computed
+    epoch = Epoch(1992, 10, 13.0)
+    m, s = Sun.equation_of_time(epoch)
+    print("Equation of time difference: {} min {} secs".format(m, round(s, 1)))
+    # 13m 42.6s
 
 
 if __name__ == '__main__':

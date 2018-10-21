@@ -168,3 +168,16 @@ def test_sun_get_equinox_solstice():
 
     assert st == "1962/6/21 21:24:42.0", \
         "ERROR: 1st get_equinox_solstice() test, time stamp doesn't match"
+
+
+def test_sun_equation_of_time():
+    """Tests the equation_of_time() method of Earth class"""
+
+    epoch = Epoch(1992, 10, 13.0)
+    m, s = Sun.equation_of_time(epoch)
+
+    assert abs(m) - 13 < TOL, \
+        "ERROR: 1st equation_of_time() test, 'm' doesn't match"
+
+    assert abs(round(s, 1)) - 42.6 < TOL, \
+        "ERROR: 2nd equation_of_time() test, 's' doesn't match"

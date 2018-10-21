@@ -166,3 +166,14 @@ It is possible to compute the date of equinoxes and solstices::
     print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
 
     # 1962/6/21 21:24:42.0
+
+The equation of time, i.e., the difference between apparent and mean time, can be easily computed::
+
+    epoch = Epoch(1992, 10, 13.0)
+
+    m, s = Sun.equation_of_time(epoch)
+
+    print("Equation of time difference: {} min {} secs".format(m, round(s, 1)))
+
+    # Equation of time difference: 13 min 42.6 secs
+
