@@ -31,11 +31,11 @@ def test_venus_geometric_heliocentric_position():
     epoch = Epoch(1992, 12, 20.0)
     lon, lat, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
 
-    assert abs(round(lon.to_positive(), 5) - 26.11428) < TOL, \
+    assert abs(round(lon.to_positive(), 5) - 26.11412) < TOL, \
         "ERROR: 1st geometric_heliocentric_position() test doesn't match"
 
-    assert abs(round(lat, 4) - (-2.6207)) < TOL, \
+    assert abs(round(lat, 4) - (-2.6206)) < TOL, \
         "ERROR: 2nd geometric_heliocentric_position() test doesn't match"
 
-    assert abs(round(r, 6) - 0.724603) < TOL, \
+    assert abs(round(r, 6) - 0.724602) < TOL, \
         "ERROR: 3rd geometric_heliocentric_position() test doesn't match"
