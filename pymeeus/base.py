@@ -30,7 +30,7 @@ from math import floor
 """
 
 
-TOL = 1E-10
+TOL = 1e-10
 """Internal tolerance being used by default"""
 
 
@@ -50,7 +50,7 @@ def machine_accuracy():
     while x + 1.0 != x:
         j += 1.0
         x *= 2.0
-    return (j, int(j*0.30103))
+    return (j, int(j * 0.30103))
 
 
 def get_ordinal_suffix(ordinal):
@@ -80,15 +80,15 @@ def get_ordinal_suffix(ordinal):
         raise TypeError("Invalid input type")
     else:
         ordinal = int(floor(ordinal))
-        ordinal = ordinal % 10
-        if ordinal == 1:
-            return 'st'
-        elif ordinal == 2:
-            return 'nd'
-        elif ordinal == 3:
-            return 'rd'
+        unit = ordinal % 10
+        if unit == 1 and ordinal != 11:
+            return "st"
+        elif unit == 2 and ordinal != 12:
+            return "nd"
+        elif unit == 3 and ordinal != 13:
+            return "rd"
         else:
-            return 'th'
+            return "th"
 
 
 def INT(number):
@@ -133,9 +133,14 @@ def main():
     print("")
 
     print_me("The suffix for ordinal 2 is", get_ordinal_suffix(2))
+    print_me("The suffix for ordinal 11 is", get_ordinal_suffix(11))
+    print_me("The suffix for ordinal 12 is", get_ordinal_suffix(12))
+    print_me("The suffix for ordinal 13 is", get_ordinal_suffix(13))
+    print_me("The suffix for ordinal 14 is", get_ordinal_suffix(14))
     print_me("The suffix for ordinal 16 is", get_ordinal_suffix(16))
+    print_me("The suffix for ordinal 23 is", get_ordinal_suffix(23))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()
