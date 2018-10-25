@@ -116,7 +116,7 @@ class Interpolation(object):
         self._y = []
         self._table = []
         self._tol = TOL
-        self.set(*args)         # Let's use 'set()' method to handle the setup
+        self.set(*args)  # Let's use 'set()' method to handle the setup
 
     def _order_points(self):
         """Method to put the data points in ascending order w.r.t. 'x'."""
@@ -207,7 +207,7 @@ class Interpolation(object):
             return
         # If we have only one argument, it can be a single value or tuple/list
         elif len(args) == 1:
-            if isinstance(args[0], Interpolation):          # Copy constructor
+            if isinstance(args[0], Interpolation):  # Copy constructor
                 self._x = args[0]._x
                 self._y = args[0]._y
                 self._table = args[0]._table
@@ -230,12 +230,14 @@ class Interpolation(object):
             else:
                 raise TypeError("Invalid input value")
         elif len(args) == 2:
-            if isinstance(args[0], (int, float, Angle)) or \
-                    isinstance(args[1], (int, float, Angle)):
+            if isinstance(args[0], (int, float, Angle)) or isinstance(
+                args[1], (int, float, Angle)
+            ):
                 # Insuficient data to interpolate. Raise ValueError exception
                 raise ValueError("Invalid number of input values")
-            elif isinstance(args[0], (list, tuple)) and \
-                    isinstance(args[1], (list, tuple)):
+            elif isinstance(args[0], (list, tuple)) and isinstance(
+                args[1], (list, tuple)
+            ):
                 x = args[0]
                 y = args[1]
                 # Check if they have the same length. If not, make them equal
@@ -261,13 +263,13 @@ class Interpolation(object):
             # Check that all the arguments are ints, floats or Angles
             all_numbers = True
             for arg in args:
-                all_numbers = all_numbers and \
-                            isinstance(arg, (int, float, Angle))
+                all_numbers = (all_numbers and
+                               isinstance(arg, (int, float, Angle)))
             # If any of the values failed the test, raise an exception
             if not all_numbers:
                 raise TypeError("Invalid input value")
             # Now, extract the data: Odds are x's, evens are y's
-            for i in range(int(len(args)/2.0)):
+            for i in range(int(len(args) / 2.0)):
                 self._x.append(args[2 * i])
                 self._y.append(args[2 * i + 1])
         # After self._x is found, confirm that x's are different to each other
@@ -371,7 +373,7 @@ class Interpolation(object):
         if abs(end - start) < self._tol:
             val = self._y[start]
         else:
-            x = list(self._x)       # Let's make a copy, just in case
+            x = list(self._x)  # Let's make a copy, just in case
             val = (self._newton_diff(start, end - 1) -
                    self._newton_diff(start + 1, end)) / (x[start] - x[end])
 
@@ -399,7 +401,7 @@ class Interpolation(object):
             # Check if 'x' already belongs to the data table
             for i in range(len(self._x)):
                 if abs(x - self._x[i]) < self._tol:
-                    return self._y[i]           # We don't need to look further
+                    return self._y[i]  # We don't need to look further
             # Check if Newton coefficients table is not empty
             if len(self._table) == 0:
                 raise RuntimeError("Internal table is empty. Use set().")
@@ -440,7 +442,7 @@ class Interpolation(object):
                 raise ValueError("Input value outside of interpolation range.")
             # If we only have two interpolation points, derivative is simple
             if len(self._x) == 2:
-                return (self._y[1] - self._y[0])/(self._x[1] - self._x[0])
+                return (self._y[1] - self._y[0]) / (self._x[1] - self._x[0])
             else:
                 res = self._table[1]
                 for k in range(len(self._table) - 1, 1, -1):
@@ -449,9 +451,9 @@ class Interpolation(object):
                         s = 1.0
                         for i in range(k):
                             if i != j:
-                                s *= (x - self._x[i])
+                                s *= x - self._x[i]
                         val += s
-                    res += val*self._table[k]
+                    res += val * self._table[k]
                 return res
         else:
             raise TypeError("Invalid input value")
@@ -504,8 +506,8 @@ class Interpolation(object):
         xmin = self._x[0]
         xmax = self._x[-1]
         # Check if input value is of correct type
-        if isinstance(xl, (int, float, Angle)) and \
-           isinstance(xh, (int, float, Angle)):
+        if (isinstance(xl, (int, float, Angle)) and
+                isinstance(xh, (int, float, Angle))):
             # Check if BOTH values are zero
             if xl == 0 and xh == 0:
                 xl = xmin
@@ -525,32 +527,34 @@ class Interpolation(object):
             yh = self.__call__(xh)
             # Check for a couple special cases
             if abs(yl) < self._tol:
-                return xl               # xl is a root
+                return xl  # xl is a root
             if abs(yh) < self._tol:
-                return xh               # xh is a root
+                return xh  # xh is a root
             # Check if signs of ordinates are the same
             if (yl * yh) > 0.0:
                 raise ValueError("Invalid interval: Probably no root exists")
             # We are good to go. First option: Newton's root-finding method
-            x = (xl + xh)/2.0           # Start in the middle of interval
+            x = (xl + xh) / 2.0  # Start in the middle of interval
             y = self.__call__(x)
-            num_iter = 0                # Count the number of iterations
+            num_iter = 0  # Count the number of iterations
             while abs(y) > self._tol:
                 if num_iter >= max_iter:
-                    raise ValueError("Too many iterations: Probably no root\
-                                     exists")
+                    raise ValueError(
+                        "Too many iterations: Probably no root\
+                                     exists"
+                    )
                 num_iter += 1
                 yp = self.derivative(x)
                 # If derivative is too small, switch to linear interpolation
                 if abs(yp) < 1e-3:
-                    x = (xl*yh - xh*yl)/(yh - yl)
+                    x = (xl * yh - xh * yl) / (yh - yl)
                     y = self.__call__(x)
                 else:
-                    x = x - y/yp
+                    x = x - y / yp
                     # Check if x is within limits
                     if x < xmin or x > xmax:
                         # Switch to linear interpolation
-                        x = (xl*yh - xh*yl)/(yh - yl)
+                        x = (xl * yh - xh * yl) / (yh - yl)
                         y = self.__call__(x)
                     else:
                         y = self.__call__(x)
@@ -631,9 +635,9 @@ def main():
         print("{}: {}".format(msg, val))
 
     # Let's now work with the Interpolation class
-    print('\n' + 35*'*')
+    print("\n" + 35 * "*")
     print("*** Use of Interpolation class")
-    print(35*'*' + '\n')
+    print(35 * "*" + "\n")
 
     i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])
     print("i = Interpolation([5, 3, 6, 1, 2, 4, 9], [10, 6, 12, 2, 4, 8])")
@@ -653,7 +657,7 @@ def main():
     print("")
 
     # Get the number of interpolation points stored
-    print_me("Number or interpolation points in 'j'", len(j))           # 6
+    print_me("Number or interpolation points in 'j'", len(j))  # 6
 
     print("")
 
@@ -668,14 +672,22 @@ def main():
     print("")
 
     # We can interpolate Angles too
-    k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],
-                      [Angle(0, 54, 36.125), Angle(0, 54, 24.606),
-                       Angle(0, 54, 15.486), Angle(0, 54, 8.694),
-                       Angle(0, 54, 4.133)])
-    print("k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],\n\
+    k = Interpolation(
+        [27.0, 27.5, 28.0, 28.5, 29.0],
+        [
+            Angle(0, 54, 36.125),
+            Angle(0, 54, 24.606),
+            Angle(0, 54, 15.486),
+            Angle(0, 54, 8.694),
+            Angle(0, 54, 4.133),
+        ],
+    )
+    print(
+        "k = Interpolation([27.0, 27.5, 28.0, 28.5, 29.0],\n\
                       [Angle(0, 54, 36.125), Angle(0, 54, 24.606),\n\
                        Angle(0, 54, 15.486), Angle(0, 54, 8.694),\n\
-                       Angle(0, 54, 4.133)])")
+                       Angle(0, 54, 4.133)])"
+    )
 
     print_me("k(28.278)", Angle(k(28.278)).dms_str())
 
@@ -698,9 +710,17 @@ def main():
     # Get the extremum within the interval
     print_me("m.minmax()", m.minmax())
 
-    m = Interpolation([29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
-                      [0.4913598528, 0.5145891926, 0.4646875083,
-                       0.4711658342, 0.5236885653, 0.5453707057])
+    m = Interpolation(
+        [29.43, 30.97, 27.69, 28.11, 31.58, 33.05],
+        [
+            0.4913598528,
+            0.5145891926,
+            0.4646875083,
+            0.4711658342,
+            0.5236885653,
+            0.5453707057,
+        ],
+    )
 
     print_me("sin(29.5)\t", m(29.5))
     print_me("sin(30.0)\t", m(30.0))
@@ -708,10 +728,10 @@ def main():
     # Derivative must be adjusted because degrees were used instead of radians
     print_me("sin'(29.5)\t", degrees(m.derivative(29.5)))
     print_me("sin'(30.0)\t", degrees(m.derivative(30.0)))
-    print_me("sqrt(3.0)/2.0\t", sqrt(3.0)/2.0)
+    print_me("sqrt(3.0)/2.0\t", sqrt(3.0) / 2.0)
     print_me("sin'(30.5)\t", degrees(m.derivative(30.5)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()

@@ -110,7 +110,7 @@ class CurveFitting(object):
         # Initialize data table
         self._x = []
         self._y = []
-        self.set(*args)         # Let's use 'set()' method to handle the setup
+        self.set(*args)  # Let's use 'set()' method to handle the setup
 
     def set(self, *args):
         """Method used to define the value pairs of CurveFitting object.
@@ -187,12 +187,14 @@ class CurveFitting(object):
             else:
                 raise TypeError("Invalid input value")
         elif len(args) == 2:
-            if isinstance(args[0], (int, float, Angle)) or \
-                    isinstance(args[1], (int, float, Angle)):
+            if isinstance(args[0], (int, float, Angle)) or isinstance(
+                args[1], (int, float, Angle)
+            ):
                 # Insuficient data for curve fitting. Raise ValueError
                 raise ValueError("Invalid number of input values")
-            elif isinstance(args[0], (list, tuple)) and \
-                    isinstance(args[1], (list, tuple)):
+            elif isinstance(args[0], (list, tuple)) and isinstance(
+                args[1], (list, tuple)
+            ):
                 x = args[0]
                 y = args[1]
                 # Check if they have the same length. If not, make them equal
@@ -218,13 +220,13 @@ class CurveFitting(object):
             # Check that all the arguments are ints, floats or Angles
             all_numbers = True
             for arg in args:
-                all_numbers = all_numbers and \
-                            isinstance(arg, (int, float, Angle))
+                all_numbers = (all_numbers and
+                               isinstance(arg, (int, float, Angle)))
             # If any of the values failed the test, raise an exception
             if not all_numbers:
                 raise TypeError("Invalid input value")
             # Now, extract the data: Odds are x's, evens are y's
-            for i in range(int(len(args)/2.0)):
+            for i in range(int(len(args) / 2.0)):
                 self._x.append(args[2 * i])
                 self._y.append(args[2 * i + 1])
         # Compute parameters
@@ -249,11 +251,11 @@ class CurveFitting(object):
             x2 = self._x[i] * self._x[i]
             xy = self._x[i] * self._y[i]
             self._Q += x2
-            self._R += (x2 * self._x[i])
-            self._S += (x2 * x2)
+            self._R += x2 * self._x[i]
+            self._S += x2 * x2
             self._U += xy
-            self._V += (xy * self._x[i])
-            self._W += (self._y[i] * self._y[i])
+            self._V += xy * self._x[i]
+            self._W += self._y[i] * self._y[i]
         return
 
     def __str__(self):
@@ -325,7 +327,8 @@ class CurveFitting(object):
         sy = self._T
         sx2 = self._Q
         sy2 = self._W
-        return (n*sxy - sx*sy)/(sqrt(n*sx2 - sx*sx)*sqrt(n*sy2 - sy*sy))
+        return ((n * sxy - sx * sy) / (sqrt(n * sx2 - sx * sx) *
+                                       sqrt(n * sy2 - sy * sy)))
 
     def linear_fitting(self):
         """This method returns a tuple with the 'a', 'b' coefficients of the
@@ -353,13 +356,13 @@ class CurveFitting(object):
         sx = self._P
         sy = self._T
         sx2 = self._Q
-        d = n*sx2 - sx*sx
+        d = n * sx2 - sx * sx
 
         if abs(d) < TOL:
             raise ZeroDivisionError("Input data leads to a division by zero")
 
-        a = (n*sxy - sx*sy)/d
-        b = (sy*sx2 - sx*sxy)/d
+        a = (n * sxy - sx * sy) / d
+        b = (sy * sx2 - sx * sxy) / d
         return (a, b)
 
     def quadratic_fitting(self):
@@ -389,15 +392,18 @@ class CurveFitting(object):
         t = self._T
         u = self._U
         v = self._V
-        q2 = q*q
-        d = n*q*s + 2.0*p*q*r - q2*q - p*p*s - n*r*r
+        q2 = q * q
+        d = n * q * s + 2.0 * p * q * r - q2 * q - p * p * s - n * r * r
 
         if abs(d) < TOL:
             raise ZeroDivisionError("Input data leads to a division by zero")
 
-        a = (n*q*v + p*r*t + p*q*u - q2*t - p*p*v - n*r*u)/d
-        b = (n*s*u + p*q*v + q*r*t - q2*u - p*s*t - n*r*v)/d
-        c = (q*s*t + q*r*u + p*r*v - q2*v - p*s*u - r*r*t)/d
+        a = (n * q * v + p * r * t + p * q * u -
+             q2 * t - p * p * v - n * r * u) / d
+        b = (n * s * u + p * q * v + q * r * t -
+             q2 * u - p * s * t - n * r * v) / d
+        c = (q * s * t + q * r * u + p * r * v -
+             q2 * v - p * s * u - r * r * t) / d
         return (a, b, c)
 
     def general_fitting(self, f0, f1=lambda *args: 0.0, f2=lambda *args: 0.0):
@@ -447,30 +453,33 @@ class CurveFitting(object):
         for i in range(len(xl)):
             x = xl[i]
             y = yl[i]
-            m += f0(x)*f0(x)
-            p += f0(x)*f1(x)
-            q += f0(x)*f2(x)
-            r += f1(x)*f1(x)
-            s += f1(x)*f2(x)
-            t += f2(x)*f2(x)
-            u += y*f0(x)
-            v += y*f1(x)
-            w += y*f2(x)
+            m += f0(x) * f0(x)
+            p += f0(x) * f1(x)
+            q += f0(x) * f2(x)
+            r += f1(x) * f1(x)
+            s += f1(x) * f2(x)
+            t += f2(x) * f2(x)
+            u += y * f0(x)
+            v += y * f1(x)
+            w += y * f2(x)
 
         if abs(r) < TOL and abs(t) < TOL and abs(m) >= TOL:
-            return (u/m, 0.0, 0.0)
+            return (u / m, 0.0, 0.0)
 
-        if abs(m*r*t) < TOL:
+        if abs(m * r * t) < TOL:
             raise ZeroDivisionError("Invalid input functions: They are null")
 
-        d = m*r*t + 2.0*p*q*s - m*s*s - r*q*q - t*p*p
+        d = m * r * t + 2.0 * p * q * s - m * s * s - r * q * q - t * p * p
 
         if abs(d) < TOL:
             raise ZeroDivisionError("Input data leads to a division by zero")
 
-        a = (u*(r*t - s*s) + v*(q*s - p*t) + w*(p*s - q*r))/d
-        b = (u*(s*q - p*t) + v*(m*t - q*q) + w*(p*q - m*s))/d
-        c = (u*(p*s - r*q) + v*(p*q - m*s) + w*(m*r - p*p))/d
+        a = (u * (r * t - s * s) + v * (q * s - p * t) +
+             w * (p * s - q * r)) / d
+        b = (u * (s * q - p * t) + v * (m * t - q * q) +
+             w * (p * q - m * s)) / d
+        c = (u * (p * s - r * q) + v * (p * q - m * s) +
+             w * (m * r - p * p)) / d
         return (a, b, c)
 
 
@@ -481,17 +490,61 @@ def main():
         print("{}: {}".format(msg, val))
 
     # Now let's work with the CurveFitting class
-    print('\n' + 35*'*')
+    print("\n" + 35 * "*")
     print("*** Use of CurveFitting class")
-    print(35*'*' + '\n')
+    print(35 * "*" + "\n")
 
     # Create a CurveFitting object
-    cf1 = CurveFitting([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0, 52.0,
-                        54.0, 39.0, 61.0, 42.0, 49.0, 50.0, 62.0, 44.0, 39.0,
-                        43.0, 54.0, 44.0, 37.0],
-                       [90.4, 125.3, 161.8, 143.4, 52.5, 50.8, 71.5, 152.8,
-                        131.3, 98.5, 144.8, 78.1, 89.5, 63.9, 112.1, 82.0,
-                        119.8, 161.2, 208.4, 111.6, 167.1, 162.1])
+    cf1 = CurveFitting(
+        [
+            73.0,
+            38.0,
+            35.0,
+            42.0,
+            78.0,
+            68.0,
+            74.0,
+            42.0,
+            52.0,
+            54.0,
+            39.0,
+            61.0,
+            42.0,
+            49.0,
+            50.0,
+            62.0,
+            44.0,
+            39.0,
+            43.0,
+            54.0,
+            44.0,
+            37.0,
+        ],
+        [
+            90.4,
+            125.3,
+            161.8,
+            143.4,
+            52.5,
+            50.8,
+            71.5,
+            152.8,
+            131.3,
+            98.5,
+            144.8,
+            78.1,
+            89.5,
+            63.9,
+            112.1,
+            82.0,
+            119.8,
+            161.2,
+            208.4,
+            111.6,
+            167.1,
+            162.1,
+        ],
+    )
 
     # Let's use 'linear_fitting()'
     a, b = cf1.linear_fitting()
@@ -511,7 +564,7 @@ def main():
     print("")
 
     # Get the number of value pairs internally stored
-    print_me("Number of value pairs inside 'cf2'", len(cf2))        # 22
+    print_me("Number of value pairs inside 'cf2'", len(cf2))  # 22
 
     print("")
 
@@ -520,10 +573,22 @@ def main():
     print("Correlation coefficient:")
     print_me("   r", round(r, 3))
 
-    cf2 = CurveFitting([-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5,
-                        3.0],
-                       [-9.372, -3.821, 0.291, 3.730, 5.822, 8.324, 9.083,
-                        6.957, 7.006, 0.365, -1.722])
+    cf2 = CurveFitting(
+        [-2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0],
+        [
+            -9.372,
+            -3.821,
+            0.291,
+            3.730,
+            5.822,
+            8.324,
+            9.083,
+            6.957,
+            7.006,
+            0.365,
+            -1.722,
+        ],
+    )
 
     print("")
 
@@ -536,19 +601,62 @@ def main():
 
     print("")
 
-    cf4 = CurveFitting([3, 20, 34, 50, 75, 88, 111, 129, 143, 160, 183, 200,
-                        218, 230, 248, 269, 290, 303, 320, 344],
-                       [0.0433, 0.2532, 0.3386, 0.3560, 0.4983, 0.7577, 1.4585,
-                        1.8628, 1.8264, 1.2431, -0.2043, -1.2431, -1.8422,
-                        -1.8726, -1.4889, -0.8372, -0.4377, -0.3640, -0.3508,
-                        -0.2126])
+    cf4 = CurveFitting(
+        [
+            3,
+            20,
+            34,
+            50,
+            75,
+            88,
+            111,
+            129,
+            143,
+            160,
+            183,
+            200,
+            218,
+            230,
+            248,
+            269,
+            290,
+            303,
+            320,
+            344,
+        ],
+        [
+            0.0433,
+            0.2532,
+            0.3386,
+            0.3560,
+            0.4983,
+            0.7577,
+            1.4585,
+            1.8628,
+            1.8264,
+            1.2431,
+            -0.2043,
+            -1.2431,
+            -1.8422,
+            -1.8726,
+            -1.4889,
+            -0.8372,
+            -0.4377,
+            -0.3640,
+            -0.3508,
+            -0.2126,
+        ],
+    )
 
     # Let's define the three functions to be used for fitting
-    def sin1(x): return sin(radians(x))
+    def sin1(x):
+        return sin(radians(x))
 
-    def sin2(x): return sin(radians(2.0*x))
+    def sin2(x):
+        return sin(radians(2.0 * x))
 
-    def sin3(x): return sin(radians(3.0*x))
+    def sin3(x):
+        return sin(radians(3.0 * x))
 
     # Use 'general_fitting()' here
     a, b, c = cf4.general_fitting(sin1, sin2, sin3)
@@ -566,6 +674,6 @@ def main():
                                                round(c, 3)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()

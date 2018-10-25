@@ -44,12 +44,35 @@ DAY2MIN = 1440.0
 DAY2HOURS = 24.0
 """Number of hours per day"""
 
-LEAP_TABLE = {1972.5: 1, 1973.0: 2, 1974.0: 3, 1975.0: 4, 1976.0: 5,
-              1977.0: 6, 1978.0: 7, 1979.0: 8, 1980.0: 9, 1981.5: 10,
-              1982.5: 11, 1983.5: 12, 1985.5: 13, 1988.0: 14, 1990.0: 15,
-              1991.0: 16, 1992.5: 17, 1993.5: 18, 1994.5: 19, 1996.0: 20,
-              1997.5: 21, 1999.0: 22, 2006.0: 23, 2009.0: 24, 2012.5: 25,
-              2015.5: 26, 2017.0: 27}
+LEAP_TABLE = {
+    1972.5: 1,
+    1973.0: 2,
+    1974.0: 3,
+    1975.0: 4,
+    1976.0: 5,
+    1977.0: 6,
+    1978.0: 7,
+    1979.0: 8,
+    1980.0: 9,
+    1981.5: 10,
+    1982.5: 11,
+    1983.5: 12,
+    1985.5: 13,
+    1988.0: 14,
+    1990.0: 15,
+    1991.0: 16,
+    1992.5: 17,
+    1993.5: 18,
+    1994.5: 19,
+    1996.0: 20,
+    1997.5: 21,
+    1999.0: 22,
+    2006.0: 23,
+    2009.0: 24,
+    2012.5: 25,
+    2015.5: 26,
+    2017.0: 27,
+}
 """This table represents the point in time FROM WHERE the given number of leap
 seconds is valid. Given that leap seconds are (so far) always added at
 June 30th or December 31st, a leap second added in 1997/06/30 is represented
@@ -173,7 +196,7 @@ class Epoch(object):
 
         # Initialize field
         self._jde = 0.0
-        self.set(*args, **kwargs)   # Use 'set()' method to handle the setup
+        self.set(*args, **kwargs)  # Use 'set()' method to handle the setup
 
     def set(self, *args, **kwargs):
         """Method used to set the value of this object.
@@ -280,29 +303,35 @@ class Epoch(object):
                         self._check_values(*args[0])
             elif isinstance(args[0], datetime.datetime):
                 d = args[0]
-                year, month, day, hours, minutes, sec = \
-                    self._check_values(d.year, d.month, d.day, d.hour,
-                                       d.minute, d.second + d.microsecond/1e6)
+                year, month, day, hours, minutes, sec = self._check_values(
+                    d.year,
+                    d.month,
+                    d.day,
+                    d.hour,
+                    d.minute,
+                    d.second + d.microsecond / 1e6,
+                )
             elif isinstance(args[0], datetime.date):
                 d = args[0]
-                year, month, day, hours, minutes, sec = \
-                    self._check_values(d.year, d.month, d.day)
+                year, month, day, hours, minutes, sec = self._check_values(
+                    d.year, d.month, d.day
+                )
             else:
                 raise TypeError("Invalid input type")
         elif len(args) == 2:
             # Insuficient data to set the Epoch
             raise ValueError("Invalid number of input values")
-        elif len(args) >= 3:        # Year, month, day
+        elif len(args) >= 3:  # Year, month, day
             year, month, day, hours, minutes, sec = self._check_values(*args)
-        day += hours/DAY2HOURS + minutes/DAY2MIN + sec/DAY2SEC
+        day += hours / DAY2HOURS + minutes / DAY2MIN + sec / DAY2SEC
         # Handle the 'leap_seconds' argument, if pressent
-        if 'leap_seconds' in kwargs:
+        if "leap_seconds" in kwargs:
             # Compute JDE
             self._jde = self._compute_jde(year, month, day, utc2tt=False,
-                                          leap_seconds=kwargs['leap_seconds'])
-        elif 'utc' in kwargs:
+                                          leap_seconds=kwargs["leap_seconds"])
+        elif "utc" in kwargs:
             self._jde = self._compute_jde(year, month, day,
-                                          utc2tt=kwargs['utc'])
+                                          utc2tt=kwargs["utc"])
         else:
             self._jde = self._compute_jde(year, month, day, utc2tt=False)
 
@@ -331,27 +360,27 @@ class Epoch(object):
         if m <= 2:
             y -= 1
             m += 12
-        a = INT(y/100.0)
+        a = INT(y / 100.0)
         b = 0.0
         if not Epoch.is_julian(y, m, INT(d)):
-            b = 2.0 - a + INT(a/4.0)
-        jde = INT(365.25*(y + 4716.0)) + INT(30.6001*(m + 1.0)) + \
-            d + b - 1524.5
+            b = 2.0 - a + INT(a / 4.0)
+        jde = (INT(365.25 * (y + 4716.0)) +
+               INT(30.6001 * (m + 1.0)) + d + b - 1524.5)
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
         # In this case, UTC to TT correction is applied automatically
         if utc2tt:
             if y >= 1972:
-                deltasec = 32.184   # Difference between TT and TAI
-                deltasec += 10.0    # Difference between UTC and TAI in 1972
+                deltasec = 32.184  # Difference between TT and TAI
+                deltasec += 10.0  # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(y, m)
-        else:                           # Correction is NOT automatic
-            if leap_seconds != 0.0:     # We apply provided leap seconds
+        else:  # Correction is NOT automatic
+            if leap_seconds != 0.0:  # We apply provided leap seconds
                 if y >= 1972:
-                    deltasec = 32.184   # Difference between TT and TAI
-                    deltasec += 10.0    # Difference between UTC-TAI in 1972
+                    deltasec = 32.184  # Difference between TT and TAI
+                    deltasec += 10.0  # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
-        return jde + deltasec/DAY2SEC
+        return jde + deltasec / DAY2SEC
 
     def _check_values(self, *args):
         """This method takes the input arguments to 'set()' method (year,
@@ -383,17 +412,17 @@ class Epoch(object):
         # Carry out some basic checks
         if len(args) < 3:
             raise ValueError("Invalid number of input values")
-        elif len(args) >= 3:        # Year, month, day
+        elif len(args) >= 3:  # Year, month, day
             year = args[0]
             month = args[1]
             day = args[2]
-        if len(args) >= 4:          # Year, month, day, hour
+        if len(args) >= 4:  # Year, month, day, hour
             hours = args[3]
-        if len(args) >= 5:          # Year, month, day, hour, minutes
+        if len(args) >= 5:  # Year, month, day, hour, minutes
             minutes = args[4]
-        if len(args) >= 6:          # Year, month, day, hour, minutes, seconds
+        if len(args) >= 6:  # Year, month, day, hour, minutes, seconds
             sec = args[5]
-        if year < -4712:        # No negative JDE will be allowed
+        if year < -4712:  # No negative JDE will be allowed
             raise ValueError("Invalid value for the input year")
         if day < 1 or day > 31:
             raise ValueError("Invalid value for the input day")
@@ -458,8 +487,9 @@ class Epoch(object):
                     t = Epoch(args[0][0], args[0][1], args[0][2], **kwargs)
                 else:
                     raise ValueError("Invalid input")
-            elif isinstance(args[0], datetime.datetime) or \
-                    isinstance(args[0], datetime.date):
+            elif isinstance(args[0], datetime.datetime) or isinstance(
+                args[0], datetime.date
+            ):
                 t = Epoch(args[0].year, args[0].month, args[0].day, **kwargs)
             else:
                 raise TypeError("Invalid input type")
@@ -490,8 +520,11 @@ class Epoch(object):
         True
         """
 
-        if (year < 1582) or (year == 1582 and month < 10) or \
-           (year == 1582 and month == 10 and day < 5.0):
+        if (
+            (year < 1582)
+            or (year == 1582 and month < 10)
+            or (year == 1582 and month == 10 and day < 5.0)
+        ):
             return True
         else:
             return False
@@ -547,15 +580,38 @@ class Epoch(object):
         'March'
         """
 
-        months_mmm = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        months_mmm = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ]
 
-        months_full = ["January", "February", "March", "April", "May", "June",
-                       "July", "August", "September", "October", "November",
-                       "December"]
+        months_full = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ]
 
         if isinstance(month, (int, float)):
-            month = int(month)            # Truncate if it has decimals
+            month = int(month)  # Truncate if it has decimals
             if month >= 1 and month <= 12:
                 if not as_string:
                     return month
@@ -568,7 +624,7 @@ class Epoch(object):
             if len(month) == 3:
                 if month in months_mmm:
                     if not as_string:
-                        return (months_mmm.index(month) + 1)
+                        return months_mmm.index(month) + 1
                     else:
                         return months_full[months_mmm.index(month)]
                 else:
@@ -576,7 +632,7 @@ class Epoch(object):
             else:
                 if month in months_full:
                     if not as_string:
-                        return (months_full.index(month) + 1)
+                        return months_full.index(month) + 1
                     else:
                         return month
                 else:
@@ -673,7 +729,7 @@ class Epoch(object):
             raise ValueError("Invalid input data")
         day = int(dd)
         frac = dd % 1
-        if yyyy >= 1:                           # datetime's minimum year is 1
+        if yyyy >= 1:  # datetime's minimum year is 1
             try:
                 d = datetime.date(yyyy, mm, day)
             except ValueError:
@@ -681,7 +737,8 @@ class Epoch(object):
             doy = d.timetuple().tm_yday
         else:
             k = 2 if Epoch.is_leap(yyyy) else 1
-            doy = INT((275.0*mm)/9.0) - k*INT((mm + 9.0)/12.0) + day - 30.0
+            doy = (INT((275.0 * mm) / 9.0) -
+                   k * INT((mm + 9.0) / 12.0) + day - 30.0)
         return float(doy + frac)
 
     @staticmethod
@@ -736,7 +793,7 @@ class Epoch(object):
         if isinstance(year, (int, float)) and isinstance(doy, (int, float)):
             frac = float(doy % 1)
             doy = int(doy)
-            if year >= 1:                   # datetime's minimum year is 1
+            if year >= 1:  # datetime's minimum year is 1
                 ref = datetime.date(year, 1, 1)
                 mydate = datetime.date.fromordinal(ref.toordinal() + doy - 1)
                 return year, mydate.month, mydate.day + frac
@@ -748,8 +805,9 @@ class Epoch(object):
                 if doy < 32:
                     m = 1
                 else:
-                    m = INT((9.0*(k + doy))/275.0 + 0.98)
-                d = doy - INT((275.0*m)/9.0) + k*INT((m + 9.0)/12.0) + 30
+                    m = INT((9.0 * (k + doy)) / 275.0 + 0.98)
+                d = (doy - INT((275.0 * m) / 9.0) +
+                     k * INT((m + 9.0) / 12.0) + 30)
                 return year, int(m), d + frac
         else:
             raise ValueError("Invalid input values")
@@ -788,9 +846,9 @@ class Epoch(object):
 
         list_years = sorted(LEAP_TABLE.keys())
         # First test the extremes of the table
-        if (year + month/12.0) <= list_years[0]:
+        if (year + month / 12.0) <= list_years[0]:
             return 0
-        if (year + month/12.0) >= list_years[-1]:
+        if (year + month / 12.0) >= list_years[-1]:
             return LEAP_TABLE[list_years[-1]]
         lyear = (year + 0.25) if month <= 6 else (year + 0.75)
         idx = 0
@@ -841,7 +899,8 @@ class Epoch(object):
         utchour = datetime.datetime.utcnow().hour
         localminute = datetime.datetime.now().minute
         utcminute = datetime.datetime.utcnow().minute
-        return (localhour - utchour)*3600.0 + (localminute - utcminute)*60.0
+        return ((localhour - utchour) * 3600.0 +
+                (localminute - utcminute) * 60.0)
 
     @staticmethod
     def easter(year):
@@ -879,28 +938,28 @@ class Epoch(object):
         if year >= 1583:
             # In this case, we are using the Gregorian calendar
             a = year % 19
-            b = INT(year/100.0)
+            b = INT(year / 100.0)
             c = year % 100
-            d = INT(b/4.0)
+            d = INT(b / 4.0)
             e = b % 4
-            f = INT((b + 8.0)/25.0)
-            g = INT((b - f + 1.0)/3.0)
-            h = (19*a + b - d - g + 15) % 30
-            i = INT(c/4.0)
+            f = INT((b + 8.0) / 25.0)
+            g = INT((b - f + 1.0) / 3.0)
+            h = (19 * a + b - d - g + 15) % 30
+            i = INT(c / 4.0)
             k = c % 4
-            ll = (32 + 2*(e + i) - h - k) % 7
-            m = INT((a + 11*h + 22*ll)/451.0)
-            n = INT((h + ll - 7*m + 114)/31.0)
-            p = (h + ll - 7*m + 114) % 31
+            ll = (32 + 2 * (e + i) - h - k) % 7
+            m = INT((a + 11 * h + 22 * ll) / 451.0)
+            n = INT((h + ll - 7 * m + 114) / 31.0)
+            p = (h + ll - 7 * m + 114) % 31
             return (n, p + 1)
         else:
             # The Julian calendar is used here
             a = year % 4
             b = year % 7
             c = year % 19
-            d = (19*c + 15) % 30
-            e = (2*a + 4*b - d + 34) % 7
-            f = INT((d + e + 114)/31.0)
+            d = (19 * c + 15) % 30
+            e = (2 * a + 4 * b - d + 34) % 7
+            f = INT((d + e + 114) / 31.0)
             g = (d + e + 114) % 31
             return (f, g + 1)
 
@@ -925,13 +984,13 @@ class Epoch(object):
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
         year = INT(year)
-        c = INT(year/100.0)
-        s = 0 if year < 1583 else INT((3.0*c - 5.0)/4.0)
-        a = (12*(year + 1)) % 19
+        c = INT(year / 100.0)
+        s = 0 if year < 1583 else INT((3.0 * c - 5.0) / 4.0)
+        a = (12 * (year + 1)) % 19
         b = year % 4
-        q = -1.904412361576 + 1.554241796621*a + 0.25*b \
-            - 0.003177794022*year + s
-        j = (INT(q) + 3*year + 5*b + 2 + s) % 7
+        q = (-1.904412361576 + 1.554241796621 * a +
+             0.25 * b - 0.003177794022 * year + s)
+        j = (INT(q) + 3 * year + 5 * b + 2 + s) % 7
         r = q - INT(q)
         if j == 2 or j == 4 or j == 6:
             d = INT(q) + 23
@@ -970,9 +1029,11 @@ class Epoch(object):
         """
 
         # First, check that input types are correct
-        if not isinstance(year, (int, float)) or \
-                not isinstance(month, (int, float)) or \
-                not isinstance(day, (int, float)):
+        if (
+            not isinstance(year, (int, float))
+            or not isinstance(month, (int, float))
+            or not isinstance(day, (int, float))
+        ):
             raise TypeError("Invalid input type")
         if day < 1 or day > 30 or month < 1 or month > 12 or year < 1:
             raise ValueError("Invalid input data")
@@ -981,16 +1042,16 @@ class Epoch(object):
         h = INT(year)
         m = INT(month)
         d = INT(day)
-        n = d + INT(29.5001*(m - 1) + 0.99)
-        q = INT(h/30.0)
+        n = d + INT(29.5001 * (m - 1) + 0.99)
+        q = INT(h / 30.0)
         r = h % 30
-        a = INT((11.0*r + 3.0)/30.0)
-        w = 404*q + 354*r + 208 + a
-        q1 = INT(w/1461.0)
+        a = INT((11.0 * r + 3.0) / 30.0)
+        w = 404 * q + 354 * r + 208 + a
+        q1 = INT(w / 1461.0)
         q2 = w % 1461
-        g = 621 + 4*INT(7.0*q + q1)
-        k = INT(q2/365.2422)
-        e = INT(365.2422*k)
+        g = 621 + 4 * INT(7.0 * q + q1)
+        k = INT(q2 / 365.2422)
+        e = INT(365.2422 * k)
         j = q2 - e + n - 1
         x = g + k
         if j > 366 and x % 4 == 0:
@@ -1002,14 +1063,14 @@ class Epoch(object):
 
         # Check if date is in Gregorian calendar. '277' is DOY of October 4th
         if (x > 1583) or (x == 1582 and j > 277):
-            jd = INT(365.25*(x - 1.0)) + 1721423 + j
-            alpha = INT((jd - 1867216.25)/36524.25)
-            beta = jd if jd < 2299161 else (jd + 1 + alpha - INT(alpha/4.0))
+            jd = INT(365.25 * (x - 1.0)) + 1721423 + j
+            alpha = INT((jd - 1867216.25) / 36524.25)
+            beta = jd if jd < 2299161 else (jd + 1 + alpha - INT(alpha / 4.0))
             b = beta + 1524
-            c = INT((b - 122.1)/365.25)
-            d = INT(365.25*c)
-            e = INT((b - d)/30.6001)
-            day = b - d - INT(30.6001*e)
+            c = INT((b - 122.1) / 365.25)
+            d = INT(365.25 * c)
+            e = INT((b - d) / 30.6001)
+            day = b - d - INT(30.6001 * e)
             month = (e - 1) if e < 14 else (e - 13)
             year = (c - 4716) if month > 2 else (c - 4715)
             return year, month, day
@@ -1038,9 +1099,11 @@ class Epoch(object):
         """
 
         # First, check that input types are correct
-        if not isinstance(year, (int, float)) or \
-                not isinstance(month, (int, float)) or \
-                not isinstance(day, (int, float)):
+        if (
+            not isinstance(year, (int, float))
+            or not isinstance(month, (int, float))
+            or not isinstance(day, (int, float))
+        ):
             raise TypeError("Invalid input type")
         if day < 1 or day > 31 or month < 1 or month > 12 or year < -4712:
             raise ValueError("Invalid input data")
@@ -1051,37 +1114,37 @@ class Epoch(object):
         if m < 3:
             x -= 1
             m += 12
-        alpha = INT(x/100.0)
-        beta = 2 - alpha + INT(alpha/4.0)
-        b = INT(365.25*x) + INT(30.6001*(m + 1.0)) + d + 1722519 + beta
-        c = INT((b - 122.1)/365.25)
-        d = INT(365.25*c)
-        e = INT((b - d)/30.6001)
-        d = b - d - INT(30.6001*e)
+        alpha = INT(x / 100.0)
+        beta = 2 - alpha + INT(alpha / 4.0)
+        b = INT(365.25 * x) + INT(30.6001 * (m + 1.0)) + d + 1722519 + beta
+        c = INT((b - 122.1) / 365.25)
+        d = INT(365.25 * c)
+        e = INT((b - d) / 30.6001)
+        d = b - d - INT(30.6001 * e)
         m = (e - 1) if e < 14 else (e - 13)
         x = (c - 4716) if month > 2 else (c - 4715)
         w = 1 if x % 4 == 0 else 2
-        n = INT((275.0*m)/9.0) - w*INT((m + 9.0)/12.0) + d - 30
+        n = INT((275.0 * m) / 9.0) - w * INT((m + 9.0) / 12.0) + d - 30
         a = x - 623
-        b = INT(a/4.0)
+        b = INT(a / 4.0)
         c = a % 4
-        c1 = 365.2501*c
+        c1 = 365.2501 * c
         c2 = INT(c1)
         if c1 - c2 > 0.5:
             c2 += 1
-        dp = 1461*b + 170 + c2
-        q = INT(dp/10631.0)
+        dp = 1461 * b + 170 + c2
+        q = INT(dp / 10631.0)
         r = dp % 10631
-        j = INT(r/354.0)
+        j = INT(r / 354.0)
         k = r % 354
-        o = INT((11.0*j + 14.0)/30.0)
-        h = 30*q + j + 1
+        o = INT((11.0 * j + 14.0) / 30.0)
+        h = 30 * q + j + 1
         jj = k - o + n - 1
         # jj is the number of the day in the moslem year h. If jj > 354 we need
         # to know if h is a leap year
         if jj > 354:
             cl = h % 30
-            dl = (11*cl + 3) % 30
+            dl = (11 * cl + 3) % 30
             if dl < 19:
                 jj -= 354
                 h += 1
@@ -1096,9 +1159,9 @@ class Epoch(object):
             m = 12
             d = 30
         else:
-            s = INT((jj - 1.0)/29.5)
+            s = INT((jj - 1.0) / 29.5)
             m = 1 + s
-            d = INT(jj - 29.5*s)
+            d = INT(jj - 29.5 * s)
         return h, m, d
 
     def __str__(self):
@@ -1168,13 +1231,13 @@ class Epoch(object):
         if z < 2299161:
             a = z
         else:
-            alpha = INT((z - 1867216.25)/36524.25)
-            a = z + 1 + alpha - INT(alpha/4.0)
+            alpha = INT((z - 1867216.25) / 36524.25)
+            a = z + 1 + alpha - INT(alpha / 4.0)
         b = a + 1524
-        c = INT((b - 122.1)/365.25)
-        d = INT(365.25*c)
-        e = INT((b - d)/30.6001)
-        day = b - d - INT(30.6001*e) + f
+        c = INT((b - 122.1) / 365.25)
+        d = INT(365.25 * c)
+        e = INT((b - d) / 30.6001)
+        day = b - d - INT(30.6001 * e) + f
         if e < 14:
             month = e - 1
         elif e == 14 or e == 15:
@@ -1187,11 +1250,11 @@ class Epoch(object):
         month = int(month)
 
         tt2utc = False
-        if 'utc' in kwargs:
-            tt2utc = kwargs['utc']
-        if 'leap_seconds' in kwargs:
+        if "utc" in kwargs:
+            tt2utc = kwargs["utc"]
+        if "leap_seconds" in kwargs:
             tt2utc = False
-            leap_seconds = kwargs['leap_seconds']
+            leap_seconds = kwargs["leap_seconds"]
         else:
             leap_seconds = 0.0
         # If enabled, let's convert from TT to UTC, subtracting needed seconds
@@ -1200,19 +1263,19 @@ class Epoch(object):
         # for dates after July 1st, 1972
         if tt2utc:
             if year > 1972 or (year == 1972 and month >= 7):
-                deltasec = 32.184   # Difference between TT and TAI
-                deltasec += 10.0    # Difference between UTC and TAI in 1972
+                deltasec = 32.184  # Difference between TT and TAI
+                deltasec += 10.0  # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(year, month)
-        else:                           # Correction is NOT automatic
-            if leap_seconds != 0.0:     # We apply provided leap seconds
+        else:  # Correction is NOT automatic
+            if leap_seconds != 0.0:  # We apply provided leap seconds
                 if year > 1972 or (year == 1972 and month >= 7):
-                    deltasec = 32.184   # Difference between TT and TAI
-                    deltasec += 10.0    # Difference between UTC-TAI in 1972
+                    deltasec = 32.184  # Difference between TT and TAI
+                    deltasec += 10.0  # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
 
         if deltasec != 0.0:
             doy = Epoch.get_doy(year, month, day)
-            doy -= deltasec/DAY2SEC
+            doy -= deltasec / DAY2SEC
             # Check that we didn't change year
             if doy < 1.0:
                 year -= 1
@@ -1256,10 +1319,10 @@ class Epoch(object):
         y, m, d = self.get_date(**kwargs)
         r = d % 1
         d = int(d)
-        h = int(r*24.0)
-        r = r*24 - h
-        mi = int(r*60.0)
-        s = 60.0*(r*60.0 - mi)
+        h = int(r * 24.0)
+        r = r * 24 - h
+        mi = int(r * 60.0)
+        s = 60.0 * (r * 60.0 - mi)
         return y, m, d, h, mi, s
 
     @staticmethod
@@ -1315,60 +1378,106 @@ class Epoch(object):
         69.3
         """
 
-        y = year + (month - 0.5)/12.0
+        y = year + (month - 0.5) / 12.0
         if year < -500:
-            u = (year - 1820.0)/100.0
-            dt = -20.0 + 32.0*u*u
+            u = (year - 1820.0) / 100.0
+            dt = -20.0 + 32.0 * u * u
         elif year >= -500 and year < 500:
-            u = y/100.0
-            dt = 10583.6 + u*(-1014.41 + u*(33.78311 + u*(-5.952053
-                              + u*(-0.1798452 + u*(0.022174192
-                                   + 0.0090316521*u)))))
+            u = y / 100.0
+            dt = 10583.6 + u * (
+                -1014.41
+                + u
+                * (
+                    33.78311
+                    + u
+                    * (
+                        -5.952053
+                        + (u * (-0.1798452 +
+                                u * (0.022174192 + 0.0090316521 * u)))
+                    )
+                )
+            )
         elif year >= 500 and year < 1600:
-            dt = 1574.2 + u*(-556.01 + u*(71.23472 + u*(0.319781
-                             + u*(-0.8503463 + u*(-0.005050998
-                                                  + 0.0083572073*u)))))
+            dt = 1574.2 + u * (
+                -556.01
+                + u
+                * (
+                    71.23472
+                    + u
+                    * (
+                        0.319781
+                        + (u * (-0.8503463 +
+                                u * (-0.005050998 + 0.0083572073 * u)))
+                    )
+                )
+            )
         elif year >= 1600 and year < 1700:
             t = y - 1600.0
-            dt = 120.0 + t*(-0.9808 + t*(-0.01532 + t/7129.0))
+            dt = 120.0 + t * (-0.9808 + t * (-0.01532 + t / 7129.0))
         elif year >= 1700 and year < 1800:
             t = y - 1700.0
-            dt = 8.83 + t*(0.1603 + t*(-0.0059285 + t*(0.00013336
-                                                       - t/1174000.0)))
+            dt = 8.83 + t * (
+                0.1603 + t * (-0.0059285 + t * (0.00013336 - t / 1174000.0))
+            )
         elif year >= 1800 and year < 1860:
             t = y - 1800.0
-            dt = 13.72 + t*(-0.332447 + t*(0.0068612 + t*(0.0041116
-                            + t*(-0.00037436 + t*(0.0000121272
-                                 + t*(-0.0000001699 + 0.000000000875*t))))))
+            dt = 13.72 + t * (
+                -0.332447
+                + t
+                * (
+                    0.0068612
+                    + t
+                    * (
+                        0.0041116
+                        + t
+                        * (
+                            -0.00037436
+                            + t
+                            * (0.0000121272 + t * (-0.0000001699 +
+                                                   0.000000000875 * t))
+                        )
+                    )
+                )
+            )
         elif year >= 1860 and year < 1900:
             t = y - 1860.0
-            dt = 7.62 + t*(0.5737 + t*(-0.251754 + t*(0.01680668
-                           + t*(-0.0004473624 + t/233174.0))))
+            dt = 7.62 + t * (
+                0.5737
+                + t
+                * (-0.251754 + t * (0.01680668 +
+                                    t * (-0.0004473624 + t / 233174.0)))
+            )
         elif year >= 1900 and year < 1920:
             t = y - 1900.0
-            dt = -2.79 + t*(1.494119 + t*(-0.0598939 + t*(0.0061966
-                                                          - 0.000197*t)))
+            dt = -2.79 + t * (
+                1.494119 + t * (-0.0598939 + t * (0.0061966 - 0.000197 * t))
+            )
         elif year >= 1920 and year < 1941:
             t = y - 1920.0
-            dt = 21.20 + t*(0.84493 + t*(-0.076100 + 0.0020936*t))
+            dt = 21.20 + t * (0.84493 + t * (-0.076100 + 0.0020936 * t))
         elif year >= 1941 and year < 1961:
             t = y - 1950.0
-            dt = 29.07 + t*(0.407 + t*(-1.0/233.0 + t/2547.0))
+            dt = 29.07 + t * (0.407 + t * (-1.0 / 233.0 + t / 2547.0))
         elif year >= 1961 and year < 1986:
             t = y - 1975.0
-            dt = 45.45 + t*(1.067 + t*(-1.0/260.0 - t/718.0))
+            dt = 45.45 + t * (1.067 + t * (-1.0 / 260.0 - t / 718.0))
         elif year >= 1986 and year < 2005:
             t = y - 2000.0
-            dt = 63.86 + t*(0.3345 + t*(-0.060374 + t*(0.0017275
-                                        + t*(0.000651814 + 0.00002373599*t))))
+            dt = 63.86 + t * (
+                0.3345
+                + t
+                * (-0.060374 + t * (0.0017275 +
+                                    t * (0.000651814 + 0.00002373599 * t)))
+            )
         elif year >= 2005 and year < 2050:
             t = y - 2000.0
-            dt = 62.92 + t*(0.32217 + 0.005589*t)
+            dt = 62.92 + t * (0.32217 + 0.005589 * t)
         elif year >= 2050 and year < 2150:
-            dt = -20.0 + 32.0 * ((y - 1820.0)/100.0)**2 - 0.5628*(2150.0 - y)
+            dt = (-20.0 + 32.0 * ((y - 1820.0) / 100.0) ** 2 -
+                  0.5628 * (2150.0 - y))
         else:
-            u = (year - 1820.0)/100.0
-            dt = -20.0 + 32.0*u*u
+            u = (year - 1820.0) / 100.0
+            dt = -20.0 + 32.0 * u * u
         return dt
 
     def dow(self, as_string=False):
@@ -1410,8 +1519,15 @@ class Epoch(object):
         if not as_string:
             return doy
         else:
-            day_names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-                         'Thursday', 'Friday', 'Saturday']
+            day_names = [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+            ]
             return day_names[doy]
 
     def mean_sidereal_time(self):
@@ -1438,12 +1554,12 @@ class Epoch(object):
         """
 
         jd0 = INT(self()) + 0.5 if self() % 1 >= 0.5 else INT(self()) - 0.5
-        t = (jd0 - 2451545.0)/36525.0
-        theta0 = 6.0/DAY2HOURS + 41.0/DAY2MIN + 50.54841/DAY2SEC
-        s = t*(8640184.812866 + t*(0.093104 - 0.0000062*t))
+        t = (jd0 - 2451545.0) / 36525.0
+        theta0 = 6.0 / DAY2HOURS + 41.0 / DAY2MIN + 50.54841 / DAY2SEC
+        s = t * (8640184.812866 + t * (0.093104 - 0.0000062 * t))
         theta0 += (s % DAY2SEC) / DAY2SEC
         deltajd = self() - jd0
-        if abs(deltajd) < TOL:                      # In this case, we are done
+        if abs(deltajd) < TOL:  # In this case, we are done
             return theta0 % 1
         else:
             deltajd *= 1.00273790935
@@ -1479,19 +1595,21 @@ class Epoch(object):
         0.54914508
         """
 
-        if not (isinstance(true_obliquity, (int, float, Angle)) and
-                isinstance(nutation_longitude, (int, float, Angle))):
+        if not (
+            isinstance(true_obliquity, (int, float, Angle))
+            and isinstance(nutation_longitude, (int, float, Angle))
+        ):
             raise TypeError("Invalid input value")
         if isinstance(true_obliquity, Angle):
-            true_obliquity = float(true_obliquity)      # Convert to a float
+            true_obliquity = float(true_obliquity)  # Convert to a float
         if isinstance(nutation_longitude, Angle):
             nutation_longitude = float(nutation_longitude)
         mean_stime = self.mean_sidereal_time()
-        epsilon = radians(true_obliquity)               # Convert to radians
-        delta_psi = nutation_longitude*3600.0  # From degrees to seconds of arc
+        epsilon = radians(true_obliquity)  # Convert to radians
+        delta_psi = nutation_longitude * 3600.0  # From degrees to seconds
         # Correction is in seconds of arc: It must be converted to seconds of
         # time, and then to days (sidereal time is given here in days)
-        return mean_stime + ((delta_psi*cos(epsilon))/15.0)/DAY2SEC
+        return mean_stime + ((delta_psi * cos(epsilon)) / 15.0) / DAY2SEC
 
     def mjd(self):
         """This method returns the Modified Julian Day (MJD).
@@ -1653,7 +1771,7 @@ class Epoch(object):
         """
 
         if isinstance(b, (int, float)):
-            return self.__add__(b)              # It is the same as by the left
+            return self.__add__(b)  # It is the same as by the left
         else:
             raise TypeError("Wrong operand type")
 
@@ -1733,7 +1851,7 @@ class Epoch(object):
         False
         """
 
-        return not self.__eq__(b)           # '!=' == 'not(==)'
+        return not self.__eq__(b)  # '!=' == 'not(==)'
 
     def __lt__(self, b):
         """This method defines the 'is less than' operator between Epochs.
@@ -1768,7 +1886,7 @@ class Epoch(object):
         True
         """
 
-        return not self.__lt__(b)           # '>=' == 'not(<)'
+        return not self.__lt__(b)  # '>=' == 'not(<)'
 
     def __gt__(self, b):
         """This method defines the 'is greater than' operator between Epochs.
@@ -1811,7 +1929,7 @@ class Epoch(object):
         True
         """
 
-        return not self.__gt__(b)           # '<=' == 'not(>)'
+        return not self.__gt__(b)  # '<=' == 'not(>)'
 
 
 JDE2000 = Epoch(2000, 1, 1.5)
@@ -1825,15 +1943,15 @@ def main():
         print("{}: {}".format(msg, val))
 
     # Let's do some work with the Epoch class
-    print('\n' + 35*'*')
+    print("\n" + 35 * "*")
     print("*** Use of Epoch class")
-    print(35*'*' + '\n')
+    print(35 * "*" + "\n")
 
     e = Epoch(1987, 6, 19.5)
     print_me("JDE for 1987/6/19.5", e)
 
     # Redefine the Epoch object
-    e.set(333, 'Jan', 27, 12)
+    e.set(333, "Jan", 27, 12)
     print_me("JDE for 333/1/27.5", e)
 
     # We can create an Epoch from a 'date' or 'datetime' object
@@ -1887,21 +2005,24 @@ def main():
     print("")
 
     # It is possible to get the day of the week corresponding to a given date
-    e = Epoch(2018, 'Feb', 15)
+    e = Epoch(2018, "Feb", 15)
     print_me("The day of week of 2018/2/15 is", e.dow(as_string=True))
 
     print("")
 
     # In some cases it is useful to get the Modified Julian Day (MJD)
-    e = Epoch(1923, 'August', 23)
+    e = Epoch(1923, "August", 23)
     print_me("Modified Julian Day for 1923/8/23", round(e.mjd(), 2))
 
     print("")
 
     # If your system is appropriately configured, you can get the difference in
     # seconds between your local time and UTC
-    print_me("To convert from local system time to UTC you must add/subtract" +
-             " this amount of seconds", Epoch.utc2local())
+    print_me(
+        "To convert from local system time to UTC you must add/subtract"
+        + " this amount of seconds",
+        Epoch.utc2local(),
+    )
 
     print("")
 
@@ -1919,18 +2040,22 @@ def main():
     st1 = round(e.mean_sidereal_time(), 9)
     e = Epoch(1987, 4, 11)
     st2 = round(e.mean_sidereal_time(), 9)
-    ds = (st2 - st1)*DAY2MIN
-    msg = "{}m {}s".format(INT(ds), (ds % 1)*60.0)
+    ds = (st2 - st1) * DAY2MIN
+    msg = "{}m {}s".format(INT(ds), (ds % 1) * 60.0)
     print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
 
     print("")
 
-    print("When correcting for nutation-related effects, we get the " +
-          "'apparent' sidereal time:")
+    print(
+        "When correcting for nutation-related effects, we get the "
+        + "'apparent' sidereal time:"
+    )
     e = Epoch(1987, 4, 10)
     print("e = Epoch(1987, 4, 10)")
-    print_me("e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
-             e.apparent_sidereal_time(23.44357, (-3.788)/3600.0))
+    print_me(
+        "e.apparent_sidereal_time(23.44357, (-3.788)/3600.0)",
+        e.apparent_sidereal_time(23.44357, (-3.788) / 3600.0),
+    )
     #    0.549145082637
 
     print("")
@@ -1939,8 +2064,14 @@ def main():
     # Let's spice up the output a little bit, calling dow() and get_month()
     month, day = Epoch.easter(2019)
     e = Epoch(2019, month, day)
-    s = e.dow(as_string=True) + ", " + str(day) + get_ordinal_suffix(day) + \
-        " of " + Epoch.get_month(month, as_string=True)
+    s = (
+        e.dow(as_string=True)
+        + ", "
+        + str(day)
+        + get_ordinal_suffix(day)
+        + " of "
+        + Epoch.get_month(month, as_string=True)
+    )
     print_me("Easter day for 2019", s)
     # I know Easter is always on Sunday, by the way... ;-)
 
@@ -1948,8 +2079,12 @@ def main():
 
     # Compute the date of the Jewish Easter (Pesach) for a given year
     month, day = Epoch.jewish_pesach(1990)
-    s = str(day) + get_ordinal_suffix(day) + " of " + \
-        Epoch.get_month(month, as_string=True)
+    s = (
+        str(day)
+        + get_ordinal_suffix(day)
+        + " of "
+        + Epoch.get_month(month, as_string=True)
+    )
     print_me("Jewish Pesach day for 1990", s)
 
     print("")
@@ -1959,11 +2094,15 @@ def main():
     print_me("The date 1421/1/1 in the Moslem calendar is, in Gregorian " +
              "calendar", "{}/{}/{}".format(y, m, d))
     y, m, d = Epoch.moslem2gregorian(1439, 9, 1)
-    print_me("The start of Ramadan month (9/1) for Gregorian year 2018 is",
-             "{}/{}/{}".format(y, m, d))
+    print_me(
+        "The start of Ramadan month (9/1) for Gregorian year 2018 is",
+        "{}/{}/{}".format(y, m, d),
+    )
     # We can go from the Gregorian calendar back to the Moslem calendar too
-    print_me("Date 1991/8/13 in Gregorian calendar is, in Moslem calendar",
-             "{}/{}/{}".format(*Epoch.gregorian2moslem(1991, 8, 13)))
+    print_me(
+        "Date 1991/8/13 in Gregorian calendar is, in Moslem calendar",
+        "{}/{}/{}".format(*Epoch.gregorian2moslem(1991, 8, 13)),
+    )
     # Note: The '*' before 'Epoch' will _unpack_ the tuple into components
 
     print("")
@@ -1998,7 +2137,7 @@ def main():
     print_me("2003/12/31 plus 32.5 days is", s)
 
     a = Epoch(2001, 12, 31.0)
-    a -= 2*365
+    a -= 2 * 365
     y, m, d = a.get_date()
     s = str(y) + "/" + str(m) + "/" + str(round(d, 2))
     print_me("2001/12/31 minus 2*365 days is", s)
@@ -2021,6 +2160,6 @@ def main():
     print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()

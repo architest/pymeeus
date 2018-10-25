@@ -22,8 +22,12 @@ from math import sin, cos, atan2, asin
 
 from Angle import Angle
 from Epoch import Epoch, JDE2000
-from Coordinates import mean_obliquity, true_obliquity, nutation_longitude, \
-        ecliptical2equatorial
+from Coordinates import (
+    mean_obliquity,
+    true_obliquity,
+    nutation_longitude,
+    ecliptical2equatorial,
+)
 from Earth import Earth
 
 
@@ -70,29 +74,31 @@ class Sun(object):
         """
 
         # First check that input values are of correct types
-        if not(isinstance(epoch, Epoch)):
+        if not (isinstance(epoch, Epoch)):
             raise TypeError("Invalid input type")
         # Compute the time in Julian centuries
-        t = (epoch - JDE2000)/36525.0
+        t = (epoch - JDE2000) / 36525.0
         # Compute the geometric mean longitude of the Sun
-        l0 = 280.46646 + t*(36000.76983 + t*0.0003032)
+        l0 = 280.46646 + t * (36000.76983 + t * 0.0003032)
         l0 = Angle(l0)
         l0.to_positive()
         # Now, compute the mean anomaly of the Sun
-        m = 357.52911 + t*(35999.05029 - t*0.0001537)
+        m = 357.52911 + t * (35999.05029 - t * 0.0001537)
         m = Angle(m)
         mrad = m.rad()
         # The eccentricity of the Earth's orbit
-        e = 0.016708634 - t*(0.000042037 + t*0.0000001267)
+        e = 0.016708634 - t * (0.000042037 + t * 0.0000001267)
         # Equation of the center
-        c = (1.914602 - t*(0.004817 + t*0.000014))*sin(mrad) + \
-            (0.019993 - t*0.000101)*sin(2.0*mrad) + \
-            0.000289*sin(3.0*mrad)
+        c = (
+            (1.914602 - t * (0.004817 + t * 0.000014)) * sin(mrad)
+            + (0.019993 - t * 0.000101) * sin(2.0 * mrad)
+            + 0.000289 * sin(3.0 * mrad)
+        )
         c = Angle(c)
         true_lon = l0 + c
         true_anom = m + c
         # Sun's radius vector
-        r = (1.000001018*(1.0 - e*e))/(1.0 + e*cos(true_anom.rad()))
+        r = (1.000001018 * (1.0 - e * e)) / (1.0 + e * cos(true_anom.rad()))
         return (true_lon, r)
 
     @staticmethod
@@ -120,11 +126,11 @@ class Sun(object):
         sun = Sun()
         true_lon, r = sun.true_longitude_coarse(epoch)
         # Compute the time in Julian centuries
-        t = (epoch - JDE2000)/36525.0
+        t = (epoch - JDE2000) / 36525.0
         # Then correct for nutation and aberration
-        omega = 125.04 - 1934.136*t
+        omega = 125.04 - 1934.136 * t
         omega = Angle(omega)
-        lambd = true_lon - 0.00569 - 0.00478*sin(omega.rad())
+        lambd = true_lon - 0.00569 - 0.00478 * sin(omega.rad())
         return (lambd, r)
 
     @staticmethod
@@ -156,16 +162,16 @@ class Sun(object):
         # Compute the obliquity of the ecliptic
         e0 = mean_obliquity(epoch)
         # Compute the time in Julian centuries
-        t = (epoch - JDE2000)/36525.0
+        t = (epoch - JDE2000) / 36525.0
         # Then correct for nutation and aberration
-        omega = 125.04 - 1934.136*t
+        omega = 125.04 - 1934.136 * t
         omega = Angle(omega)
         # Correct the obliquity
-        e = e0 + 0.00256*cos(omega.rad())
-        alpha = atan2(cos(e.rad())*sin(app_lon.rad()), cos(app_lon.rad()))
+        e = e0 + 0.00256 * cos(omega.rad())
+        alpha = atan2(cos(e.rad()) * sin(app_lon.rad()), cos(app_lon.rad()))
         alpha = Angle(alpha, radians=True)
         alpha.to_positive()
-        delta = asin(sin(e.rad())*sin(app_lon.rad()))
+        delta = asin(sin(e.rad()) * sin(app_lon.rad()))
         delta = Angle(delta, radians=True)
         return (alpha, delta, r)
 
@@ -297,9 +303,9 @@ class Sun(object):
         b = lat.rad()
         e = epsilon0.rad()
         # Compute the results
-        x = r*cos(ll)
-        y = r*(sin(ll)*cos(e) - sin(b)*sin(e))
-        z = r*(sin(ll)*sin(e) + sin(b)*cos(e))
+        x = r * cos(ll)
+        y = r * (sin(ll) * cos(e) - sin(b) * sin(e))
+        z = r * (sin(ll) * sin(e) + sin(b) * cos(e))
         return x, y, z
 
     @staticmethod
@@ -336,12 +342,12 @@ class Sun(object):
         # Third, convert from Earth's heliocentric to Sun's geocentric
         lon = lon.to_positive() + 180.0
         lat = -lat
-        x = r*cos(lat.rad())*cos(lon.rad())
-        y = r*cos(lat.rad())*sin(lon.rad())
-        z = r*sin(lat.rad())
-        x += 0.00000044036*y - 0.000000190919*z
-        y = -0.000000479966*x + 0.917482137087*y - 0.397776982902*z
-        z = 0.397776982902*y + 0.917482137087*z
+        x = r * cos(lat.rad()) * cos(lon.rad())
+        y = r * cos(lat.rad()) * sin(lon.rad())
+        z = r * sin(lat.rad())
+        x += 0.00000044036 * y - 0.000000190919 * z
+        y = -0.000000479966 * x + 0.917482137087 * y - 0.397776982902 * z
+        z = 0.397776982902 * y + 0.917482137087 * z
         return x, y, z
 
     @staticmethod
@@ -378,12 +384,12 @@ class Sun(object):
         # Third, convert from Earth's heliocentric to Sun's geocentric
         lon = lon.to_positive() + 180.0
         lat = -lat
-        x = r*cos(lat.rad())*cos(lon.rad())
-        y = r*cos(lat.rad())*sin(lon.rad())
-        z = r*sin(lat.rad())
-        x = 0.999925702634*x + 0.012189716217*y + 0.000011134016*z
-        y = -0.011179418036*x + 0.917413998946*y - 0.397777041885*z
-        z = -0.004859003787*x + 0.397747363646*y + 0.917482111428*z
+        x = r * cos(lat.rad()) * cos(lon.rad())
+        y = r * cos(lat.rad()) * sin(lon.rad())
+        z = r * sin(lat.rad())
+        x = 0.999925702634 * x + 0.012189716217 * y + 0.000011134016 * z
+        y = -0.011179418036 * x + 0.917413998946 * y - 0.397777041885 * z
+        z = -0.004859003787 * x + 0.397747363646 * y + 0.917482111428 * z
         return x, y, z
 
     @staticmethod
@@ -421,15 +427,22 @@ class Sun(object):
         # Second, compute Sun's rectangular coordinates w.r.t. J2000.0
         x0, y0, z0 = Sun.rectangular_coordinates_J2000(epoch)
         # Third, computed auxiliary angles
-        t = (equinox_epoch - JDE2000)/36525.0
-        tt = (epoch - equinox_epoch)/36525.0
+        t = (equinox_epoch - JDE2000) / 36525.0
+        tt = (epoch - equinox_epoch) / 36525.0
         # Compute the conversion parameters
-        zeta = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
-                  t*((0.30188 - 0.000344*tt) + 0.017998*t))
-        z = t*((2306.2181 + tt*(1.39656 - 0.000139*tt)) +
-               t*((1.09468 + 0.000066*tt) + 0.018203*t))
-        theta = t*(2004.3109 + tt*(-0.85330 - 0.000217*tt) +
-                   t*(-(0.42665 + 0.000217*tt) - 0.041833*t))
+        zeta = t * (
+            (2306.2181 + tt * (1.39656 - 0.000139 * tt))
+            + t * ((0.30188 - 0.000344 * tt) + 0.017998 * t)
+        )
+        z = t * (
+            (2306.2181 + tt * (1.39656 - 0.000139 * tt))
+            + t * ((1.09468 + 0.000066 * tt) + 0.018203 * t)
+        )
+        theta = t * (
+            2004.3109
+            + tt * (-0.85330 - 0.000217 * tt)
+            + t * (-(0.42665 + 0.000217 * tt) - 0.041833 * t)
+        )
         # Redefine the former values as Angles, and compute them in radians
         zeta = Angle(0, 0, zeta)
         zetar = zeta.rad()
@@ -437,18 +450,18 @@ class Sun(object):
         zr = z.rad()
         theta = Angle(0, 0, theta)
         thetar = theta.rad()
-        xx = cos(zetar)*cos(zr)*cos(thetar) - sin(zetar)*sin(zr)
-        xy = sin(zetar)*cos(zr) + cos(zetar)*sin(zr)*cos(thetar)
-        xz = cos(zetar)*sin(thetar)
-        yx = -cos(zetar)*sin(zr) - sin(zetar)*cos(zr)*cos(thetar)
-        yy = cos(zetar)*cos(zr) - sin(zetar)*sin(zr)*cos(thetar)
-        yz = -sin(zetar)*sin(thetar)
-        zx = -cos(zr)*sin(thetar)
-        zy = -sin(zr)*sin(thetar)
+        xx = cos(zetar) * cos(zr) * cos(thetar) - sin(zetar) * sin(zr)
+        xy = sin(zetar) * cos(zr) + cos(zetar) * sin(zr) * cos(thetar)
+        xz = cos(zetar) * sin(thetar)
+        yx = -cos(zetar) * sin(zr) - sin(zetar) * cos(zr) * cos(thetar)
+        yy = cos(zetar) * cos(zr) - sin(zetar) * sin(zr) * cos(thetar)
+        yz = -sin(zetar) * sin(thetar)
+        zx = -cos(zr) * sin(thetar)
+        zy = -sin(zr) * sin(thetar)
         zz = cos(thetar)
-        xp = xx*x0 + yx*y0 + zx*z0
-        yp = xy*x0 + yy*y0 + zy*z0
-        zp = xz*x0 + yz*y0 + zz*z0
+        xp = xx * x0 + yx * y0 + zx * z0
+        yp = xy * x0 + yy * y0 + zy * z0
+        zp = xz * x0 + yz * y0 + zz * z0
         return xp, yp, zp
 
     @staticmethod
@@ -480,54 +493,59 @@ class Sun(object):
         if not (isinstance(year, int) and isinstance(target, str)):
             raise TypeError("Invalid input types")
         # Second, check that the target is correct
-        if (target != "spring") and (target != "summer") and \
-           (target != "autumn") and (target != "winter"):
+        if (
+            (target != "spring")
+            and (target != "summer")
+            and (target != "autumn")
+            and (target != "winter")
+        ):
             raise ValueError("'target' value is invalid")
         # Now we can start computing an approximate value (Tables 27.A, 27.B)
         if (year >= -1000) and (year < 1000):
-            y = year/1000.0
+            y = year / 1000.0
             if target == "spring":
-                jde0 = 1721139.29189 + y*(365242.1374
-                                          + y*(0.06134 +
-                                               y*(0.00111 - y*0.00071)))
+                jde0 = 1721139.29189 + y * (
+                    365242.1374 + y * (0.06134 + y * (0.00111 - y * 0.00071))
+                )
             elif target == "summer":
-                jde0 = 1721233.25401 + y*(365241.72562
-                                          + y*(-0.05323 +
-                                               y*(0.00907 + y*0.00025)))
+                jde0 = 1721233.25401 + y * (
+                    365241.72562 + y * (-0.05323 + y * (0.00907 + y * 0.00025))
+                )
             elif target == "autumn":
-                jde0 = 1721325.70455 + y*(365242.49558
-                                          + y*(-0.11677 +
-                                               y*(-0.00297 + y*0.00074)))
+                jde0 = (1721325.70455 +
+                        y * (365242.49558 +
+                             y * (-0.11677 + y * (-0.00297 + y * 0.00074))))
             elif target == "winter":
-                jde0 = 1721414.39987 + y*(363242.88257
-                                          + y*(-0.00769 +
-                                               y*(-0.00933 - y*0.00006)))
+                jde0 = (1721414.39987 +
+                        y * (363242.88257 + y * (-0.00769 +
+                                                 y * (-0.00933 -
+                                                      y * 0.00006))))
         elif (year >= 1000) and (year <= 3000):
-            y = (year - 2000.0)/1000.0
+            y = (year - 2000.0) / 1000.0
             if target == "spring":
-                jde0 = 2451623.80984 + y*(365242.37404
-                                          + y*(0.05169 +
-                                               y*(-0.00411 - y*0.00057)))
+                jde0 = 2451623.80984 + y * (
+                    365242.37404 + y * (0.05169 + y * (-0.00411 - y * 0.00057))
+                )
             elif target == "summer":
-                jde0 = 2451716.56767 + y*(365241.62603
-                                          + y*(0.00325 +
-                                               y*(0.00888 - y*0.0003)))
+                jde0 = 2451716.56767 + y * (
+                    365241.62603 + y * (0.00325 + y * (0.00888 - y * 0.0003))
+                )
             elif target == "autumn":
-                jde0 = 2451810.21715 + y*(365242.01767
-                                          + y*(-0.11575 +
-                                               y*(0.00337 + y*0.00078)))
+                jde0 = 2451810.21715 + y * (
+                    365242.01767 + y * (-0.11575 + y * (0.00337 + y * 0.00078))
+                )
             elif target == "winter":
-                jde0 = 2451900.05952 + y*(365242.74049
-                                          + y*(-0.06223 +
-                                               y*(-0.00823 + y*0.00032)))
+                jde0 = (2451900.05952 +
+                        y * (365242.74049 +
+                             y * (-0.06223 + y * (-0.00823 + y * 0.00032))))
         else:
             raise ValueError("'year' value out of range")
-        k = ['spring', 'summer', 'autumn', 'winter'].index(target)
+        k = ["spring", "summer", "autumn", "winter"].index(target)
         epoch = Epoch(jde0)
         corr = 1.0
         while abs(corr) > 0.0000025:
             lon, lat, r = Sun.apparent_geocentric_position(epoch)
-            arg = k*90.0 - lon.to_positive()
+            arg = k * 90.0 - lon.to_positive()
             arg = Angle(arg)
             corr = 58.0 * sin(arg.rad())
             epoch += corr
@@ -560,11 +578,12 @@ class Sun(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Compute time in Julian millenia from J2000.0
-        t = (epoch - JDE2000)/365250
-        l0 = 280.4664567 + t*(360007.6982779
-                              + t*(0.03032028 +
-                                   t*(1.0/49931.0 +
-                                      t*(-1.0/15300.0 - t*1.0/2000000.0))))
+        t = (epoch - JDE2000) / 365250
+        l0 = (280.4664567 +
+              t * (360007.6982779 +
+                   t * (0.03032028 +
+                        t * (1.0 / 49931.0 +
+                             t * (-1.0 / 15300.0 - t * 1.0 / 2000000.0)))))
         l0 = Angle(l0)
         l0 = l0.to_positive()
         # Compute the apparent position of the Sun
@@ -576,10 +595,10 @@ class Sun(object):
         alpha = alpha.to_positive()
         # Now we need the nutation in longitude
         deltapsi = nutation_longitude(epoch)
-        e = l0() - 0.0057183 - alpha + deltapsi*cos(epsilon.rad())
+        e = l0() - 0.0057183 - alpha + deltapsi * cos(epsilon.rad())
         e *= 4.0
         # Extract seconds
-        s = (abs(e) % 1)*60.0
+        s = (abs(e) % 1) * 60.0
         m = int(e)
         return m, s
 
@@ -591,16 +610,16 @@ def main():
         print("{}: {}".format(msg, val))
 
     # Let's show some uses of Sun functions
-    print('\n' + 35*'*')
+    print("\n" + 35 * "*")
     print("*** Use of Sun class")
-    print(35*'*' + '\n')
+    print(35 * "*" + "\n")
 
     # Compute an approximation of the Sun's true longitude
     epoch = Epoch(1992, 10, 13)
     true_lon, r = Sun.true_longitude_coarse(epoch)
     print_me("Sun's approximate true longitude", true_lon.dms_str(n_dec=0))
     # 199d 54' 36.0''
-    print_me("Sun's radius vector", round(r, 5))                    # 0.99766
+    print_me("Sun's radius vector", round(r, 5))  # 0.99766
 
     print("")
 
@@ -646,27 +665,27 @@ def main():
     # We can compute rectangular coordinates referred to mean equinox of date
     x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
     print("Rectangular coordinates referred to mean equinox of date:")
-    print_me("X", round(x, 7))                                  # -0.9379963
-    print_me("Y", round(y, 6))                                  # -0.311654
-    print_me("Z", round(z, 7))                                  # -0.1351207
+    print_me("X", round(x, 7))  # -0.9379963
+    print_me("Y", round(y, 6))  # -0.311654
+    print_me("Z", round(z, 7))  # -0.1351207
 
     print("")
 
     # Now, compute rectangular coordinates w.r.t. standard equinox J2000.0
     x, y, z = Sun.rectangular_coordinates_J2000(epoch)
     print("Rectangular coordinates w.r.t. standard equinox J2000.0:")
-    print_me("X", round(x, 8))                                  # -0.93740485
-    print_me("Y", round(y, 8))                                  # -0.3131474
-    print_me("Z", round(z, 8))                                  # -0.12456646
+    print_me("X", round(x, 8))  # -0.93740485
+    print_me("Y", round(y, 8))  # -0.3131474
+    print_me("Z", round(z, 8))  # -0.12456646
 
     print("")
 
     # Compute rectangular coordinates w.r.t. mean equinox of B1950.0
     x, y, z = Sun.rectangular_coordinates_B1950(epoch)
     print("Rectangular coordinates w.r.t. mean equinox of B1950.0:")
-    print_me("X", round(x, 8))                                  # -0.94149557
-    print_me("Y", round(y, 8))                                  # -0.30259922
-    print_me("Z", round(z, 8))                                  # -0.11578695
+    print_me("X", round(x, 8))  # -0.94149557
+    print_me("Y", round(y, 8))  # -0.30259922
+    print_me("Z", round(z, 8))  # -0.11578695
 
     print("")
 
@@ -674,9 +693,9 @@ def main():
     e_equinox = Epoch(2467616.0)
     x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
     print("Rectangular coordinates w.r.t. an arbitrary mean equinox:")
-    print_me("X", round(x, 8))                                  # -0.93373777
-    print_me("Y", round(y, 8))                                  # -0.32235109
-    print_me("Z", round(z, 8))                                  # -0.12856709
+    print_me("X", round(x, 8))  # -0.93373777
+    print_me("Y", round(y, 8))  # -0.32235109
+    print_me("Z", round(z, 8))  # -0.12856709
 
     print("")
 
@@ -703,6 +722,6 @@ def main():
     # 13m 42.6s
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     main()
