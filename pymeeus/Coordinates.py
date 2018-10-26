@@ -2506,7 +2506,7 @@ def geometric_vsop_pos(epoch, vsop_l, vsop_b, vsop_r, toFK5=True):
     :param vsop_r: Table of VSOP87 terms for the radius vector
     :type vsop_r: list
     :param toFK5: Whether or not the small correction to convert to the FK5
-        system will be applied or not
+        system will be applied
     :type toFK5: bool
 
     :returns: A tuple with the geometric heliocentric longitude and latitude
@@ -2536,7 +2536,7 @@ def geometric_vsop_pos(epoch, vsop_l, vsop_b, vsop_r, toFK5=True):
     return lon, lat, r
 
 
-def apparent_vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
+def apparent_vsop_pos(epoch, vsop_l, vsop_b, vsop_r, nutation=True):
     """This function computes the apparent position of a celestial body at a
     given epoch when its VSOP87 periodic term tables are provided. The small
     correction to convert to the FK5 system is always included.
@@ -2550,8 +2550,7 @@ def apparent_vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
     :type vsop_b: list
     :param vsop_r: Table of VSOP87 terms for the radius vector
     :type vsop_r: list
-    :param toFK5: Whether or not the small correction to convert to the FK5
-        system will be applied or not
+    :param nutation: Whether the nutation correction will be applied
     :type toFK5: bool
 
     :returns: A tuple with the geometric heliocentric longitude and latitude
@@ -2566,8 +2565,8 @@ def apparent_vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
         raise TypeError("Invalid input types")
     # Second, call auxiliary function in charge of computations
     lon, lat, r = geometric_vsop_pos(epoch, vsop_l, vsop_b, vsop_r)
-    dpsi = nutation_longitude(epoch)
-    lon += dpsi
+    if nutation:
+        lon += nutation_longitude(epoch)
     delta = -20.4898 / r
     delta = Angle(0, 0, delta)
     lon += delta
