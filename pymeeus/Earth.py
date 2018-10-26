@@ -3185,12 +3185,14 @@ class Earth(object):
         return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
 
     @staticmethod
-    def apparent_heliocentric_position(epoch):
+    def apparent_heliocentric_position(epoch, nutation=True):
         """"This method computes the apparent heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
+        :param nutation: Whether the nutation correction will be applied
+        :type epoch: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -3212,7 +3214,7 @@ class Earth(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
-        return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
+        return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, nutation)
 
     @staticmethod
     def geometric_heliocentric_position_J2000(epoch, toFK5=True):
