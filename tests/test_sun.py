@@ -63,7 +63,7 @@ def test_sun_apparent_rightascension_declination_coarse():
 
 
 def test_sun_geometric_geocentric_position():
-    """Tests the geometric_geocentric_position() method of Earth class"""
+    """Tests the geometric_geocentric_position() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
@@ -79,7 +79,7 @@ def test_sun_geometric_geocentric_position():
 
 
 def test_sun_apparent_geocentric_position():
-    """Tests the apparent_geocentric_position() method of Earth class"""
+    """Tests the apparent_geocentric_position() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Sun.apparent_geocentric_position(epoch)
@@ -95,7 +95,7 @@ def test_sun_apparent_geocentric_position():
 
 
 def test_rectangular_coordinates_mean_equinox():
-    """Tests rectangular_coordinates_mean_equinox() method of Earth class"""
+    """Tests rectangular_coordinates_mean_equinox() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     x, y, z = Sun.rectangular_coordinates_mean_equinox(epoch)
@@ -111,7 +111,7 @@ def test_rectangular_coordinates_mean_equinox():
 
 
 def test_rectangular_coordinates_J2000():
-    """Tests rectangular_coordinates_J2000() method of Earth class"""
+    """Tests rectangular_coordinates_J2000() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     x, y, z = Sun.rectangular_coordinates_J2000(epoch)
@@ -127,7 +127,7 @@ def test_rectangular_coordinates_J2000():
 
 
 def test_rectangular_coordinates_B1950():
-    """Tests rectangular_coordinates_B1950() method of Earth class"""
+    """Tests rectangular_coordinates_B1950() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     x, y, z = Sun.rectangular_coordinates_B1950(epoch)
@@ -143,7 +143,7 @@ def test_rectangular_coordinates_B1950():
 
 
 def test_rectangular_coordinates_equinox():
-    """Tests rectangular_coordinates_equinox() method of Earth class"""
+    """Tests rectangular_coordinates_equinox() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     e_equinox = Epoch(2467616.0)
@@ -160,7 +160,7 @@ def test_rectangular_coordinates_equinox():
 
 
 def test_sun_get_equinox_solstice():
-    """Tests the get_equinox_solstice() method of Earth class"""
+    """Tests the get_equinox_solstice() method of Sun class"""
 
     epoch = Sun.get_equinox_solstice(1962, target="summer")
     y, m, d, h, mi, s = epoch.get_full_date()
@@ -171,7 +171,7 @@ def test_sun_get_equinox_solstice():
 
 
 def test_sun_equation_of_time():
-    """Tests the equation_of_time() method of Earth class"""
+    """Tests the equation_of_time() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
     m, s = Sun.equation_of_time(epoch)
@@ -181,3 +181,19 @@ def test_sun_equation_of_time():
 
     assert abs(round(s, 1)) - 42.6 < TOL, \
         "ERROR: 2nd equation_of_time() test, 's' doesn't match"
+
+
+def test_sun_ephemeris_physical_observations():
+    """Tests the ephemeris_physical_observations() method of Sun class"""
+
+    epoch = Epoch(1992, 10, 13)
+    p, b0, l0 = Sun.ephemeris_physical_observations(epoch)
+
+    assert abs(round(p, 2)) - 26.27 < TOL, \
+        "ERROR: 1st ephemeris_physical_observations() test, 'p' doesn't match"
+
+    assert abs(round(b0, 2)) - 5.99 < TOL, \
+        "ERROR: 2nd ephemeris_physical_observations() test, 'b0' doesn't match"
+
+    assert abs(round(l0, 2)) - 238.63 < TOL, \
+        "ERROR: 3rd ephemeris_physical_observations() test, 'l0' doesn't match"
