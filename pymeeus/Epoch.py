@@ -1635,7 +1635,7 @@ class Epoch(object):
         1355866.5
         """
 
-        return self()
+        return self._jde
 
     def __call__(self):
         """Method used when Epoch is called only with parenthesis.
