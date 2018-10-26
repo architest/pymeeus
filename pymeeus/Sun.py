@@ -814,6 +814,24 @@ def main():
     print("Equation of time difference: {} min {} secs".format(m, round(s, 1)))
     # 13m 42.6s
 
+    print("")
+
+    # Compute the ephemeris of physical observations of the Sun using
+    # Carrington's formulas
+    epoch = Epoch(1992, 10, 13)
+    p, b0, l0 = Sun.ephemeris_physical_observations(epoch)
+    print("Ephemeris of physical observations of the Sun:")
+    print_me("P ", round(p, 2))     # 26.27
+    print_me("B0", round(b0, 2))    # 5.99
+    print_me("L0", round(l0, 2))    # 238.63
+
+    print("")
+
+    # Get the epoch when the Carrington's synodic rotation No. 'number' starts
+    epoch = Sun.beginning_synodic_rotation(1699)
+    print_me("Epoch for Carrington's synodic rotation No. 1699",
+             round(epoch(), 3))     # 2444480.723
+
 
 if __name__ == "__main__":
 
