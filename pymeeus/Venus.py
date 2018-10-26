@@ -18,9 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-# from math import sin, cos
-
-# from Angle import Angle
 from Epoch import Epoch
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
@@ -725,9 +722,10 @@ VSOP87_L = [
         [0.002, 1.89460223529, 30639.85663863300],
     ],
 ]
-"""This table contains Venus' most important periodic terms from the planetary
-theory VSOP87 for the heliocentric longitude. In Meeus' book these values can
-be found in pages 418-420."""
+"""This table contains Venus's periodic terms (all of them) from the planetary
+theory VSOP87 for the heliocentric longitude at the equinox of date (taken from
+the 'D' solution). In Meeus' book a shortened version can be found in
+pages 418-420."""
 
 
 VSOP87_B = [
@@ -1176,9 +1174,10 @@ VSOP87_B = [
         [0.009, 2.32953116868, 30639.85663863300],
     ],
 ]
-"""This table contains Venus' most important periodic terms from the planetary
-theory VSOP87 for the heliocentric latitude. In Meeus' book these values can
-be found in page 420."""
+"""This table contains Venus's periodic terms (all of them) from the planetary
+theory VSOP87 for the heliocentric latitude at the equinox of date (taken from
+the 'D' solution). In Meeus' book a shortened version can be found in
+page 420."""
 
 
 VSOP87_R = [
@@ -1786,9 +1785,9 @@ VSOP87_R = [
         [0.002, 5.29627718483, 20426.57109242200],
     ],
 ]
-"""This table contains Venus' most important periodic terms from the planetary
-theory VSOP87 for the radius vector. In Meeus' book these values can be found
-in pages 420-421."""
+"""This table contains Venus's periodic terms (all of them) from the planetary
+theory VSOP87 for the radius vector at the equinox of date (taken from the 'D'
+solution). In Meeus' book a shortened version can be found in pages 420-421."""
 
 
 class Venus(object):
@@ -1834,7 +1833,7 @@ class Venus(object):
         """"This method computes the apparent heliocentric position of planet
         Venus for a given epoch, using the VSOP87 theory.
 
-        :param epoch: Epoch to compute Earth position, as an Epoch object
+        :param epoch: Epoch to compute Venus position, as an Epoch object
         :type epoch: :py:class:`Epoch`
 
         :returns: A tuple with the heliocentric longitude and latitude (as
