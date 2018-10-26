@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, atan2, asin
+from math import sin, cos, tan, atan, atan2, asin
 
 from Angle import Angle
 from Epoch import Epoch, JDE2000
@@ -122,6 +122,9 @@ class Sun(object):
         0.99766
         """
 
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
         # First find the true longitude
         sun = Sun()
         true_lon, r = sun.true_longitude_coarse(epoch)
@@ -156,7 +159,10 @@ class Sun(object):
         0.99766
         """
 
-        # First find the apparent longitude
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Second, find the apparent longitude
         sun = Sun()
         app_lon, r = sun.apparent_longitude_coarse(epoch)
         # Compute the obliquity of the ecliptic
@@ -211,7 +217,7 @@ class Sun(object):
         # the abridged version in Meeus' book.
 
         # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
+        if not isinstance(epoch, Epoch) and not isinstance(toFK5, bool):
             raise TypeError("Invalid input types")
         # Use Earth heliocentric position to compute Sun's geocentric position
         lon, lat, r = Earth.geometric_heliocentric_position(epoch, toFK5)
@@ -220,12 +226,14 @@ class Sun(object):
         return lon, lat, r
 
     @staticmethod
-    def apparent_geocentric_position(epoch):
+    def apparent_geocentric_position(epoch, nutation=True):
         """"This method computes the apparent geocentric position of the Sun
         for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Sun position, as an Epoch object
         :type epoch: :py:class:`Epoch`
+        :param nutation: Whether the nutation correction will be applied
+        :type epoch: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -253,9 +261,9 @@ class Sun(object):
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
+            raise TypeError("Invalid input type")
         # Use Earth heliocentric position to compute Sun's geocentric position
-        lon, lat, r = Earth.apparent_heliocentric_position(epoch)
+        lon, lat, r = Earth.apparent_heliocentric_position(epoch, nutation)
         lon = lon.to_positive() + 180.0
         lat = -lat
         return lon, lat, r
@@ -293,7 +301,7 @@ class Sun(object):
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
+            raise TypeError("Invalid input type")
         # Get Sun's geocentric position with reduction to FK5 system
         lon, lat, r = Sun.geometric_geocentric_position(epoch)
         # Get the mean obliquity
@@ -336,7 +344,7 @@ class Sun(object):
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
+            raise TypeError("Invalid input type")
         # Second, compute Earth heliocentric position referred to J2000.0
         lon, lat, r = Earth.geometric_heliocentric_position_J2000(epoch)
         # Third, convert from Earth's heliocentric to Sun's geocentric
@@ -378,7 +386,7 @@ class Sun(object):
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
+            raise TypeError("Invalid input type")
         # Second, compute Earth heliocentric position referred to J2000.0
         lon, lat, r = Earth.geometric_heliocentric_position_J2000(epoch)
         # Third, convert from Earth's heliocentric to Sun's geocentric
@@ -422,7 +430,8 @@ class Sun(object):
         """
 
         # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
+        if (not isinstance(epoch, Epoch) and
+                not isinstance(equinox_epoch, Epoch)):
             raise TypeError("Invalid input types")
         # Second, compute Sun's rectangular coordinates w.r.t. J2000.0
         x0, y0, z0 = Sun.rectangular_coordinates_J2000(epoch)
@@ -576,7 +585,7 @@ class Sun(object):
 
         # First check that input values are of correct types
         if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
+            raise TypeError("Invalid input type")
         # Compute time in Julian millenia from J2000.0
         t = (epoch - JDE2000) / 365250
         l0 = (280.4664567 +
@@ -601,6 +610,90 @@ class Sun(object):
         s = (abs(e) % 1) * 60.0
         m = int(e)
         return m, s
+
+    @staticmethod
+    def ephemeris_physical_observations(epoch):
+        """"This method uses Carrington's formulas to compute the following
+        quantities:
+
+        - P  : position angle of the northern extremity of the axis of rotation
+        - B0 : heliographic latitude of the center of the solar disk
+        - L0 : heliographic longitude of the center of the solar disk
+
+        :param epoch: Epoch to compute the parameters
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Parameters P, B0 and L0, in a tuple
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 10, 13)
+        >>> p, b0, l0 = Sun.ephemeris_physical_observations(epoch)
+        >>> print(round(p, 2))
+        26.27
+        >>> print(round(b0, 2))
+        5.99
+        >>> print(round(l0, 2))
+        238.63
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Compute the auxiliary parameters
+        epoch += 0.00068
+        theta = (epoch() - 2398220.0) * 360.0 / 25.38
+        theta = Angle(theta)
+        i = Angle(7.25)
+        k = 73.6667 + 1.3958333 * (epoch() - 2396758.0) / 36525.0
+        k = Angle(k)
+        lon, lat, r = Sun.apparent_geocentric_position(epoch, nutation=False)
+        eps = true_obliquity(epoch)
+        dpsi = nutation_longitude(epoch)
+        lonp = lon + dpsi
+        x = atan(-cos(lonp.rad()) * tan(eps.rad()))
+        x = Angle(x, radians=True)
+        delta = lon - k
+        y = atan(-cos(delta.rad()) * tan(i.rad()))
+        y = Angle(y, radians=True)
+        p = x + y
+        b0 = asin(sin(delta.rad()) * sin(i.rad()))
+        b0 = Angle(b0, radians=True)
+        eta = atan(tan(delta.rad()) * cos(i.rad()))
+        eta = Angle(eta, radians=True)
+        l0 = eta - theta
+        return p, b0, l0.to_positive()
+
+    @staticmethod
+    def beginning_synodic_rotation(number):
+        """"This method calculates the epoch when the Carrington's synodic
+        rotation No. 'number' starts.
+
+        :param number: Number of Carrington's synodic rotation
+        :type number: int
+
+        :returns: Epoch when the provided rotation starts
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Sun.beginning_synodic_rotation(1699)
+        >>> print(round(epoch(), 3))
+        2444480.723
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(number, int):
+            raise TypeError("Invalid input type")
+        # Apply formula (29.1)
+        jde = 2398140.227 + 27.2752316*number
+        # Now, find the correction using formula (29.2)
+        m = 281.96 + 26.882476*number
+        m = Angle(m)
+        m = m.rad()
+        delta = 0.1454 * sin(m) - 0.0085 * sin(2.0 * m) - 0.0141 * cos(2.0 * m)
+        # Apply the correction
+        jde += delta
+        return Epoch(jde)
 
 
 def main():
