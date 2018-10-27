@@ -18,6 +18,7 @@
    Earth
    Epoch
    Interpolation
+   Mercury
    Sun
    Venus
 
@@ -32,6 +33,7 @@
    ex-Earth
    ex-Epoch
    ex-Interpolation
+   ex-Mercury
    ex-Sun
    ex-Venus
 
