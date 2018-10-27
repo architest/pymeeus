@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.2.4
+    * Minor bug fixing, added methods 'ephemeris_physical_observations()' and 'beginning_synodic_rotation()', and added classes 'Mercury' and 'Mars'
 * 0.2.3
     * Added the complete list of VSOP87 parameters to Venus, method to compute dates of equinoxes and solstices, and the Equation of Time
 * 0.2.2

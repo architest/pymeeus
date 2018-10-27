@@ -78,6 +78,13 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.4
+
+   -  Minor bug fixing, added methods
+      'ephemeris\_physical\_observations()' and
+      'beginning\_synodic\_rotation()', and added classes 'Mercury' and
+      'Mars'
+
 -  0.2.3
 
    -  Added the complete list of VSOP87 parameters to Venus, method to
