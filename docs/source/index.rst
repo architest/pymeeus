@@ -23,6 +23,7 @@
    Mercury
    Saturn
    Sun
+   Uranus
    Venus
 
 .. toctree::
@@ -41,6 +42,7 @@
    ex-Mercury
    ex-Saturn
    ex-Sun
+   ex-Uranus
    ex-Venus
 
 
