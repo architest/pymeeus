@@ -78,6 +78,10 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.5
+
+   -  Added classes 'Jupiter' and 'Saturn'
+
 -  0.2.4
 
    -  Minor bug fixing, added methods
