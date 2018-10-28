@@ -18,6 +18,7 @@
    Earth
    Epoch
    Interpolation
+   Jupiter
    Mars
    Mercury
    Sun
@@ -34,6 +35,7 @@
    ex-Earth
    ex-Epoch
    ex-Interpolation
+   ex-Jupiter
    ex-Mars
    ex-Mercury
    ex-Sun
