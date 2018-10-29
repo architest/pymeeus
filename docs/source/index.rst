@@ -21,6 +21,7 @@
    Jupiter
    Mars
    Mercury
+   Neptune
    Saturn
    Sun
    Uranus
@@ -40,6 +41,7 @@
    ex-Jupiter
    ex-Mars
    ex-Mercury
+   ex-Neptune
    ex-Saturn
    ex-Sun
    ex-Uranus
