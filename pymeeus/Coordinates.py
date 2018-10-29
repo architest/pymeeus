@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, sin, cos, tan, atan, atan2, asin, acos
+from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians
 
 from base import TOL
 from Angle import Angle
@@ -2573,6 +2573,82 @@ def apparent_vsop_pos(epoch, vsop_l, vsop_b, vsop_r, nutation=True):
     return lon, lat, r
 
 
+def apparent_position(epoch, alpha, delta, sun_lon):
+    """This function computes the apparent position of a star, correcting by
+    nutation and aberration effects.
+
+    :param epoch: Epoch to compute the apparent position for
+    :type epoch: :py:class:`Epoch`
+    :param alpha: Right ascension of the star, as an Angle object
+    :type alpha: :py:class:`Angle`
+    :param delta: Declination of the star, as an Angle object
+    :type delta: :py:class:`Angle`
+    :param sun_lon: True (geometric) longitude of the Sun
+    :type sun_lon: :py:class:`Angle`
+
+    :returns: A tuple with two Angle objects: Apparent right ascension, and
+        aparent declination
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> epoch = Epoch(2028, 11, 13.19)
+    >>> alpha = Angle(2, 46, 11.331, ra=True)
+    >>> delta = Angle(49, 20, 54.54)
+    >>> sun_lon = Angle(231.328)
+    >>> app_alpha, app_delta = apparent_position(epoch, alpha, delta, sun_lon)
+    >>> print(app_alpha.ra_str(n_dec=2))
+    2h 46' 14.39''
+    >>> print(app_delta.dms_str(n_dec=2))
+    49d 21' 7.45''
+    """
+
+    # First check that input values are of correct types
+    if not (
+        isinstance(epoch, Epoch)
+        and isinstance(alpha, Angle)
+        and isinstance(delta, Angle)
+        and isinstance(sun_lon, Angle)
+    ):
+        raise TypeError("Invalid input types")
+    # Proceed to compute the true obliquity, nutation in longitude and nutation
+    # in obliquity
+    epsilon = true_obliquity(epoch)
+    dpsi = nutation_longitude(epoch)
+    depsilon = nutation_obliquity(epoch)
+    # Convert the angles to radians
+    a = alpha.rad()
+    d = delta.rad()
+    eps = epsilon.rad()
+    # Compute corrections due to nutation
+    dalpha1 = ((cos(eps) + sin(eps) * sin(a) * tan(d)) * dpsi -
+               (cos(a) * tan(d)) * depsilon)
+    ddelta1 = (sin(eps) * cos(a)) * dpsi + sin(a) * depsilon
+    dalpha1 = Angle(dalpha1)
+    ddelta1 = Angle(ddelta1)
+    # Now, let's compute the aberration effect
+    t = (epoch - JDE2000) / 36525
+    e = 0.016708634 + t * (-0.000042037 - t * 0.0000001267)
+    pie = 102.93735 + t * (1.71946 + t * 0.00046)
+    pie = radians(pie)
+    lon = sun_lon.rad()
+    k = 20.49552    # The constant of aberration
+    dalpha2 = k * (-(cos(a) * cos(lon) * cos(eps) + sin(a) * sin(lon)) / cos(d)
+                   + e * (cos(a) * cos(pie) * cos(eps) +
+                          sin(a) * sin(pie)) / cos(d))
+    ddelta2 = k * (-(cos(lon) * cos(eps) *
+                     (tan(eps) * cos(d) - sin(a) * sin(d)) +
+                     cos(a) * sin(d) * sin(lon)) +
+                   e * (cos(pie) * cos(eps) * (tan(eps) * cos(d) -
+                                               sin(a) * sin(d))
+                        + cos(a) * sin(d) * sin(pie)))
+    dalpha2 = Angle(0, 0, dalpha2)
+    ddelta2 = Angle(0, 0, ddelta2)
+    # Add the two corrections to the original values
+    r_alpha = alpha + dalpha1 + dalpha2
+    r_delta = delta + ddelta1 + ddelta2
+    return r_alpha, r_delta
+
+
 def main():
 
     # Let's define a small helper function
@@ -2995,6 +3071,20 @@ def main():
         "Diameter of smallest circle containing three celestial bodies",
         d.dms_str(n_dec=0),
     )  # 4d 15' 49.0''
+
+    print("")
+
+    # Now, let's find the apparent position of a star (Theta Persei) for a
+    # given epoch
+    epoch = Epoch(2028, 11, 13.19)
+    alpha = Angle(2, 46, 11.331, ra=True)
+    delta = Angle(49, 20, 54.54)
+    sun_lon = Angle(231.328)
+    app_alpha, app_delta = apparent_position(epoch, alpha, delta, sun_lon)
+    print_me("Apparent right ascension", app_alpha.ra_str(n_dec=2))
+    # 2h 46' 14.39''
+    print_me("Apparent declination", app_delta.dms_str(n_dec=2))
+    # 49d 21' 7.45''
 
 
 if __name__ == "__main__":

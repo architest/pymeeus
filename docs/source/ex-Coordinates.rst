@@ -623,3 +623,23 @@ Now let's compute the size of the smallest circle that contains three given cele
     print_me("Diameter of smallest circle containing three celestial bodies", d.dms_str(n_dec=0))
 
     # Diameter of smallest circle containing three celestial bodies: 4d 15' 49.0''
+
+Let's find the apparent position of a star (Theta Persei) for a given epoch::
+
+    epoch = Epoch(2028, 11, 13.19)
+
+    alpha = Angle(2, 46, 11.331, ra=True)
+
+    delta = Angle(49, 20, 54.54)
+
+    sun_lon = Angle(231.328)
+
+    app_alpha, app_delta = apparent_position(epoch, alpha, delta, sun_lon)
+
+    print_me("Apparent right ascension", app_alpha.ra_str(n_dec=2))
+
+    # Apparent right ascension: 2h 46' 14.39''
+
+    print_me("Apparent declination", app_delta.dms_str(n_dec=2))
+
+    # Apparent declination: 49d 21' 7.45''

@@ -31,7 +31,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
-        straight_line, circle_diameter
+        straight_line, circle_diameter, apparent_position
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -572,3 +572,19 @@ def test_coordinates_circle_diameter():
 
     assert d.dms_str(n_dec=0) == "2d 18' 38.0''", \
         "ERROR: 2nd circle_diameter() test, 'd' value doesn't match"
+
+
+def test_coordinates_apparent_position():
+    """Tests the apparent_position() method of Coordinates module"""
+
+    epoch = Epoch(2028, 11, 13.19)
+    alpha = Angle(2, 46, 11.331, ra=True)
+    delta = Angle(49, 20, 54.54)
+    sun_lon = Angle(231.328)
+    app_alpha, app_delta = apparent_position(epoch, alpha, delta, sun_lon)
+
+    assert app_alpha.ra_str(n_dec=2) == "2h 46' 14.39''", \
+        "ERROR: 1st apparent_position() test, 'app_alpha' value doesn't match"
+
+    assert app_delta.dms_str(n_dec=2) == "49d 21' 7.45''", \
+        "ERROR: 2nd apparent_position() test, 'app_delta' value doesn't match"
