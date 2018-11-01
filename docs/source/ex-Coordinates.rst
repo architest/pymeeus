@@ -643,3 +643,29 @@ Let's find the apparent position of a star (Theta Persei) for a given epoch::
     print_me("Apparent declination", app_delta.dms_str(n_dec=2))
 
     # Apparent declination: 49d 21' 7.45''
+
+Convert orbital elements of a celestial object from one equinox to another::
+
+    epoch0 = Epoch(2358042.5305)
+
+    epoch = Epoch(2433282.4235)
+
+    i0 = Angle(47.122)
+
+    arg0 = Angle(151.4486)
+
+    lon0 = Angle(45.7481)
+
+    i1, arg1, lon1 = orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0)
+
+    print_me("New inclination", round(i1(), 3))
+
+    # New inclination: 47.138
+
+    print_me("New argument of perihelion", round(arg1(), 4))
+
+    # New argument of perihelion: 151.4782
+
+    print_me("New longitude of ascending node", round(lon1(), 4))
+
+    # New longitude of ascending node: 48.6037
