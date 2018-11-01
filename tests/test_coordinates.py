@@ -31,7 +31,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         refraction_true2apparent, angular_separation, \
         minimum_angular_separation, relative_position_angle, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
-        straight_line, circle_diameter, apparent_position
+        straight_line, circle_diameter, apparent_position, \
+        orbital_equinox2equinox
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -588,3 +589,23 @@ def test_coordinates_apparent_position():
 
     assert app_delta.dms_str(n_dec=2) == "49d 21' 7.45''", \
         "ERROR: 2nd apparent_position() test, 'app_delta' value doesn't match"
+
+
+def test_coordinates_orbital_equinox2equinox():
+    """Tests the orbital_equinox2equinox() method of Coordinates module"""
+
+    epoch0 = Epoch(2358042.5305)
+    epoch = Epoch(2433282.4235)
+    i0 = Angle(47.122)
+    arg0 = Angle(151.4486)
+    lon0 = Angle(45.7481)
+    i1, arg1, lon1 = orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0)
+
+    assert abs(round(i1(), 3) - 47.138) < TOL, \
+        "ERROR: 1st orbital_equinox2equinox() test, 'i1' value doesn't match"
+
+    assert abs(round(arg1(), 4) - 151.4782) < TOL, \
+        "ERROR: 2nd orbital_equinox2equinox() test, 'arg1' value doesn't match"
+
+    assert abs(round(lon1(), 4) - 48.6037) < TOL, \
+        "ERROR: 3rd orbital_equinox2equinox() test, 'lon1' value doesn't match"
