@@ -2649,6 +2649,95 @@ def apparent_position(epoch, alpha, delta, sun_lon):
     return r_alpha, r_delta
 
 
+def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
+    """This function reduces the orbital elements of a celestial object from
+    one equinox to another.
+
+    :param epoch0: Initial epoch
+    :type epoch0: :py:class:`Epoch`
+    :param epoch: Final epoch
+    :type epoch: :py:class:`Epoch`
+    :param i0: Initial inclination, as an Angle object
+    :type i0: :py:class:`Angle`
+    :param arg0: Initial argument of perihelion, as an Angle object
+    :type arg0: :py:class:`Angle`
+    :param lon0: Initial longitude of ascending node, as an Angle object
+    :type lon0: :py:class:`Angle`
+
+    :returns: A tuple with three Angle objects: Final inclination, argument of
+        perihelion and longitude of ascending node, in that order
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> epoch0 = Epoch(2358042.5305)
+    >>> epoch = Epoch(2433282.4235)
+    >>> i0 = Angle(47.122)
+    >>> arg0 = Angle(151.4486)
+    >>> lon0 = Angle(45.7481)
+    >>> i1, arg1, lon1 = orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0)
+    >>> print(round(i1(), 3))
+    47.138
+    >>> print(round(arg1(), 4))
+    151.4782
+    >>> print(round(lon1(), 4))
+    48.6037
+    """
+
+    # First check that input values are of correct types
+    if not (
+        isinstance(epoch0, Epoch)
+        and isinstance(epoch, Epoch)
+        and isinstance(i0, Angle)
+        and isinstance(arg0, Angle)
+        and isinstance(lon0, Angle)
+    ):
+        raise TypeError("Invalid input types")
+    # Compute the auxiliary angles
+    tt = (epoch0 - JDE2000) / 36525.0
+    t = (epoch - epoch0) / 36525.0
+    # Compute the conversion parameters
+    eta = t * (
+        (47.0029 + tt * (-0.06603 + 0.000598 * tt))
+        + t * ((-0.03302 + 0.000598 * tt) + 0.00006 * t)
+    )
+    pi = tt * (3289.4789 + 0.60622 * tt) + t * (
+        -(869.8089 + 0.50491 * tt) + 0.03536 * t
+    )
+    p = t * (
+        5029.0966
+        + tt * (2.22226 - 0.000042 * tt)
+        + t * (1.11113 - 0.000042 * tt - 0.000006 * t)
+    )
+    eta = Angle(0, 0, eta)
+    pi = Angle(0, 0, pi)
+    # But beware!: There is still a missing constant for pi. We didn't add
+    # it before because of the mismatch between degrees and seconds
+    pi += 174.876384
+    p = Angle(0, 0, p)
+    i0r = i0.rad()
+    etar = eta.rad()
+    lon0r = lon0.rad()
+    pir = pi.rad()
+    # If i0 is very small, the procedure is different
+    if i0 < 1.0:
+        i1 = eta
+        lon1 = pi + p + 180.0
+    else:
+        a = sin(i0r) * sin(lon0r - pir)
+        b = -sin(etar) * cos(i0r) + cos(etar) * sin(i0r) * cos(lon0r - pir)
+        i1 = asin(sqrt(a*a + b*b))
+        i1 = Angle(i1, radians=True)
+        omegapsi = atan2(a, b)
+        omegapsi = Angle(omegapsi, radians=True)
+        lon1 = omegapsi + pi + p
+    domega = atan2(-sin(etar) * sin(lon0r - pir),
+                   sin(i0r) * cos(etar) -
+                   cos(i0r) * sin(etar) * cos(lon0r - pir))
+    domega = Angle(domega, radians=True)
+    arg1 = arg0 + domega
+    return i1, arg1, lon1
+
+
 def main():
 
     # Let's define a small helper function
@@ -3085,6 +3174,19 @@ def main():
     # 2h 46' 14.39''
     print_me("Apparent declination", app_delta.dms_str(n_dec=2))
     # 49d 21' 7.45''
+
+    print("")
+
+    # Convert orbital elements of an object from one equinox to another
+    epoch0 = Epoch(2358042.5305)
+    epoch = Epoch(2433282.4235)
+    i0 = Angle(47.122)
+    arg0 = Angle(151.4486)
+    lon0 = Angle(45.7481)
+    i1, arg1, lon1 = orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0)
+    print_me("New inclination", round(i1(), 3))                     # 47.138
+    print_me("New argument of perihelion", round(arg1(), 4))        # 151.4782
+    print_me("New longitude of ascending node", round(lon1(), 4))   # 48.6037
 
 
 if __name__ == "__main__":
