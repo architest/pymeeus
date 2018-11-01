@@ -50,7 +50,7 @@ documentation going to directory 'docs' and issuing:
 
     make html
 
-Then the HTML pages can be found in 'build/html'.
+Then the HTML documentation pages can be found in 'build/html'.
 
 Contributing
 ------------
@@ -80,7 +80,7 @@ What's new
 
 -  0.2.6
 
-   -  Added classes 'Uranus' and 'NeptuneA, plus additional functions in
+   -  Added classes 'Uranus' and 'Neptune', plus additional functions in
       Coordinates module'
 
 -  0.2.5

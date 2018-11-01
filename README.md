@@ -44,7 +44,7 @@ If you have Sphinx installed, you can generate your own, latest documentation go
 make html
 ```
 
-Then the HTML pages can be found in 'build/html'.
+Then the HTML documentation pages can be found in 'build/html'.
 
 ## Contributing
 
@@ -71,7 +71,7 @@ documentation to your new code. This also includes in-line comments!!!.
 ## What's new
 
 * 0.2.6
-    * Added classes 'Uranus' and 'NeptuneA, plus additional functions in Coordinates module'
+    * Added classes 'Uranus' and 'Neptune', plus additional functions in Coordinates module'
 * 0.2.5
     * Added classes 'Jupiter' and 'Saturn'
 * 0.2.4
