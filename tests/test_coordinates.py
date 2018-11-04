@@ -32,7 +32,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         minimum_angular_separation, relative_position_angle, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
         straight_line, circle_diameter, apparent_position, \
-        orbital_equinox2equinox
+        orbital_equinox2equinox, kepler_equation
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -609,3 +609,29 @@ def test_coordinates_orbital_equinox2equinox():
 
     assert abs(round(lon1(), 4) - 48.6037) < TOL, \
         "ERROR: 3rd orbital_equinox2equinox() test, 'lon1' value doesn't match"
+
+
+def test_coordinates_kepler_equation():
+    """Tests the kepler_equation() method of Coordinates module"""
+
+    e1, v1 = kepler_equation(0.1, Angle(5.0))
+    e2, v2 = kepler_equation(0.99, Angle(1.0))
+    e3, v3 = kepler_equation(0.99, Angle(0.2, radians=True))
+
+    assert abs(round(e1(), 6) - 5.554589) < TOL, \
+        "ERROR: 1st kepler_equation() test, 'e1' value doesn't match"
+
+    assert abs(round(v1(), 6) - 6.139762) < TOL, \
+        "ERROR: 2nd kepler_equation() test, 'v1' value doesn't match"
+
+    assert abs(round(e2(), 6) - 24.725822) < TOL, \
+        "ERROR: 3rd kepler_equation() test, 'e2' value doesn't match"
+
+    assert abs(round(v2(), 6) - 144.155952) < TOL, \
+        "ERROR: 4th kepler_equation() test, 'v2' value doesn't match"
+
+    assert abs(round(e3(), 8) - 61.13444578) < TOL, \
+        "ERROR: 5th kepler_equation() test, 'e3' value doesn't match"
+
+    assert abs(round(v3(), 6) - 166.311977) < TOL, \
+        "ERROR: 6th kepler_equation() test, 'v3' value doesn't match"
