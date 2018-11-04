@@ -6938,15 +6938,25 @@ from the 'D' solution). In Meeus' book a shortened version can be found in page
 
 
 ORBITAL_ELEM = [
-    [252.250906, 149474.0722491, 0.0003035, 0.000000018],
-    [0.38709831, 0.0, 0.0, 0.0],
-    [0.20563175, 0.000020407, -0.0000000283, -0.00000000018],
-    [7.004986, 0.0018215, -0.0000181, 0.000000056],
-    [48.330893, 1.1861883, 0.00017542, 0.000000215],
-    [77.456119, 1.5564776, 0.00029544, 0.000000009]
+    [252.250906, 149474.0722491, 0.0003035, 0.000000018],       # L
+    [0.38709831, 0.0, 0.0, 0.0],                                # a
+    [0.20563175, 0.000020407, -0.0000000283, -0.00000000018],   # e
+    [7.004986, 0.0018215, -0.0000181, 0.000000056],             # i
+    [48.330893, 1.1861883, 0.00017542, 0.000000215],            # Omega
+    [77.456119, 1.5564776, 0.00029544, 0.000000009]             # pie
 ]
 """This table contains the parameters to compute Mercury's orbital elements for
-the mean equinox of date"""
+the mean equinox of date. Based in Table 31.A, page 212"""
+
+
+ORBITAL_ELEM_J2000 = [
+    [252.250906, 149472.6746358, -0.00000536, 0.000000002],     # L
+    [7.004986, -0.0059516, 0.0000008, 0.000000043],             # i
+    [48.330893, -0.1254227, -0.00008833, -0.0000002],           # Omega
+    [77.456119, 0.1588643, -0.00001342, -0.000000007]           # pie
+]
+"""This table contains the parameters to compute Mercury's orbital elements for
+the standard equinox J2000.0. Based on Table 31.B, page 214"""
 
 
 class Mercury(object):
@@ -7010,8 +7020,8 @@ class Mercury(object):
 
     @staticmethod
     def orbital_elements_mean_equinox(epoch):
-        """"This method computes the orbital elements of Mercury for a given
-        epoch.
+        """"This method computes the orbital elements of Mercury for the mean
+        equinox of the date for a given epoch.
 
         :param epoch: Epoch to compute orbital elements, as an Epoch object
         :type epoch: :py:class:`Epoch`
@@ -7059,6 +7069,64 @@ class Mercury(object):
         i = compute_element(t, ORBITAL_ELEM[3])
         omega = compute_element(t, ORBITAL_ELEM[4])
         pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
+    @staticmethod
+    def orbital_elements_j2000(epoch):
+        """"This method computes the orbital elements of Mercury for the
+        standard equinox J2000.0 for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Mercury.orbital_elements_j2000(epoch)
+        >>> print(round(l, 6))
+        202.579453
+        >>> print(round(a, 8))
+        0.38709831
+        >>> print(round(e, 7))
+        0.2056451
+        >>> print(round(i, 6))
+        7.001089
+        >>> print(round(ome, 5))
+        48.24873
+        >>> print(round(arg, 6))
+        29.311401
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM_J2000[1])
+        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
+        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
         arg = pie - omega
         ll = Angle(ll)
         i = Angle(i)
