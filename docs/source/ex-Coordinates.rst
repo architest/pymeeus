@@ -669,3 +669,29 @@ Convert orbital elements of a celestial object from one equinox to another::
     print_me("New longitude of ascending node", round(lon1(), 4))
 
     # New longitude of ascending node: 48.6037
+
+Compute the eccentric and true anomalies using Kepler's equation::
+
+    eccentricity = 0.1
+
+    mean_anomaly = Angle(5.0)
+
+    e, v = kepler_equation(eccentricity, mean_anomaly)
+
+    print_me("Eccentric anomaly, Case #1", round(e(), 6))
+
+    # Eccentric anomaly, Case #1: 5.554589
+
+    print_me("True anomaly, Case #1", round(v(), 6))
+
+    # True anomaly, Case #1: 6.139762
+
+    e, v = kepler_equation(0.99, Angle(0.2, radians=True))
+
+    print_me("Eccentric anomaly, Case #2", round(e(), 8))
+
+    # Eccentric anomaly, Case #2: 61.13444578
+
+    print_me("True anomaly, Case #2", round(v(), 6))
+
+    # True anomaly, Case #2: 166.311977
