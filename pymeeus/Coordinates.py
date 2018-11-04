@@ -18,9 +18,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians
+from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, \
+        copysign
 
-from base import TOL
+from base import TOL, INT
 from Angle import Angle
 from Epoch import Epoch, JDE2000
 from Interpolation import Interpolation
@@ -655,7 +656,7 @@ def precession_ecliptical(
         (47.0029 + tt * (-0.06603 + 0.000598 * tt))
         + t * ((-0.03302 + 0.000598 * tt) + 0.00006 * t)
     )
-    pi = tt * (3289.4789 + 0.60622 * tt) + t * (
+    pie = tt * (3289.4789 + 0.60622 * tt) + t * (
         -(869.8089 + 0.50491 * tt) + 0.03536 * t
     )
     p = t * (
@@ -664,19 +665,19 @@ def precession_ecliptical(
         + t * (1.11113 - 0.000042 * tt - 0.000006 * t)
     )
     eta = Angle(0, 0, eta)
-    pi = Angle(0, 0, pi)
+    pie = Angle(0, 0, pie)
     p = Angle(0, 0, p)
-    # But beware!: There is still a missing constant for pi. We didn't add
+    # But beware!: There is still a missing constant for pie. We didn't add
     # it before because of the mismatch between degrees and seconds
-    pi += 174.876384
+    pie += 174.876384
     a = (cos(eta.rad()) * cos(start_lat.rad()) *
-         sin(pi.rad() - start_lon.rad()) - sin(eta.rad()) *
+         sin(pie.rad() - start_lon.rad()) - sin(eta.rad()) *
          sin(start_lat.rad()))
-    b = cos(start_lat.rad()) * cos(pi.rad() - start_lon.rad())
+    b = cos(start_lat.rad()) * cos(pie.rad() - start_lon.rad())
     c = cos(eta.rad()) * sin(start_lat.rad()) + sin(eta.rad()) * cos(
         start_lat.rad()
-    ) * sin(pi.rad() - start_lon.rad())
-    final_lon = p.rad() + pi.rad() - atan2(a, b)
+    ) * sin(pie.rad() - start_lon.rad())
+    final_lon = p.rad() + pie.rad() - atan2(a, b)
     final_lat = asin(c)
     # Convert results to Angles. Please note results are in radians
     final_lon = Angle(final_lon, radians=True)
@@ -836,7 +837,7 @@ def motion_in_space(
     :type start_dec: :py:class:`Angle`
     :param distance: Star's distance to the Sun, in parsecs. If distance is
         given in light-years, multipy it by 0.3066. If the star's parallax
-        **pi** (in arcseconds) is given, use (1.0/pi).
+        **pie** (in arcseconds) is given, use (1.0/pie).
     :type distance: float
     :param velocity: Radial velocity in km/s
     :type velocity: float
@@ -2700,7 +2701,7 @@ def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
         (47.0029 + tt * (-0.06603 + 0.000598 * tt))
         + t * ((-0.03302 + 0.000598 * tt) + 0.00006 * t)
     )
-    pi = tt * (3289.4789 + 0.60622 * tt) + t * (
+    pie = tt * (3289.4789 + 0.60622 * tt) + t * (
         -(869.8089 + 0.50491 * tt) + 0.03536 * t
     )
     p = t * (
@@ -2709,19 +2710,19 @@ def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
         + t * (1.11113 - 0.000042 * tt - 0.000006 * t)
     )
     eta = Angle(0, 0, eta)
-    pi = Angle(0, 0, pi)
-    # But beware!: There is still a missing constant for pi. We didn't add
+    pie = Angle(0, 0, pie)
+    # But beware!: There is still a missing constant for pie. We didn't add
     # it before because of the mismatch between degrees and seconds
-    pi += 174.876384
+    pie += 174.876384
     p = Angle(0, 0, p)
     i0r = i0.rad()
     etar = eta.rad()
     lon0r = lon0.rad()
-    pir = pi.rad()
+    pir = pie.rad()
     # If i0 is very small, the procedure is different
     if i0 < 1.0:
         i1 = eta
-        lon1 = pi + p + 180.0
+        lon1 = pie + p + 180.0
     else:
         a = sin(i0r) * sin(lon0r - pir)
         b = -sin(etar) * cos(i0r) + cos(etar) * sin(i0r) * cos(lon0r - pir)
@@ -2729,13 +2730,101 @@ def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
         i1 = Angle(i1, radians=True)
         omegapsi = atan2(a, b)
         omegapsi = Angle(omegapsi, radians=True)
-        lon1 = omegapsi + pi + p
+        lon1 = omegapsi + pie + p
     domega = atan2(-sin(etar) * sin(lon0r - pir),
                    sin(i0r) * cos(etar) -
                    cos(i0r) * sin(etar) * cos(lon0r - pir))
     domega = Angle(domega, radians=True)
     arg1 = arg0 + domega
     return i1, arg1, lon1
+
+
+def kepler_equation(eccentricity, mean_anomaly):
+    """This function computes the eccentric and true anomalies taking as input
+    the mean anomaly and the eccentricity.
+
+    :param eccentricity: Orbit's eccentricity
+    :type eccentricity: int, float
+    :param mean_anomaly: Mean anomaly, as an Angle object
+    :type mean_anomaly: :py:class:`Angle`
+
+    :returns: A tuple with two Angle objects: Eccentric and true anomalies
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> eccentricity = 0.1
+    >>> mean_anomaly = Angle(5.0)
+    >>> e, v = kepler_equation(eccentricity, mean_anomaly)
+    >>> print(round(e(), 6))
+    5.554589
+    >>> print(round(v(), 6))
+    6.139762
+    >>> eccentricity = 0.99
+    >>> mean_anomaly = Angle(2.0)
+    >>> e, v = kepler_equation(eccentricity, mean_anomaly)
+    >>> print(round(e(), 6))
+    32.361007
+    >>> print(round(v(), 6))
+    152.542134
+    >>> eccentricity = 0.99
+    >>> mean_anomaly = Angle(5.0)
+    >>> e, v = kepler_equation(eccentricity, mean_anomaly)
+    >>> print(round(e(), 6))
+    45.361023
+    >>> print(round(v(), 6))
+    160.745616
+    >>> eccentricity = 0.99
+    >>> mean_anomaly = Angle(1.0)
+    >>> e, v = kepler_equation(eccentricity, mean_anomaly)
+    >>> print(round(e(), 6))
+    24.725822
+    >>> print(round(v(), 6))
+    144.155952
+    >>> e, v = kepler_equation(0.999, Angle(7.0))
+    >>> print(round(e(), 7))
+    52.2702615
+    >>> print(round(v(), 6))
+    174.780018
+    >>> e, v = kepler_equation(0.99, Angle(0.2, radians=True))
+    >>> print(round(e(), 8))
+    61.13444578
+    >>> print(round(v(), 6))
+    166.311977
+    """
+
+    # First check that input values are of correct types
+    if not (
+        isinstance(eccentricity, (int, float))
+        and isinstance(mean_anomaly, Angle)
+    ):
+        raise TypeError("Invalid input types")
+    # Let's implement the third method (from Roger Sinnot), page 206
+    # First, compute the eccentric anomaly
+    m = mean_anomaly.rad()
+    ecc = eccentricity
+    f = copysign(1.0, m)
+    m = abs(m) / (2.0 * pi)
+    m = (m - INT(m)) * 2.0 * pi * f
+    if m < 0.0:
+        m += 2.0 * pi
+    f = 1.0
+    if m > pi:
+        f = -1
+        m = 2.0 * pi - m
+    e0 = pi / 2.0
+    d = pi / 4.0
+    ef = 0.0
+    while abs(e0 - ef) > TOL:
+        ef = e0
+        m1 = e0 - ecc * sin(e0)
+        s = copysign(1.0, m - m1)
+        e0 += d * s
+        d /= 2.0
+    e = Angle(e0 * f, radians=True)
+    # Now, compute the true anomaly
+    er = e.rad()
+    v = 2.0 * atan(sqrt((1.0 + ecc) / (1.0 - ecc)) * tan(er / 2.0))
+    return e, Angle(v, radians=True)
 
 
 def main():
@@ -3187,6 +3276,18 @@ def main():
     print_me("New inclination", round(i1(), 3))                     # 47.138
     print_me("New argument of perihelion", round(arg1(), 4))        # 151.4782
     print_me("New longitude of ascending node", round(lon1(), 4))   # 48.6037
+
+    print("")
+
+    # Compute the eccentric and true anomalies using Kepler's equation
+    eccentricity = 0.1
+    mean_anomaly = Angle(5.0)
+    e, v = kepler_equation(eccentricity, mean_anomaly)
+    print_me("Eccentric anomaly, Case #1", round(e(), 6))       # 5.554589
+    print_me("True anomaly, Case #1", round(v(), 6))            # 6.139762
+    e, v = kepler_equation(0.99, Angle(0.2, radians=True))
+    print_me("Eccentric anomaly, Case #2", round(e(), 8))       # 61.13444578
+    print_me("True anomaly, Case #2", round(v(), 6))            # 166.311977
 
 
 if __name__ == "__main__":
