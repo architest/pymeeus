@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Epoch import Epoch
+from Angle import Angle
+from Epoch import Epoch, JDE2000
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
@@ -6936,6 +6937,18 @@ from the 'D' solution). In Meeus' book a shortened version can be found in page
 416."""
 
 
+ORBITAL_ELEM = [
+    [252.250906, 149474.0722491, 0.0003035, 0.000000018],
+    [0.38709831, 0.0, 0.0, 0.0],
+    [0.20563175, 0.000020407, -0.0000000283, -0.00000000018],
+    [7.004986, 0.0018215, -0.0000181, 0.000000056],
+    [48.330893, 1.1861883, 0.00017542, 0.000000215],
+    [77.456119, 1.5564776, 0.00029544, 0.000000009]
+]
+"""This table contains the parameters to compute Mercury's orbital elements for
+the mean equinox of date"""
+
+
 class Mercury(object):
     """
     Class Mercury models that planet.
@@ -6995,6 +7008,64 @@ class Mercury(object):
         # Second, call auxiliary function in charge of computations
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
+    @staticmethod
+    def orbital_elements_mean_equinox(epoch):
+        """"This method computes the orbital elements of Mercury for a given
+        epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Mercury.orbital_elements_mean_equinox(epoch)
+        >>> print(round(l, 6))
+        203.494701
+        >>> print(round(a, 8))
+        0.38709831
+        >>> print(round(e, 7))
+        0.2056451
+        >>> print(round(i, 6))
+        7.006171
+        >>> print(round(ome, 5))
+        49.10765
+        >>> print(round(arg, 6))
+        29.367732
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM[3])
+        omega = compute_element(t, ORBITAL_ELEM[4])
+        pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
 
 def main():
 
@@ -7013,6 +7084,18 @@ def main():
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
+
+    print("")
+
+    # Print mean orbital elements for Mercury at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Mercury.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 203.494701
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 0.38709831
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.2056451
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 7.006171
+    print_me("Longitude of the ascending node", round(ome, 5))  # 49.10765
+    print_me("Argument of the perihelion", round(arg, 6))       # 29.367732
 
 
 if __name__ == "__main__":
