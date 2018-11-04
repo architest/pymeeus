@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Epoch import Epoch
+from Angle import Angle
+from Epoch import Epoch, JDE2000
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
@@ -1790,6 +1791,28 @@ theory VSOP87 for the radius vector at the equinox of date (taken from the 'D'
 solution). In Meeus' book a shortened version can be found in pages 420-421."""
 
 
+ORBITAL_ELEM = [
+    [181.979801, 58519.2130302, 0.00031014, 0.000000015],       # L
+    [0.72332982, 0.0, 0.0, 0.0],                                # a
+    [0.00677192, -0.000047765, 0.0000000981, 0.00000000046],    # e
+    [3.394662, 0.0010037, -0.00000088, -0.000000007],           # i
+    [76.67992, 0.9011206, 0.00040618, -0.000000093],            # Omega
+    [131.563703, 1.4022288, -0.00107618, -0.000005678]          # pie
+]
+"""This table contains the parameters to compute Venus' orbital elements for
+the mean equinox of date. Based in Table 31.A, page 212"""
+
+
+ORBITAL_ELEM_J2000 = [
+    [181.979801, 58517.815676, 0.00000165, -0.000000002],   # L
+    [3.394662, -0.0008568, -0.00003244, 0.000000009],       # i
+    [76.67992, -0.2780134, -0.00014257, -0.000000164],      # Omega
+    [131.563703, 0.0048746, -0.00138467, -0.000005695]      # pie
+]
+"""This table contains the parameters to compute Venus' orbital elements for
+the standard equinox J2000.0. Based on Table 31.B, page 214"""
+
+
 class Venus(object):
     """
     Class Venus models that planet.
@@ -1848,6 +1871,122 @@ class Venus(object):
             raise TypeError("Invalid input types")
         # Second, call auxiliary function in charge of computations
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
+
+    @staticmethod
+    def orbital_elements_mean_equinox(epoch):
+        """"This method computes the orbital elements of Venus for the mean
+        equinox of the date for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Venus.orbital_elements_mean_equinox(epoch)
+        >>> print(round(l, 6))
+        338.646306
+        >>> print(round(a, 8))
+        0.72332982
+        >>> print(round(e, 7))
+        0.0067407
+        >>> print(round(i, 6))
+        3.395319
+        >>> print(round(ome, 5))
+        77.27012
+        >>> print(round(arg, 6))
+        55.211257
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM[3])
+        omega = compute_element(t, ORBITAL_ELEM[4])
+        pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
+    @staticmethod
+    def orbital_elements_j2000(epoch):
+        """"This method computes the orbital elements of Venus for the
+        standard equinox J2000.0 for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Venus.orbital_elements_j2000(epoch)
+        >>> print(round(l, 6))
+        337.731227
+        >>> print(round(a, 8))
+        0.72332982
+        >>> print(round(e, 7))
+        0.0067407
+        >>> print(round(i, 6))
+        3.394087
+        >>> print(round(ome, 5))
+        76.49782
+        >>> print(round(arg, 6))
+        55.068476
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM_J2000[1])
+        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
+        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
 
 
 def main():
