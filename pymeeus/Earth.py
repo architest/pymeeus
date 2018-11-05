@@ -21,7 +21,7 @@
 from math import sqrt, radians, sin, cos, tan, atan
 
 from Angle import Angle
-from Epoch import Epoch
+from Epoch import Epoch, JDE2000
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
@@ -2715,6 +2715,28 @@ theory VSOP87 for the heliocentric latitude, referred to the equinox J2000.0.
 In Meeus' book these values can be found in page 420 and page 173."""
 
 
+ORBITAL_ELEM = [
+    [100.466457, 36000.7698278, 0.00030322, 0.00000002],        # L
+    [1.000001018, 0.0, 0.0, 0.0],                               # a
+    [0.01670863, -0.000042037, -0.0000001267, 0.00000000014],   # e
+    [0.0, 0.0, 0.0, 0.0],                                       # i
+    [174.873176, -0.2410908, 0.00004262, 0.000000001],          # Omega
+    [102.937348, 1.7195366, 0.00045688, -0.000000018]           # pie
+]
+"""This table contains the parameters to compute Earth's orbital elements for
+the mean equinox of date. Based in Table 31.A, page 212"""
+
+
+ORBITAL_ELEM_J2000 = [
+    [100.466457, 35999.3728565, -0.00000568, -0.000000001],     # L
+    [0.0, 0.0130548, -0.00000931, -0.000000034],                # i
+    [174.873176, -0.2410908, 0.00004262, 0.000000001],          # Omega
+    [102.937348, 0.3225654, 0.00014799, -0.000000039]           # pie
+]
+"""This table contains the parameters to compute Earth's orbital elements for
+the standard equinox J2000.0. Based on Table 31.B, page 214"""
+
+
 class Ellipsoid(object):
     """
     Class Ellipsoid is useful to encapsulate the most important parameters of
@@ -3243,6 +3265,122 @@ class Earth(object):
             epoch, VSOP87_L_J2000, VSOP87_B_J2000, VSOP87_R, toFK5
         )
 
+    @staticmethod
+    def orbital_elements_mean_equinox(epoch):
+        """"This method computes the orbital elements of Earth for the mean
+        equinox of the date for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Earth.orbital_elements_mean_equinox(epoch)
+        >>> print(round(l, 6))
+        272.716028
+        >>> print(round(a, 8))
+        1.00000102
+        >>> print(round(e, 7))
+        0.0166811
+        >>> print(round(i, 6))
+        0.0
+        >>> print(round(ome, 5))
+        174.71534
+        >>> print(round(arg, 6))
+        -70.651889
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM[3])
+        omega = compute_element(t, ORBITAL_ELEM[4])
+        pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
+    @staticmethod
+    def orbital_elements_j2000(epoch):
+        """"This method computes the orbital elements of Earth for the
+        standard equinox J2000.0 for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Earth.orbital_elements_j2000(epoch)
+        >>> print(round(l, 6))
+        271.801199
+        >>> print(round(a, 8))
+        1.00000102
+        >>> print(round(e, 7))
+        0.0166811
+        >>> print(round(i, 6))
+        0.008544
+        >>> print(round(ome, 5))
+        174.71534
+        >>> print(round(arg, 6))
+        -71.566717
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM_J2000[1])
+        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
+        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
 
 def main():
 
@@ -3357,6 +3495,18 @@ def main():
     print_me("Apparent Heliocentric Longitude", lon.to_positive())
     print_me("Apparent Heliocentric Latitude", lat.dms_str(n_dec=3))
     print_me("Radius vector", r)
+
+    print("")
+
+    # Print mean orbital elements for Earth at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Earth.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 272.716028
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 1.00000102
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.0166811
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 0.0
+    print_me("Longitude of the ascending node", round(ome, 5))  # 174.71534
+    print_me("Argument of the perihelion", round(arg, 6))       # -70.651889
 
 
 if __name__ == "__main__":
