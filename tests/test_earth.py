@@ -21,7 +21,7 @@
 from pymeeus.base import TOL
 from pymeeus.Earth import Earth, IAU76
 from pymeeus.Angle import Angle
-from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Epoch import Epoch
 
 
 # Earth class
@@ -159,3 +159,53 @@ def test_earth_apparent_heliocentric_position():
 
     assert abs(round(r, 8) - 0.99760852) < TOL, \
         "ERROR: 3rd apparent_heliocentric_position() test doesn't match"
+
+
+def test_earth_orbital_elements_mean_equinox():
+    """Tests the orbital_elements_mean_equinox() method of Earth class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Earth.orbital_elements_mean_equinox(epoch)
+
+    assert abs(round(l, 6) - 272.716028) < TOL, \
+        "ERROR: 1st orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(a, 8) - 1.00000102) < TOL, \
+        "ERROR: 2nd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(e, 7) - 0.0166811) < TOL, \
+        "ERROR: 3rd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(i, 6) - 0.0) < TOL, \
+        "ERROR: 4th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(ome, 5) - 174.71534) < TOL, \
+        "ERROR: 5th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(arg, 6) - (-70.651889)) < TOL, \
+        "ERROR: 6th orbital_elements_mean_equinox() test doesn't match"
+
+
+def test_earth_orbital_elements_j2000():
+    """Tests the orbital_elements_j2000() method of Earth class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Earth.orbital_elements_j2000(epoch)
+
+    assert abs(round(l, 6) - 271.801199) < TOL, \
+        "ERROR: 1st orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(a, 8) - 1.00000102) < TOL, \
+        "ERROR: 2nd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(e, 7) - 0.0166811) < TOL, \
+        "ERROR: 3rd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(i, 6) - 0.008544) < TOL, \
+        "ERROR: 4th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(ome, 5) - 174.71534) < TOL, \
+        "ERROR: 5th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(arg, 6) - -71.566717) < TOL, \
+        "ERROR: 6th orbital_elements_j2000() test doesn't match"
