@@ -207,5 +207,5 @@ def test_earth_orbital_elements_j2000():
     assert abs(round(ome, 5) - 174.71534) < TOL, \
         "ERROR: 5th orbital_elements_j2000() test doesn't match"
 
-    assert abs(round(arg, 6) - -71.566717) < TOL, \
+    assert abs(round(arg, 6) - (-71.566717)) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
