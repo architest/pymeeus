@@ -39,3 +39,53 @@ def test_mercury_geometric_heliocentric_position():
 
     assert abs(round(r, 5) - 0.45113) < TOL, \
         "ERROR: 3rd geometric_heliocentric_position() test doesn't match"
+
+
+def test_mercury_orbital_elements_mean_equinox():
+    """Tests the orbital_elements_mean_equinox() method of Mercury class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Mercury.orbital_elements_mean_equinox(epoch)
+
+    assert abs(round(l, 6) - 203.494701) < TOL, \
+        "ERROR: 1st orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(a, 8) - 0.38709831) < TOL, \
+        "ERROR: 2nd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(e, 7) - 0.2056451) < TOL, \
+        "ERROR: 3rd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(i, 6) - 7.006171) < TOL, \
+        "ERROR: 4th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(ome, 5) - 49.10765) < TOL, \
+        "ERROR: 5th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(arg, 6) - 29.367732) < TOL, \
+        "ERROR: 6th orbital_elements_mean_equinox() test doesn't match"
+
+
+def test_mercury_orbital_elements_j2000():
+    """Tests the orbital_elements_j2000() method of Mercury class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Mercury.orbital_elements_j2000(epoch)
+
+    assert abs(round(l, 6) - 202.579453) < TOL, \
+        "ERROR: 1st orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(a, 8) - 0.38709831) < TOL, \
+        "ERROR: 2nd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(e, 7) - 0.2056451) < TOL, \
+        "ERROR: 3rd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(i, 6) - 7.001089) < TOL, \
+        "ERROR: 4th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(ome, 5) - 48.24873) < TOL, \
+        "ERROR: 5th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(arg, 6) - 29.311401) < TOL, \
+        "ERROR: 6th orbital_elements_j2000() test doesn't match"
