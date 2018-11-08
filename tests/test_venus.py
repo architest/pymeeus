@@ -39,3 +39,53 @@ def test_venus_geometric_heliocentric_position():
 
     assert abs(round(r, 6) - 0.724602) < TOL, \
         "ERROR: 3rd geometric_heliocentric_position() test doesn't match"
+
+
+def test_venus_orbital_elements_mean_equinox():
+    """Tests the orbital_elements_mean_equinox() method of Venus class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Venus.orbital_elements_mean_equinox(epoch)
+
+    assert abs(round(l, 6) - 338.646306) < TOL, \
+        "ERROR: 1st orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(a, 8) - 0.72332982) < TOL, \
+        "ERROR: 2nd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(e, 7) - 0.0067407) < TOL, \
+        "ERROR: 3rd orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(i, 6) - 3.395319) < TOL, \
+        "ERROR: 4th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(ome, 5) - 77.27012) < TOL, \
+        "ERROR: 5th orbital_elements_mean_equinox() test doesn't match"
+
+    assert abs(round(arg, 6) - 55.211257) < TOL, \
+        "ERROR: 6th orbital_elements_mean_equinox() test doesn't match"
+
+
+def test_venus_orbital_elements_j2000():
+    """Tests the orbital_elements_j2000() method of Venus class"""
+
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Venus.orbital_elements_j2000(epoch)
+
+    assert abs(round(l, 6) - 337.731227) < TOL, \
+        "ERROR: 1st orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(a, 8) - 0.72332982) < TOL, \
+        "ERROR: 2nd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(e, 7) - 0.0067407) < TOL, \
+        "ERROR: 3rd orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(i, 6) - 3.394087) < TOL, \
+        "ERROR: 4th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(ome, 5) - 76.49782) < TOL, \
+        "ERROR: 5th orbital_elements_j2000() test doesn't match"
+
+    assert abs(round(arg, 6) - 55.068476) < TOL, \
+        "ERROR: 6th orbital_elements_j2000() test doesn't match"
