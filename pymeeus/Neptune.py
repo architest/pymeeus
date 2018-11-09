@@ -1040,13 +1040,9 @@ VSOP87_B = [
         [0.157, 3.94195369610, 1.48447270830],
     ],
     # B4
-    [
-        [5.728, 2.66872693322, 38.13303563780]
-    ],
+    [[5.728, 2.66872693322, 38.13303563780]],
     # B5
-    [
-        [0.113, 4.70646877989, 38.13303563780]
-    ],
+    [[0.113, 4.70646877989, 38.13303563780]],
 ]
 """This table contains Neptune's periodic terms (all of them) from the
 planetary theory VSOP87 for the heliocentric latitude at the equinox of date
