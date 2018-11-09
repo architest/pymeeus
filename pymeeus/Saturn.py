@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Epoch import Epoch
+from Angle import Angle
+from Epoch import Epoch, JDE2000
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
@@ -5867,6 +5868,28 @@ theory VSOP87 for the radius vector at the equinox of date (taken from the 'D'
 solution). In Meeus' book a shortened version can be found in pages 442-445."""
 
 
+ORBITAL_ELEM = [
+    [50.077444, 1223.5110686, 0.00051908, -0.00000003],         # L
+    [9.554909192, -0.000002139, 0.000000004, 0.0],              # a
+    [0.05554814, -0.000346641, -0.0000006436, 0.0000000034],    # e
+    [2.488879, -0.0037362, -0.00001519, 0.000000087],           # i
+    [113.665503, 0.877088, -0.00012176, -0.000002249],          # Omega
+    [93.057237, 1.9637613, 0.00083753, 0.000004928]             # pie
+]
+"""This table contains the parameters to compute Saturn's orbital elements for
+the mean equinox of date. Based in Table 31.A, page 213"""
+
+
+ORBITAL_ELEM_J2000 = [
+    [50.077444, 1222.1138488, 0.00021004, -0.000000046],    # L
+    [2.488879, 0.0025514, -0.00004906, 0.000000017],        # i
+    [113.665503, -0.2566722, -0.00018399, 0.00000048],      # Omega
+    [93.057237, 0.5665415, 0.0005285, 0.000004912]          # pie
+]
+"""This table contains the parameters to compute Saturn's orbital elements for
+the standard equinox J2000.0. Based on Table 31.B, page 215"""
+
+
 class Saturn(object):
     """
     Class Saturn models that planet.
@@ -5926,6 +5949,122 @@ class Saturn(object):
         # Second, call auxiliary function in charge of computations
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
+    @staticmethod
+    def orbital_elements_mean_equinox(epoch):
+        """"This method computes the orbital elements of Saturn for the mean
+        equinox of the date for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Saturn.orbital_elements_mean_equinox(epoch)
+        >>> print(round(l, 6))
+        131.196871
+        >>> print(round(a, 8))
+        9.55490779
+        >>> print(round(e, 7))
+        0.0553209
+        >>> print(round(i, 6))
+        2.486426
+        >>> print(round(ome, 5))
+        114.23974
+        >>> print(round(arg, 6))
+        -19.896331
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM[3])
+        omega = compute_element(t, ORBITAL_ELEM[4])
+        pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
+    @staticmethod
+    def orbital_elements_j2000(epoch):
+        """"This method computes the orbital elements of Saturn for the
+        standard equinox J2000.0 for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Saturn.orbital_elements_j2000(epoch)
+        >>> print(round(l, 6))
+        130.28188
+        >>> print(round(a, 8))
+        9.55490779
+        >>> print(round(e, 7))
+        0.0553209
+        >>> print(round(i, 6))
+        2.490529
+        >>> print(round(ome, 5))
+        113.49736
+        >>> print(round(arg, 6))
+        -20.068943
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM_J2000[1])
+        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
+        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
 
 def main():
 
@@ -5944,6 +6083,18 @@ def main():
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
+
+    print("")
+
+    # Print mean orbital elements for Saturn at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Saturn.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 131.196871
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 9.55490779
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.0553209
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 2.486426
+    print_me("Longitude of the ascending node", round(ome, 5))  # 114.23974
+    print_me("Argument of the perihelion", round(arg, 6))       # -19.896331
 
 
 if __name__ == "__main__":
