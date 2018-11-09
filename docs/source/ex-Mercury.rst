@@ -24,3 +24,33 @@ We can compute the geometric heliocentric position for a given epoch::
     print_me("Radius vector", r)
 
     # Radius vector: 0.45113
+
+Print mean orbital elements for Mercury at 2065.6.24::
+
+    epoch = Epoch(2065, 6, 24.0)
+
+    l, a, e, i, ome, arg = Mercury.orbital_elements_mean_equinox(epoch)
+
+    print_me("Mean longitude of the planet", round(l, 6))
+
+    # Mean longitude of the planet: 203.494701
+
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))
+
+    # Semimajor axis of the orbit (UA): 0.38709831
+
+    print_me("Eccentricity of the orbit", round(e, 7))
+
+    # Eccentricity of the orbit: 0.2056451
+
+    print_me("Inclination on plane of the ecliptic", round(i, 6))
+
+    # Inclination on plane of the ecliptic: 7.006171
+
+    print_me("Longitude of the ascending node", round(ome, 5))
+
+    # Longitude of the ascending node: 49.10765
+
+    print_me("Argument of the perihelion", round(arg, 6))
+
+    # Argument of the perihelion: 29.367732

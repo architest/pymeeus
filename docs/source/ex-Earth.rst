@@ -150,3 +150,33 @@ And now, compute the apparent heliocentric position for the same epoch::
     print_me("Radius vector", r)
 
     # Radius vector: 0.997608520236
+
+Print mean orbital elements for Earth at 2065.6.24::
+
+    epoch = Epoch(2065, 6, 24.0)
+
+    l, a, e, i, ome, arg = Earth.orbital_elements_mean_equinox(epoch)
+
+    print_me("Mean longitude of the planet", round(l, 6))
+
+    # Mean longitude of the planet: 272.716028
+
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))
+
+    # Semimajor axis of the orbit (UA): 1.00000102
+
+    print_me("Eccentricity of the orbit", round(e, 7))
+
+    # Eccentricity of the orbit: 0.0166811
+
+    print_me("Inclination on plane of the ecliptic", round(i, 6))
+
+    # Inclination on plane of the ecliptic: 0.0
+
+    print_me("Longitude of the ascending node", round(ome, 5))
+
+    # Longitude of the ascending node: 174.71534
+
+    print_me("Argument of the perihelion", round(arg, 6))
+
+    # Argument of the perihelion: -70.651889

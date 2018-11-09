@@ -2007,6 +2007,18 @@ def main():
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
 
+    print("")
+
+    # Print mean orbital elements for Venus at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Venus.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 338.646306
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 0.72332982
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.0067407
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 3.395319
+    print_me("Longitude of the ascending node", round(ome, 5))  # 77.27012
+    print_me("Argument of the perihelion", round(arg, 6))       # 55.211257
+
 
 if __name__ == "__main__":
 

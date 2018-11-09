@@ -5808,6 +5808,18 @@ def main():
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
 
+    print("")
+
+    # Print mean orbital elements for Mars at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Mars.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 288.855211
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 1.52367934
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.0934599
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 1.849338
+    print_me("Longitude of the ascending node", round(ome, 5))  # 50.06365
+    print_me("Argument of the perihelion", round(arg, 6))       # 287.202108
+
 
 if __name__ == "__main__":
 
