@@ -18,7 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Epoch import Epoch
+from Angle import Angle
+from Epoch import Epoch, JDE2000
 from Coordinates import geometric_vsop_pos, apparent_vsop_pos
 
 
@@ -3592,6 +3593,28 @@ from the 'D' solution). In Meeus' book a shortened version can be found in
 pages 432-434."""
 
 
+ORBITAL_ELEM = [
+    [34.351519, 3036.3027748, 0.0002233, 0.000000037],          # L
+    [5.202603209, 0.0000001913, 0.0, 0.0],                      # a
+    [0.04849793, 0.000163225, -0.0000004714, -0.00000000201],   # e
+    [1.303267, -0.0054965, 0.00000466, -0.000000002],           # i
+    [100.464407, 1.0209774, 0.00040315, 0.000000404],           # Omega
+    [14.331207, 1.6126352, 0.00103042, -0.000004464]            # pie
+]
+"""This table contains the parameters to compute Jupiter's orbital elements for
+the mean equinox of date. Based in Table 31.A, page 213"""
+
+
+ORBITAL_ELEM_J2000 = [
+    [34.351519, 3034.9056606, -0.00008501, 0.000000016],    # L
+    [1.303267, -0.0019877, 0.0000332, 0.000000097],         # i
+    [100.464407, 0.1767232, 0.000907, -0.000007272],        # Omega
+    [14.331207, 0.2155209, 0.00072211, -0.000004485]        # pie
+]
+"""This table contains the parameters to compute Jupiter's orbital elements for
+the standard equinox J2000.0. Based on Table 31.B, page 215"""
+
+
 class Jupiter(object):
     """
     Class Jupiter models that planet.
@@ -3651,6 +3674,122 @@ class Jupiter(object):
         # Second, call auxiliary function in charge of computations
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
+    @staticmethod
+    def orbital_elements_mean_equinox(epoch):
+        """"This method computes the orbital elements of Jupiter for the mean
+        equinox of the date for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Jupiter.orbital_elements_mean_equinox(epoch)
+        >>> print(round(l, 6))
+        222.433723
+        >>> print(round(a, 8))
+        5.20260333
+        >>> print(round(e, 7))
+        0.0486046
+        >>> print(round(i, 6))
+        1.29967
+        >>> print(round(ome, 5))
+        101.13309
+        >>> print(round(arg, 6))
+        -85.745532
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM[3])
+        omega = compute_element(t, ORBITAL_ELEM[4])
+        pie = compute_element(t, ORBITAL_ELEM[5])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
+    @staticmethod
+    def orbital_elements_j2000(epoch):
+        """"This method computes the orbital elements of Jupiter for the
+        standard equinox J2000.0 for a given epoch.
+
+        :param epoch: Epoch to compute orbital elements, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the following six orbital elements:
+            - Mean longitude of the planet (Angle)
+            - Semimajor axis of the orbit (float, astronomical units)
+            - eccentricity of the orbit (float)
+            - inclination on the plane of the ecliptic (Angle)
+            - longitude of the ascending node (Angle)
+            - argument of the perihelion (Angle)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2065, 6, 24.0)
+        >>> l, a, e, i, ome, arg = Jupiter.orbital_elements_j2000(epoch)
+        >>> print(round(l, 6))
+        221.518802
+        >>> print(round(a, 8))
+        5.20260333
+        >>> print(round(e, 7))
+        0.0486046
+        >>> print(round(i, 6))
+        1.30198
+        >>> print(round(ome, 5))
+        100.58051
+        >>> print(round(arg, 6))
+        -86.107875
+        """
+
+        # First check that input values are of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+
+        # Define an auxiliary function
+        def compute_element(t, param):
+            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+        # Compute the time parameter
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the orbital elements
+        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
+        a = compute_element(t, ORBITAL_ELEM[1])
+        e = compute_element(t, ORBITAL_ELEM[2])
+        i = compute_element(t, ORBITAL_ELEM_J2000[1])
+        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
+        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
+        arg = pie - omega
+        ll = Angle(ll)
+        i = Angle(i)
+        omega = Angle(omega)
+        arg = Angle(arg)
+        return ll, a, e, i, omega, arg
+
 
 def main():
 
@@ -3669,6 +3808,18 @@ def main():
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
+
+    print("")
+
+    # Print mean orbital elements for Jupiter at 2065.6.24
+    epoch = Epoch(2065, 6, 24.0)
+    l, a, e, i, ome, arg = Jupiter.orbital_elements_mean_equinox(epoch)
+    print_me("Mean longitude of the planet", round(l, 6))       # 222.433723
+    print_me("Semimajor axis of the orbit (UA)", round(a, 8))   # 5.20260333
+    print_me("Eccentricity of the orbit", round(e, 7))          # 0.0486046
+    print_me("Inclination on plane of the ecliptic", round(i, 6))   # 1.29967
+    print_me("Longitude of the ascending node", round(ome, 5))  # 101.13309
+    print_me("Argument of the perihelion", round(arg, 6))       # -85.745532
 
 
 if __name__ == "__main__":
