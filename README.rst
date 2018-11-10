@@ -78,6 +78,12 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.7
+
+   -  Added function 'kepler\_equation()' to 'Coordinates' module, and
+      'orbital\_elements' methods to classes 'Mercury', 'Venus',
+      'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus' and 'Neptune'
+
 -  0.2.6
 
    -  Added classes 'Uranus' and 'Neptune', plus additional functions in
