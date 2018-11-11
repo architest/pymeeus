@@ -18,8 +18,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Epoch import Epoch
-from Coordinates import geometric_vsop_pos, apparent_vsop_pos, orbital_elements
+from math import sin, cos, tan, atan2, sqrt, radians
+
+from Angle import Angle
+from Epoch import Epoch, JDE2000
+from Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
+        orbital_elements, nutation_longitude, true_obliquity, \
+        ecliptical2equatorial
+from Earth import Earth
 
 
 """
@@ -1832,11 +1838,11 @@ class Venus(object):
             :py:class:`Angle` objects), and the radius vector (as a float,
             in astronomical units), in that order
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 12, 20.0)
         >>> l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
-        >>> print(round(l.to_positive(), 5))
+        >>> print(round(l, 5))
         26.11412
         >>> print(round(b, 4))
         -2.6206
@@ -1858,7 +1864,7 @@ class Venus(object):
             :py:class:`Angle` objects), and the radius vector (as a float,
             in astronomical units), in that order
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
         """
 
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
@@ -1879,7 +1885,7 @@ class Venus(object):
             - longitude of the ascending node (Angle)
             - argument of the perihelion (Angle)
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(2065, 6, 24.0)
         >>> l, a, e, i, ome, arg = Venus.orbital_elements_mean_equinox(epoch)
@@ -1915,7 +1921,7 @@ class Venus(object):
             - longitude of the ascending node (Angle)
             - argument of the perihelion (Angle)
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(2065, 6, 24.0)
         >>> l, a, e, i, ome, arg = Venus.orbital_elements_j2000(epoch)
@@ -1934,6 +1940,91 @@ class Venus(object):
         """
 
         return orbital_elements(epoch, ORBITAL_ELEM, ORBITAL_ELEM_J2000)
+
+    @staticmethod
+    def geocentric_position(epoch):
+        """"This method computes the geocentric position of Venus (right
+        ascension and declination) for the given epoch.
+
+        :param epoch: Epoch to compute geocentric position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the right ascension and the declination,
+            as Angle objects
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 12, 20.0)
+        >>> ra, dec = Venus.geocentric_position(epoch)
+        >>> print(ra.ra_str(n_dec=1))
+        21h 4' 41.5''
+        >>> print(dec.dms_str(n_dec=1))
+        -18d 53' 16.8''
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Compute the heliocentric position of Venus
+        l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        # Compute the heliocentric position of the Earth
+        l0, b0, r0 = Earth.geometric_heliocentric_position(epoch, toFK5=False)
+        # Convert to radians
+        lr = l.rad()
+        br = b.rad()
+        l0r = l0.rad()
+        b0r = b0.rad()
+        # Compute first iteration
+        x = r * cos(br) * cos(lr) - r0 * cos(b0r) * cos(l0r)
+        y = r * cos(br) * sin(lr) - r0 * cos(b0r) * sin(l0r)
+        z = r * sin(br) - r0 * sin(b0r)
+        delta = sqrt(x * x + y * y + z * z)
+        tau = 0.0057755183 * delta
+        # Adjust the epoch for light-time
+        epoch -= tau
+        # Compute again Venus coordinates with this correction
+        l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        # Compute second iteration
+        lr = l.rad()
+        br = b.rad()
+        x = r * cos(br) * cos(lr) - r0 * cos(b0r) * cos(l0r)
+        y = r * cos(br) * sin(lr) - r0 * cos(b0r) * sin(l0r)
+        z = r * sin(br) - r0 * sin(b0r)
+        # Compute longitude and latitude
+        lamb = atan2(y, x)
+        beta = atan2(z, sqrt(x * x + y * y))
+        # Now, let's compute the aberration effect
+        t = (epoch - JDE2000) / 36525
+        e = 0.016708634 + t * (-0.000042037 - t * 0.0000001267)
+        pie = 102.93735 + t * (1.71946 + t * 0.00046)
+        pie = radians(pie)
+        lon = l0 + 180.0
+        lon = lon.rad()
+        k = 20.49552    # The constant of aberration
+        deltal1 = k * (-cos(lon - lamb) + e * cos(pie - lamb)) / cos(beta)
+        deltab1 = -k * sin(beta) * (sin(lon - lamb) - e * sin(pie - lamb))
+        deltal1 = Angle(0, 0, deltal1)
+        deltab1 = Angle(0, 0, deltab1)
+        # Correction to FK5 system
+        lamb = Angle(lamb, radians=True)
+        lamb = lamb.to_positive()
+        beta = Angle(beta, radians=True)
+        l_prime = lamb - t * (1.397 + t * 0.00031)
+        deltal2 = Angle(0, 0, -0.09033)
+        a = 0.03916 * (cos(l_prime.rad()) + sin(l_prime.rad()))
+        a = a * tan(b.rad())
+        deltal2 += Angle(0, 0, a)
+        deltab2 = 0.03916 * (cos(l_prime.rad()) - sin(l_prime.rad()))
+        deltab2 = Angle(0, 0, deltab2)
+        # Apply the corrections
+        lamb = lamb + deltal1 + deltal2
+        beta = beta + deltab1 + deltab2
+        # Correction for nutation
+        dpsi = nutation_longitude(epoch)
+        lamb += dpsi
+        e = true_obliquity(epoch)
+        ra, dec = ecliptical2equatorial(lamb, beta, e)
+        return ra, dec
 
 
 def main():
