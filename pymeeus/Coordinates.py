@@ -2462,6 +2462,7 @@ def vsop_pos(epoch, vsop_l, vsop_b, vsop_r):
     lon += sum_list[0]
     lon /= 1e8
     lon = Angle(lon, radians=True)
+    lon = lon.to_positive()
     sum_list = []
     for i in range(len(vsop_b)):
         s = 0.0
