@@ -959,6 +959,7 @@ def equatorial2ecliptical(right_ascension, declination, obliquity):
     lon = atan2((sin(ra) * cos(eps) + tan(dec) * sin(eps)), cos(ra))
     lat = asin(sin(dec) * cos(eps) - cos(dec) * sin(eps) * sin(ra))
     lon = Angle(lon, radians=True)
+    lon = lon.to_positive()
     lat = Angle(lat, radians=True)
     return (lon, lat)
 
@@ -1002,6 +1003,7 @@ def ecliptical2equatorial(longitude, latitude, obliquity):
     ra = atan2((sin(lon) * cos(eps) - tan(lat) * sin(eps)), cos(lon))
     dec = asin(sin(lat) * cos(eps) + cos(lat) * sin(eps) * sin(lon))
     ra = Angle(ra, radians=True)
+    ra = ra.to_positive()
     dec = Angle(dec, radians=True)
     return (ra, dec)
 
@@ -1165,6 +1167,7 @@ def equatorial2galactic(right_ascension, declination):
     x = atan2(sin(c1ra), (cos(c1ra) * sin(c2) - tan(dec) * cos(c2)))
     lon = Angle(-x, radians=True)
     lon = 303.0 + lon
+    lon = lon.to_positive()
     lat = asin(sin(dec) * sin(c2) + cos(dec) * cos(c2) * cos(c1ra))
     lat = Angle(lat, radians=True)
     return (lon, lat)
