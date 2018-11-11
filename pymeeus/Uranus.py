@@ -18,9 +18,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from Angle import Angle
-from Epoch import Epoch, JDE2000
-from Coordinates import geometric_vsop_pos, apparent_vsop_pos
+from Epoch import Epoch
+from Coordinates import geometric_vsop_pos, apparent_vsop_pos, orbital_elements
 
 
 """
@@ -4146,10 +4145,6 @@ class Uranus(object):
         19.86964
         """
 
-        # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
-        # Second, call auxiliary function in charge of computations
         return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
 
     @staticmethod
@@ -4167,10 +4162,6 @@ class Uranus(object):
         :raises: TypeError if input values are of wrong type.
         """
 
-        # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
-        # Second, call auxiliary function in charge of computations
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R)
 
     @staticmethod
@@ -4207,29 +4198,7 @@ class Uranus(object):
         99.630865
         """
 
-        # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
-
-        # Define an auxiliary function
-        def compute_element(t, param):
-            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
-
-        # Compute the time parameter
-        t = (epoch - JDE2000) / 36525.0
-        # Compute the orbital elements
-        ll = compute_element(t, ORBITAL_ELEM[0])
-        a = compute_element(t, ORBITAL_ELEM[1])
-        e = compute_element(t, ORBITAL_ELEM[2])
-        i = compute_element(t, ORBITAL_ELEM[3])
-        omega = compute_element(t, ORBITAL_ELEM[4])
-        pie = compute_element(t, ORBITAL_ELEM[5])
-        arg = pie - omega
-        ll = Angle(ll)
-        i = Angle(i)
-        omega = Angle(omega)
-        arg = Angle(arg)
-        return ll, a, e, i, omega, arg
+        return orbital_elements(epoch, ORBITAL_ELEM, ORBITAL_ELEM)
 
     @staticmethod
     def orbital_elements_j2000(epoch):
@@ -4265,29 +4234,7 @@ class Uranus(object):
         99.009058
         """
 
-        # First check that input values are of correct types
-        if not isinstance(epoch, Epoch):
-            raise TypeError("Invalid input types")
-
-        # Define an auxiliary function
-        def compute_element(t, param):
-            return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
-
-        # Compute the time parameter
-        t = (epoch - JDE2000) / 36525.0
-        # Compute the orbital elements
-        ll = compute_element(t, ORBITAL_ELEM_J2000[0])
-        a = compute_element(t, ORBITAL_ELEM[1])
-        e = compute_element(t, ORBITAL_ELEM[2])
-        i = compute_element(t, ORBITAL_ELEM_J2000[1])
-        omega = compute_element(t, ORBITAL_ELEM_J2000[2])
-        pie = compute_element(t, ORBITAL_ELEM_J2000[3])
-        arg = pie - omega
-        ll = Angle(ll)
-        i = Angle(i)
-        omega = Angle(omega)
-        arg = Angle(arg)
-        return ll, a, e, i, omega, arg
+        return orbital_elements(epoch, ORBITAL_ELEM, ORBITAL_ELEM_J2000)
 
 
 def main():

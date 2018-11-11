@@ -2827,6 +2827,59 @@ def kepler_equation(eccentricity, mean_anomaly):
     return e, Angle(v, radians=True)
 
 
+def orbital_elements(epoch, parameters1, parameters2):
+    """"This function computes the orbital elements for a given epoch,
+    according to the parameters beeing passed as arguments.
+
+    :param epoch: Epoch to compute orbital elements, as an Epoch object
+    :type epoch: :py:class:`Epoch`
+    :param parameters1: First set of parameters
+    :type parameters1: list
+    :param parameters2: Second set of parameters
+    :type parameters2: list
+
+    :returns: A tuple containing the following six orbital elements:
+        - Mean longitude of the planet (Angle)
+        - Semimajor axis of the orbit (float, astronomical units)
+        - eccentricity of the orbit (float)
+        - inclination on the plane of the ecliptic (Angle)
+        - longitude of the ascending node (Angle)
+        - argument of the perihelion (Angle)
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+    """
+
+    # First check that input values are of correct types
+    if not (isinstance(epoch, Epoch) and isinstance(parameters1, list) and
+            isinstance(parameters2, list)):
+        raise TypeError("Invalid input types")
+
+    # Define an auxiliary function
+    def compute_element(t, param):
+        return param[0] + t * (param[1] + t * (param[2] + t * param[3]))
+
+    # Compute the time parameter
+    t = (epoch - JDE2000) / 36525.0
+    # Compute the orbital elements
+    ll = compute_element(t, parameters2[0])
+    a = compute_element(t, parameters1[1])
+    e = compute_element(t, parameters1[2])
+    if len(parameters2) == 4:
+        i = compute_element(t, parameters2[1])
+        omega = compute_element(t, parameters2[2])
+        pie = compute_element(t, parameters2[3])
+    else:
+        i = compute_element(t, parameters2[3])
+        omega = compute_element(t, parameters2[4])
+        pie = compute_element(t, parameters2[5])
+    arg = pie - omega
+    ll = Angle(ll)
+    i = Angle(i)
+    omega = Angle(omega)
+    arg = Angle(arg)
+    return ll, a, e, i, omega, arg
+
+
 def main():
 
     # Let's define a small helper function
