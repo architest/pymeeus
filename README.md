@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.2.8
+    * Added methods 'geocentric_position()' to all the planets
 * 0.2.7
     * Added function 'kepler_equation()' to 'Coordinates' module, and 'orbital_elements' methods to classes 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus' and 'Neptune'
 * 0.2.6
