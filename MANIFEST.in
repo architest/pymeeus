@@ -1,6 +1,6 @@
 
 # Misc
-include LICENSE.txt COPYING.LESSER
+include LICENSE.txt COPYING.LESSER docs/Makefile docs/README.txt
 
 # Documentation
 recursive-include docs/build/html *
