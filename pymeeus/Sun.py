@@ -353,10 +353,10 @@ class Sun(object):
         x = r * cos(lat.rad()) * cos(lon.rad())
         y = r * cos(lat.rad()) * sin(lon.rad())
         z = r * sin(lat.rad())
-        x += 0.00000044036 * y - 0.000000190919 * z
-        y = -0.000000479966 * x + 0.917482137087 * y - 0.397776982902 * z
-        z = 0.397776982902 * y + 0.917482137087 * z
-        return x, y, z
+        x0 = x + 0.00000044036 * y - 0.000000190919 * z
+        y0 = -0.000000479966 * x + 0.917482137087 * y - 0.397776982902 * z
+        z0 = 0.397776982902 * y + 0.917482137087 * z
+        return x0, y0, z0
 
     @staticmethod
     def rectangular_coordinates_B1950(epoch):
