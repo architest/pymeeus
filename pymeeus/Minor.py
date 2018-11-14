@@ -75,9 +75,9 @@ class Minor(object):
         >>> epoch = Epoch(1990, 10, 6.0)
         >>> ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
         >>> print(ra.ra_str(n_dec=1))
-        10h 34' 14.2''
+        10h 34' 13.7''
         >>> print(dec.dms_str(n_dec=0))
-        19d 9' 31.0''
+        19d 9' 32.0''
         """
 
         # First check that input value is of correct types
@@ -175,8 +175,8 @@ def main():
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
     ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
-    print_me("Right ascension", ra.ra_str(n_dec=1))     # 10h 34' 14.2''
-    print_me("Declination", dec.dms_str(n_dec=0))       # 19d 9' 31.0''
+    print_me("Right ascension", ra.ra_str(n_dec=1))     # 10h 34' 13.7''
+    print_me("Declination", dec.dms_str(n_dec=0))       # 19d 9' 32.0''
 
 
 if __name__ == "__main__":
