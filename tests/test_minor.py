@@ -43,3 +43,23 @@ def test_minor_geocentric_position():
 
     assert dec.dms_str(n_dec=0) == "19d 9' 32.0''", \
         "ERROR: 2nd geocentric_position() test doesn't match"
+
+
+def test_minor_heliocentric_ecliptical_position():
+    """Tests the heliocentric_ecliptical_position() method of Minor class"""
+
+    a = 2.2091404
+    e = 0.8502196
+    i = Angle(11.94524)
+    omega = Angle(334.75006)
+    w = Angle(186.23352)
+    t = Epoch(1990, 10, 28.54502)
+    epoch = Epoch(1990, 10, 6.0)
+    lon, lat = Minor.heliocentric_ecliptical_position(a, e, i, omega,
+                                                      w, t, epoch)
+
+    assert lon.dms_str(n_dec=1) == "66d 51' 57.8''", \
+        "ERROR: 1st heliocentric_ecliptical_position() test doesn't match"
+
+    assert lat.dms_str(n_dec=1) == "11d 56' 14.4''", \
+        "ERROR: 2nd heliocentric_ecliptical_position() test doesn't match"
