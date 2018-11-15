@@ -122,7 +122,7 @@ def test_rectangular_coordinates_J2000():
     assert abs(round(y, 8) - (-0.3131474)) < TOL, \
         "ERROR: 2nd rectangular_coordinates_J2000() test, 'y' doesn't match"
 
-    assert abs(round(z, 8) - (-0.12456646)) < TOL, \
+    assert abs(round(z, 8) - (-0.13577045)) < TOL, \
         "ERROR: 3rd rectangular_coordinates_J2000() test, 'z' doesn't match"
 
 
@@ -149,13 +149,13 @@ def test_rectangular_coordinates_equinox():
     e_equinox = Epoch(2467616.0)
     x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
 
-    assert abs(round(x, 8) - (-0.93373777)) < TOL, \
+    assert abs(round(x, 8) - (-0.93368986)) < TOL, \
         "ERROR: 1st rectangular_coordinates_equinox() test, 'x' doesn't match"
 
-    assert abs(round(y, 8) - (-0.32235109)) < TOL, \
+    assert abs(round(y, 8) - (-0.32235085)) < TOL, \
         "ERROR: 2nd rectangular_coordinates_equinox() test, 'y' doesn't match"
 
-    assert abs(round(z, 8) - (-0.12856709)) < TOL, \
+    assert abs(round(z, 8) - (-0.13977098)) < TOL, \
         "ERROR: 3rd rectangular_coordinates_equinox() test, 'z' doesn't match"
 
 
