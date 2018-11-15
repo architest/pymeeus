@@ -2832,8 +2832,8 @@ def kepler_equation(eccentricity, mean_anomaly):
 
 
 def orbital_elements(epoch, parameters1, parameters2):
-    """"This function computes the orbital elements for a given epoch,
-    according to the parameters beeing passed as arguments.
+    """This function computes the orbital elements for a given epoch, according
+    to the parameters beeing passed as arguments.
 
     :param epoch: Epoch to compute orbital elements, as an Epoch object
     :type epoch: :py:class:`Epoch`

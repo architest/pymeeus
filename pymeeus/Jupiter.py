@@ -3627,7 +3627,7 @@ class Jupiter(object):
 
     @staticmethod
     def geometric_heliocentric_position(epoch, toFK5=True):
-        """"This method computes the geometric heliocentric position of planet
+        """This method computes the geometric heliocentric position of planet
         Jupiter for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Jupiter position, as an Epoch object
@@ -3656,7 +3656,7 @@ class Jupiter(object):
 
     @staticmethod
     def apparent_heliocentric_position(epoch):
-        """"This method computes the apparent heliocentric position of planet
+        """This method computes the apparent heliocentric position of planet
         Jupiter for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Jupiter position, as an Epoch object
@@ -3673,7 +3673,7 @@ class Jupiter(object):
 
     @staticmethod
     def orbital_elements_mean_equinox(epoch):
-        """"This method computes the orbital elements of Jupiter for the mean
+        """This method computes the orbital elements of Jupiter for the mean
         equinox of the date for a given epoch.
 
         :param epoch: Epoch to compute orbital elements, as an Epoch object
@@ -3709,7 +3709,7 @@ class Jupiter(object):
 
     @staticmethod
     def orbital_elements_j2000(epoch):
-        """"This method computes the orbital elements of Jupiter for the
+        """This method computes the orbital elements of Jupiter for the
         standard equinox J2000.0 for a given epoch.
 
         :param epoch: Epoch to compute orbital elements, as an Epoch object
@@ -3745,7 +3745,7 @@ class Jupiter(object):
 
     @staticmethod
     def geocentric_position(epoch):
-        """"This method computes the geocentric position of Jupiter (right
+        """This method computes the geocentric position of Jupiter (right
         ascension and declination) for the given epoch.
 
         :param epoch: Epoch to compute geocentric position, as an Epoch object

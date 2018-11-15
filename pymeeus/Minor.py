@@ -42,9 +42,9 @@ class Minor(object):
 
     @staticmethod
     def geocentric_position(a, e, i, omega, w, t, epoch):
-        """"This method computes the geocentric position of a minor celestial
-            body (right ascension and declination) for the given epoch, and
-            referred to the standard equinox J2000.0.
+        """This method computes the geocentric position of a minor celestial
+        body (right ascension and declination) for the given epoch, and
+        referred to the standard equinox J2000.0.
 
         :param a: Semi-major axis of the orbit, in Astronomical Units
         :type a: float

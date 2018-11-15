@@ -183,7 +183,7 @@ class Sun(object):
 
     @staticmethod
     def geometric_geocentric_position(epoch, toFK5=True):
-        """"This method computes the geometric geocentric position of the Sun
+        """This method computes the geometric geocentric position of the Sun
         for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Sun position, as an Epoch object
@@ -227,7 +227,7 @@ class Sun(object):
 
     @staticmethod
     def apparent_geocentric_position(epoch, nutation=True):
-        """"This method computes the apparent geocentric position of the Sun
+        """This method computes the apparent geocentric position of the Sun
         for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Sun position, as an Epoch object
@@ -270,7 +270,7 @@ class Sun(object):
 
     @staticmethod
     def rectangular_coordinates_mean_equinox(epoch):
-        """"This method computes the rectangular geocentric equatorial
+        """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the mean equinox of the
         date. The X axis is directed towards the vernal equinox (longitude 0),
         the Y axis lies in the plane of the equator and is directed towards
@@ -318,7 +318,7 @@ class Sun(object):
 
     @staticmethod
     def rectangular_coordinates_J2000(epoch):
-        """"This method computes the rectangular geocentric equatorial
+        """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the standard equinox of
         J2000.0. The X axis is directed towards the vernal equinox (longitude
         0), the Y axis lies in the plane of the equator and is directed towards
@@ -360,7 +360,7 @@ class Sun(object):
 
     @staticmethod
     def rectangular_coordinates_B1950(epoch):
-        """"This method computes the rectangular geocentric equatorial
+        """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the mean equinox of
         B1950.0. The X axis is directed towards the vernal equinox (longitude
         0), the Y axis lies in the plane of the equator and is directed towards
@@ -402,7 +402,7 @@ class Sun(object):
 
     @staticmethod
     def rectangular_coordinates_equinox(epoch, equinox_epoch):
-        """"This method computes the rectangular geocentric equatorial
+        """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to an arbitrary mean
         equinox. The X axis is directed towards the vernal equinox (longitude
         0), the Y axis lies in the plane of the equator and is directed towards
@@ -475,7 +475,7 @@ class Sun(object):
 
     @staticmethod
     def get_equinox_solstice(year, target="spring"):
-        """"This method computes the times of the equinoxes or the solstices.
+        """This method computes the times of the equinoxes or the solstices.
 
         :param year: Year we want to compute the equinox or solstice for
         :type year: int
@@ -563,7 +563,7 @@ class Sun(object):
 
     @staticmethod
     def equation_of_time(epoch):
-        """"This method computes the equation of time for a given epoch,
+        """This method computes the equation of time for a given epoch,
         understood as the difference between apparent and mean time, or the
         difference between the hour angle of the true Sun and the mean Sun.
 
@@ -613,7 +613,7 @@ class Sun(object):
 
     @staticmethod
     def ephemeris_physical_observations(epoch):
-        """"This method uses Carrington's formulas to compute the following
+        """This method uses Carrington's formulas to compute the following
         quantities:
 
         - P  : position angle of the northern extremity of the axis of rotation
@@ -666,7 +666,7 @@ class Sun(object):
 
     @staticmethod
     def beginning_synodic_rotation(number):
-        """"This method calculates the epoch when the Carrington's synodic
+        """This method calculates the epoch when the Carrington's synodic
         rotation No. 'number' starts.
 
         :param number: Number of Carrington's synodic rotation

@@ -2910,7 +2910,7 @@ class Earth(object):
         )
 
     def rho(self, latitude):
-        """"Method to compute the rho term, which is the observer distance to
+        """Method to compute the rho term, which is the observer distance to
         the center of the Earth, when the observer is at sea level. In this
         case, the Earth's equatorial radius is taken as unity.
 
@@ -2938,7 +2938,7 @@ class Earth(object):
                 0.0000035 * cos(4.0 * phi))
 
     def rho_sinphi(self, latitude, height):
-        """"Method to compute the rho*sin(phi') term, needed in the calculation
+        """Method to compute the rho*sin(phi') term, needed in the calculation
         of diurnal parallaxes, eclipses and occulatitions.
 
         :param latitude: Geodetical or geographical latitude of the observer,
@@ -2971,7 +2971,7 @@ class Earth(object):
         return b_a * sin(u) + height / self._ellip._a * sin(phi)
 
     def rho_cosphi(self, latitude, height):
-        """"Method to compute the rho*cos(phi') term, needed in the calculation
+        """Method to compute the rho*cos(phi') term, needed in the calculation
         of diurnal parallaxes, eclipses and occulatitions.
 
         :param latitude: Geodetical or geographical latitude of the observer,
@@ -3004,7 +3004,7 @@ class Earth(object):
         return cos(u) + height / self._ellip._a * cos(phi)
 
     def rp(self, latitude):
-        """"Method to compute the radius of the parallel circle at the given
+        """Method to compute the radius of the parallel circle at the given
         latitude.
 
         :param latitude: Geodetical or geographical latitude of the observer,
@@ -3031,7 +3031,7 @@ class Earth(object):
         return (a * cos(phi)) / sqrt(1.0 - e * e * sin(phi) * sin(phi))
 
     def linear_velocity(self, latitude):
-        """"Method to compute the linear velocity of a point at latitude, due
+        """Method to compute the linear velocity of a point at latitude, due
         to the rotation of the Earth.
 
         :param latitude: Geodetical or geographical latitude of the observer,
@@ -3053,7 +3053,7 @@ class Earth(object):
         return omega * self.rp(latitude)
 
     def rm(self, latitude):
-        """"Method to compute the radius of curvature of the Earth's meridian
+        """Method to compute the radius of curvature of the Earth's meridian
         at the given latitude.
 
         :param latitude: Geodetical or geographical latitude of the observer,
@@ -3081,7 +3081,7 @@ class Earth(object):
         return (a * (1.0 - e * e)) / (1.0 - e * e * sin(phi) * sin(phi)) ** 1.5
 
     def distance(self, lon1, lat1, lon2, lat2):
-        """"This method computes the distance between two points on the Earth's
+        """This method computes the distance between two points on the Earth's
         surface using the method from H. Andoyer.
 
         .. note:: We will consider that positions 'East' and 'South' are
@@ -3170,7 +3170,7 @@ class Earth(object):
 
     @staticmethod
     def geometric_heliocentric_position(epoch, toFK5=True):
-        """"This method computes the geometric heliocentric position of the
+        """This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
@@ -3204,7 +3204,7 @@ class Earth(object):
 
     @staticmethod
     def apparent_heliocentric_position(epoch, nutation=True):
-        """"This method computes the apparent heliocentric position of the
+        """This method computes the apparent heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
@@ -3232,7 +3232,7 @@ class Earth(object):
 
     @staticmethod
     def geometric_heliocentric_position_J2000(epoch, toFK5=True):
-        """"This method computes the geometric heliocentric position of the
+        """This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory, referred to the
         equinox J2000.0.
 
@@ -3255,7 +3255,7 @@ class Earth(object):
 
     @staticmethod
     def orbital_elements_mean_equinox(epoch):
-        """"This method computes the orbital elements of Earth for the mean
+        """This method computes the orbital elements of Earth for the mean
         equinox of the date for a given epoch.
 
         :param epoch: Epoch to compute orbital elements, as an Epoch object
@@ -3291,7 +3291,7 @@ class Earth(object):
 
     @staticmethod
     def orbital_elements_j2000(epoch):
-        """"This method computes the orbital elements of Earth for the
+        """This method computes the orbital elements of Earth for the
         standard equinox J2000.0 for a given epoch.
 
         :param epoch: Epoch to compute orbital elements, as an Epoch object
