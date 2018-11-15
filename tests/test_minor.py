@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+
+
+# PyMeeus: Python module implementing astronomical algorithms.
+# Copyright (C) 2018  Dagoberto Salazar
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+from pymeeus.Angle import Angle
+from pymeeus.Minor import Minor
+from pymeeus.Epoch import Epoch
+
+
+# Minor class
+
+
+def test_minor_geocentric_position():
+    """Tests the geocentric_position() method of Minor class"""
+
+    a = 2.2091404
+    e = 0.8502196
+    i = Angle(11.94524)
+    omega = Angle(334.75006)
+    w = Angle(186.23352)
+    t = Epoch(1990, 10, 28.54502)
+    epoch = Epoch(1990, 10, 6.0)
+    ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+
+    assert ra.ra_str(n_dec=1) == "10h 34' 13.7''", \
+        "ERROR: 1st geocentric_position() test doesn't match"
+
+    assert dec.dms_str(n_dec=0) == "19d 9' 32.0''", \
+        "ERROR: 2nd geocentric_position() test doesn't match"
