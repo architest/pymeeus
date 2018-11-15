@@ -339,7 +339,7 @@ class Sun(object):
         >>> print(round(y, 8))
         -0.3131474
         >>> print(round(z, 8))
-        -0.12456646
+        -0.13577045
         """
 
         # First check that input values are of correct types
@@ -422,11 +422,11 @@ class Sun(object):
         >>> e_equinox = Epoch(2467616.0)
         >>> x, y, z = Sun.rectangular_coordinates_equinox(epoch, e_equinox)
         >>> print(round(x, 8))
-        -0.93373777
+        -0.93368986
         >>> print(round(y, 8))
-        -0.32235109
+        -0.32235085
         >>> print(round(z, 8))
-        -0.12856709
+        -0.13977098
         """
 
         # First check that input values are of correct types
