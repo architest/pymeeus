@@ -78,6 +78,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.9
+
+   -  Added class 'Minor', as well as functions to compute velocity of
+      an object and length of an orbit
+
 -  0.2.8
 
    -  Added methods 'geocentric\_position()' to all the planets
