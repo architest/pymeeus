@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, atan2, sqrt
+from math import sin, cos, acos, atan2, sqrt
 
 from Angle import Angle
 from Epoch import Epoch
@@ -44,7 +44,8 @@ class Minor(object):
     def geocentric_position(a, e, i, omega, w, t, epoch):
         """This method computes the geocentric position of a minor celestial
         body (right ascension and declination) for the given epoch, and
-        referred to the standard equinox J2000.0.
+        referred to the standard equinox J2000.0. Additionally, it also
+        computes the elongation angle to the Sun.
 
         :param a: Semi-major axis of the orbit, in Astronomical Units
         :type a: float
@@ -61,8 +62,8 @@ class Minor(object):
         :param epoch: Epoch to compute geocentric position, as an Epoch object
         :type epoch: :py:class:`Epoch`
 
-        :returns: A tuple containing the right ascension and the declination,
-            as Angle objects
+        :returns: A tuple containing the right ascension, the declination and
+            the elongation angle to the Sun, as Angle objects
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
 
@@ -73,11 +74,13 @@ class Minor(object):
         >>> w = Angle(186.23352)
         >>> t = Epoch(1990, 10, 28.54502)
         >>> epoch = Epoch(1990, 10, 6.0)
-        >>> ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+        >>> ra, dec, p = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
         >>> print(ra.ra_str(n_dec=1))
         10h 34' 13.7''
         >>> print(dec.dms_str(n_dec=0))
         19d 9' 32.0''
+        >>> print(round(p, 2))
+        40.51
         """
 
         # First check that input value is of correct types
@@ -152,7 +155,10 @@ class Minor(object):
         zeta = z + zs
         ra = Angle(atan2(eta, xi), radians=True)
         dec = Angle(atan2(zeta, sqrt(xi * xi + eta * eta)), radians=True)
-        return ra, dec
+        r_sun = sqrt(xs * xs + ys * ys + zs * zs)
+        psi = acos((xi * xs + eta * ys + zeta * zs) / (r_sun * delta))
+        psi = Angle(psi, radians=True)
+        return ra, dec, psi
 
     @staticmethod
     def heliocentric_ecliptical_position(a, e, i, omega, w, t, epoch):
@@ -245,9 +251,10 @@ def main():
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+    ra, dec, elong = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
     print_me("Right ascension", ra.ra_str(n_dec=1))     # 10h 34' 13.7''
     print_me("Declination", dec.dms_str(n_dec=0))       # 19d 9' 32.0''
+    print_me("Elongation", round(elong, 2))             # 40.51
 
     print("")
 
