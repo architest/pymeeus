@@ -33,7 +33,7 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
         straight_line, circle_diameter, apparent_position, \
         orbital_equinox2equinox, kepler_equation, velocity, \
-        velocity_perihelion, velocity_aphelion
+        velocity_perihelion, velocity_aphelion, length_orbit
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -669,3 +669,14 @@ def test_coordinates_velocity_aphelion():
 
     assert abs(round(va, 2) - 0.91) < TOL, \
         "ERROR: 1st velocity_aphelion() test, value doesn't match"
+
+
+def test_coordinates_length_orbit():
+    """Tests the length_orbit() function of Coordinates module"""
+
+    a = 17.9400782
+    e = 0.96727426
+    length = length_orbit(e, a)
+
+    assert abs(round(length, 2) - 77.06) < TOL, \
+        "ERROR: 1st length_orbit() test, value doesn't match"
