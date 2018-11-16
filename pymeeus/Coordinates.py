@@ -2884,6 +2884,83 @@ def orbital_elements(epoch, parameters1, parameters2):
     return ll, a, e, i, omega, arg
 
 
+def velocity(r, a):
+    """This function computes the instantaneous velocity of the moving body, in
+    kilometers per second, for an unperturbed elliptic orbit.
+
+    :param r: Distance of the body to the Sun, in Astronomical Units
+    :type r: float
+    :param a: Semimajor axis of the orbit, in Astronomical Units
+    :type a: float
+
+    :returns: Velocity of the body, in kilometers per second
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> r = 1.0
+    >>> a = 17.9400782
+    >>> v = velocity(r, a)
+    >>> print(round(v, 2))
+    41.53
+    """
+
+    if not (isinstance(r, float) and isinstance(a, float)):
+        raise TypeError("Invalid input types")
+    return 42.1218 * sqrt((1.0 / r) - (1.0 / (2.0 * a)))
+
+
+def velocity_perihelion(e, a):
+    """This function computes the velocity of the moving body at perihelion, in
+    kilometers per second, for an unperturbed elliptic orbit.
+
+    :param e: Orbital eccentricity
+    :type e: float
+    :param a: Semimajor axis of the orbit, in Astronomical Units
+    :type a: float
+
+    :returns: Velocity of the body at perihelion, in kilometers per second
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> a = 17.9400782
+    >>> e = 0.96727426
+    >>> vp = velocity_perihelion(e, a)
+    >>> print(round(vp, 2))
+    54.52
+    """
+
+    if not (isinstance(e, float) and isinstance(a, float)):
+        raise TypeError("Invalid input types")
+    temp = sqrt((1.0 + e) / (1.0 - e))
+    return 29.7847 * temp / sqrt(a)
+
+
+def velocity_aphelion(e, a):
+    """This function computes the velocity of the moving body at aphelion, in
+    kilometers per second, for an unperturbed elliptic orbit.
+
+    :param e: Orbital eccentricity
+    :type e: float
+    :param a: Semimajor axis of the orbit, in Astronomical Units
+    :type a: float
+
+    :returns: Velocity of the body at aphelion, in kilometers per second
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> a = 17.9400782
+    >>> e = 0.96727426
+    >>> va = velocity_aphelion(e, a)
+    >>> print(round(va, 2))
+    0.91
+    """
+
+    if not (isinstance(e, float) and isinstance(a, float)):
+        raise TypeError("Invalid input types")
+    temp = sqrt((1.0 - e) / (1.0 + e))
+    return 29.7847 * temp / sqrt(a)
+
+
 def main():
 
     # Let's define a small helper function
@@ -3345,6 +3422,27 @@ def main():
     e, v = kepler_equation(0.99, Angle(0.2, radians=True))
     print_me("Eccentric anomaly, Case #2", round(e(), 8))       # 61.13444578
     print_me("True anomaly, Case #2", round(v(), 6))            # 166.311977
+
+    print("")
+
+    # Compute the velocity of a body in a given point of its (unperturbated
+    # elliptic) orbit
+    r = 1.0
+    a = 17.9400782
+    v = velocity(r, a)
+    print_me("Velocity ar 1 AU", round(v, 2))           # 41.53
+
+    # Compute the velocity at perihelion
+    a = 17.9400782
+    e = 0.96727426
+    vp = velocity_perihelion(e, a)
+    print_me("Velocity at perihelion", round(vp, 2))    # 54.52
+
+    # Compute the velocity at aphelion
+    a = 17.9400782
+    e = 0.96727426
+    va = velocity_aphelion(e, a)
+    print_me("Velocity at aphelion", round(va, 2))      # 0.91
 
 
 if __name__ == "__main__":
