@@ -32,7 +32,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         minimum_angular_separation, relative_position_angle, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
         straight_line, circle_diameter, apparent_position, \
-        orbital_equinox2equinox, kepler_equation
+        orbital_equinox2equinox, kepler_equation, velocity, \
+        velocity_perihelion, velocity_aphelion
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -635,3 +636,36 @@ def test_coordinates_kepler_equation():
 
     assert abs(round(v3(), 6) - 166.311977) < TOL, \
         "ERROR: 6th kepler_equation() test, 'v3' value doesn't match"
+
+
+def test_coordinates_velocity():
+    """Tests the velocity() function of Coordinates module"""
+
+    r = 1.0
+    a = 17.9400782
+    v = velocity(r, a)
+
+    assert abs(round(v, 2) - 41.53) < TOL, \
+        "ERROR: 1st velocity() test, value doesn't match"
+
+
+def test_coordinates_velocity_perihelion():
+    """Tests the velocity_perihelion() function of Coordinates module"""
+
+    a = 17.9400782
+    e = 0.96727426
+    vp = velocity_perihelion(e, a)
+
+    assert abs(round(vp, 2) - 54.52) < TOL, \
+        "ERROR: 1st velocity_perihelion() test, value doesn't match"
+
+
+def test_coordinates_velocity_aphelion():
+    """Tests the velocity_aphelion() function of Coordinates module"""
+
+    a = 17.9400782
+    e = 0.96727426
+    va = velocity_aphelion(e, a)
+
+    assert abs(round(va, 2) - 0.91) < TOL, \
+        "ERROR: 1st velocity_aphelion() test, value doesn't match"
