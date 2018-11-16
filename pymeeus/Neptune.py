@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, atan2, sqrt, radians
+from math import sin, cos, tan, acos, atan2, sqrt, radians
 
 from Angle import Angle
 from Epoch import Epoch, JDE2000
@@ -26,6 +26,7 @@ from Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
         orbital_elements, nutation_longitude, true_obliquity, \
         ecliptical2equatorial
 from Earth import Earth
+from Sun import Sun
 
 
 """
@@ -2185,22 +2186,25 @@ class Neptune(object):
     @staticmethod
     def geocentric_position(epoch):
         """This method computes the geocentric position of Neptune (right
-        ascension and declination) for the given epoch.
+        ascension and declination) for the given epoch, as well as the
+        elongation angle.
 
         :param epoch: Epoch to compute geocentric position, as an Epoch object
         :type epoch: :py:class:`Epoch`
 
-        :returns: A tuple containing the right ascension and the declination,
-            as Angle objects
+        :returns: A tuple containing the right ascension, the declination and
+            the elongation angle as Angle objects
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 12, 20.0)
-        >>> ra, dec = Neptune.geocentric_position(epoch)
+        >>> ra, dec, elon = Neptune.geocentric_position(epoch)
         >>> print(ra.ra_str(n_dec=1))
         19h 17' 14.5''
         >>> print(dec.dms_str(n_dec=1))
         -21d 34' 15.1''
+        >>> print(elon.dms_str(n_dec=1))
+        72d 5' 22.3''
         """
 
         # First check that input value is of correct types
@@ -2265,7 +2269,14 @@ class Neptune(object):
         lamb += dpsi
         e = true_obliquity(epoch)
         ra, dec = ecliptical2equatorial(lamb, beta, e)
-        return ra, dec
+        # Let's compute the elongation angle
+        ls, ls, rs = Sun.apparent_geocentric_position(epoch)
+        lambr = lamb.rad()
+        lsr = ls.rad()
+        betar = beta.rad()
+        elon = acos(cos(betar) * cos(lambr - lsr))
+        elon = Angle(elon, radians=True)
+        return ra, dec, elon
 
 
 def main():
