@@ -731,3 +731,15 @@ And now compute the velocity at aphelion::
     print_me("Velocity at aphelion", round(va, 2))
 
     # Velocity at aphelion: 0.91
+
+Calculate the length of the orbit for the same comet Halley::
+
+    a = 17.9400782
+
+    e = 0.96727426
+
+    length = length_orbit(e, a)
+
+    print_me("Length of the orbit (AU)", round(length, 2))
+
+    # Length of the orbit (AU): 77.06
