@@ -2961,6 +2961,41 @@ def velocity_aphelion(e, a):
     return 29.7847 * temp / sqrt(a)
 
 
+def length_orbit(e, a):
+    """This function computes the length of an elliptic orbit given its
+    eccentricity and semimajor axis.
+
+    :param e: Orbital eccentricity
+    :type e: float
+    :param a: Semimajor axis of the orbit, in Astronomical Units
+    :type a: float
+
+    :returns: Length of the orbit in Astronomical Units
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> a = 17.9400782
+    >>> e = 0.96727426
+    >>> length = length_orbit(e, a)
+    >>> print(round(length, 2))
+    77.06
+    """
+
+    if not (isinstance(e, float) and isinstance(a, float)):
+        raise TypeError("Invalid input types")
+    # Let's start computing the semi-minor axis
+    b = a * sqrt(1.0 - e * e)
+    # Use one formula or another depending on eccentricity
+    if e < 0.95:
+        aa = (a + b) / 2.0
+        gg = sqrt(a * b)
+        hh = (2.0 * a * b) / (a + b)
+        length = pi * (21.0 * aa - 2.0 * gg - 3.0 * hh) / 8.0
+    else:
+        length = pi * (3.0 * (a + b) - sqrt((a + 3.0 * b) * (3.0 * a + b)))
+    return length
+
+
 def main():
 
     # Let's define a small helper function
@@ -3433,16 +3468,17 @@ def main():
     print_me("Velocity at 1 AU", round(v, 2))           # 41.53
 
     # Compute the velocity at perihelion
-    a = 17.9400782
     e = 0.96727426
     vp = velocity_perihelion(e, a)
     print_me("Velocity at perihelion", round(vp, 2))    # 54.52
 
     # Compute the velocity at aphelion
-    a = 17.9400782
-    e = 0.96727426
     va = velocity_aphelion(e, a)
     print_me("Velocity at aphelion", round(va, 2))      # 0.91
+
+    # Calculate the length of the orbit
+    length = length_orbit(e, a)
+    print_me("Length of the orbit (AU)", round(length, 2))   # 77.06
 
 
 if __name__ == "__main__":
