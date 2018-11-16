@@ -23,7 +23,7 @@ Let's compute the equatorial coordinates of comet Encke::
 
     epoch = Epoch(1990, 10, 6.0)
 
-    ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+    ra, dec, elong = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
 
     print_me("Right ascension", ra.ra_str(n_dec=1))
 
@@ -32,6 +32,10 @@ Let's compute the equatorial coordinates of comet Encke::
     print_me("Declination", dec.dms_str(n_dec=0))
 
     # Declination: 19d 9' 32.0''
+
+    print_me("Elongation", round(elong, 2))
+
+    # Elongation: 40.51
 
 Now compute the heliocentric ecliptical coordinates::
 
