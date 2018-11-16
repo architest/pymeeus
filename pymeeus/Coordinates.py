@@ -3430,7 +3430,7 @@ def main():
     r = 1.0
     a = 17.9400782
     v = velocity(r, a)
-    print_me("Velocity ar 1 AU", round(v, 2))           # 41.53
+    print_me("Velocity at 1 AU", round(v, 2))           # 41.53
 
     # Compute the velocity at perihelion
     a = 17.9400782
