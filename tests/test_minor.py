@@ -18,6 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
+from pymeeus.base import TOL
 from pymeeus.Angle import Angle
 from pymeeus.Minor import Minor
 from pymeeus.Epoch import Epoch
@@ -36,13 +37,16 @@ def test_minor_geocentric_position():
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    ra, dec = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+    ra, dec, elong = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
 
     assert ra.ra_str(n_dec=1) == "10h 34' 13.7''", \
         "ERROR: 1st geocentric_position() test doesn't match"
 
     assert dec.dms_str(n_dec=0) == "19d 9' 32.0''", \
         "ERROR: 2nd geocentric_position() test doesn't match"
+
+    assert abs(round(elong, 2) - 40.51) < TOL, \
+        "ERROR: 3rd geocentric_position() test doesn't match"
 
 
 def test_minor_heliocentric_ecliptical_position():
