@@ -695,3 +695,39 @@ Compute the eccentric and true anomalies using Kepler's equation::
     print_me("True anomaly, Case #2", round(v(), 6))
 
     # True anomaly, Case #2: 166.311977
+
+Compute the velocity of a body in a given point of its (unperturbated elliptic) orbit, in this case the comet Halley in 1986::
+
+    r = 1.0
+
+    a = 17.9400782
+
+    v = velocity(r, a)
+
+    print_me("Velocity ar 1 AU", round(v, 2))
+
+    # Velocity at 1 AU: 41.53
+
+Compute the velocity at perihelion::
+
+    a = 17.9400782
+
+    e = 0.96727426
+
+    vp = velocity_perihelion(e, a)
+
+    print_me("Velocity at perihelion", round(vp, 2))
+
+    # Velocity at perihelion: 54.52
+
+And now compute the velocity at aphelion::
+
+    a = 17.9400782
+
+    e = 0.96727426
+
+    va = velocity_aphelion(e, a)
+
+    print_me("Velocity at aphelion", round(va, 2))
+
+    # Velocity at aphelion: 0.91
