@@ -23,7 +23,9 @@ Let's compute the equatorial coordinates of comet Encke::
 
     epoch = Epoch(1990, 10, 6.0)
 
-    ra, dec, elong = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+    minor = Minor(a, e, i, omega, w, t)
+
+    ra, dec, elong = minor.geocentric_position(epoch)
 
     print_me("Right ascension", ra.ra_str(n_dec=1))
 
@@ -53,7 +55,9 @@ Now compute the heliocentric ecliptical coordinates::
 
     epoch = Epoch(1990, 10, 6.0)
 
-    lon, lat = Minor.heliocentric_ecliptical_position(a, e, i, omega, w, t, epoch)
+    minor = Minor(a, e, i, omega, w, t)
+
+    lon, lat = minor.heliocentric_ecliptical_position(epoch)
 
     print_me("Heliocentric ecliptical longitude", lon.dms_str(n_dec=1))
 
