@@ -20,6 +20,7 @@
 
 from math import sin, cos, acos, atan2, sqrt
 
+from base import TOL
 from Angle import Angle
 from Epoch import Epoch
 from Coordinates import kepler_equation
@@ -40,12 +41,12 @@ class Minor(object):
     Class Minor models minor celestial bodies.
     """
 
-    @staticmethod
-    def geocentric_position(a, e, i, omega, w, t, epoch):
-        """This method computes the geocentric position of a minor celestial
-        body (right ascension and declination) for the given epoch, and
-        referred to the standard equinox J2000.0. Additionally, it also
-        computes the elongation angle to the Sun.
+    def __init__(self, a, e, i, omega, w, t):
+        """Minor constructor.
+
+        The Minor object is initialized with this constructor, setting the
+        orbital values and computing some internal parameters. This constructor
+        is build upon the 'set()' method.
 
         :param a: Semi-major axis of the orbit, in Astronomical Units
         :type a: float
@@ -59,6 +60,72 @@ class Minor(object):
         :type w: :py:class:`Angle`
         :param t: Epoch of passage by perihelion, as an Epoch object
         :type t: :py:class:`Epoch`
+
+        :raises: TypeError if input value is of wrong type.
+        """
+
+        self._tol = TOL
+        self.set(a, e, i, omega, w, t)
+
+    def set(self, a, e, i, omega, w, t):
+        """Method used to set the orbital values and set some internal
+        parameters.
+
+        :param a: Semi-major axis of the orbit, in Astronomical Units
+        :type a: float
+        :param e: Eccentricity of the orbit
+        :type e: float
+        :param i: Inclination of the orbit, as an Angle object
+        :type i: :py:class:`Angle`
+        :param omega: Longitude of the ascending node, as an Angle object
+        :type omega: :py:class:`Angle`
+        :param w: Argument of the perihelion, as an Angle object
+        :type w: :py:class:`Angle`
+        :param t: Epoch of passage by perihelion, as an Epoch object
+        :type t: :py:class:`Epoch`
+
+        :raises: TypeError if input value is of wrong type.
+        """
+
+        # First check that input value is of correct types
+        if not (isinstance(t, Epoch) and isinstance(a, float) and
+                isinstance(e, float) and isinstance(i, Angle) and
+                isinstance(omega, Angle) and isinstance(w, Angle)):
+            raise TypeError("Invalid input types")
+        # Compute auxiliary quantities
+        se = 0.397777156
+        ce = 0.917482062
+        omer = omega.rad()
+        ir = i.rad()
+        f = cos(omer)
+        g = sin(omer) * ce
+        h = sin(omer) * se
+        p = -sin(omer) * cos(ir)
+        q = cos(omer) * cos(ir) * ce - sin(ir) * se
+        r = cos(omer) * cos(ir) * se + sin(ir) * ce
+        self._aa = atan2(f, p)
+        self._bb = atan2(g, q)
+        self._cc = atan2(h, r)
+        self._am = sqrt(f * f + p * p)
+        self._bm = sqrt(g * g + q * q)
+        self._cm = sqrt(h * h + r * r)
+        # Compute the mean motion from the semi-major axis (degrees/day)
+        self._n = 0.9856076686/(a * sqrt(a))
+        # Store some orbital parameters
+        self._a = a
+        self._e = e
+        self._i = i
+        self._omega = omega
+        self._w = w
+        self._t = t
+        return
+
+    def geocentric_position(self, epoch):
+        """This method computes the geocentric position of a minor celestial
+        body (right ascension and declination) for the given epoch, and
+        referred to the standard equinox J2000.0. Additionally, it also
+        computes the elongation angle to the Sun.
+
         :param epoch: Epoch to compute geocentric position, as an Epoch object
         :type epoch: :py:class:`Epoch`
 
@@ -73,8 +140,9 @@ class Minor(object):
         >>> omega = Angle(334.75006)
         >>> w = Angle(186.23352)
         >>> t = Epoch(1990, 10, 28.54502)
+        >>> minor = Minor(a, e, i, omega, w, t)
         >>> epoch = Epoch(1990, 10, 6.0)
-        >>> ra, dec, p = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+        >>> ra, dec, p = minor.geocentric_position(epoch)
         >>> print(ra.ra_str(n_dec=1))
         10h 34' 13.7''
         >>> print(dec.dms_str(n_dec=0))
@@ -84,30 +152,17 @@ class Minor(object):
         """
 
         # First check that input value is of correct types
-        if not (isinstance(epoch, Epoch) and isinstance(a, float) and
-                isinstance(e, float) and isinstance(i, Angle) and
-                isinstance(omega, Angle) and isinstance(w, Angle) and
-                isinstance(t, Epoch)):
-            raise TypeError("Invalid input types")
-        # Compute auxiliary quantities
-        se = 0.397777156
-        ce = 0.917482062
-        omer = omega.rad()
-        ir = i.rad()
-        f = cos(omer)
-        g = sin(omer) * ce
-        h = sin(omer) * se
-        p = -sin(omer) * cos(ir)
-        q = cos(omer) * cos(ir) * ce - sin(ir) * se
-        r = cos(omer) * cos(ir) * se + sin(ir) * ce
-        aa = atan2(f, p)
-        bb = atan2(g, q)
-        cc = atan2(h, r)
-        am = sqrt(f * f + p * p)
-        bm = sqrt(g * g + q * q)
-        cm = sqrt(h * h + r * r)
-        # Compute the mean motion from the semi-major axis (degrees/day)
-        n = 0.9856076686/(a * sqrt(a))
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Get internal parameters
+        aa, bb, cc = self._aa, self._bb, self._cc
+        am, bm, cm = self._am, self._bm, self._cm
+        # Get the mean motion and other orbital parameters
+        n = self._n
+        a = self._a
+        e = self._e
+        w = self._w
+        t = self._t
         # Time since perihelion
         t_peri = epoch - t
         # Now, compute the mean anomaly, in degrees
@@ -160,23 +215,10 @@ class Minor(object):
         psi = Angle(psi, radians=True)
         return ra, dec, psi
 
-    @staticmethod
-    def heliocentric_ecliptical_position(a, e, i, omega, w, t, epoch):
+    def heliocentric_ecliptical_position(self, epoch):
         """This method computes the heliocentric position of a minor celestial
         body, providing the result in ecliptical coordinates.
 
-        :param a: Semi-major axis of the orbit, in Astronomical Units
-        :type a: float
-        :param e: Eccentricity of the orbit
-        :type e: float
-        :param i: Inclination of the orbit, as an Angle object
-        :type i: :py:class:`Angle`
-        :param omega: Longitude of the ascending node, as an Angle object
-        :type omega: :py:class:`Angle`
-        :param w: Argument of the perihelion, as an Angle object
-        :type w: :py:class:`Angle`
-        :param t: Epoch of passage by perihelion, as an Epoch object
-        :type t: :py:class:`Epoch`
         :param epoch: Epoch to compute geocentric position, as an Epoch object
         :type epoch: :py:class:`Epoch`
 
@@ -191,8 +233,8 @@ class Minor(object):
         >>> w = Angle(186.23352)
         >>> t = Epoch(1990, 10, 28.54502)
         >>> epoch = Epoch(1990, 10, 6.0)
-        >>> lon, lat = Minor.heliocentric_ecliptical_position(a, e, i, omega, \
-                                                              w, t, epoch)
+        >>> minor = Minor(a, e, i, omega, w, t)
+        >>> lon, lat = minor.heliocentric_ecliptical_position(epoch)
         >>> print(lon.dms_str(n_dec=1))
         66d 51' 57.8''
         >>> print(lat.dms_str(n_dec=1))
@@ -200,13 +242,16 @@ class Minor(object):
         """
 
         # First check that input value is of correct types
-        if not (isinstance(epoch, Epoch) and isinstance(a, float) and
-                isinstance(e, float) and isinstance(i, Angle) and
-                isinstance(omega, Angle) and isinstance(w, Angle) and
-                isinstance(t, Epoch)):
-            raise TypeError("Invalid input types")
-        # Compute the mean motion from the semi-major axis (degrees/day)
-        n = 0.9856076686/(a * sqrt(a))
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Get the mean motion and other orbital parameters
+        n = self._n
+        a = self._a
+        e = self._e
+        i = self._i
+        omega = self._omega
+        w = self._w
+        t = self._t
         # Time since perihelion
         t_peri = epoch - t
         # Now, compute the mean anomaly, in degrees
@@ -251,7 +296,8 @@ def main():
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    ra, dec, elong = Minor.geocentric_position(a, e, i, omega, w, t, epoch)
+    minor = Minor(a, e, i, omega, w, t)
+    ra, dec, elong = minor.geocentric_position(epoch)
     print_me("Right ascension", ra.ra_str(n_dec=1))     # 10h 34' 13.7''
     print_me("Declination", dec.dms_str(n_dec=0))       # 19d 9' 32.0''
     print_me("Elongation", round(elong, 2))             # 40.51
@@ -259,15 +305,7 @@ def main():
     print("")
 
     # Now compute the heliocentric ecliptical coordinates
-    a = 2.2091404
-    e = 0.8502196
-    i = Angle(11.94524)
-    omega = Angle(334.75006)
-    w = Angle(186.23352)
-    t = Epoch(1990, 10, 28.54502)
-    epoch = Epoch(1990, 10, 6.0)
-    lon, lat = Minor.heliocentric_ecliptical_position(a, e, i, omega,
-                                                      w, t, epoch)
+    lon, lat = minor.heliocentric_ecliptical_position(epoch)
     print_me("Heliocentric ecliptical longitude", lon.dms_str(n_dec=1))
     # 66d 51' 57.8''
     print_me("Heliocentric ecliptical latitude", lat.dms_str(n_dec=1))
