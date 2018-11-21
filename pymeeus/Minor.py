@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, acos, atan2, sqrt
+from math import sin, cos, acos, atan, atan2, sqrt
 
 from base import TOL
 from Angle import Angle
@@ -41,15 +41,15 @@ class Minor(object):
     Class Minor models minor celestial bodies.
     """
 
-    def __init__(self, a, e, i, omega, w, t):
+    def __init__(self, q, e, i, omega, w, t):
         """Minor constructor.
 
         The Minor object is initialized with this constructor, setting the
         orbital values and computing some internal parameters. This constructor
         is build upon the 'set()' method.
 
-        :param a: Semi-major axis of the orbit, in Astronomical Units
-        :type a: float
+        :param q: Perihelion distance, in Astronomical Units
+        :type q: float
         :param e: Eccentricity of the orbit
         :type e: float
         :param i: Inclination of the orbit, as an Angle object
@@ -65,14 +65,14 @@ class Minor(object):
         """
 
         self._tol = TOL
-        self.set(a, e, i, omega, w, t)
+        self.set(q, e, i, omega, w, t)
 
-    def set(self, a, e, i, omega, w, t):
+    def set(self, q, e, i, omega, w, t):
         """Method used to set the orbital values and set some internal
         parameters.
 
-        :param a: Semi-major axis of the orbit, in Astronomical Units
-        :type a: float
+        :param q: Perihelion distance, in Astronomical Units
+        :type q: float
         :param e: Eccentricity of the orbit
         :type e: float
         :param i: Inclination of the orbit, as an Angle object
@@ -88,7 +88,7 @@ class Minor(object):
         """
 
         # First check that input value is of correct types
-        if not (isinstance(t, Epoch) and isinstance(a, float) and
+        if not (isinstance(t, Epoch) and isinstance(q, float) and
                 isinstance(e, float) and isinstance(i, Angle) and
                 isinstance(omega, Angle) and isinstance(w, Angle)):
             raise TypeError("Invalid input types")
@@ -101,23 +101,27 @@ class Minor(object):
         g = sin(omer) * ce
         h = sin(omer) * se
         p = -sin(omer) * cos(ir)
-        q = cos(omer) * cos(ir) * ce - sin(ir) * se
+        qq = cos(omer) * cos(ir) * ce - sin(ir) * se
         r = cos(omer) * cos(ir) * se + sin(ir) * ce
         self._aa = atan2(f, p)
-        self._bb = atan2(g, q)
+        self._bb = atan2(g, qq)
         self._cc = atan2(h, r)
         self._am = sqrt(f * f + p * p)
-        self._bm = sqrt(g * g + q * q)
+        self._bm = sqrt(g * g + qq * qq)
         self._cm = sqrt(h * h + r * r)
-        # Compute the mean motion from the semi-major axis (degrees/day)
-        self._n = 0.9856076686/(a * sqrt(a))
         # Store some orbital parameters
-        self._a = a
+        if abs(e - 1.0) > self._tol:
+            self._a = q / (1.0 - e)
+        else:
+            self._a = q
+        self._q = q
         self._e = e
         self._i = i
         self._omega = omega
         self._w = w
         self._t = t
+        # Compute the mean motion from the semi-major axis (degrees/day)
+        self._n = 0.9856076686/(self._a * sqrt(self._a))
         return
 
     def geocentric_position(self, epoch):
@@ -136,11 +140,12 @@ class Minor(object):
 
         >>> a = 2.2091404
         >>> e = 0.8502196
+        >>> q = a * (1.0 - e)
         >>> i = Angle(11.94524)
         >>> omega = Angle(334.75006)
         >>> w = Angle(186.23352)
         >>> t = Epoch(1990, 10, 28.54502)
-        >>> minor = Minor(a, e, i, omega, w, t)
+        >>> minor = Minor(q, e, i, omega, w, t)
         >>> epoch = Epoch(1990, 10, 6.0)
         >>> ra, dec, p = minor.geocentric_position(epoch)
         >>> print(ra.ra_str(n_dec=1))
@@ -149,6 +154,21 @@ class Minor(object):
         19d 9' 32.0''
         >>> print(round(p, 2))
         40.51
+        >>> t = Epoch(1998, 4, 14.4358)
+        >>> q = 1.487469
+        >>> e = 1.0
+        >>> i = Angle(0.0)
+        >>> omega = Angle(0.0)
+        >>> w = Angle(0.0)
+        >>> minor = Minor(q, e, i, omega, w, t)
+        >>> epoch = Epoch(1998, 8, 5.0)
+        >>> ra, dec, p = minor.geocentric_position(epoch)
+        >>> print(ra.ra_str(n_dec=1))
+        5h 45' 34.5''
+        >>> print(dec.dms_str(n_dec=0))
+        23d 23' 53.0''
+        >>> print(round(p, 2))
+        45.73
         """
 
         # First check that input value is of correct types
@@ -168,12 +188,27 @@ class Minor(object):
         # Now, compute the mean anomaly, in degrees
         m = t_peri * n
         m = Angle(m)
-        # With the mean anomaly, use Kepler's equation to find E and v
-        ee, v = kepler_equation(e, m)
-        ee = Angle(ee).to_positive()
-        # Get r
-        er = ee.rad()
-        rr = a * (1.0 - e * cos(er))
+        if e < 0.98:
+            # Elliptic case
+            # With the mean anomaly, use Kepler's equation to find E and v
+            ee, v = kepler_equation(e, m)
+            ee = Angle(ee).to_positive()
+            # Get r
+            er = ee.rad()
+            rr = a * (1.0 - e * cos(er))
+        elif abs(e - 1.0) < self._tol:
+            # Parabolic case
+            q = self._q
+            ww = (0.03649116245 * (epoch - self._t)) / (q * sqrt(q))
+            sp = ww / 3.0
+            iterate = True
+            while iterate:
+                s = (2.0 * sp * sp * sp + ww) / (3.0 * (sp * sp + 1.0))
+                iterate = abs(s - sp) > self._tol
+                sp = s
+            v = 2.0 * atan(s)
+            v = Angle(v, radians=True)
+            rr = q * (1.0 + s * s)
         # Compute the heliocentric rectangular equatorial coordinates
         wr = w.rad()
         vr = Angle(v).rad()
@@ -193,12 +228,27 @@ class Minor(object):
         # Now, compute the mean anomaly, in degrees
         m = t_peri * n
         m = Angle(m)
-        # With the mean anomaly, use Kepler's equation to find E and v
-        ee, v = kepler_equation(e, m)
-        ee = Angle(ee).to_positive()
-        # Get r
-        er = ee.rad()
-        rr = a * (1.0 - e * cos(er))
+        if e < 0.98:
+            # Elliptic case
+            # With the mean anomaly, use Kepler's equation to find E and v
+            ee, v = kepler_equation(e, m)
+            ee = Angle(ee).to_positive()
+            # Get r
+            er = ee.rad()
+            rr = a * (1.0 - e * cos(er))
+        elif abs(e - 1.0) < self._tol:
+            # Parabolic case
+            q = self._q
+            ww = (0.03649116245 * (epoch - self._t)) / (q * sqrt(q))
+            sp = ww / 3.0
+            iterate = True
+            while iterate:
+                s = (2.0 * sp * sp * sp + ww) / (3.0 * (sp * sp + 1.0))
+                iterate = abs(s - sp) > self._tol
+                sp = s
+            v = 2.0 * atan(s)
+            v = Angle(v, radians=True)
+            rr = q * (1.0 + s * s)
         # Compute the heliocentric rectangular equatorial coordinates
         wr = w.rad()
         vr = Angle(v).rad()
@@ -228,12 +278,13 @@ class Minor(object):
 
         >>> a = 2.2091404
         >>> e = 0.8502196
+        >>> q = a * (1.0 - e)
         >>> i = Angle(11.94524)
         >>> omega = Angle(334.75006)
         >>> w = Angle(186.23352)
         >>> t = Epoch(1990, 10, 28.54502)
         >>> epoch = Epoch(1990, 10, 6.0)
-        >>> minor = Minor(a, e, i, omega, w, t)
+        >>> minor = Minor(q, e, i, omega, w, t)
         >>> lon, lat = minor.heliocentric_ecliptical_position(epoch)
         >>> print(lon.dms_str(n_dec=1))
         66d 51' 57.8''
@@ -291,12 +342,13 @@ def main():
     # Let's compute the equatorial coordinates of comet Encke
     a = 2.2091404
     e = 0.8502196
+    q = a * (1.0 - e)
     i = Angle(11.94524)
     omega = Angle(334.75006)
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    minor = Minor(a, e, i, omega, w, t)
+    minor = Minor(q, e, i, omega, w, t)
     ra, dec, elong = minor.geocentric_position(epoch)
     print_me("Right ascension", ra.ra_str(n_dec=1))     # 10h 34' 13.7''
     print_me("Declination", dec.dms_str(n_dec=0))       # 19d 9' 32.0''
