@@ -32,12 +32,13 @@ def test_minor_geocentric_position():
 
     a = 2.2091404
     e = 0.8502196
+    q = a * (1.0 - e)
     i = Angle(11.94524)
     omega = Angle(334.75006)
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    minor = Minor(a, e, i, omega, w, t)
+    minor = Minor(q, e, i, omega, w, t)
     ra, dec, elong = minor.geocentric_position(epoch)
 
     assert ra.ra_str(n_dec=1) == "10h 34' 13.7''", \
@@ -55,12 +56,13 @@ def test_minor_heliocentric_ecliptical_position():
 
     a = 2.2091404
     e = 0.8502196
+    q = a * (1.0 - e)
     i = Angle(11.94524)
     omega = Angle(334.75006)
     w = Angle(186.23352)
     t = Epoch(1990, 10, 28.54502)
     epoch = Epoch(1990, 10, 6.0)
-    minor = Minor(a, e, i, omega, w, t)
+    minor = Minor(q, e, i, omega, w, t)
     lon, lat = minor.heliocentric_ecliptical_position(epoch)
 
     assert lon.dms_str(n_dec=1) == "66d 51' 57.8''", \
