@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, acos, atan, atan2, sqrt
+from math import sin, cos, tan, acos, atan, atan2, sqrt
 
 from base import TOL
 from Angle import Angle
@@ -111,7 +111,7 @@ class Minor(object):
         self._cm = sqrt(h * h + r * r)
         # Store some orbital parameters
         if abs(e - 1.0) > self._tol:
-            self._a = q / (1.0 - e)
+            self._a = abs(q / (1.0 - e))
         else:
             self._a = q
         self._q = q
@@ -121,8 +121,102 @@ class Minor(object):
         self._w = w
         self._t = t
         # Compute the mean motion from the semi-major axis (degrees/day)
-        self._n = 0.9856076686/(self._a * sqrt(self._a))
+        self._n = 0.9856076686 / (self._a * sqrt(self._a))
         return
+
+    def _near_parabolic(self, t):
+        """This internal function handles the computation of the true anomaly
+        and the radius vector when the eccentricity is close to 1.
+
+        :param t: Days since perihelion
+        :type t: float
+
+        :returns: A tuple containing the true anomaly (as an Angle object) and
+            the radius vector (in Astronomical Units).
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type, and ValueError if
+            convergence is not possible
+
+        >>> q = 0.5871018
+        >>> e = 0.9672746
+        >>> t = 20.0
+        >>> i = Angle(0.0)
+        >>> omega = Angle(0.0)
+        >>> w = Angle(0.0)
+        >>> ep = Epoch(2000, 1, 1.5)
+        >>> minor = Minor(q, e, i, omega, w, ep)
+        >>> v, r = minor._near_parabolic(t)
+        >>> print(round(v, 5))
+        52.85331
+        >>> print(round(r, 6))
+        0.729116
+        >>> q = 3.363943
+        >>> e = 1.05731
+        >>> t = 1237.1
+        >>> minor = Minor(q, e, i, omega, w, ep)
+        >>> v, r = minor._near_parabolic(t)
+        >>> print(round(v, 5))
+        109.40598
+        >>> print(round(r, 6))
+        10.668551
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(t, float):
+            raise TypeError("Invalid input type")
+        # Let's start defining some constants and renaming some parameters
+        k = 0.01720209895
+        d1 = 10000
+        c = 1.0 / 3.0
+        d = self._tol
+        q = self._q
+        e = self._e
+        q1 = k * sqrt((1.0 + e) / q) / (2.0 * q)
+        g = (1.0 - e) / (1.0 + e)
+        # t = epoch - self._t
+        if abs(t) >= d:
+            q2 = q1 * t
+            s = 2.0 / (3.0 * abs(q2))
+            s = 2.0 / tan(2.0 * atan(tan(atan(s) / 2) ** c))
+            if t < 0.0:
+                s = -s
+            if abs(e - 1.0) < d:
+                v = 2.0 * atan(s)
+                rr = q * (1.0 + e) / (1.0 + e * cos(v))
+                v = Angle(v, radians=True).to_positive()
+                return v, rr
+            ll = 0.0
+            s0 = s + 1.0
+            while abs(s - s0) > d:
+                s0 = s
+                z = 1
+                y = s * s
+                g1 = -y * s
+                q3 = q2 + 2.0 * g * s * y / 3.0
+                f = d + 1.0
+                while abs(f) > d:
+                    z += 1
+                    g1 = -g1 * g * y
+                    z1 = (z - (z + 1.0) * g) / (2.0 * z + 1.0)
+                    f = z1 * g1
+                    q3 = q3 + f
+                    if z > 50 or abs(f) > d1:
+                        raise ValueError("No convergence")
+                ll += 1
+                if ll > 50:
+                    raise ValueError("No convergence")
+                s1 = s + 1.0
+                while abs(s - s1) > d:
+                    s1 = s
+                    s = (2.0 * s * s * s / 3.0 + q3) / (s * s + 1.0)
+            v = 2.0 * atan(s)
+            rr = q * (1.0 + e) / (1.0 + e * cos(v))
+            v = Angle(v, radians=True).to_positive()
+            return v, rr
+        else:
+            rr = q
+            v = Angle(0.0)
+            return v, rr
 
     def geocentric_position(self, epoch):
         """This method computes the geocentric position of a minor celestial
@@ -209,6 +303,9 @@ class Minor(object):
             v = 2.0 * atan(s)
             v = Angle(v, radians=True)
             rr = q * (1.0 + s * s)
+        else:
+            # We are in the near-parabolic case
+            v, rr = self._near_parabolic(t_peri)
         # Compute the heliocentric rectangular equatorial coordinates
         wr = w.rad()
         vr = Angle(v).rad()
@@ -249,6 +346,9 @@ class Minor(object):
             v = 2.0 * atan(s)
             v = Angle(v, radians=True)
             rr = q * (1.0 + s * s)
+        else:
+            # We are in the near-parabolic case
+            v, rr = self._near_parabolic(t_peri)
         # Compute the heliocentric rectangular equatorial coordinates
         wr = w.rad()
         vr = Angle(v).rad()
