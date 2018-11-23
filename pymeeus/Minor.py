@@ -173,13 +173,14 @@ class Minor(object):
         e = self._e
         q1 = k * sqrt((1.0 + e) / q) / (2.0 * q)
         g = (1.0 - e) / (1.0 + e)
-        # t = epoch - self._t
-        if abs(t) >= d:
+        # If t == 0, then r = q and v = 0
+        if abs(t) > d:
             q2 = q1 * t
             s = 2.0 / (3.0 * abs(q2))
             s = 2.0 / tan(2.0 * atan(tan(atan(s) / 2) ** c))
             if t < 0.0:
                 s = -s
+            # Parabolic case
             if abs(e - 1.0) < d:
                 v = 2.0 * atan(s)
                 rr = q * (1.0 + e) / (1.0 + e * cos(v))
