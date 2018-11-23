@@ -7183,6 +7183,123 @@ class Mercury(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def inferior_conjunction(epoch):
+        """This method computes the time of the inferior conjunction closest to
+        the given epoch.
+
+        :param epoch: Epoch closest to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conjunction = Mercury.inferior_conjunction(epoch)
+        >>> y, m, d = conjunction.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        11
+        >>> print(round(d, 4))
+        6.1449
+        >>> epoch = Epoch(1631, 10, 1.0)
+        >>> conjunction = Mercury.inferior_conjunction(epoch)
+        >>> y, m, d = conjunction.get_date()
+        >>> print(y)
+        1631
+        >>> print(m)
+        11
+        >>> print(round(d, 3))
+        7.306
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's inferior conjunction
+        a = 2451612.023
+        b = 115.8774771
+        m0 = 63.5867
+        m1 = 114.2088742
+        # Compute an approximation of the year with decimals
+        year, m, d = epoch.get_date()
+        y = year + m/12.0 + d/365.25
+        k = round((365.2425 * y + 1721060 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (0.0545 + 0.0002 * t +
+                sin(m) * (-6.2008 + t * (0.0074 + t * 0.00003)) +
+                cos(m) * (-3.275 + t * (-0.0197 + t * 0.00001)) +
+                sin(2.0 * m) * (0.4737 + t * (-0.0052 - t * 0.00001)) +
+                cos(2.0 * m) * (0.8111 + t * (0.0033 - t * 0.00002)) +
+                sin(3.0 * m) * (0.0037 + t * 0.0018) +
+                cos(3.0 * m) * (-0.1768 + t * t * 0.00001) +
+                sin(4.0 * m) * (-0.0211 - t * 0.0004) +
+                cos(4.0 * m) * (0.0326 - t * 0.0003) +
+                sin(5.0 * m) * (0.0083 + t * 0.0001) +
+                cos(5.0 * m) * (-0.004 + t * 0.0001))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def superior_conjunction(epoch):
+        """This method computes the time of the superior conjunction closest to
+        the given epoch.
+
+        :param epoch: Epoch closest to the desired superior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the superior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conjunction = Mercury.superior_conjunction(epoch)
+        >>> y, m, d = conjunction.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        8
+        >>> print(round(d, 4))
+        29.3301
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's superior conjunction
+        a = 2451554.084
+        b = 115.8774771
+        m0 = 6.4822
+        m1 = 114.2088742
+        # Compute an approximation of the year with decimals
+        year, m, d = epoch.get_date()
+        y = year + m/12.0 + d/365.25
+        k = round((365.2425 * y + 1721060 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-0.0548 - 0.0002 * t +
+                sin(m) * (7.3894 + t * (-0.01 - t * 0.00003)) +
+                cos(m) * (3.22 + t * (0.0197 - t * 0.00001)) +
+                sin(2.0 * m) * (0.8383 + t * (-0.0064 - t * 0.00001)) +
+                cos(2.0 * m) * (0.9666 + t * (0.0039 - t * 0.00003)) +
+                sin(3.0 * m) * (0.077 - t * 0.0026) +
+                cos(3.0 * m) * (0.2758 + t * (0.0002 - t * 0.00002)) +
+                sin(4.0 * m) * (-0.0128 - t * 0.0008) +
+                cos(4.0 * m) * (0.0734 + t * (-0.0004 - t * 0.00001)) +
+                sin(5.0 * m) * (-0.0122 - t * 0.0002) +
+                cos(5.0 * m) * (0.0173 - t * 0.0002))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
