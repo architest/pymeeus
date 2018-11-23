@@ -89,3 +89,50 @@ def test_mercury_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - 29.311401) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_mercury_inferior_conjunction():
+    """Tests the inferior_conjunction() method of Mercury class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Mercury.inferior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st inferior_conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 11) < TOL, \
+        "ERROR: 2nd inferior_conjunction() test doesn't match"
+
+    assert abs(round(d, 4) - 6.1449) < TOL, \
+        "ERROR: 3rd inferior_conjunction() test doesn't match"
+
+    epoch = Epoch(1631, 10, 1.0)
+    conjunction = Mercury.inferior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1631) < TOL, \
+        "ERROR: 4th inferior_conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 11) < TOL, \
+        "ERROR: 5th inferior_conjunction() test doesn't match"
+
+    assert abs(round(d, 3) - 7.306) < TOL, \
+        "ERROR: 6th inferior_conjunction() test doesn't match"
+
+
+def test_mercury_superior_conjunction():
+    """Tests the erior_conjunction() method of Mercury class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Mercury.superior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st superior_conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 8) < TOL, \
+        "ERROR: 2nd superior_conjunction() test doesn't match"
+
+    assert abs(round(d, 4) - 29.3301) < TOL, \
+        "ERROR: 3rd superior_conjunction() test doesn't match"
