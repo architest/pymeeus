@@ -13,6 +13,8 @@ Let's compute the equatorial coordinates of comet Encke::
 
     e = 0.8502196
 
+    q = a * (1.0 - e)
+
     i = Angle(11.94524)
 
     omega = Angle(334.75006)
@@ -23,7 +25,7 @@ Let's compute the equatorial coordinates of comet Encke::
 
     epoch = Epoch(1990, 10, 6.0)
 
-    minor = Minor(a, e, i, omega, w, t)
+    minor = Minor(q, e, i, omega, w, t)
 
     ra, dec, elong = minor.geocentric_position(epoch)
 
@@ -45,6 +47,8 @@ Now compute the heliocentric ecliptical coordinates::
 
     e = 0.8502196
 
+    q = a * (1.0 - e)
+
     i = Angle(11.94524)
 
     omega = Angle(334.75006)
@@ -55,7 +59,7 @@ Now compute the heliocentric ecliptical coordinates::
 
     epoch = Epoch(1990, 10, 6.0)
 
-    minor = Minor(a, e, i, omega, w, t)
+    minor = Minor(q, e, i, omega, w, t)
 
     lon, lat = minor.heliocentric_ecliptical_position(epoch)
 
