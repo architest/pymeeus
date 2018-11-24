@@ -5838,6 +5838,59 @@ class Mars(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def conjunction(epoch):
+        """This method computes the time of the conjunction closest to the
+        given epoch.
+
+        :param epoch: Epoch close to the desired conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conj = Mars.conjunction(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        12
+        >>> print(round(d, 4))
+        27.0898
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mars' conjunction
+        a = 2451707.414
+        b = 779.936104
+        m0 = 157.6047
+        m1 = 48.705244
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (0.3102 + t * (-0.0001 + t * 0.00001) +
+                sin(m) * (9.7273 + t * (-0.0156 + t * 0.00001)) +
+                cos(m) * (-18.3195 + t * (-0.0467 + t * 0.00009)) +
+                sin(2.0 * m) * (-1.6488 + t * (-0.0133 + t * 0.00001)) +
+                cos(2.0 * m) * (-2.6117 + t * (-0.002 + t * 0.00004)) +
+                sin(3.0 * m) * (-0.6827 + t * (-0.0026 + t * 0.00001)) +
+                cos(3.0 * m) * (0.0281 + t * (0.0035 + t * 0.00001)) +
+                sin(4.0 * m) * (-0.0823 + t * (0.0006 + t * 0.00001)) +
+                cos(4.0 * m) * (0.1584 + t * 0.0013) +
+                sin(5.0 * m) * (0.027 + t * 0.0005) +
+                cos(5.0 * m) * (0.0433))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
