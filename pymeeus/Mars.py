@@ -5891,6 +5891,59 @@ class Mars(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def opposition(epoch):
+        """This method computes the time of the opposition closest to the given
+        epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2729, 10, 1.0)
+        >>> conj = Mars.opposition(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        2729
+        >>> print(m)
+        9
+        >>> print(round(d, 4))
+        9.1412
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mars' opposition
+        a = 2452097.382
+        b = 779.936104
+        m0 = 181.9573
+        m1 = 48.705244
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-0.3088 + t * t * 0.00002 +
+                sin(m) * (-17.6965 + t * (0.0363 + t * 0.00005)) +
+                cos(m) * (18.3131 + t * (0.0467 - t * 0.00006)) +
+                sin(2.0 * m) * (-0.2162 + t * (-0.0198 - t * 0.00001)) +
+                cos(2.0 * m) * (-4.5028 + t * (-0.0019 + t * 0.00007)) +
+                sin(3.0 * m) * (0.8987 + t * (0.0058 - t * 0.00002)) +
+                cos(3.0 * m) * (0.7666 + t * (-0.005 - t * 0.00003)) +
+                sin(4.0 * m) * (-0.3636 + t * (-0.0001 + t * 0.00002)) +
+                cos(4.0 * m) * (0.0402 + t * 0.0032) +
+                sin(5.0 * m) * (0.0737 - t * 0.0008) +
+                cos(5.0 * m) * (-0.098 - t * 0.0011))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
