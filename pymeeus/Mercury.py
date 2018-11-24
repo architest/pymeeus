@@ -7223,9 +7223,8 @@ class Mercury(object):
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Compute an approximation of the year with decimals
-        year, m, d = epoch.get_date()
-        y = year + m/12.0 + d/365.25
+        # Get the year with decimals
+        y = epoch.year()
         k = round((365.2425 * y + 1721060 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7277,9 +7276,8 @@ class Mercury(object):
         b = 115.8774771
         m0 = 6.4822
         m1 = 114.2088742
-        # Compute an approximation of the year with decimals
-        year, m, d = epoch.get_date()
-        y = year + m/12.0 + d/365.25
+        # Get the year with decimals
+        y = epoch.year()
         k = round((365.2425 * y + 1721060 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
