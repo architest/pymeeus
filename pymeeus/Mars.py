@@ -5904,8 +5904,8 @@ class Mars(object):
         :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(2729, 10, 1.0)
-        >>> conj = Mars.opposition(epoch)
-        >>> y, m, d = conj.get_date()
+        >>> oppo = Mars.opposition(epoch)
+        >>> y, m, d = oppo.get_date()
         >>> print(y)
         2729
         >>> print(m)
