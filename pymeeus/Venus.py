@@ -2037,6 +2037,104 @@ class Venus(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def inferior_conjunction(epoch):
+        """This method computes the time of the inferior conjunction closest to
+        the given epoch.
+
+        :param epoch: Epoch closest to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1882, 12, 1.0)
+        >>> conjunction = Venus.inferior_conjunction(epoch)
+        >>> y, m, d = conjunction.get_date()
+        >>> print(y)
+        1882
+        >>> print(m)
+        12
+        >>> print(round(d, 1))
+        6.7
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Venus' inferior conjunction
+        a = 2451996.706
+        b = 583.921361
+        m0 = 82.7311
+        m1 = 215.513058
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-0.0096 + t * (0.0002 - t * 0.00001) +
+                sin(m) * (2.0009 + t * (-0.0033 - t * 0.00001)) +
+                cos(m) * (0.598 + t * (-0.0104 + t * 0.00001)) +
+                sin(2.0 * m) * (0.0967 + t * (-0.0018 - t * 0.00003)) +
+                cos(2.0 * m) * (0.0913 + t * (0.0009 - t * 0.00002)) +
+                sin(3.0 * m) * (0.0046 - t * 0.0002) +
+                cos(3.0 * m) * (0.0079 + t * 0.0001))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def superior_conjunction(epoch):
+        """This method computes the time of the superior conjunction closest to
+        the given epoch.
+
+        :param epoch: Epoch closest to the desired superior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the superior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conjunction = Venus.superior_conjunction(epoch)
+        >>> y, m, d = conjunction.get_date()
+        >>> print(y)
+        1994
+        >>> print(m)
+        1
+        >>> print(round(d, 2))
+        17.05
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Venus' superior conjunction
+        a = 2451704.746
+        b = 583.921361
+        m0 = 154.9745
+        m1 = 215.513058
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (0.0099 + t * (-0.0002 - t * 0.00001) +
+                sin(m) * (4.1991 + t * (-0.0121 - t * 0.00003)) +
+                cos(m) * (-0.6095 + t * (0.0102 - t * 0.00002)) +
+                sin(2.0 * m) * (0.25 + t * (-0.0028 - t * 0.00003)) +
+                cos(2.0 * m) * (0.0063 + t * (0.0025 - t * 0.00002)) +
+                sin(3.0 * m) * (0.0232 + t * (-0.0005 - t * 0.00001)) +
+                cos(3.0 * m) * (0.0031 + t * 0.0004))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
