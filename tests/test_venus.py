@@ -89,3 +89,37 @@ def test_venus_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - 55.068476) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_venus_inferior_conjunction():
+    """Tests the inferior_conjunction() method of Venus class"""
+
+    epoch = Epoch(1882, 12, 1.0)
+    conjunction = Venus.inferior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1882) < TOL, \
+        "ERROR: 1st inferior_conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 12) < TOL, \
+        "ERROR: 2nd inferior_conjunction() test doesn't match"
+
+    assert abs(round(d, 1) - 6.7) < TOL, \
+        "ERROR: 3rd inferior_conjunction() test doesn't match"
+
+
+def test_venus_superior_conjunction():
+    """Tests the superior_conjunction() method of Venus class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Venus.superior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1994) < TOL, \
+        "ERROR: 1st superior_conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 1) < TOL, \
+        "ERROR: 2nd superior_conjunction() test doesn't match"
+
+    assert abs(round(d, 2) - 17.05) < TOL, \
+        "ERROR: 3rd superior_conjunction() test doesn't match"

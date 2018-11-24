@@ -122,7 +122,7 @@ def test_mercury_inferior_conjunction():
 
 
 def test_mercury_superior_conjunction():
-    """Tests the erior_conjunction() method of Mercury class"""
+    """Tests the superior_conjunction() method of Mercury class"""
 
     epoch = Epoch(1993, 10, 1.0)
     conjunction = Mercury.superior_conjunction(epoch)
