@@ -78,6 +78,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.10
+
+   -  Added 'geocentric\_position()' method to 'Minor' class, and added
+      conjunction and opposition methods for Mercury, Venus and Mars.
+
 -  0.2.9
 
    -  Added class 'Minor', as well as functions to compute velocity of
