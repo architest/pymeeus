@@ -89,3 +89,37 @@ def test_mars_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - 286.98617) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_mars_conjunction():
+    """Tests the conjunction() method of Mars class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Mars.conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 12) < TOL, \
+        "ERROR: 2nd conjunction() test doesn't match"
+
+    assert abs(round(d, 4) - 27.0898) < TOL, \
+        "ERROR: 3rd conjunction() test doesn't match"
+
+
+def test_mars_superior_conjunction():
+    """Tests the opposition() method of Mars class"""
+
+    epoch = Epoch(2729, 10, 1.0)
+    oppo = Mars.opposition(epoch)
+    y, m, d = oppo.get_date()
+
+    assert abs(round(y, 0) - 2729) < TOL, \
+        "ERROR: 1st opposition() test doesn't match"
+
+    assert abs(round(m, 0) - 9) < TOL, \
+        "ERROR: 2nd opposition() test doesn't match"
+
+    assert abs(round(d, 4) - 9.1412) < TOL, \
+        "ERROR: 3rd opposition() test doesn't match"
