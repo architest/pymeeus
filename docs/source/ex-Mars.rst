@@ -54,3 +54,35 @@ Print mean orbital elements for Mars at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: 287.202108
+
+Compute the time of the conjunction close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    conj = Mars.conjunction(epoch)
+
+    y, m, d = conj.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Conjunction date", date)
+
+    # Conjunction date: 1993/12/27.0898
+
+Compute the time of the opposition close to 2729/10/1::
+
+    epoch = Epoch(2729, 10, 1.0)
+
+    oppo = Mars.opposition(epoch)
+
+    y, m, d = oppo.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Opposition date", date)
+
+    # Opposition date: 2729/9/9.1412
