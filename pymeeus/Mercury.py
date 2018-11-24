@@ -7188,7 +7188,7 @@ class Mercury(object):
         """This method computes the time of the inferior conjunction closest to
         the given epoch.
 
-        :param epoch: Epoch closest to the desired inferior conjunction
+        :param epoch: Epoch close to the desired inferior conjunction
         :type epoch: :py:class:`Epoch`
 
         :returns: The time when the inferior conjunction happens, as an Epoch
@@ -7250,7 +7250,7 @@ class Mercury(object):
         """This method computes the time of the superior conjunction closest to
         the given epoch.
 
-        :param epoch: Epoch closest to the desired superior conjunction
+        :param epoch: Epoch close to the desired superior conjunction
         :type epoch: :py:class:`Epoch`
 
         :returns: The time when the superior conjunction happens, as an Epoch
