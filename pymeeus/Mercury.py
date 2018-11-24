@@ -7225,7 +7225,7 @@ class Mercury(object):
         m1 = 114.2088742
         # Get the year with decimals
         y = epoch.year()
-        k = round((365.2425 * y + 1721060 - a) / b)
+        k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
         m = Angle(m).to_positive()
@@ -7278,7 +7278,7 @@ class Mercury(object):
         m1 = 114.2088742
         # Get the year with decimals
         y = epoch.year()
-        k = round((365.2425 * y + 1721060 - a) / b)
+        k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
         m = Angle(m).to_positive()
