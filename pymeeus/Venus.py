@@ -2166,6 +2166,24 @@ def main():
     print_me("Longitude of the ascending node", round(ome, 5))  # 77.27012
     print_me("Argument of the perihelion", round(arg, 6))       # 55.211257
 
+    print("")
+
+    # Compute the time of the inferior conjunction close to 1882/12/1.0
+    epoch = Epoch(1882, 12, 1.0)
+    conjunction = Venus.inferior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Inferior conjunction date", date)
+
+    # Compute the time of the superior conjunction close to 1993/10/1
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Venus.superior_conjunction(epoch)
+    y, m, d = conjunction.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Superior conjunction date", date)
+
 
 if __name__ == "__main__":
 

@@ -54,3 +54,35 @@ Print mean orbital elements for Venus at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: 55.211257
+
+Compute the time of the inferior conjunction close to 1882/12/1.0::
+
+    epoch = Epoch(1882, 12, 1.0)
+
+    conjunction = Venus.inferior_conjunction(epoch)
+
+    y, m, d = conjunction.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Inferior conjunction date", date)
+
+    # Inferior conjunction date: 1882/12/6.6912
+
+Compute the time of the superior conjunction close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    conjunction = Venus.superior_conjunction(epoch)
+
+    y, m, d = conjunction.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Superior conjunction date", date)
+
+    # Superior conjunction date: 1994/1/17.0465
