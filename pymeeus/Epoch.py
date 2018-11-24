@@ -100,7 +100,7 @@ class Epoch(object):
 
     Given that leap seconds are added or subtracted in a rather irregular
     basis, it is not possible to predict them in advance, and the internal leap
-    second table will become outdated at some point in time. To counter this,
+    seconds table will become outdated at some point in time. To counter this,
     you have two options:
 
     - Download an updated version of this Pymeeus package.
@@ -569,6 +569,8 @@ class Epoch(object):
         >>> Epoch.get_month('FEB')
         2
         >>> Epoch.get_month('August')
+        8
+        >>> Epoch.get_month('august')
         8
         >>> Epoch.get_month('NOVEMBER')
         11
@@ -1930,6 +1932,27 @@ class Epoch(object):
         """
 
         return not self.__gt__(b)  # '<=' == 'not(>)'
+
+    def year(self):
+        """This method returns the contents of this object as a year with
+        decimals.
+
+        :returns: Year with decimals.
+        :rtype: float
+
+        >>> e = Epoch(1993, 'October', 1)
+        >>> print(round(e.year(), 4))
+        1993.7479
+        """
+
+        y, m, d = self.get_date()
+        doy = self.get_doy(y, m, d)
+        # We must substract 1 from doy in order to compute correctly
+        doy -= 1
+        days_of_year = 365.0
+        if self.leap():
+            days_of_year = 366.0
+        return y + doy / days_of_year
 
 
 JDE2000 = Epoch(2000, 1, 1.5)
