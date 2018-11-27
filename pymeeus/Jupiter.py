@@ -20,13 +20,13 @@
 
 from math import sin, cos, tan, acos, atan2, sqrt, radians
 
-from pymeeus.Angle import Angle
-from pymeeus.Epoch import Epoch, JDE2000
-from pymeeus.Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
+from Angle import Angle
+from Epoch import Epoch, JDE2000
+from Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
         orbital_elements, nutation_longitude, true_obliquity, \
         ecliptical2equatorial
-from pymeeus.Earth import Earth
-from pymeeus.Sun import Sun
+from Earth import Earth
+from Sun import Sun
 
 
 """
@@ -3977,6 +3977,24 @@ def main():
     print_me("Inclination on plane of the ecliptic", round(i, 6))   # 1.29967
     print_me("Longitude of the ascending node", round(ome, 5))  # 101.13309
     print_me("Argument of the perihelion", round(arg, 6))       # -85.745532
+
+    print("")
+
+    # Compute the time of the conjunction close to 1993/10/1
+    epoch = Epoch(1993, 10, 1.0)
+    conj = Jupiter.conjunction(epoch)
+    y, m, d = conj.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Conjunction date", date)
+
+    # Compute the time of the opposition close to -6/9/1
+    epoch = Epoch(-6, 9, 1.0)
+    oppo = Jupiter.opposition(epoch)
+    y, m, d = oppo.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Opposition date", date)
 
 
 if __name__ == "__main__":

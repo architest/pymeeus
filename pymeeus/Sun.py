@@ -20,15 +20,15 @@
 
 from math import sin, cos, tan, atan, atan2, asin
 
-from pymeeus.Angle import Angle
-from pymeeus.Epoch import Epoch, JDE2000
-from pymeeus.Coordinates import (
+from Angle import Angle
+from Epoch import Epoch, JDE2000
+from Coordinates import (
     mean_obliquity,
     true_obliquity,
     nutation_longitude,
     ecliptical2equatorial,
 )
-from pymeeus.Earth import Earth
+from Earth import Earth
 
 
 """

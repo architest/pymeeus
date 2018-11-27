@@ -20,13 +20,13 @@
 
 from math import sqrt, degrees
 
-from pymeeus.base import TOL
-from pymeeus.Angle import Angle
+from base import TOL
+from Angle import Angle
 
 
 """
 .. module:: Interpolation
-   :synopsis: Basic routines used by the pymeeus module
+   :synopsis: Basic interpolation routines
    :license: GNU Lesser General Public License v3 (LGPLv3)
 
 .. moduleauthor:: Dagoberto Salazar

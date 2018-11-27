@@ -20,8 +20,8 @@
 
 from math import sqrt, radians, fsum, sin
 
-from pymeeus.base import TOL
-from pymeeus.Angle import Angle
+from base import TOL
+from Angle import Angle
 
 
 """

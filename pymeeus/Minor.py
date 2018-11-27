@@ -20,11 +20,11 @@
 
 from math import sin, cos, tan, acos, atan, atan2, sqrt
 
-from pymeeus.base import TOL
-from pymeeus.Angle import Angle
-from pymeeus.Epoch import Epoch
-from pymeeus.Coordinates import kepler_equation
-from pymeeus.Sun import Sun
+from base import TOL
+from Angle import Angle
+from Epoch import Epoch
+from Coordinates import kepler_equation
+from Sun import Sun
 
 
 """
