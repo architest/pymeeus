@@ -257,13 +257,13 @@ def test_angle_str():
     """Tests the __str__() method of Angle class"""
 
     type_ok = False
-    a = Angle(40, -46.25, 0.0)
+    a = Angle(40, -46.5, 0.0)
     if isinstance(a.__str__(), str):                  # Test the returned type
         type_ok = True
 
     assert type_ok, "ERROR: In 1st __str__() test, type doesn't match"
 
-    assert a.__str__() == "-40.7708333333", \
+    assert a.__str__() == "-40.775", \
         "ERROR: In 2nd __str__() test, degrees value doesn't match"
 
 
