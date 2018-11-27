@@ -75,5 +75,5 @@ workflows:
     build_and_test:
         jobs:
             - build
-            - build367
             - build27
+            - build367
