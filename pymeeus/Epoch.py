@@ -1639,6 +1639,27 @@ class Epoch(object):
 
         return self._jde
 
+    def year(self):
+        """This method returns the contents of this object as a year with
+        decimals.
+
+        :returns: Year with decimals.
+        :rtype: float
+
+        >>> e = Epoch(1993, 'October', 1)
+        >>> print(round(e.year(), 4))
+        1993.7479
+        """
+
+        y, m, d = self.get_date()
+        doy = self.get_doy(y, m, d)
+        # We must substract 1 from doy in order to compute correctly
+        doy -= 1
+        days_of_year = 365.0
+        if self.leap():
+            days_of_year = 366.0
+        return y + doy / days_of_year
+
     def __call__(self):
         """Method used when Epoch is called only with parenthesis.
 
@@ -1932,27 +1953,6 @@ class Epoch(object):
         """
 
         return not self.__gt__(b)  # '<=' == 'not(>)'
-
-    def year(self):
-        """This method returns the contents of this object as a year with
-        decimals.
-
-        :returns: Year with decimals.
-        :rtype: float
-
-        >>> e = Epoch(1993, 'October', 1)
-        >>> print(round(e.year(), 4))
-        1993.7479
-        """
-
-        y, m, d = self.get_date()
-        doy = self.get_doy(y, m, d)
-        # We must substract 1 from doy in order to compute correctly
-        doy -= 1
-        days_of_year = 365.0
-        if self.leap():
-            days_of_year = 366.0
-        return y + doy / days_of_year
 
 
 JDE2000 = Epoch(2000, 1, 1.5)
