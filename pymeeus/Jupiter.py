@@ -3839,6 +3839,114 @@ class Jupiter(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def conjunction(epoch):
+        """This method computes the time of the conjunction closest to the
+        given epoch.
+
+        :param epoch: Epoch close to the desired conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conj = Jupiter.conjunction(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        10
+        >>> print(round(d, 4))
+        17.9636
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Jupiter's conjunction
+        a = 2451671.186
+        b = 398.884046
+        m0 = 121.898
+        m1 = 33.140229
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute an auxiliary angle
+        aa = 82.74 + 40.76 * t
+        aa = Angle(aa).rad()    # Convert to radians
+        corr = (0.1027 + t * (0.0002 - t * 0.00009) +
+                sin(m) * (-2.2637 + t * (0.0163 - t * 0.00003)) +
+                cos(m) * (-6.154 + t * (-0.021 + t * 0.00008)) +
+                sin(2.0 * m) * (-0.2021 + t * (-0.0017 + t * 0.00001)) +
+                cos(2.0 * m) * (0.131 - t * 0.0008) +
+                sin(3.0 * m) * (0.0086) +
+                cos(3.0 * m) * (0.0087 + t * 0.0002) +
+                sin(a) * (0.0 + t * (0.0144 - t * 0.00008)) +
+                cos(a) * (0.3642 + t * (-0.0019 - t * 0.00029)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def opposition(epoch):
+        """This method computes the time of the opposition closest to the given
+        epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(-6, 9, 1.0)
+        >>> oppo = Jupiter.opposition(epoch)
+        >>> y, m, d = oppo.get_date()
+        >>> print(y)
+        -6
+        >>> print(m)
+        9
+        >>> print(round(d, 4))
+        15.2865
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Jupiter's opposition
+        a = 2451870.628
+        b = 398.884046
+        m0 = 318.4681
+        m1 = 33.140229
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute an auxiliary angle
+        aa = 82.74 + 40.76 * t
+        aa = Angle(aa).rad()    # Convert to radians
+        corr = (-0.1029 - t * t * 0.00009 +
+                sin(m) * (-1.9658 + t * (-0.0056 + t * 0.00007)) +
+                cos(m) * (6.1537 + t * (0.021 - t * 0.00006)) +
+                sin(2.0 * m) * (-0.2081 - t * 0.0013) +
+                cos(2.0 * m) * (-0.1116 - t * 0.001) +
+                sin(3.0 * m) * (0.0074 + t * 0.0001) +
+                cos(3.0 * m) * (-0.0097 - t * 0.0001) +
+                sin(aa) * (0.0 + t * (0.0144 - t * 0.00008)) +
+                cos(aa) * (0.3642 + t * (-0.0019 - t * 0.00029)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
