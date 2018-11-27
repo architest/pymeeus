@@ -21,10 +21,10 @@
 from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, \
         copysign
 
-from base import TOL, iint
-from Angle import Angle
-from Epoch import Epoch, JDE2000
-from Interpolation import Interpolation
+from pymeeus.base import TOL, iint
+from pymeeus.Angle import Angle
+from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Interpolation import Interpolation
 
 
 """

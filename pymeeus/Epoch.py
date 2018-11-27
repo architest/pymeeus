@@ -22,8 +22,8 @@ import calendar
 import datetime
 from math import radians, cos
 
-from base import TOL, get_ordinal_suffix, iint
-from Angle import Angle
+from pymeeus.base import TOL, get_ordinal_suffix, iint
+from pymeeus.Angle import Angle
 
 
 """

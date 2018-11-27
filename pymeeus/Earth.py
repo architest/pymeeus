@@ -20,9 +20,10 @@
 
 from math import sqrt, radians, sin, cos, tan, atan
 
-from Angle import Angle
-from Epoch import Epoch
-from Coordinates import geometric_vsop_pos, apparent_vsop_pos, orbital_elements
+from pymeeus.Angle import Angle
+from pymeeus.Epoch import Epoch
+from pymeeus.Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
+        orbital_elements
 
 
 """

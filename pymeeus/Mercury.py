@@ -20,13 +20,13 @@
 
 from math import sin, cos, tan, acos, atan2, sqrt, radians
 
-from Angle import Angle
-from Epoch import Epoch, JDE2000
-from Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
+from pymeeus.Angle import Angle
+from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
         orbital_elements, nutation_longitude, true_obliquity, \
         ecliptical2equatorial
-from Earth import Earth
-from Sun import Sun
+from pymeeus.Earth import Earth
+from pymeeus.Sun import Sun
 
 
 """
