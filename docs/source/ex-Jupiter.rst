@@ -54,3 +54,35 @@ Print mean orbital elements for Jupiter at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: -85.745532
+
+Compute the time of the conjunction close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    conj = Jupiter.conjunction(epoch)
+
+    y, m, d = conj.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Conjunction date", date)
+
+    # Conjunction date: 1993/10/17.9636
+
+Compute the time of the opposition close to -6/9/1::
+
+    epoch = Epoch(-6, 9, 1.0)
+
+    oppo = Jupiter.opposition(epoch)
+
+    y, m, d = oppo.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Opposition date", date)
+
+    # Opposition date: -6/9/15.2865
