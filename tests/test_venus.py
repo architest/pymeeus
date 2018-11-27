@@ -29,7 +29,7 @@ def test_venus_geometric_heliocentric_position():
     """Tests the geometric_heliocentric_position() method of Venus class"""
 
     epoch = Epoch(1992, 12, 20.0)
-    lon, lat, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+    lon, lat, r = Venus.geometric_heliocentric_position(epoch, tofk5=False)
 
     assert abs(round(lon.to_positive(), 5) - 26.11412) < TOL, \
         "ERROR: 1st geometric_heliocentric_position() test doesn't match"

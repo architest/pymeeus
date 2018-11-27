@@ -3169,15 +3169,15 @@ class Earth(object):
         return dist, error
 
     @staticmethod
-    def geometric_heliocentric_position(epoch, toFK5=True):
+    def geometric_heliocentric_position(epoch, tofk5=True):
         """This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
-        :param toFK5: Whether or not the small correction to convert to the FK5
+        :param tofk5: Whether or not the small correction to convert to the FK5
             system will be applied or not
-        :type toFK5: bool
+        :type tofk5: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -3186,7 +3186,7 @@ class Earth(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> l, b, r = Earth.geometric_heliocentric_position(epoch, toFK5=False)
+        >>> l, b, r = Earth.geometric_heliocentric_position(epoch, tofk5=False)
         >>> print(round(l.to_positive(), 6))
         19.907297
         >>> print(b.dms_str(n_dec=3))
@@ -3200,7 +3200,7 @@ class Earth(object):
         # After many checks and tests, I came to the conclusion that the result
         # above is the right one, and Meeus' result is wrong
 
-        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
+        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, tofk5)
 
     @staticmethod
     def apparent_heliocentric_position(epoch, nutation=True):
@@ -3231,16 +3231,16 @@ class Earth(object):
         return apparent_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, nutation)
 
     @staticmethod
-    def geometric_heliocentric_position_J2000(epoch, toFK5=True):
+    def geometric_heliocentric_position_j2000(epoch, tofk5=True):
         """This method computes the geometric heliocentric position of the
         Earth for a given epoch, using the VSOP87 theory, referred to the
         equinox J2000.0.
 
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
-        :param toFK5: Whether or not the small correction to convert to the FK5
+        :param tofk5: Whether or not the small correction to convert to the FK5
             system will be applied or not
-        :type toFK5: bool
+        :type tofk5: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -3250,7 +3250,7 @@ class Earth(object):
         """
 
         return geometric_vsop_pos(
-            epoch, VSOP87_L_J2000, VSOP87_B_J2000, VSOP87_R, toFK5
+            epoch, VSOP87_L_J2000, VSOP87_B_J2000, VSOP87_R, tofk5
         )
 
     @staticmethod

@@ -4126,15 +4126,15 @@ class Uranus(object):
     """
 
     @staticmethod
-    def geometric_heliocentric_position(epoch, toFK5=True):
+    def geometric_heliocentric_position(epoch, tofk5=True):
         """This method computes the geometric heliocentric position of planet
         Uranus for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Uranus position, as an Epoch object
         :type epoch: :py:class:`Epoch`
-        :param toFK5: Whether or not the small correction to convert to the FK5
+        :param tofk5: Whether or not the small correction to convert to the FK5
             system will be applied or not
-        :type toFK5: bool
+        :type tofk5: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -4152,7 +4152,7 @@ class Uranus(object):
         19.86964
         """
 
-        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
+        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, tofk5)
 
     @staticmethod
     def apparent_heliocentric_position(epoch):
@@ -4271,9 +4271,9 @@ class Uranus(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
         # Compute the heliocentric position of Uranus
-        l, b, r = Uranus.geometric_heliocentric_position(epoch, toFK5=False)
+        l, b, r = Uranus.geometric_heliocentric_position(epoch, tofk5=False)
         # Compute the heliocentric position of the Earth
-        l0, b0, r0 = Earth.geometric_heliocentric_position(epoch, toFK5=False)
+        l0, b0, r0 = Earth.geometric_heliocentric_position(epoch, tofk5=False)
         # Convert to radians
         lr = l.rad()
         br = b.rad()
@@ -4288,7 +4288,7 @@ class Uranus(object):
         # Adjust the epoch for light-time
         epoch -= tau
         # Compute again Uranus coordinates with this correction
-        l, b, r = Uranus.geometric_heliocentric_position(epoch, toFK5=False)
+        l, b, r = Uranus.geometric_heliocentric_position(epoch, tofk5=False)
         # Compute second iteration
         lr = l.rad()
         br = b.rad()

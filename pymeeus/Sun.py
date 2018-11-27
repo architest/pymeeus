@@ -182,15 +182,15 @@ class Sun(object):
         return (alpha, delta, r)
 
     @staticmethod
-    def geometric_geocentric_position(epoch, toFK5=True):
+    def geometric_geocentric_position(epoch, tofk5=True):
         """This method computes the geometric geocentric position of the Sun
         for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Sun position, as an Epoch object
         :type epoch: :py:class:`Epoch`
-        :param toFK5: Whether or not the small correction to convert to the FK5
+        :param tofk5: Whether or not the small correction to convert to the FK5
             system will be applied or not
-        :type toFK5: bool
+        :type tofk5: bool
 
         :returns: A tuple with the geocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -199,7 +199,7 @@ class Sun(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+        >>> l, b, r = Sun.geometric_geocentric_position(epoch, tofk5=False)
         >>> print(round(l.to_positive(), 6))
         199.907297
         >>> print(b.dms_str(n_dec=3))
@@ -217,10 +217,10 @@ class Sun(object):
         # the abridged version in Meeus' book.
 
         # First check that input values are of correct types
-        if not isinstance(epoch, Epoch) and not isinstance(toFK5, bool):
+        if not isinstance(epoch, Epoch) and not isinstance(tofk5, bool):
             raise TypeError("Invalid input types")
         # Use Earth heliocentric position to compute Sun's geocentric position
-        lon, lat, r = Earth.geometric_heliocentric_position(epoch, toFK5)
+        lon, lat, r = Earth.geometric_heliocentric_position(epoch, tofk5)
         lon = lon.to_positive() + 180.0
         lat = -lat
         return lon, lat, r
@@ -317,7 +317,7 @@ class Sun(object):
         return x, y, z
 
     @staticmethod
-    def rectangular_coordinates_J2000(epoch):
+    def rectangular_coordinates_j2000(epoch):
         """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the standard equinox of
         J2000.0. The X axis is directed towards the vernal equinox (longitude
@@ -333,7 +333,7 @@ class Sun(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+        >>> x, y, z = Sun.rectangular_coordinates_j2000(epoch)
         >>> print(round(x, 8))
         -0.93740485
         >>> print(round(y, 8))
@@ -346,7 +346,7 @@ class Sun(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
         # Second, compute Earth heliocentric position referred to J2000.0
-        lon, lat, r = Earth.geometric_heliocentric_position_J2000(epoch)
+        lon, lat, r = Earth.geometric_heliocentric_position_j2000(epoch)
         # Third, convert from Earth's heliocentric to Sun's geocentric
         lon = lon.to_positive() + 180.0
         lat = -lat
@@ -359,7 +359,7 @@ class Sun(object):
         return x0, y0, z0
 
     @staticmethod
-    def rectangular_coordinates_B1950(epoch):
+    def rectangular_coordinates_b1950(epoch):
         """This method computes the rectangular geocentric equatorial
         coordinates (X, Y, Z) of the Sun, referred to the mean equinox of
         B1950.0. The X axis is directed towards the vernal equinox (longitude
@@ -375,7 +375,7 @@ class Sun(object):
         :raises: TypeError if input values are of wrong type.
 
         >>> epoch = Epoch(1992, 10, 13.0)
-        >>> x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+        >>> x, y, z = Sun.rectangular_coordinates_b1950(epoch)
         >>> print(round(x, 8))
         -0.94149557
         >>> print(round(y, 8))
@@ -388,7 +388,7 @@ class Sun(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
         # Second, compute Earth heliocentric position referred to J2000.0
-        lon, lat, r = Earth.geometric_heliocentric_position_J2000(epoch)
+        lon, lat, r = Earth.geometric_heliocentric_position_j2000(epoch)
         # Third, convert from Earth's heliocentric to Sun's geocentric
         lon = lon.to_positive() + 180.0
         lat = -lat
@@ -434,7 +434,7 @@ class Sun(object):
                 not isinstance(equinox_epoch, Epoch)):
             raise TypeError("Invalid input types")
         # Second, compute Sun's rectangular coordinates w.r.t. J2000.0
-        x0, y0, z0 = Sun.rectangular_coordinates_J2000(epoch)
+        x0, y0, z0 = Sun.rectangular_coordinates_j2000(epoch)
         # Third, computed auxiliary angles
         t = (equinox_epoch - JDE2000) / 36525.0
         tt = (epoch - equinox_epoch) / 36525.0
@@ -734,7 +734,7 @@ def main():
 
     # Let's compute Sun's postion, but more accurately
     epoch = Epoch(1992, 10, 13.0)
-    l, b, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+    l, b, r = Sun.geometric_geocentric_position(epoch, tofk5=False)
     print_me("Geometric Geocentric Longitude", round(l.to_positive(), 6))
     # 199.906016
     print_me("Geometric Geocentric Latitude", b.dms_str(n_dec=3))
@@ -765,7 +765,7 @@ def main():
     print("")
 
     # Now, compute rectangular coordinates w.r.t. standard equinox J2000.0
-    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+    x, y, z = Sun.rectangular_coordinates_j2000(epoch)
     print("Rectangular coordinates w.r.t. standard equinox J2000.0:")
     print_me("X", round(x, 8))  # -0.93740485
     print_me("Y", round(y, 8))  # -0.3131474
@@ -774,7 +774,7 @@ def main():
     print("")
 
     # Compute rectangular coordinates w.r.t. mean equinox of B1950.0
-    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+    x, y, z = Sun.rectangular_coordinates_b1950(epoch)
     print("Rectangular coordinates w.r.t. mean equinox of B1950.0:")
     print_me("X", round(x, 8))  # -0.94149557
     print_me("Y", round(y, 8))  # -0.30259922

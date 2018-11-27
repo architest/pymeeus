@@ -103,7 +103,7 @@ Now, compute rectangular coordinates w.r.t. standard equinox J2000.0::
 
     epoch = Epoch(1992, 10, 13.0)
 
-    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+    x, y, z = Sun.rectangular_coordinates_j2000(epoch)
 
     print_me("X", round(x, 8))
 
@@ -121,7 +121,7 @@ Compute rectangular coordinates w.r.t. mean equinox of B1950.0::
 
     epoch = Epoch(1992, 10, 13.0)
 
-    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+    x, y, z = Sun.rectangular_coordinates_b1950(epoch)
 
     print_me("X", round(x, 8))
 

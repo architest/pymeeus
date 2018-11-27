@@ -1825,15 +1825,15 @@ class Venus(object):
     """
 
     @staticmethod
-    def geometric_heliocentric_position(epoch, toFK5=True):
+    def geometric_heliocentric_position(epoch, tofk5=True):
         """This method computes the geometric heliocentric position of planet
         Venus for a given epoch, using the VSOP87 theory.
 
         :param epoch: Epoch to compute Venus position, as an Epoch object
         :type epoch: :py:class:`Epoch`
-        :param toFK5: Whether or not the small correction to convert to the FK5
+        :param tofk5: Whether or not the small correction to convert to the FK5
             system will be applied or not
-        :type toFK5: bool
+        :type tofk5: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
@@ -1842,7 +1842,7 @@ class Venus(object):
         :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 12, 20.0)
-        >>> l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        >>> l, b, r = Venus.geometric_heliocentric_position(epoch, tofk5=False)
         >>> print(round(l, 5))
         26.11412
         >>> print(round(b, 4))
@@ -1851,7 +1851,7 @@ class Venus(object):
         0.724602
         """
 
-        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, toFK5)
+        return geometric_vsop_pos(epoch, VSOP87_L, VSOP87_B, VSOP87_R, tofk5)
 
     @staticmethod
     def apparent_heliocentric_position(epoch):
@@ -1970,9 +1970,9 @@ class Venus(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
         # Compute the heliocentric position of Venus
-        l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        l, b, r = Venus.geometric_heliocentric_position(epoch, tofk5=False)
         # Compute the heliocentric position of the Earth
-        l0, b0, r0 = Earth.geometric_heliocentric_position(epoch, toFK5=False)
+        l0, b0, r0 = Earth.geometric_heliocentric_position(epoch, tofk5=False)
         # Convert to radians
         lr = l.rad()
         br = b.rad()
@@ -1987,7 +1987,7 @@ class Venus(object):
         # Adjust the epoch for light-time
         epoch -= tau
         # Compute again Venus coordinates with this correction
-        l, b, r = Venus.geometric_heliocentric_position(epoch, toFK5=False)
+        l, b, r = Venus.geometric_heliocentric_position(epoch, tofk5=False)
         # Compute second iteration
         lr = l.rad()
         br = b.rad()

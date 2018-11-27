@@ -314,7 +314,7 @@ class Minor(object):
         y = rr * bm * sin(bb + wr + vr)
         z = rr * cm * sin(cc + wr + vr)
         # Now let's compute Sun's rectangular coordinates
-        xs, ys, zs = Sun.rectangular_coordinates_J2000(epoch)
+        xs, ys, zs = Sun.rectangular_coordinates_j2000(epoch)
         xi = x + xs
         eta = y + ys
         zeta = z + zs

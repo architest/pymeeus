@@ -66,7 +66,7 @@ def test_sun_geometric_geocentric_position():
     """Tests the geometric_geocentric_position() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
-    lon, lat, r = Sun.geometric_geocentric_position(epoch, toFK5=False)
+    lon, lat, r = Sun.geometric_geocentric_position(epoch, tofk5=False)
 
     assert abs(round(lon.to_positive(), 6) - 199.907297) < TOL, \
         "ERROR: 1st geometric_geocentric_position() test, 'lon' doesn't match"
@@ -110,36 +110,36 @@ def test_rectangular_coordinates_mean_equinox():
         "ERROR: 3rd rectangular_coordinates_mean_equinox(), 'z' doesn't match"
 
 
-def test_rectangular_coordinates_J2000():
-    """Tests rectangular_coordinates_J2000() method of Sun class"""
+def test_rectangular_coordinates_j2000():
+    """Tests rectangular_coordinates_j2000() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
-    x, y, z = Sun.rectangular_coordinates_J2000(epoch)
+    x, y, z = Sun.rectangular_coordinates_j2000(epoch)
 
     assert abs(round(x, 8) - (-0.93740485)) < TOL, \
-        "ERROR: 1st rectangular_coordinates_J2000() test, 'x' doesn't match"
+        "ERROR: 1st rectangular_coordinates_j2000() test, 'x' doesn't match"
 
     assert abs(round(y, 8) - (-0.3131474)) < TOL, \
-        "ERROR: 2nd rectangular_coordinates_J2000() test, 'y' doesn't match"
+        "ERROR: 2nd rectangular_coordinates_j2000() test, 'y' doesn't match"
 
     assert abs(round(z, 8) - (-0.13577045)) < TOL, \
-        "ERROR: 3rd rectangular_coordinates_J2000() test, 'z' doesn't match"
+        "ERROR: 3rd rectangular_coordinates_j2000() test, 'z' doesn't match"
 
 
-def test_rectangular_coordinates_B1950():
-    """Tests rectangular_coordinates_B1950() method of Sun class"""
+def test_rectangular_coordinates_b1950():
+    """Tests rectangular_coordinates_b1950() method of Sun class"""
 
     epoch = Epoch(1992, 10, 13.0)
-    x, y, z = Sun.rectangular_coordinates_B1950(epoch)
+    x, y, z = Sun.rectangular_coordinates_b1950(epoch)
 
     assert abs(round(x, 8) - (-0.94149557)) < TOL, \
-        "ERROR: 1st rectangular_coordinates_B1950() test, 'x' doesn't match"
+        "ERROR: 1st rectangular_coordinates_b1950() test, 'x' doesn't match"
 
     assert abs(round(y, 8) - (-0.30259922)) < TOL, \
-        "ERROR: 2nd rectangular_coordinates_B1950() test, 'y' doesn't match"
+        "ERROR: 2nd rectangular_coordinates_b1950() test, 'y' doesn't match"
 
     assert abs(round(z, 8) - (-0.11578695)) < TOL, \
-        "ERROR: 3rd rectangular_coordinates_B1950() test, 'z' doesn't match"
+        "ERROR: 3rd rectangular_coordinates_b1950() test, 'z' doesn't match"
 
 
 def test_rectangular_coordinates_equinox():
