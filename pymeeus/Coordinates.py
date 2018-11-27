@@ -241,9 +241,9 @@ def mean_obliquity(*args, **kwargs):
     then that value will be used for the UTC->TAI conversion, and the internal
     leap seconds table will be bypassed.
 
-    :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+    :param args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
-    :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+    :type args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
     :param utc: Whether the provided epoch is a civil time (UTC) or TT
     :type utc: bool
@@ -309,9 +309,9 @@ def true_obliquity(*args, **kwargs):
     then that value will be used for the UTC->TAI conversion, and the internal
     leap seconds table will be bypassed.
 
-    :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+    :param args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
-    :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+    :type args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
     :param utc: Whether the provided epoch is a civil time (UTC) or TT
     :type utc: bool
@@ -349,9 +349,9 @@ def nutation_longitude(*args, **kwargs):
     then that value will be used for the UTC->TAI conversion, and the internal
     leap seconds table will be bypassed.
 
-    :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+    :param args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
-    :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+    :type args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
     :param utc: Whether the provided epoch is a civil time (UTC) or TT
     :type utc: bool
@@ -423,9 +423,9 @@ def nutation_obliquity(*args, **kwargs):
     then that value will be used for the UTC->TAI conversion, and the internal
     leap seconds table will be bypassed.
 
-    :param \*args: Either :class:`Epoch`, date, datetime or year, month,
+    :param args: Either :class:`Epoch`, date, datetime or year, month,
         day values, by themselves or inside a tuple or list
-    :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+    :type args: int, float, :py:class:`Epoch`, datetime, date, tuple,
         list
     :param utc: Whether the provided epoch is a civil time (UTC) or TT
     :type utc: bool

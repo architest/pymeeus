@@ -76,8 +76,8 @@ class CurveFitting(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values, or another CurveFitting object.
-        :type \*args: int, float, list, tuple, :py:class:`Angle`,
+        :param args: Input tabular values, or another CurveFitting object.
+        :type args: int, float, list, tuple, :py:class:`Angle`,
            :py:class:`CurveFitting`
 
         :returns: CurveFitting object.
@@ -132,8 +132,8 @@ class CurveFitting(object):
         order to carry out any interpolation. If only one value is provided, a
         ValueError exception will be raised.
 
-        :param \*args: Input tabular values, or another CurveFitting object.
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
+        :param args: Input tabular values, or another CurveFitting object.
+        :type args: int, float, list, tuple, :py:class:`Angle`
 
         :returns: None.
         :rtype: None

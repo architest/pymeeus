@@ -62,8 +62,8 @@ class Angle(object):
         If **ra=True** is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
+        :param args: Input angle, in decimal or sexagesimal format, or Angle
+        :type args: int, float, list, tuple, :py:class:`Angle`
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
@@ -281,8 +281,8 @@ class Angle(object):
         If **ra=True** is passed, then the input value is converted from Right
         Ascension to degrees
 
-        :param \*args: Input angle, in decimal or sexagesimal format, or Angle
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
+        :param args: Input angle, in decimal or sexagesimal format, or Angle
+        :type args: int, float, list, tuple, :py:class:`Angle`
         :param radians: If True, input angle is in radians. False by default.
         :type radians: bool
         :param ra: If True, input angle is in Right Ascension. False by default
@@ -400,8 +400,8 @@ class Angle(object):
         Ascensions can be given as separate hours, minutes, seconds values, or
         as tuples or lists.
 
-        :param \*args: Input Right Ascension, in decimal or sexagesimal format.
-        :type \*args: int, float, list, tuple
+        :param args: Input Right Ascension, in decimal or sexagesimal format.
+        :type args: int, float, list, tuple
 
         :returns: None.
         :rtype: None

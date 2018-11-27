@@ -173,10 +173,10 @@ class Epoch(object):
         value will be used for the UTC->TAI conversion, and the internal leap
         seconds table will be bypassed.
 
-        :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
+        :param args: Either JDE, Epoch, date, datetime or year, month, day,
            hours, minutes, seconds values, by themselves or inside a tuple or
            list
-        :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
+        :type args: int, float, :py:class:`Epoch`, tuple, list, date,
            datetime
         :param utc: Whether the provided epoch is a civil time (UTC)
         :type utc: bool
@@ -228,10 +228,10 @@ class Epoch(object):
         .. note:: The UTC to TT correction is only carried out for dates after
            January 1st, 1972.
 
-        :param \*args: Either JDE, Epoch, date, datetime or year, month, day,
+        :param args: Either JDE, Epoch, date, datetime or year, month, day,
            hours, minutes, seconds values, by themselves or inside a tuple or
            list
-        :type \*args: int, float, :py:class:`Epoch`, tuple, list, date,
+        :type args: int, float, :py:class:`Epoch`, tuple, list, date,
            datetime
         :param utc: Whether the provided epoch is a civil time (UTC)
         :type utc: bool
@@ -389,8 +389,8 @@ class Epoch(object):
         It returns a tuple containing those values separately, assigning zeros
         to those arguments which were not provided.
 
-        :param \*args: Year, month, day, hours, minutes, seconds values.
-        :type \*args: int, float
+        :param args: Year, month, day, hours, minutes, seconds values.
+        :type args: int, float
 
         :returns: Tuple with year, month, day, hours, minutes, seconds values.
         :rtype: tuple
@@ -458,9 +458,9 @@ class Epoch(object):
         is set to zero, then the UTC to TT correction is disabled, and it is
         supposed that the input data is already in TT scale.
 
-        :param \*args: Either Epoch, date, datetime or year, month, day values,
+        :param args: Either Epoch, date, datetime or year, month, day values,
             by themselves or inside a tuple or list
-        :type \*args: int, float, :py:class:`Epoch`, datetime, date, tuple,
+        :type args: int, float, :py:class:`Epoch`, datetime, date, tuple,
             list
         :param leap_seconds: If different from zero, this is the value to be
            used in the UTC->TAI conversion. If equals to zero, conversion is

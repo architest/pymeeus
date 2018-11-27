@@ -86,8 +86,8 @@ class Interpolation(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values, or another Interpolation object.
-        :type \*args: int, float, list, tuple, :py:class:`Angle`,
+        :param args: Input tabular values, or another Interpolation object.
+        :type args: int, float, list, tuple, :py:class:`Angle`,
            :py:class:`Interpolation`
 
         :returns: Interpolation object.
@@ -166,8 +166,8 @@ class Interpolation(object):
         order to carry out any interpolation. If only one value pair is
         provided, a ValueError exception will be raised.
 
-        :param \*args: Input tabular values, or another Interpolation object.
-        :type \*args: int, float, list, tuple, :py:class:`Angle`
+        :param args: Input tabular values, or another Interpolation object.
+        :type args: int, float, list, tuple, :py:class:`Angle`
 
         :returns: None.
         :rtype: None
