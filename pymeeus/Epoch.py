@@ -22,7 +22,7 @@ import calendar
 import datetime
 from math import radians, cos
 
-from base import TOL, get_ordinal_suffix, INT
+from base import TOL, get_ordinal_suffix, iint
 from Angle import Angle
 
 
@@ -360,12 +360,12 @@ class Epoch(object):
         if m <= 2:
             y -= 1
             m += 12
-        a = INT(y / 100.0)
+        a = iint(y / 100.0)
         b = 0.0
-        if not Epoch.is_julian(y, m, INT(d)):
-            b = 2.0 - a + INT(a / 4.0)
-        jde = (INT(365.25 * (y + 4716.0)) +
-               INT(30.6001 * (m + 1.0)) + d + b - 1524.5)
+        if not Epoch.is_julian(y, m, iint(d)):
+            b = 2.0 - a + iint(a / 4.0)
+        jde = (iint(365.25 * (y + 4716.0)) +
+               iint(30.6001 * (m + 1.0)) + d + b - 1524.5)
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
         # In this case, UTC to TT correction is applied automatically
@@ -666,7 +666,7 @@ class Epoch(object):
         if isinstance(year, (int, float)):
             # Mind the difference between Julian and Gregorian calendars
             if year >= 1582:
-                year = INT(year)
+                year = iint(year)
                 return calendar.isleap(year)
             else:
                 return (abs(year) % 4) == 0
@@ -739,8 +739,8 @@ class Epoch(object):
             doy = d.timetuple().tm_yday
         else:
             k = 2 if Epoch.is_leap(yyyy) else 1
-            doy = (INT((275.0 * mm) / 9.0) -
-                   k * INT((mm + 9.0) / 12.0) + day - 30.0)
+            doy = (iint((275.0 * mm) / 9.0) -
+                   k * iint((mm + 9.0) / 12.0) + day - 30.0)
         return float(doy + frac)
 
     @staticmethod
@@ -807,9 +807,9 @@ class Epoch(object):
                 if doy < 32:
                     m = 1
                 else:
-                    m = INT((9.0 * (k + doy)) / 275.0 + 0.98)
-                d = (doy - INT((275.0 * m) / 9.0) +
-                     k * INT((m + 9.0) / 12.0) + 30)
+                    m = iint((9.0 * (k + doy)) / 275.0 + 0.98)
+                d = (doy - iint((275.0 * m) / 9.0) +
+                     k * iint((m + 9.0) / 12.0) + 30)
                 return year, int(m), d + frac
         else:
             raise ValueError("Invalid input values")
@@ -870,7 +870,7 @@ class Epoch(object):
         list_years = sorted(LEAP_TABLE.keys())
         lyear = list_years[-1]
         lseconds = LEAP_TABLE[lyear]
-        year = INT(lyear)
+        year = iint(lyear)
         # So far, leap seconds are added either on June 30th or December 31th
         if lyear % 1 == 0.0:
             year -= 1
@@ -940,18 +940,18 @@ class Epoch(object):
         if year >= 1583:
             # In this case, we are using the Gregorian calendar
             a = year % 19
-            b = INT(year / 100.0)
+            b = iint(year / 100.0)
             c = year % 100
-            d = INT(b / 4.0)
+            d = iint(b / 4.0)
             e = b % 4
-            f = INT((b + 8.0) / 25.0)
-            g = INT((b - f + 1.0) / 3.0)
+            f = iint((b + 8.0) / 25.0)
+            g = iint((b - f + 1.0) / 3.0)
             h = (19 * a + b - d - g + 15) % 30
-            i = INT(c / 4.0)
+            i = iint(c / 4.0)
             k = c % 4
             ll = (32 + 2 * (e + i) - h - k) % 7
-            m = INT((a + 11 * h + 22 * ll) / 451.0)
-            n = INT((h + ll - 7 * m + 114) / 31.0)
+            m = iint((a + 11 * h + 22 * ll) / 451.0)
+            n = iint((h + ll - 7 * m + 114) / 31.0)
             p = (h + ll - 7 * m + 114) % 31
             return (n, p + 1)
         else:
@@ -961,7 +961,7 @@ class Epoch(object):
             c = year % 19
             d = (19 * c + 15) % 30
             e = (2 * a + 4 * b - d + 34) % 7
-            f = INT((d + e + 114) / 31.0)
+            f = iint((d + e + 114) / 31.0)
             g = (d + e + 114) % 31
             return (f, g + 1)
 
@@ -985,23 +985,23 @@ class Epoch(object):
         # This algorithm is described in pages 71-73 of Meeus book
         if not isinstance(year, (int, float)):
             raise TypeError("Invalid input type")
-        year = INT(year)
-        c = INT(year / 100.0)
-        s = 0 if year < 1583 else INT((3.0 * c - 5.0) / 4.0)
+        year = iint(year)
+        c = iint(year / 100.0)
+        s = 0 if year < 1583 else iint((3.0 * c - 5.0) / 4.0)
         a = (12 * (year + 1)) % 19
         b = year % 4
         q = (-1.904412361576 + 1.554241796621 * a +
              0.25 * b - 0.003177794022 * year + s)
-        j = (INT(q) + 3 * year + 5 * b + 2 + s) % 7
-        r = q - INT(q)
+        j = (iint(q) + 3 * year + 5 * b + 2 + s) % 7
+        r = q - iint(q)
         if j == 2 or j == 4 or j == 6:
-            d = INT(q) + 23
+            d = iint(q) + 23
         elif j == 1 and a > 6 and r > 0.632870370:
-            d = INT(q) + 24
+            d = iint(q) + 24
         elif j == 0 and a > 11 and r > 0.897723765:
-            d = INT(q) + 23
+            d = iint(q) + 23
         else:
-            d = INT(q) + 22
+            d = iint(q) + 22
         if d > 31:
             return (4, d - 31)
         else:
@@ -1041,19 +1041,19 @@ class Epoch(object):
             raise ValueError("Invalid input data")
         # This algorithm is described in pages 73-75 of Meeus book
         # Note: Ramadan is month Nr. 9
-        h = INT(year)
-        m = INT(month)
-        d = INT(day)
-        n = d + INT(29.5001 * (m - 1) + 0.99)
-        q = INT(h / 30.0)
+        h = iint(year)
+        m = iint(month)
+        d = iint(day)
+        n = d + iint(29.5001 * (m - 1) + 0.99)
+        q = iint(h / 30.0)
         r = h % 30
-        a = INT((11.0 * r + 3.0) / 30.0)
+        a = iint((11.0 * r + 3.0) / 30.0)
         w = 404 * q + 354 * r + 208 + a
-        q1 = INT(w / 1461.0)
+        q1 = iint(w / 1461.0)
         q2 = w % 1461
-        g = 621 + 4 * INT(7.0 * q + q1)
-        k = INT(q2 / 365.2422)
-        e = INT(365.2422 * k)
+        g = 621 + 4 * iint(7.0 * q + q1)
+        k = iint(q2 / 365.2422)
+        e = iint(365.2422 * k)
         j = q2 - e + n - 1
         x = g + k
         if j > 366 and x % 4 == 0:
@@ -1065,14 +1065,14 @@ class Epoch(object):
 
         # Check if date is in Gregorian calendar. '277' is DOY of October 4th
         if (x > 1583) or (x == 1582 and j > 277):
-            jd = INT(365.25 * (x - 1.0)) + 1721423 + j
-            alpha = INT((jd - 1867216.25) / 36524.25)
-            beta = jd if jd < 2299161 else (jd + 1 + alpha - INT(alpha / 4.0))
+            jd = iint(365.25 * (x - 1.0)) + 1721423 + j
+            alpha = iint((jd - 1867216.25) / 36524.25)
+            beta = jd if jd < 2299161 else (jd + 1 + alpha - iint(alpha / 4.0))
             b = beta + 1524
-            c = INT((b - 122.1) / 365.25)
-            d = INT(365.25 * c)
-            e = INT((b - d) / 30.6001)
-            day = b - d - INT(30.6001 * e)
+            c = iint((b - 122.1) / 365.25)
+            d = iint(365.25 * c)
+            e = iint((b - d) / 30.6001)
+            day = b - d - iint(30.6001 * e)
             month = (e - 1) if e < 14 else (e - 13)
             year = (c - 4716) if month > 2 else (c - 4715)
             return year, month, day
@@ -1110,36 +1110,36 @@ class Epoch(object):
         if day < 1 or day > 31 or month < 1 or month > 12 or year < -4712:
             raise ValueError("Invalid input data")
         # This algorithm is described in pages 75-76 of Meeus book
-        x = INT(year)
-        m = INT(month)
-        d = INT(day)
+        x = iint(year)
+        m = iint(month)
+        d = iint(day)
         if m < 3:
             x -= 1
             m += 12
-        alpha = INT(x / 100.0)
-        beta = 2 - alpha + INT(alpha / 4.0)
-        b = INT(365.25 * x) + INT(30.6001 * (m + 1.0)) + d + 1722519 + beta
-        c = INT((b - 122.1) / 365.25)
-        d = INT(365.25 * c)
-        e = INT((b - d) / 30.6001)
-        d = b - d - INT(30.6001 * e)
+        alpha = iint(x / 100.0)
+        beta = 2 - alpha + iint(alpha / 4.0)
+        b = iint(365.25 * x) + iint(30.6001 * (m + 1.0)) + d + 1722519 + beta
+        c = iint((b - 122.1) / 365.25)
+        d = iint(365.25 * c)
+        e = iint((b - d) / 30.6001)
+        d = b - d - iint(30.6001 * e)
         m = (e - 1) if e < 14 else (e - 13)
         x = (c - 4716) if month > 2 else (c - 4715)
         w = 1 if x % 4 == 0 else 2
-        n = INT((275.0 * m) / 9.0) - w * INT((m + 9.0) / 12.0) + d - 30
+        n = iint((275.0 * m) / 9.0) - w * iint((m + 9.0) / 12.0) + d - 30
         a = x - 623
-        b = INT(a / 4.0)
+        b = iint(a / 4.0)
         c = a % 4
         c1 = 365.2501 * c
-        c2 = INT(c1)
+        c2 = iint(c1)
         if c1 - c2 > 0.5:
             c2 += 1
         dp = 1461 * b + 170 + c2
-        q = INT(dp / 10631.0)
+        q = iint(dp / 10631.0)
         r = dp % 10631
-        j = INT(r / 354.0)
+        j = iint(r / 354.0)
         k = r % 354
-        o = INT((11.0 * j + 14.0) / 30.0)
+        o = iint((11.0 * j + 14.0) / 30.0)
         h = 30 * q + j + 1
         jj = k - o + n - 1
         # jj is the number of the day in the moslem year h. If jj > 354 we need
@@ -1161,9 +1161,9 @@ class Epoch(object):
             m = 12
             d = 30
         else:
-            s = INT((jj - 1.0) / 29.5)
+            s = iint((jj - 1.0) / 29.5)
             m = 1 + s
-            d = INT(jj - 29.5 * s)
+            d = iint(jj - 29.5 * s)
         return h, m, d
 
     def __str__(self):
@@ -1228,18 +1228,18 @@ class Epoch(object):
         """
 
         jd = self._jde + 0.5
-        z = INT(jd)
+        z = iint(jd)
         f = jd % 1
         if z < 2299161:
             a = z
         else:
-            alpha = INT((z - 1867216.25) / 36524.25)
-            a = z + 1 + alpha - INT(alpha / 4.0)
+            alpha = iint((z - 1867216.25) / 36524.25)
+            a = z + 1 + alpha - iint(alpha / 4.0)
         b = a + 1524
-        c = INT((b - 122.1) / 365.25)
-        d = INT(365.25 * c)
-        e = INT((b - d) / 30.6001)
-        day = b - d - INT(30.6001 * e) + f
+        c = iint((b - 122.1) / 365.25)
+        d = iint(365.25 * c)
+        e = iint((b - d) / 30.6001)
+        day = b - d - iint(30.6001 * e) + f
         if e < 14:
             month = e - 1
         elif e == 14 or e == 15:
@@ -1516,8 +1516,8 @@ class Epoch(object):
         'Sunday'
         """
 
-        jd = INT(self._jde - 0.5) + 2.0
-        doy = INT(jd % 7)
+        jd = iint(self._jde - 0.5) + 2.0
+        doy = iint(jd % 7)
         if not as_string:
             return doy
         else:
@@ -1555,7 +1555,7 @@ class Epoch(object):
         0.357605204
         """
 
-        jd0 = INT(self()) + 0.5 if self() % 1 >= 0.5 else INT(self()) - 0.5
+        jd0 = iint(self()) + 0.5 if self() % 1 >= 0.5 else iint(self()) - 0.5
         t = (jd0 - 2451545.0) / 36525.0
         theta0 = 6.0 / DAY2HOURS + 41.0 / DAY2MIN + 50.54841 / DAY2SEC
         s = t * (8640184.812866 + t * (0.093104 - 0.0000062 * t))
@@ -2064,7 +2064,7 @@ def main():
     e = Epoch(1987, 4, 11)
     st2 = round(e.mean_sidereal_time(), 9)
     ds = (st2 - st1) * DAY2MIN
-    msg = "{}m {}s".format(INT(ds), (ds % 1) * 60.0)
+    msg = "{}m {}s".format(iint(ds), (ds % 1) * 60.0)
     print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
 
     print("")

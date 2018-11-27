@@ -91,7 +91,7 @@ def get_ordinal_suffix(ordinal):
             return "th"
 
 
-def INT(number):
+def iint(number):
     """This method behaves in the same way as the **INT()** function described
     by Meeus in his book: Greatest integer which is not greater than number.
 
@@ -102,11 +102,11 @@ def INT(number):
     :rtype: int
     :raises: TypeError if input type is invalid.
 
-    >>> INT(19)
+    >>> iint(19)
     19
-    >>> INT(19.95)
+    >>> iint(19.95)
     19
-    >>> INT(-2.4)
+    >>> iint(-2.4)
     -3
     """
 

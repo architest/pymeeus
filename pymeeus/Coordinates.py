@@ -21,7 +21,7 @@
 from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, \
         copysign
 
-from base import TOL, INT
+from base import TOL, iint
 from Angle import Angle
 from Epoch import Epoch, JDE2000
 from Interpolation import Interpolation
@@ -2808,7 +2808,7 @@ def kepler_equation(eccentricity, mean_anomaly):
     ecc = eccentricity
     f = copysign(1.0, m)
     m = abs(m) / (2.0 * pi)
-    m = (m - INT(m)) * 2.0 * pi * f
+    m = (m - iint(m)) * 2.0 * pi * f
     if m < 0.0:
         m += 2.0 * pi
     f = 1.0
