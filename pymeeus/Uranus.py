@@ -4492,7 +4492,7 @@ def main():
     date = "{}/{}/{}".format(y, m, d)
     print_me("Conjunction date", date)
 
-    # Compute the time of the opposition close to -6/9/1
+    # Compute the time of the opposition close to 1780/12/1
     epoch = Epoch(1780, 12, 1.0)
     oppo = Uranus.opposition(epoch)
     y, m, d = oppo.get_date()
