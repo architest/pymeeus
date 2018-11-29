@@ -2279,6 +2279,116 @@ class Neptune(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def conjunction(epoch):
+        """This method computes the time of the conjunction closest to the
+        given epoch.
+
+        :param epoch: Epoch close to the desired conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conj = Neptune.conjunction(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        1994
+        >>> print(m)
+        1
+        >>> print(round(d, 4))
+        11.3057
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Neptune's conjunction
+        a = 2451569.379
+        b = 367.486703
+        m0 = 21.5569
+        m1 = 2.194998
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute a couple auxiliary angles
+        ee = 207.83 + 8.51 * t
+        gg = 276.74 + 209.98 * t
+        # Convert to radians
+        ee = Angle(ee).rad()
+        gg = Angle(gg).rad()
+        corr = (0.0168 +
+                sin(m) * (-2.5606 + t * (0.0088 + t * 0.00002)) +
+                cos(m) * (-0.8611 + t * (-0.0037 + t * 0.00002)) +
+                sin(2.0 * m) * (0.0118 + t * (-0.0004 + t * 0.00001)) +
+                cos(2.0 * m) * (0.0307 - t * 0.0003) +
+                cos(ee) * (-0.5964) +
+                cos(gg) * (0.0728))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def opposition(epoch):
+        """This method computes the time of the opposition closest to the given
+        epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1846, 8, 1)
+        >>> oppo = Neptune.opposition(epoch)
+        >>> y, m, d = oppo.get_date()
+        >>> print(y)
+        1846
+        >>> print(m)
+        8
+        >>> print(round(d, 4))
+        20.1623
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Neptune's opposition
+        a = 2451753.122
+        b = 367.486703
+        m0 = 202.6544
+        m1 = 2.194998
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute a couple auxiliary angles
+        ee = 207.83 + 8.51 * t
+        gg = 276.74 + 209.98 * t
+        # Convert to radians
+        ee = Angle(ee).rad()
+        gg = Angle(gg).rad()
+        corr = (-0.014 + t * t * 0.00001 +
+                sin(m) * (-1.3486 + t * (0.001 + t * 0.00001)) +
+                cos(m) * (0.8597 + t * 0.0037) +
+                sin(2.0 * m) * (-0.0082 + t * (-0.0002 + t * 0.00001)) +
+                cos(2.0 * m) * (0.0037 - t * 0.0003) +
+                cos(ee) * (-0.5964) +
+                cos(gg) * (0.0728))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
