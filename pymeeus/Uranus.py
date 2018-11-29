@@ -4339,6 +4339,118 @@ class Uranus(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def conjunction(epoch):
+        """This method computes the time of the conjunction closest to the
+        given epoch.
+
+        :param epoch: Epoch close to the desired conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conj = Uranus.conjunction(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        1994
+        >>> print(m)
+        1
+        >>> print(round(d, 4))
+        12.7365
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Uranus' conjunction
+        a = 2451579.489
+        b = 369.656035
+        m0 = 31.5219
+        m1 = 4.333093
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute a couple auxiliary angles
+        ee = 207.83 + 8.51 * t
+        ff = 108.84 + 419.96 * t
+        # Convert to radians
+        ee = Angle(ee).rad()
+        ff = Angle(ff).rad()
+        corr = (-0.0859 + t * 0.0003 +
+                sin(m) * (-3.8179 + t * (-0.0148 + t * 0.00003)) +
+                cos(m) * (5.1228 + t * (-0.0105 - t * 0.00002)) +
+                sin(2.0 * m) * (-0.0803 + t * 0.0011) +
+                cos(2.0 * m) * (-0.1905 - t * 0.0006) +
+                sin(3.0 * m) * (0.0088 + t * 0.0001) +
+                cos(ee) * (0.885) +
+                cos(ff) * (0.2153))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def opposition(epoch):
+        """This method computes the time of the opposition closest to the given
+        epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1780, 12, 1.0)
+        >>> oppo = Uranus.opposition(epoch)
+        >>> y, m, d = oppo.get_date()
+        >>> print(y)
+        1780
+        >>> print(m)
+        12
+        >>> print(round(d, 4))
+        17.5998
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Uranus' opposition
+        a = 2451764.317
+        b = 369.656035
+        m0 = 213.6884
+        m1 = 4.333093
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute a couple auxiliary angles
+        ee = 207.83 + 8.51 * t
+        ff = 108.84 + 419.96 * t
+        # Convert to radians
+        ee = Angle(ee).rad()
+        ff = Angle(ff).rad()
+        corr = (0.0844 - t * 0.0006 +
+                sin(m) * (-0.1048 + t * 0.0246) +
+                cos(m) * (-5.1221 + t * (0.0104 + t * 0.00003)) +
+                sin(2.0 * m) * (-0.1428 + t * 0.0005) +
+                cos(2.0 * m) * (-0.0148 - t * 0.0013) +
+                cos(3.0 * m) * (0.0055) +
+                cos(ee) * (0.885) +
+                cos(ff) * (0.2153))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
