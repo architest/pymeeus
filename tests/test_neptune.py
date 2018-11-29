@@ -89,3 +89,37 @@ def test_neptune_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - (-83.6046)) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_neptune_conjunction():
+    """Tests the conjunction() method of Neptune class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Neptune.conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1994) < TOL, \
+        "ERROR: 1st conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 1) < TOL, \
+        "ERROR: 2nd conjunction() test doesn't match"
+
+    assert abs(round(d, 4) - 11.3057) < TOL, \
+        "ERROR: 3rd conjunction() test doesn't match"
+
+
+def test_neptune_opposition():
+    """Tests the opposition() method of Neptune class"""
+
+    epoch = Epoch(1846, 8, 1)
+    oppo = Neptune.opposition(epoch)
+    y, m, d = oppo.get_date()
+
+    assert abs(round(y, 0) - 1846) < TOL, \
+        "ERROR: 1st opposition() test doesn't match"
+
+    assert abs(round(m, 0) - 8) < TOL, \
+        "ERROR: 2nd opposition() test doesn't match"
+
+    assert abs(round(d, 4) - 20.1623) < TOL, \
+        "ERROR: 3rd opposition() test doesn't match"
