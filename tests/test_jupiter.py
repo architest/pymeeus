@@ -108,7 +108,7 @@ def test_jupiter_conjunction():
         "ERROR: 3rd conjunction() test doesn't match"
 
 
-def test_jupiter_superior_conjunction():
+def test_jupiter_opposition():
     """Tests the opposition() method of Jupiter class"""
 
     epoch = Epoch(-6, 9, 1.0)
