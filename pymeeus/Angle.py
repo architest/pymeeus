@@ -20,7 +20,7 @@
 
 from math import pi, degrees, radians
 
-from base import TOL
+from pymeeus.base import TOL
 
 
 """
