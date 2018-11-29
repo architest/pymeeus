@@ -22,9 +22,9 @@ from math import sqrt, radians, sin, cos, tan, atan
 
 from Angle import Angle
 from Epoch import Epoch
-from Coordinates import geometric_vsop_pos, apparent_vsop_pos, \
-        orbital_elements
-
+from Coordinates import (
+    geometric_vsop_pos, apparent_vsop_pos, orbital_elements
+)
 
 """
 .. module:: Earth

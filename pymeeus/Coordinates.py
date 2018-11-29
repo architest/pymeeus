@@ -18,9 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, \
-        copysign
-
+from math import (
+    sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, copysign
+)
 from base import TOL, iint
 from Angle import Angle
 from Epoch import Epoch, JDE2000
