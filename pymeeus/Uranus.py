@@ -4482,6 +4482,24 @@ def main():
     print_me("Longitude of the ascending node", round(ome, 5))  # 74.34776
     print_me("Argument of the perihelion", round(arg, 6))  # 99.630865
 
+    print("")
+
+    # Compute the time of the conjunction close to 1993/10/1
+    epoch = Epoch(1993, 10, 1.0)
+    conj = Uranus.conjunction(epoch)
+    y, m, d = conj.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Conjunction date", date)
+
+    # Compute the time of the opposition close to -6/9/1
+    epoch = Epoch(1780, 12, 1.0)
+    oppo = Uranus.opposition(epoch)
+    y, m, d = oppo.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Opposition date", date)
+
 
 if __name__ == "__main__":
 

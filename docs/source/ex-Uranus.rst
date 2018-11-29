@@ -54,3 +54,35 @@ Print mean orbital elements for Uranus at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: 99.630865
+
+Compute the time of the conjunction close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    conj = Uranus.conjunction(epoch)
+
+    y, m, d = conj.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Conjunction date", date)
+
+    # Conjunction date: 1994/1/12.7365
+
+Compute the time of the opposition close to 1780/12/1::
+
+    epoch = Epoch(1780, 12, 1.0)
+
+    oppo = Uranus.opposition(epoch)
+
+    y, m, d = oppo.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Opposition date", date)
+
+    # Opposition date: 1780/12/17.5998
