@@ -6115,6 +6115,140 @@ class Saturn(object):
         elon = Angle(elon, radians=True)
         return ra, dec, elon
 
+    @staticmethod
+    def conjunction(epoch):
+        """This method computes the time of the conjunction closest to the
+        given epoch.
+
+        :param epoch: Epoch close to the desired conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> conj = Saturn.conjunction(epoch)
+        >>> y, m, d = conj.get_date()
+        >>> print(y)
+        1994
+        >>> print(m)
+        2
+        >>> print(round(d, 4))
+        21.7347
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Saturn's conjunction
+        a = 2451681.124
+        b = 378.091904
+        m0 = 131.6934
+        m1 = 12.647487
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute auxiliary angles
+        aa = 82.74 + 40.76 * t
+        bb = 29.86 + 1181.36 * t
+        cc = 14.13 + 590.68 * t
+        dd = 220.02 + 1262.87 * t
+        # Convert to radians
+        aa = Angle(aa).rad()
+        bb = Angle(bb).rad()
+        cc = Angle(cc).rad()
+        dd = Angle(dd).rad()
+        corr = (0.0172 + t * (-0.0006 + t * 0.00023) +
+                sin(m) * (-8.5885 + t * (0.0411 + t * 0.0002)) +
+                cos(m) * (-1.147 + t * (0.0352 - t * 0.00011)) +
+                sin(2.0 * m) * (0.3331 + t * (-0.0034 - t * 0.00001)) +
+                cos(2.0 * m) * (0.1145 + t * (-0.0045 + t * 0.00002)) +
+                sin(3.0 * m) * (-0.0169 + t * 0.0002) +
+                cos(3.0 * m) * (-0.0109 + t * 0.0004) +
+                sin(aa) * (0.0 + t * (-0.0337 + t * 0.00018)) +
+                cos(aa) * (-0.851 + t * (0.0044 + t * 0.00068)) +
+                sin(bb) * (0.0 + t * (-0.0064 + t * 0.00004)) +
+                cos(bb) * (0.2397 + t * (-0.0012 - t * 0.00008)) +
+                sin(cc) * (0.0 - t * 0.001) +
+                cos(cc) * (0.1245 + t * 0.0006) +
+                sin(dd) * (0.0 + t * (0.0024 - t * 0.00003)) +
+                cos(dd) * (0.0477 + t * (-0.0005 - t * 0.00006)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def opposition(epoch):
+        """This method computes the time of the opposition closest to the given
+        epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(-6, 9, 1.0)
+        >>> oppo = Saturn.opposition(epoch)
+        >>> y, m, d = oppo.get_date()
+        >>> print(y)
+        -6
+        >>> print(m)
+        9
+        >>> print(round(d, 4))
+        14.3709
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Saturn's opposition
+        a = 2451870.17
+        b = 378.091904
+        m0 = 318.0172
+        m1 = 12.647487
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute an auxiliary angle
+        aa = 82.74 + 40.76 * t
+        bb = 29.86 + 1181.36 * t
+        cc = 14.13 + 590.68 * t
+        dd = 220.02 + 1262.87 * t
+        # Convert to radians
+        aa = Angle(aa).rad()
+        bb = Angle(bb).rad()
+        cc = Angle(cc).rad()
+        dd = Angle(dd).rad()
+        corr = (-0.0209 + t * (0.0006 + t * 0.00023) +
+                sin(m) * (4.5795 + t * (-0.0312 - t * 0.00017)) +
+                cos(m) * (1.1462 + t * (-0.0351 + t * 0.00011)) +
+                sin(2.0 * m) * (0.0985 - t * 0.0015) +
+                cos(2.0 * m) * (0.0733 + t * (-0.0031 + t * 0.00001)) +
+                sin(3.0 * m) * (0.0025 - t * 0.0001) +
+                cos(3.0 * m) * (0.005 - t * 0.0002) +
+                sin(aa) * (0.0 + t * (-0.0337 + t * 0.00018)) +
+                cos(aa) * (-0.851 + t * (0.0044 + t * 0.00068)) +
+                sin(bb) * (0.0 + t * (-0.0064 + t * 0.00004)) +
+                cos(bb) * (0.2397 + t * (-0.0012 - t * 0.00008)) +
+                sin(cc) * (0.0 - t * 0.001) +
+                cos(cc) * (0.1245 + t * 0.0006) +
+                sin(dd) * (0.0 + t * (0.0024 - t * 0.00003)) +
+                cos(dd) * (0.0477 + t * (-0.0005 - t * 0.00006)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
