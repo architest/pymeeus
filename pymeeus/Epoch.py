@@ -1652,7 +1652,7 @@ class Epoch(object):
         """
 
         y, m, d = self.get_date()
-        doy = self.get_doy(y, m, d)
+        doy = Epoch.get_doy(y, m, d)
         # We must substract 1 from doy in order to compute correctly
         doy -= 1
         days_of_year = 365.0
