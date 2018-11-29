@@ -54,3 +54,35 @@ Print mean orbital elements for Neptune at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: -83.415521
+
+Compute the time of the conjunction close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    conj = Neptune.conjunction(epoch)
+
+    y, m, d = conj.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Conjunction date", date)
+
+    # Conjunction date: 1994/1/11.3057
+
+Compute the time of the opposition close to 1846/8/1::
+
+    epoch = Epoch(1846, 8, 1)
+
+    oppo = Neptune.opposition(epoch)
+
+    y, m, d = oppo.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Opposition date", date)
+
+    # Opposition date: 1846/8/20.1623

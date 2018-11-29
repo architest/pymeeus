@@ -2420,6 +2420,24 @@ def main():
     print_me("Longitude of the ascending node", round(ome, 5))  # 132.46986
     print_me("Argument of the perihelion", round(arg, 6))  # -83.415521
 
+    print("")
+
+    # Compute the time of the conjunction close to 1993/10/1
+    epoch = Epoch(1993, 10, 1.0)
+    conj = Neptune.conjunction(epoch)
+    y, m, d = conj.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Conjunction date", date)
+
+    # Compute the time of the opposition close to 1846/8/1
+    epoch = Epoch(1846, 8, 1)
+    oppo = Neptune.opposition(epoch)
+    y, m, d = oppo.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Opposition date", date)
+
 
 if __name__ == "__main__":
 
