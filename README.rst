@@ -78,6 +78,11 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.2.11
+
+   -  Added conjunction and opposition methods for Jupiter, Saturn,
+      Uranus and Neptune
+
 -  0.2.10
 
    -  Added 'geocentric\_position()' method to 'Minor' class, and added
