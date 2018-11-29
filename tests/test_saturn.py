@@ -89,3 +89,37 @@ def test_saturn_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - (-20.068943)) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_saturn_conjunction():
+    """Tests the conjunction() method of Saturn class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    conjunction = Saturn.conjunction(epoch)
+    y, m, d = conjunction.get_date()
+
+    assert abs(round(y, 0) - 1994) < TOL, \
+        "ERROR: 1st conjunction() test doesn't match"
+
+    assert abs(round(m, 0) - 2) < TOL, \
+        "ERROR: 2nd conjunction() test doesn't match"
+
+    assert abs(round(d, 4) - 21.7347) < TOL, \
+        "ERROR: 3rd conjunction() test doesn't match"
+
+
+def test_saturn_superior_conjunction():
+    """Tests the opposition() method of Saturn class"""
+
+    epoch = Epoch(-6, 9, 1.0)
+    oppo = Saturn.opposition(epoch)
+    y, m, d = oppo.get_date()
+
+    assert abs(round(y, 0) - (-6)) < TOL, \
+        "ERROR: 1st opposition() test doesn't match"
+
+    assert abs(round(m, 0) - 9) < TOL, \
+        "ERROR: 2nd opposition() test doesn't match"
+
+    assert abs(round(d, 4) - 14.3709) < TOL, \
+        "ERROR: 3rd opposition() test doesn't match"
