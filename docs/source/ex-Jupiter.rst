@@ -69,7 +69,7 @@ Compute the time of the conjunction close to 1993/10/1::
 
     print_me("Conjunction date", date)
 
-    # Conjunction date: 1993/10/17.9636
+    # Conjunction date: 1993/10/18.3341
 
 Compute the time of the opposition close to -6/9/1::
 

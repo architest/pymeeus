@@ -3860,7 +3860,7 @@ class Jupiter(object):
         >>> print(m)
         10
         >>> print(round(d, 4))
-        17.9636
+        18.3341
         """
 
         # First check that input value is of correct types
@@ -3889,8 +3889,8 @@ class Jupiter(object):
                 cos(2.0 * m) * (0.131 - t * 0.0008) +
                 sin(3.0 * m) * (0.0086) +
                 cos(3.0 * m) * (0.0087 + t * 0.0002) +
-                sin(a) * (0.0 + t * (0.0144 - t * 0.00008)) +
-                cos(a) * (0.3642 + t * (-0.0019 - t * 0.00029)))
+                sin(aa) * (0.0 + t * (0.0144 - t * 0.00008)) +
+                cos(aa) * (0.3642 + t * (-0.0019 - t * 0.00029)))
         to_return = jde0 + corr
         return Epoch(to_return)
 
