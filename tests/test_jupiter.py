@@ -104,7 +104,7 @@ def test_jupiter_conjunction():
     assert abs(round(m, 0) - 10) < TOL, \
         "ERROR: 2nd conjunction() test doesn't match"
 
-    assert abs(round(d, 4) - 17.9636) < TOL, \
+    assert abs(round(d, 4) - 18.3341) < TOL, \
         "ERROR: 3rd conjunction() test doesn't match"
 
 
