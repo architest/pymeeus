@@ -108,7 +108,7 @@ def test_saturn_conjunction():
         "ERROR: 3rd conjunction() test doesn't match"
 
 
-def test_saturn_superior_conjunction():
+def test_saturn_opposition():
     """Tests the opposition() method of Saturn class"""
 
     epoch = Epoch(-6, 9, 1.0)
