@@ -86,3 +86,47 @@ Compute the time of the superior conjunction close to 1993/10/1::
     print_me("Superior conjunction date", date)
 
     # Superior conjunction date: 1994/1/17.0465
+
+Compute the time and angle of the western elongation close to 2019/1/1::
+
+    epoch = Epoch(2019, 1, 1.0)
+
+    time, elongation = Venus.western_elongation(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Western elongation date", date)
+
+    # Western elongation date: 2019/1/6.1895
+
+    elong = round(elongation, 4)
+
+    print_me("Maximum western elongation angle", elong)
+
+    # Maximum western elongation angle: 46.9571
+
+Compute the time and angle of the eastern elongation close to 2019/10/1::
+
+    epoch = Epoch(2019, 10, 1.0)
+
+    time, elongation = Venus.eastern_elongation(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Eastern elongation date", date)
+
+    # Eastern elongation date: 2020/3/24.9179
+
+    elong = round(elongation, 4)
+
+    print_me("Maximum eastern elongation angle", elong)
+
+    # Maximum eastern elongation angle: 46.078
