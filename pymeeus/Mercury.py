@@ -7435,6 +7435,114 @@ class Mercury(object):
         to_return = jde0 + corr
         return Epoch(to_return), elon
 
+    @staticmethod
+    def station_longitude_1(epoch):
+        """This method computes the time of the 1st station in longitude
+        (i.e. when the planet is stationary and begins to move westward -
+        retrograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> sta1 = Mercury.station_longitude_1(epoch)
+        >>> y, m, d = sta1.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        10
+        >>> print(round(d, 4))
+        25.9358
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's inferior conjunction
+        a = 2451612.023
+        b = 115.8774771
+        m0 = 63.5867
+        m1 = 114.2088742
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-11.0761 + 0.0003 * t +
+                sin(m) * (-4.7321 + t * (0.0023 + t * 0.00002)) +
+                cos(m) * (-1.323 - t * 0.0156) +
+                sin(2.0 * m) * (0.227 - t * 0.0046) +
+                cos(2.0 * m) * (0.7184 + t * (0.0013 - t * 0.00002)) +
+                sin(3.0 * m) * (0.0638 + t * 0.0016) +
+                cos(3.0 * m) * (-0.1655 + t * 0.0007) +
+                sin(4.0 * m) * (-0.0395 - t * 0.0003) +
+                cos(4.0 * m) * (0.0247 - t * 0.0006) +
+                sin(5.0 * m) * (0.0131) +
+                cos(5.0 * m) * (-0.0008 + t * 0.0002))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def station_longitude_2(epoch):
+        """This method computes the time of the 2nd station in longitude
+        (i.e. when the planet is stationary and begins to move eastward -
+        prograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> sta2 = Mercury.station_longitude_2(epoch)
+        >>> y, m, d = sta2.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        11
+        >>> print(round(d, 4))
+        15.0724
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's inferior conjunction
+        a = 2451612.023
+        b = 115.8774771
+        m0 = 63.5867
+        m1 = 114.2088742
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (11.1343 - 0.0001 * t +
+                sin(m) * (-3.9137 + t * (0.0073 + t * 0.00002)) +
+                cos(m) * (-3.3861 + t * (-0.0128 + t * 0.00001)) +
+                sin(2.0 * m) * (0.5222 + t * (-0.004 - t * 0.00002)) +
+                cos(2.0 * m) * (0.5929 + t * (0.0039 - t * 0.00002)) +
+                sin(3.0 * m) * (-0.0593 + t * 0.0018) +
+                cos(3.0 * m) * (-0.1733 * t * (-0.0007 + t * 0.00001)) +
+                sin(4.0 * m) * (-0.0053 - t * 0.0006) +
+                cos(4.0 * m) * (0.0476 - t * 0.0001) +
+                sin(5.0 * m) * (0.007 + t * 0.0002) +
+                cos(5.0 * m) * (-0.0115 + t * 0.0001))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
