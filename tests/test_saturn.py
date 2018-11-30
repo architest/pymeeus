@@ -94,17 +94,17 @@ def test_saturn_orbital_elements_j2000():
 def test_saturn_conjunction():
     """Tests the conjunction() method of Saturn class"""
 
-    epoch = Epoch(1993, 10, 1.0)
+    epoch = Epoch(2125, 6, 1.0)
     conjunction = Saturn.conjunction(epoch)
     y, m, d = conjunction.get_date()
 
-    assert abs(round(y, 0) - 1994) < TOL, \
+    assert abs(round(y, 0) - 2125) < TOL, \
         "ERROR: 1st conjunction() test doesn't match"
 
-    assert abs(round(m, 0) - 2) < TOL, \
+    assert abs(round(m, 0) - 8) < TOL, \
         "ERROR: 2nd conjunction() test doesn't match"
 
-    assert abs(round(d, 4) - 21.7347) < TOL, \
+    assert abs(round(d, 4) - 26.4035) < TOL, \
         "ERROR: 3rd conjunction() test doesn't match"
 
 

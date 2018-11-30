@@ -6127,15 +6127,15 @@ class Saturn(object):
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
 
-        >>> epoch = Epoch(1993, 10, 1.0)
+        >>> epoch = Epoch(2125, 6, 1.0)
         >>> conj = Saturn.conjunction(epoch)
         >>> y, m, d = conj.get_date()
         >>> print(y)
-        1994
+        2125
         >>> print(m)
-        2
+        8
         >>> print(round(d, 4))
-        21.7347
+        26.4035
         """
 
         # First check that input value is of correct types
@@ -6282,8 +6282,8 @@ def main():
 
     print("")
 
-    # Compute the time of the conjunction close to 1993/10/1
-    epoch = Epoch(1993, 10, 1.0)
+    # Compute the time of the conjunction close to 2125/6/1
+    epoch = Epoch(2125, 6, 1.0)
     conj = Saturn.conjunction(epoch)
     y, m, d = conj.get_date()
     d = round(d, 4)

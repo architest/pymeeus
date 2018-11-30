@@ -55,9 +55,9 @@ Print mean orbital elements for Saturn at 2065.6.24::
 
     # Argument of the perihelion: -19.896331
 
-Compute the time of the conjunction close to 1993/10/1::
+Compute the time of the conjunction close to 2125/6/1::
 
-    epoch = Epoch(1993, 10, 1.0)
+    epoch = Epoch(2125, 6, 1.0)
 
     conj = Saturn.conjunction(epoch)
 
@@ -69,7 +69,7 @@ Compute the time of the conjunction close to 1993/10/1::
 
     print_me("Conjunction date", date)
 
-    # Conjunction date: 1994/2/21.7347
+    # Conjunction date: 2125/8/26.4035
 
 Compute the time of the opposition close to -6/9/1::
 
