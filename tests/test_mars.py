@@ -123,3 +123,37 @@ def test_mars_superior_conjunction():
 
     assert abs(round(d, 4) - 9.1412) < TOL, \
         "ERROR: 3rd opposition() test doesn't match"
+
+
+def test_mars_station_longitude_1():
+    """Tests the station_longitude_1() method of Mars class"""
+
+    epoch = Epoch(1997, 3, 1.0)
+    sta1 = Mars.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+
+    assert abs(round(y, 0) - 1997) < TOL, \
+        "ERROR: 1st station_longitude_1() test doesn't match"
+
+    assert abs(round(m, 0) - 2) < TOL, \
+        "ERROR: 2nd station_longitude_1() test doesn't match"
+
+    assert abs(round(d, 4) - 6.033) < TOL, \
+        "ERROR: 3rd station_longitude_1() test doesn't match"
+
+
+def test_mars_station_longitude_2():
+    """Tests the station_longitude_2() method of Mars class"""
+
+    epoch = Epoch(1997, 3, 1.0)
+    sta2 = Mars.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+
+    assert abs(round(y, 0) - 1997) < TOL, \
+        "ERROR: 1st station_longitude_2() test doesn't match"
+
+    assert abs(round(m, 0) - 4) < TOL, \
+        "ERROR: 2nd station_longitude_2() test doesn't match"
+
+    assert abs(round(d, 4) - 27.7553) < TOL, \
+        "ERROR: 3rd station_longitude_2() test doesn't match"
