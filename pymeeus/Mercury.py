@@ -7484,6 +7484,30 @@ def main():
     date = "{}/{}/{}".format(y, m, d)
     print_me("Superior conjunction date", date)
 
+    print("")
+
+    # Compute the time and angle of the western elongation close to 1993/11/1
+    epoch = Epoch(1993, 11, 1.0)
+    time, elongation = Mercury.western_elongation(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Western elongation date", date)
+    elong = round(elongation, 4)
+    print_me("Maximum western elongation angle", elong)
+
+    print("")
+
+    # Compute the time and angle of the eastern elongation close to 1990/8/1
+    epoch = Epoch(1990, 8, 1.0)
+    time, elongation = Mercury.eastern_elongation(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Eastern elongation date", date)
+    elong = round(elongation, 4)
+    print_me("Maximum eastern elongation angle", elong)
+
 
 if __name__ == "__main__":
 
