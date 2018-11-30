@@ -5945,6 +5945,114 @@ class Mars(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def station_longitude_1(epoch):
+        """This method computes the time of the 1st station in longitude
+        (i.e. when the planet is stationary and begins to move westward -
+        retrograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1997, 3, 1.0)
+        >>> sta1 = Mars.station_longitude_1(epoch)
+        >>> y, m, d = sta1.get_date()
+        >>> print(y)
+        1997
+        >>> print(m)
+        2
+        >>> print(round(d, 4))
+        6.033
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mars' opposition
+        a = 2452097.382
+        b = 779.936104
+        m0 = 181.9573
+        m1 = 48.705244
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-37.079 + t * (-0.0009 + t * 0.00002) +
+                sin(m) * (-20.0651 + t * (0.0228 + t * 0.00004)) +
+                cos(m) * (14.5205 + t * (0.0504 - t * 0.00001)) +
+                sin(2.0 * m) * (1.1737 - t * 0.0169) +
+                cos(2.0 * m) * (-4.255 + t * (-0.0075 + t * 0.00008)) +
+                sin(3.0 * m) * (0.4897 + t * (0.0074 - t * 0.00001)) +
+                cos(3.0 * m) * (1.1151 + t * (-0.0021 - t * 0.00005)) +
+                sin(4.0 * m) * (-0.3636 + t * (-0.002 + t * 0.00001)) +
+                cos(4.0 * m) * (-0.1769 + t * (0.0028 + t * 0.00002)) +
+                sin(5.0 * m) * (0.1437 - t * 0.0004) +
+                cos(5.0 * m) * (-0.0383 - t * 0.0016))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def station_longitude_2(epoch):
+        """This method computes the time of the 2nd station in longitude
+        (i.e. when the planet is stationary and begins to move eastward -
+        prograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the opposition happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1997, 3, 1.0)
+        >>> sta2 = Mars.station_longitude_2(epoch)
+        >>> y, m, d = sta2.get_date()
+        >>> print(y)
+        1997
+        >>> print(m)
+        4
+        >>> print(round(d, 4))
+        27.7553
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mars' opposition
+        a = 2452097.382
+        b = 779.936104
+        m0 = 181.9573
+        m1 = 48.705244
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (36.7191 + t * (0.0016 + t * 0.00003) +
+                sin(m) * (-12.6163 + t * (0.0417 - t * 0.00001)) +
+                cos(m) * (20.1218 + t * (0.0379 - t * 0.00006)) +
+                sin(2.0 * m) * (-1.636 - t * 0.019) +
+                cos(2.0 * m) * (-3.9657 + t * (0.0045 + t * 0.00007)) +
+                sin(3.0 * m) * (1.1546 + t * (0.0029 - t * 0.00003)) +
+                cos(3.0 * m) * (0.2888 + t * (-0.0073 - t * 0.00002)) +
+                sin(4.0 * m) * (-0.3128 + t * (0.0017 + t * 0.00002)) +
+                cos(4.0 * m) * (0.2513 + t * (0.0026 - t * 0.00002)) +
+                sin(5.0 * m) * (-0.0021 - t * 0.0016) +
+                cos(5.0 * m) * (-0.1497 - t * 0.0006))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
