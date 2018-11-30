@@ -176,3 +176,37 @@ def test_mercury_eastern_elongation():
 
     assert abs(round(elongation, 4) - 27.4201) < TOL, \
         "ERROR: 4th eastern_elongation() test doesn't match"
+
+
+def test_mercury_station_longitude_1():
+    """Tests the station_longitude_1() method of Mercury class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    sta1 = Mercury.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st station_longitude_1() test doesn't match"
+
+    assert abs(round(m, 0) - 10) < TOL, \
+        "ERROR: 2nd station_longitude_1() test doesn't match"
+
+    assert abs(round(d, 4) - 25.9358) < TOL, \
+        "ERROR: 3rd station_longitude_1() test doesn't match"
+
+
+def test_mercury_station_longitude_2():
+    """Tests the station_longitude_2() method of Mercury class"""
+
+    epoch = Epoch(1993, 10, 1.0)
+    sta2 = Mercury.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st station_longitude_2() test doesn't match"
+
+    assert abs(round(m, 0) - 11) < TOL, \
+        "ERROR: 2nd station_longitude_2() test doesn't match"
+
+    assert abs(round(d, 4) - 15.0724) < TOL, \
+        "ERROR: 3rd station_longitude_2() test doesn't match"
