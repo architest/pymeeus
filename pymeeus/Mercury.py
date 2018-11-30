@@ -7299,6 +7299,142 @@ class Mercury(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def western_elongation(epoch):
+        """This method computes the time of the western elongation closest to
+        the given epoch, as well as the corresponding maximum elongation angle.
+
+        :param epoch: Epoch close to the desired western elongation
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the time when the western elongation happens, as
+            an Epoch, and the maximum elongation angle, as an Angle
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1993, 11, 1.0)
+        >>> time, elongation = Mercury.western_elongation(epoch)
+        >>> y, m, d = time.get_date()
+        >>> print(y)
+        1993
+        >>> print(m)
+        11
+        >>> print(round(d, 4))
+        22.6386
+        >>> print(round(elongation, 4))
+        19.7506
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's inferior conjunction
+        a = 2451612.023
+        b = 115.8774771
+        m0 = 63.5867
+        m1 = 114.2088742
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (21.6249 - 0.0002 * t +
+                sin(m) * (0.1306 + t * 0.0065) +
+                cos(m) * (-2.7661 + t * (-0.0011 + t * 0.00001)) +
+                sin(2.0 * m) * (0.2438 + t * (-0.0024 - t * 0.00001)) +
+                cos(2.0 * m) * (0.5767 + t * 0.0023) +
+                sin(3.0 * m) * (0.1041) +
+                cos(3.0 * m) * (-0.0184 + t * 0.0007) +
+                sin(4.0 * m) * (-0.0051 - t * 0.0001) +
+                cos(4.0 * m) * (0.0048 + t * 0.0001) +
+                sin(5.0 * m) * (0.0026) +
+                cos(5.0 * m) * (0.0037))
+        elon = (22.4143 - 0.0001 * t +
+                sin(m) * (4.3651 + t * (-0.0048 - t * 0.00002)) +
+                cos(m) * (2.3787 + t * (0.0121 - t * 0.00001)) +
+                sin(2.0 * m) * (0.2674 + t * 0.0022) +
+                cos(2.0 * m) * (-0.3873 + t * (0.0008 + t * 0.00001)) +
+                sin(3.0 * m) * (-0.0369 - t * 0.0001) +
+                cos(3.0 * m) * (0.0017 - t * 0.0001) +
+                sin(4.0 * m) * (0.0059) +
+                cos(4.0 * m) * (0.0061 + t * 0.0001) +
+                sin(5.0 * m) * (0.0007) +
+                cos(5.0 * m) * (-0.0011))
+        elon = Angle(elon).to_positive()
+        to_return = jde0 + corr
+        return Epoch(to_return), elon
+
+    @staticmethod
+    def eastern_elongation(epoch):
+        """This method computes the time of the eastern elongation closest to
+        the given epoch, as well as the corresponding maximum elongation angle.
+
+        :param epoch: Epoch close to the desired eastern elongation
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple with the time when the eastern elongation happens, as
+            an Epoch, and the maximum elongation angle, as an Angle
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1990, 8, 1.0)
+        >>> time, elongation = Mercury.eastern_elongation(epoch)
+        >>> y, m, d = time.get_date()
+        >>> print(y)
+        1990
+        >>> print(m)
+        8
+        >>> print(round(d, 4))
+        11.8514
+        >>> print(round(elongation, 4))
+        27.4201
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Mercury's inferior conjunction
+        a = 2451612.023
+        b = 115.8774771
+        m0 = 63.5867
+        m1 = 114.2088742
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-21.6101 + 0.0002 * t +
+                sin(m) * (-1.9803 + t * (-0.006 + t * 0.00001)) +
+                cos(m) * (1.4151 + t * (-0.0072 - t * 0.00001)) +
+                sin(2.0 * m) * (0.5528 + t * (-0.0005 - t * 0.00001)) +
+                cos(2.0 * m) * (0.2905 + t * (0.0034 + t * 0.00001)) +
+                sin(3.0 * m) * (-0.1121 + t * (-0.0001 + t * 0.00001)) +
+                cos(3.0 * m) * (-0.0098 - t * 0.0015) +
+                sin(4.0 * m) * (0.0192) +
+                cos(4.0 * m) * (0.0111 + t * 0.0004) +
+                sin(5.0 * m) * (-0.0061) +
+                cos(5.0 * m) * (-0.0032 - t * 0.0001))
+        elon = (22.4697 +
+                sin(m) * (-4.2666 + t * (0.0054 + t * 0.00002)) +
+                cos(m) * (-1.8537 - t * 0.0137) +
+                sin(2.0 * m) * (0.3598 + t * (0.0008 - t * 0.00001)) +
+                cos(2.0 * m) * (-0.068 + t * 0.0026) +
+                sin(3.0 * m) * (-0.0524 - t * 0.0003) +
+                cos(3.0 * m) * (0.0052 - t * 0.0006) +
+                sin(4.0 * m) * (0.0107 + t * 0.0001) +
+                cos(4.0 * m) * (-0.0013 + t * 0.0001) +
+                sin(5.0 * m) * (-0.0021) +
+                cos(5.0 * m) * (0.0003))
+        elon = Angle(elon).to_positive()
+        to_return = jde0 + corr
+        return Epoch(to_return), elon
+
 
 def main():
 
