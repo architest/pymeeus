@@ -2252,6 +2252,106 @@ class Venus(object):
         to_return = jde0 + corr
         return Epoch(to_return), elon
 
+    @staticmethod
+    def station_longitude_1(epoch):
+        """This method computes the time of the 1st station in longitude
+        (i.e. when the planet is stationary and begins to move westward -
+        retrograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2018, 12, 1.0)
+        >>> sta1 = Venus.station_longitude_1(epoch)
+        >>> y, m, d = sta1.get_date()
+        >>> print(y)
+        2018
+        >>> print(m)
+        10
+        >>> print(round(d, 4))
+        5.7908
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Venus' inferior conjunction
+        a = 2451996.706
+        b = 583.921361
+        m0 = 82.7311
+        m1 = 215.513058
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (-21.0672 + t * (0.0002 - t * 0.00001) +
+                sin(m) * (1.9396 + t * (-0.0029 - t * 0.00001)) +
+                cos(m) * (1.0727 - t * 0.0102) +
+                sin(2.0 * m) * (0.0404 + t * (-0.0023 - t * 0.00001)) +
+                cos(2.0 * m) * (0.1305 + t * (-0.0004 - t * 0.00003)) +
+                sin(3.0 * m) * (-0.0007 - t * 0.0002) +
+                cos(3.0 * m) * (0.0098))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def station_longitude_2(epoch):
+        """This method computes the time of the 1st station in longitude
+        (i.e. when the planet is stationary and begins to move eastward -
+        prograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired inferior conjunction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The time when the inferior conjunction happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2018, 12, 1.0)
+        >>> sta2 = Venus.station_longitude_2(epoch)
+        >>> y, m, d = sta2.get_date()
+        >>> print(y)
+        2018
+        >>> print(m)
+        11
+        >>> print(round(d, 4))
+        16.439
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Venus' inferior conjunction
+        a = 2451996.706
+        b = 583.921361
+        m0 = 82.7311
+        m1 = 215.513058
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        corr = (21.0623 - t * t * 0.00001 +
+                sin(m) * (1.9913 + t * (-0.004 - t * 0.00001)) +
+                cos(m) * (-0.0407 - t * 0.0077) +
+                sin(2.0 * m) * (0.1351 + t * (-0.0009 - t * 0.00004)) +
+                cos(2.0 * m) * (0.0303 + t * 0.0019) +
+                sin(3.0 * m) * (0.0089 - t * 0.0002) +
+                cos(3.0 * m) * (0.0043 + t * 0.0001))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
