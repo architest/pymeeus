@@ -130,3 +130,35 @@ Compute the time and angle of the eastern elongation close to 1990/8/1::
     print_me("Maximum eastern elongation angle", elong)
 
     # Maximum eastern elongation angle: 27.4201
+
+Compute the time of the station in longitude #1 close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    sta1 = Mercury.station_longitude_1(epoch)
+
+    y, m, d = sta1.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #1", date)
+
+    # Date of station in longitude #1: 1993/10/25.9358
+
+Compute the time of the station in longitude #2 close to 1993/10/1::
+
+    epoch = Epoch(1993, 10, 1.0)
+
+    sta2 = Mercury.station_longitude_2(epoch)
+
+    y, m, d = sta2.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #2", date)
+
+    # Date of station in longitude #2: 1993/11/15.0724
