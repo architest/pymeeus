@@ -2425,6 +2425,24 @@ def main():
     elong = round(elongation, 4)
     print_me("Maximum eastern elongation angle", elong)
 
+    print("")
+
+    # Compute the time of the station in longitude #1 close to 2018/12/1
+    epoch = Epoch(2018, 12, 1.0)
+    sta1 = Venus.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Date of station in longitude #1", date)
+
+    # Compute the time of the station in longitude #2 close to 2018/12/1
+    epoch = Epoch(2018, 12, 1.0)
+    sta2 = Venus.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+    d = round(d, 4)
+    date = "{}/{}/{}".format(y, m, d)
+    print_me("Date of station in longitude #2", date)
+
 
 if __name__ == "__main__":
 

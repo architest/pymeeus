@@ -130,3 +130,35 @@ Compute the time and angle of the eastern elongation close to 2019/10/1::
     print_me("Maximum eastern elongation angle", elong)
 
     # Maximum eastern elongation angle: 46.078
+
+Compute the time of the station in longitude #1 close to 2018/12/1::
+
+    epoch = Epoch(2018, 12, 1.0)
+
+    sta1 = Venus.station_longitude_1(epoch)
+
+    y, m, d = sta1.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #1", date)
+
+    # Date of station in longitude #1: 2018/10/5.7908
+
+Compute the time of the station in longitude #2 close to 2018/12/1::
+
+    epoch = Epoch(2018, 12, 1.0)
+
+    sta2 = Venus.station_longitude_2(epoch)
+
+    y, m, d = sta2.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #2", date)
+
+    # Date of station in longitude #2: 2018/11/16.439
