@@ -123,3 +123,43 @@ def test_venus_superior_conjunction():
 
     assert abs(round(d, 2) - 17.05) < TOL, \
         "ERROR: 3rd superior_conjunction() test doesn't match"
+
+
+def test_venus_western_elongation():
+    """Tests the western_elongation() method of Venus class"""
+
+    epoch = Epoch(2019, 1, 1.0)
+    time, elongation = Venus.western_elongation(epoch)
+    y, m, d = time.get_date()
+
+    assert abs(round(y, 0) - 2019) < TOL, \
+        "ERROR: 1st western_elongation() test doesn't match"
+
+    assert abs(round(m, 0) - 1) < TOL, \
+        "ERROR: 2nd western_elongation() test doesn't match"
+
+    assert abs(round(d, 4) - 6.1895) < TOL, \
+        "ERROR: 3rd western_elongation() test doesn't match"
+
+    assert abs(round(elongation, 4) - 46.9571) < TOL, \
+        "ERROR: 4th western_elongation() test doesn't match"
+
+
+def test_venus_eastern_elongation():
+    """Tests the eastern_elongation() method of Venus class"""
+
+    epoch = Epoch(2019, 10, 1.0)
+    time, elongation = Venus.eastern_elongation(epoch)
+    y, m, d = time.get_date()
+
+    assert abs(round(y, 0) - 2020) < TOL, \
+        "ERROR: 1st eastern_elongation() test doesn't match"
+
+    assert abs(round(m, 0) - 3) < TOL, \
+        "ERROR: 2nd eastern_elongation() test doesn't match"
+
+    assert abs(round(d, 4) - 24.9179) < TOL, \
+        "ERROR: 3rd eastern_elongation() test doesn't match"
+
+    assert abs(round(elongation, 4) - 46.078) < TOL, \
+        "ERROR: 3rd eastern_elongation() test doesn't match"
