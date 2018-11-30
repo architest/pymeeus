@@ -136,3 +136,43 @@ def test_mercury_superior_conjunction():
 
     assert abs(round(d, 4) - 29.3301) < TOL, \
         "ERROR: 3rd superior_conjunction() test doesn't match"
+
+
+def test_mercury_western_elongation():
+    """Tests the western_elongation() method of Mercury class"""
+
+    epoch = Epoch(1993, 11, 1.0)
+    time, elongation = Mercury.western_elongation(epoch)
+    y, m, d = time.get_date()
+
+    assert abs(round(y, 0) - 1993) < TOL, \
+        "ERROR: 1st western_elongation() test doesn't match"
+
+    assert abs(round(m, 0) - 11) < TOL, \
+        "ERROR: 2nd western_elongation() test doesn't match"
+
+    assert abs(round(d, 4) - 22.6386) < TOL, \
+        "ERROR: 3rd western_elongation() test doesn't match"
+
+    assert abs(round(elongation, 4) - 19.7506) < TOL, \
+        "ERROR: 4th western_elongation() test doesn't match"
+
+
+def test_mercury_eastern_elongation():
+    """Tests the eastern_elongation() method of Mercury class"""
+
+    epoch = Epoch(1990, 8, 1.0)
+    time, elongation = Mercury.eastern_elongation(epoch)
+    y, m, d = time.get_date()
+
+    assert abs(round(y, 0) - 1990) < TOL, \
+        "ERROR: 1st eastern_elongation() test doesn't match"
+
+    assert abs(round(m, 0) - 8) < TOL, \
+        "ERROR: 2nd eastern_elongation() test doesn't match"
+
+    assert abs(round(d, 4) - 11.8514) < TOL, \
+        "ERROR: 3rd eastern_elongation() test doesn't match"
+
+    assert abs(round(elongation, 4) - 27.4201) < TOL, \
+        "ERROR: 4th eastern_elongation() test doesn't match"
