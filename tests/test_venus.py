@@ -163,3 +163,37 @@ def test_venus_eastern_elongation():
 
     assert abs(round(elongation, 4) - 46.078) < TOL, \
         "ERROR: 3rd eastern_elongation() test doesn't match"
+
+
+def test_venus_station_longitude_1():
+    """Tests the station_longitude_1() method of Venus class"""
+
+    epoch = Epoch(2018, 12, 1.0)
+    sta1 = Venus.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_1() test doesn't match"
+
+    assert abs(round(m, 0) - 10) < TOL, \
+        "ERROR: 2nd station_longitude_1() test doesn't match"
+
+    assert abs(round(d, 4) - 5.7908) < TOL, \
+        "ERROR: 3rd station_longitude_1() test doesn't match"
+
+
+def test_venus_station_longitude_2():
+    """Tests the station_longitude_2() method of Venus class"""
+
+    epoch = Epoch(2018, 12, 1.0)
+    sta2 = Venus.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_2() test doesn't match"
+
+    assert abs(round(m, 0) - 11) < TOL, \
+        "ERROR: 2nd station_longitude_2() test doesn't match"
+
+    assert abs(round(d, 4) - 16.439) < TOL, \
+        "ERROR: 3rd station_longitude_2() test doesn't match"
