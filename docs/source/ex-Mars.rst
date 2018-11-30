@@ -86,3 +86,35 @@ Compute the time of the opposition close to 2729/10/1::
     print_me("Opposition date", date)
 
     # Opposition date: 2729/9/9.1412
+
+Compute the time of the station in longitude #1 close to 1997/3/1::
+
+    epoch = Epoch(1997, 3, 1.0)
+
+    sta1 = Mars.station_longitude_1(epoch)
+
+    y, m, d = sta1.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #1", date)
+
+    # Date of station in longitude #1: 1997/2/6.033
+
+Compute the time of the station in longitude #2 close to 1997/3/1::
+
+    epoch = Epoch(1997, 3, 1.0)
+
+    sta2 = Mars.station_longitude_2(epoch)
+
+    y, m, d = sta2.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #2", date)
+
+    # Date of station in longitude #2: 1997/4/27.7553
