@@ -1963,7 +1963,7 @@ def planetary_conjunction(alpha1_list, delta1_list, alpha2_list, delta2_list):
         middle epoch.
 
     .. note:: When the entries in the input values are more than three and
-        pair, the last entry is discarted and an odd number of entries will be
+        even, the last entry is discarted and an odd number of entries will be
         used.
 
     :param alpha1_list: List (or tuple) containing the right ascensions (as
