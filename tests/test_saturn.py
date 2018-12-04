@@ -123,3 +123,37 @@ def test_saturn_opposition():
 
     assert abs(round(d, 4) - 14.3709) < TOL, \
         "ERROR: 3rd opposition() test doesn't match"
+
+
+def test_saturn_station_longitude_1():
+    """Tests the station_longitude_1() method of Saturn class"""
+
+    epoch = Epoch(2018, 11, 1.0)
+    sta1 = Saturn.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_1() test doesn't match"
+
+    assert abs(round(m, 0) - 4) < TOL, \
+        "ERROR: 2nd station_longitude_1() test doesn't match"
+
+    assert abs(round(d, 4) - 17.9433) < TOL, \
+        "ERROR: 3rd station_longitude_1() test doesn't match"
+
+
+def test_saturn_station_longitude_2():
+    """Tests the station_longitude_2() method of Saturn class"""
+
+    epoch = Epoch(2018, 11, 1.0)
+    sta2 = Saturn.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_2() test doesn't match"
+
+    assert abs(round(m, 0) - 9) < TOL, \
+        "ERROR: 2nd station_longitude_2() test doesn't match"
+
+    assert abs(round(d, 4) - 6.4175) < TOL, \
+        "ERROR: 3rd station_longitude_2() test doesn't match"
