@@ -123,3 +123,37 @@ def test_jupiter_opposition():
 
     assert abs(round(d, 4) - 15.2865) < TOL, \
         "ERROR: 3rd opposition() test doesn't match"
+
+
+def test_jupiter_station_longitude_1():
+    """Tests the station_longitude_1() method of Jupiter class"""
+
+    epoch = Epoch(2018, 11, 1.0)
+    sta1 = Jupiter.station_longitude_1(epoch)
+    y, m, d = sta1.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_1() test doesn't match"
+
+    assert abs(round(m, 0) - 3) < TOL, \
+        "ERROR: 2nd station_longitude_1() test doesn't match"
+
+    assert abs(round(d, 4) - 9.1288) < TOL, \
+        "ERROR: 3rd station_longitude_1() test doesn't match"
+
+
+def test_jupiter_station_longitude_2():
+    """Tests the station_longitude_2() method of Jupiter class"""
+
+    epoch = Epoch(2018, 11, 1.0)
+    sta2 = Jupiter.station_longitude_2(epoch)
+    y, m, d = sta2.get_date()
+
+    assert abs(round(y, 0) - 2018) < TOL, \
+        "ERROR: 1st station_longitude_2() test doesn't match"
+
+    assert abs(round(m, 0) - 7) < TOL, \
+        "ERROR: 2nd station_longitude_2() test doesn't match"
+
+    assert abs(round(d, 4) - 10.6679) < TOL, \
+        "ERROR: 3rd station_longitude_2() test doesn't match"
