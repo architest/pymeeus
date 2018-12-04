@@ -6249,6 +6249,142 @@ class Saturn(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def station_longitude_1(epoch):
+        """This method computes the time of the 1st station in longitude
+        (i.e. when the planet is stationary and begins to move westward -
+        retrograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Time when the 1st station in longitude happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2018, 11, 1.0)
+        >>> sta1 = Saturn.station_longitude_1(epoch)
+        >>> y, m, d = sta1.get_date()
+        >>> print(y)
+        2018
+        >>> print(m)
+        4
+        >>> print(round(d, 4))
+        17.9433
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Saturn's opposition
+        a = 2451870.17
+        b = 378.091904
+        m0 = 318.0172
+        m1 = 12.647487
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute an auxiliary angle
+        aa = 82.74 + 40.76 * t
+        bb = 29.86 + 1181.36 * t
+        cc = 14.13 + 590.68 * t
+        dd = 220.02 + 1262.87 * t
+        # Convert to radians
+        aa = Angle(aa).rad()
+        bb = Angle(bb).rad()
+        cc = Angle(cc).rad()
+        dd = Angle(dd).rad()
+        corr = (-68.884 + t * (0.0009 + t * 0.00023) +
+                sin(m) * (5.5452 + t * (-0.0279 - t * 0.0002)) +
+                cos(m) * (3.0727 + t * (-0.043 + t * 0.00007)) +
+                sin(2.0 * m) * (0.1101 + t * (-0.0006 - t * 0.00001)) +
+                cos(2.0 * m) * (0.1654 + t * (-0.0043 + t * 0.00001)) +
+                sin(3.0 * m) * (0.001 + t * 0.0001) +
+                cos(3.0 * m) * (0.0095 - t * 0.0003) +
+                sin(aa) * (0.0 + t * (-0.0337 + t * 0.00018)) +
+                cos(aa) * (-0.851 + t * (0.0044 + t * 0.00068)) +
+                sin(bb) * (0.0 + t * (-0.0064 + t * 0.00004)) +
+                cos(bb) * (0.2397 + t * (-0.0012 - t * 0.00008)) +
+                sin(cc) * (0.0 - t * 0.001) +
+                cos(cc) * (0.1245 + t * 0.0006) +
+                sin(dd) * (0.0 + t * (0.0024 - t * 0.00003)) +
+                cos(dd) * (0.0477 + t * (-0.0005 - t * 0.00006)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
+    @staticmethod
+    def station_longitude_2(epoch):
+        """This method computes the time of the 2nd station in longitude
+        (i.e. when the planet is stationary and begins to move eastward -
+        prograde - among the starts) closest to the given epoch.
+
+        :param epoch: Epoch close to the desired opposition
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Time when the 2nd station in longitude happens, as an Epoch
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2018, 11, 1.0)
+        >>> sta2 = Saturn.station_longitude_2(epoch)
+        >>> y, m, d = sta2.get_date()
+        >>> print(y)
+        2018
+        >>> print(m)
+        9
+        >>> print(round(d, 4))
+        6.4175
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Set some specific constants for Saturn's opposition
+        a = 2451870.17
+        b = 378.091904
+        m0 = 318.0172
+        m1 = 12.647487
+        # Get the year with decimals
+        y = epoch.year()
+        k = round((365.2425 * y + 1721060.0 - a) / b)
+        jde0 = a + k * b
+        m = m0 + k * m1
+        m = Angle(m).to_positive()
+        m = m.rad()
+        t = (jde0 - 2451545.0) / 36525.0
+        # Compute an auxiliary angle
+        aa = 82.74 + 40.76 * t
+        bb = 29.86 + 1181.36 * t
+        cc = 14.13 + 590.68 * t
+        dd = 220.02 + 1262.87 * t
+        # Convert to radians
+        aa = Angle(aa).rad()
+        bb = Angle(bb).rad()
+        cc = Angle(cc).rad()
+        dd = Angle(dd).rad()
+        corr = (68.872 + t * (-0.0007 + t * 0.00023) +
+                sin(m) * (5.9399 + t * (-0.04 - t * 0.00015)) +
+                cos(m) * (-0.7998 + t * (-0.0266 + t * 0.00014)) +
+                sin(2.0 * m) * (0.1738 - t * 0.0032) +
+                cos(2.0 * m) * (-0.0039 + t * (-0.0024 + t * 0.00001)) +
+                sin(3.0 * m) * (0.0073 - t * 0.0002) +
+                cos(3.0 * m) * (0.002 - t * 0.0002) +
+                sin(aa) * (0.0 + t * (-0.0337 + t * 0.00018)) +
+                cos(aa) * (-0.851 + t * (0.0044 + t * 0.00068)) +
+                sin(bb) * (0.0 + t * (-0.0064 + t * 0.00004)) +
+                cos(bb) * (0.2397 + t * (-0.0012 - t * 0.00008)) +
+                sin(cc) * (0.0 - t * 0.001) +
+                cos(cc) * (0.1245 + t * 0.0006) +
+                sin(dd) * (0.0 + t * (0.0024 - t * 0.00003)) +
+                cos(dd) * (0.0477 + t * (-0.0005 - t * 0.00006)))
+        to_return = jde0 + corr
+        return Epoch(to_return)
+
 
 def main():
 
