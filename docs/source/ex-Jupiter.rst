@@ -86,3 +86,35 @@ Compute the time of the opposition close to -6/9/1::
     print_me("Opposition date", date)
 
     # Opposition date: -6/9/15.2865
+
+Compute the time of the station in longitude #1 close to 2018/11/1::
+
+    epoch = Epoch(2018, 11, 1.0)
+
+    sta1 = Jupiter.station_longitude_1(epoch)
+
+    y, m, d = sta1.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #1", date)
+
+    # Date of station in longitude #1: 2018/3/9.1288
+
+Compute the time of the station in longitude #2 close to 2018/11/1::
+
+    epoch = Epoch(2018, 11, 1.0)
+
+    sta2 = Jupiter.station_longitude_2(epoch)
+
+    y, m, d = sta2.get_date()
+
+    d = round(d, 4)
+
+    date = "{}/{}/{}".format(y, m, d)
+
+    print_me("Date of station in longitude #2", date)
+
+    # Date of station in longitude #2: 2018/7/10.6679
