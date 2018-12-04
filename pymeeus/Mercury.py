@@ -7444,7 +7444,7 @@ class Mercury(object):
         :param epoch: Epoch close to the desired inferior conjunction
         :type epoch: :py:class:`Epoch`
 
-        :returns: The time when the inferior conjunction happens, as an Epoch
+        :returns: Time when the 1st statin in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
 
@@ -7498,7 +7498,7 @@ class Mercury(object):
         :param epoch: Epoch close to the desired inferior conjunction
         :type epoch: :py:class:`Epoch`
 
-        :returns: The time when the inferior conjunction happens, as an Epoch
+        :returns: Time when the 2nd station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
 
