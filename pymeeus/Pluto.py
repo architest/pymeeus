@@ -253,6 +253,7 @@ class Pluto(object):
             in astronomical units), in that order
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the 1885-2099 range.
 
         >>> epoch = Epoch(1992, 10, 13.0)
         >>> l, b, r = Pluto.geometric_heliocentric_position(epoch)
@@ -267,6 +268,10 @@ class Pluto(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < 1885.0 or y > 2099.0:
+            raise ValueError("Epoch outside the 1885-2099 range")
         t = (epoch - JDE2000) / 36525.0
         jj = 34.35 + 3034.9057 * t
         ss = 50.08 + 1222.1138 * t
