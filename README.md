@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.0
+    * Added 'Pluto' class
 * 0.2.11
     * Added conjunction and opposition methods for Jupiter, Saturn, Uranus and Neptune
 * 0.2.10
