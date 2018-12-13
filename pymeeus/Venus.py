@@ -2049,6 +2049,7 @@ class Venus(object):
         :returns: The time when the inferior conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1882, 12, 1.0)
         >>> conjunction = Venus.inferior_conjunction(epoch)
@@ -2064,13 +2065,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' inferior conjunction
         a = 2451996.706
         b = 583.921361
         m0 = 82.7311
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -2098,6 +2101,7 @@ class Venus(object):
         :returns: The time when the superior conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> conjunction = Venus.superior_conjunction(epoch)
@@ -2113,13 +2117,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' superior conjunction
         a = 2451704.746
         b = 583.921361
         m0 = 154.9745
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -2148,6 +2154,7 @@ class Venus(object):
             an Epoch, and the maximum elongation angle, as an Angle
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2019, 1, 1.0)
         >>> time, elongation = Venus.western_elongation(epoch)
@@ -2165,13 +2172,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' inferior conjunction
         a = 2451996.706
         b = 583.921361
         m0 = 82.7311
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -2206,6 +2215,7 @@ class Venus(object):
             an Epoch, and the maximum elongation angle, as an Angle
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2019, 10, 1.0)
         >>> time, elongation = Venus.eastern_elongation(epoch)
@@ -2223,13 +2233,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' inferior conjunction
         a = 2451996.706
         b = 583.921361
         m0 = 82.7311
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -2264,6 +2276,7 @@ class Venus(object):
         :returns: Time when the 1st station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2018, 12, 1.0)
         >>> sta1 = Venus.station_longitude_1(epoch)
@@ -2279,13 +2292,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' inferior conjunction
         a = 2451996.706
         b = 583.921361
         m0 = 82.7311
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -2314,6 +2329,7 @@ class Venus(object):
         :returns: Time when the 2nd station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2018, 12, 1.0)
         >>> sta2 = Venus.station_longitude_2(epoch)
@@ -2329,13 +2345,15 @@ class Venus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Venus' inferior conjunction
         a = 2451996.706
         b = 583.921361
         m0 = 82.7311
         m1 = 215.513058
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1

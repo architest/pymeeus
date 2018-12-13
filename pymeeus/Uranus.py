@@ -4350,6 +4350,7 @@ class Uranus(object):
         :returns: The time when the conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> conj = Uranus.conjunction(epoch)
@@ -4365,13 +4366,15 @@ class Uranus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Uranus' conjunction
         a = 2451579.489
         b = 369.656035
         m0 = 31.5219
         m1 = 4.333093
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -4406,6 +4409,7 @@ class Uranus(object):
         :returns: The time when the opposition happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1780, 12, 1.0)
         >>> oppo = Uranus.opposition(epoch)
@@ -4421,13 +4425,15 @@ class Uranus(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Uranus' opposition
         a = 2451764.317
         b = 369.656035
         m0 = 213.6884
         m1 = 4.333093
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1

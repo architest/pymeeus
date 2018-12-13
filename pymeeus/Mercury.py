@@ -7195,6 +7195,7 @@ class Mercury(object):
         :returns: The time when the inferior conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> conjunction = Mercury.inferior_conjunction(epoch)
@@ -7219,13 +7220,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's inferior conjunction
         a = 2451612.023
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7257,6 +7260,7 @@ class Mercury(object):
         :returns: The time when the superior conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> conjunction = Mercury.superior_conjunction(epoch)
@@ -7272,13 +7276,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's superior conjunction
         a = 2451554.084
         b = 115.8774771
         m0 = 6.4822
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7311,6 +7317,7 @@ class Mercury(object):
             an Epoch, and the maximum elongation angle, as an Angle
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 11, 1.0)
         >>> time, elongation = Mercury.western_elongation(epoch)
@@ -7328,13 +7335,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's inferior conjunction
         a = 2451612.023
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7379,6 +7388,7 @@ class Mercury(object):
             an Epoch, and the maximum elongation angle, as an Angle
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1990, 8, 1.0)
         >>> time, elongation = Mercury.eastern_elongation(epoch)
@@ -7396,13 +7406,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's inferior conjunction
         a = 2451612.023
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7447,6 +7459,7 @@ class Mercury(object):
         :returns: Time when the 1st statin in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> sta1 = Mercury.station_longitude_1(epoch)
@@ -7462,13 +7475,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's inferior conjunction
         a = 2451612.023
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -7501,6 +7516,7 @@ class Mercury(object):
         :returns: Time when the 2nd station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(1993, 10, 1.0)
         >>> sta2 = Mercury.station_longitude_2(epoch)
@@ -7516,13 +7532,15 @@ class Mercury(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Mercury's inferior conjunction
         a = 2451612.023
         b = 115.8774771
         m0 = 63.5867
         m1 = 114.2088742
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1

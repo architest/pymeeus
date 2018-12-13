@@ -6126,6 +6126,7 @@ class Saturn(object):
         :returns: The time when the conjunction happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2125, 6, 1.0)
         >>> conj = Saturn.conjunction(epoch)
@@ -6141,13 +6142,15 @@ class Saturn(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Saturn's conjunction
         a = 2451681.124
         b = 378.091904
         m0 = 131.6934
         m1 = 12.647487
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -6193,6 +6196,7 @@ class Saturn(object):
         :returns: The time when the opposition happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(-6, 9, 1.0)
         >>> oppo = Saturn.opposition(epoch)
@@ -6208,13 +6212,15 @@ class Saturn(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Saturn's opposition
         a = 2451870.17
         b = 378.091904
         m0 = 318.0172
         m1 = 12.647487
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -6261,6 +6267,7 @@ class Saturn(object):
         :returns: Time when the 1st station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2018, 11, 1.0)
         >>> sta1 = Saturn.station_longitude_1(epoch)
@@ -6276,13 +6283,15 @@ class Saturn(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Saturn's opposition
         a = 2451870.17
         b = 378.091904
         m0 = 318.0172
         m1 = 12.647487
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
@@ -6329,6 +6338,7 @@ class Saturn(object):
         :returns: Time when the 2nd station in longitude happens, as an Epoch
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the -2000/4000 range.
 
         >>> epoch = Epoch(2018, 11, 1.0)
         >>> sta2 = Saturn.station_longitude_2(epoch)
@@ -6344,13 +6354,15 @@ class Saturn(object):
         # First check that input value is of correct types
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < -2000.0 or y > 4000.0:
+            raise ValueError("Epoch outside the -2000/4000 range")
         # Set some specific constants for Saturn's opposition
         a = 2451870.17
         b = 378.091904
         m0 = 318.0172
         m1 = 12.647487
-        # Get the year with decimals
-        y = epoch.year()
         k = round((365.2425 * y + 1721060.0 - a) / b)
         jde0 = a + k * b
         m = m0 + k * m1
