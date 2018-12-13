@@ -18,16 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos
+from math import sin, cos, sqrt, asin, atan2
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
-# from pymeeus.Coordinates import (
-#     geometric_vsop_pos, apparent_vsop_pos, orbital_elements,
-#     nutation_longitude, true_obliquity, ecliptical2equatorial
-# )
-# from pymeeus.Earth import Earth
-# from pymeeus.Sun import Sun
+from pymeeus.Sun import Sun
 
 
 """
@@ -241,7 +236,7 @@ class Pluto(object):
     """
 
     @staticmethod
-    def geometric_heliocentric_position(epoch, tofk5=True):
+    def geometric_heliocentric_position(epoch):
         """This method computes the geometric heliocentric position of planet
         Pluto for a given epoch.
 
@@ -300,6 +295,76 @@ class Pluto(object):
         lat = Angle(-3.908239 + corr_lat)
         radius = 40.7241346 + corr_rad
         return lon, lat, radius
+
+    @staticmethod
+    def geocentric_position(epoch):
+        """This method computes the geocentric position of Pluto (right
+        ascension and declination) for the given epoch, for the standard
+        equinox J2000.0.
+
+        :param epoch: Epoch to compute geocentric position, as an Epoch object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: A tuple containing the right ascension and the declination as
+            Angle objects
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+        :raises: ValueError if input epoch outside the 1885-2099 range.
+
+        >>> epoch = Epoch(1992, 10, 13.0)
+        >>> ra, dec = Pluto.geocentric_position(epoch)
+        >>> print(ra.ra_str(n_dec=1))
+        15h 31' 43.7''
+        >>> print(dec.dms_str(n_dec=0))
+        -4d 27' 29.0''
+        """
+
+        # First check that input value is of correct types
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Check that the input epoch is within valid range
+        y = epoch.year()
+        if y < 1885.0 or y > 2099.0:
+            raise ValueError("Epoch outside the 1885-2099 range")
+        # Compute the heliocentric position of Pluto
+        ll, b, r = Pluto.geometric_heliocentric_position(epoch)
+        # Change angles to radians
+        ll = ll.rad()
+        b = b.rad()
+        # Values corresponding to obliquity of ecliptic (epsilon) for J2000.0
+        sine = 0.397777156
+        cose = 0.917482062
+        x = r * cos(ll) * cos(b)
+        y = r * (sin(ll) * cos(b) * cose - sin(b) * sine)
+        z = r * (sin(ll) * cos(b) * sine + sin(b) * cose)
+        # Compute Sun's J2000.0 rectacngular coordinates
+        xs, ys, zs = Sun.rectangular_coordinates_j2000(epoch)
+        # Compute auxiliary quantities
+        xi = x + xs
+        eta = y + ys
+        zeta = z + zs
+        # Compute Pluto's distance to Earth
+        delta = sqrt(xi * xi + eta * eta + zeta * zeta)
+        # Get the light-time difference
+        tau = 0.0057755183 * delta
+        # Repeat the computations using the light-time correction
+        ll, b, r = Pluto.geometric_heliocentric_position(epoch - tau)
+        # Change angles to radians
+        ll = ll.rad()
+        b = b.rad()
+        x = r * cos(ll) * cos(b)
+        y = r * (sin(ll) * cos(b) * cose - sin(b) * sine)
+        z = r * (sin(ll) * cos(b) * sine + sin(b) * cose)
+        # Compute auxiliary quantities
+        xi = x + xs
+        eta = y + ys
+        zeta = z + zs
+        # Compute Pluto's distance to Earth
+        delta = sqrt(xi * xi + eta * eta + zeta * zeta)
+        # Compute right ascension and declination
+        alpha = Angle(atan2(eta, xi), radians=True)
+        dec = Angle(asin(zeta / delta), radians=True)
+        return alpha.to_positive(), dec
 
 
 def main():
