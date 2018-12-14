@@ -25,6 +25,24 @@ We can compute the geometric heliocentric position for a given epoch::
 
     # Radius vector: 10.06266
 
+Compute the geocentric position for 1992/12/20::
+
+    epoch = Epoch(1992, 12, 20.0)
+
+    ra, dec, elon = Saturn.geocentric_position(epoch)
+
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+
+    # Right ascension: 21h 11' 41.8''
+
+    print_me("Declination", dec.dms_str(n_dec=1))
+
+    # Declination: -17d 15' 40.8''
+
+    print_me("Elongation", elon.dms_str(n_dec=1))
+
+    # Elongation: 46d 51' 47.7''
+
 Print mean orbital elements for Saturn at 2065.6.24::
 
     epoch = Epoch(2065, 6, 24.0)

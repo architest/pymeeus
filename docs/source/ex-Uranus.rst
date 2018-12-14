@@ -25,6 +25,24 @@ We can compute the geometric heliocentric position for a given epoch::
 
     # Radius vector: 19.86964
 
+Compute the geocentric position for 1992/12/20::
+
+    epoch = Epoch(1992, 12, 20.0)
+
+    ra, dec, elon = Uranus.geocentric_position(epoch)
+
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+
+    # Right ascension: 19h 13' 48.7''
+
+    print_me("Declination", dec.dms_str(n_dec=1))
+
+    # Declination: -22d 46' 13.0''
+
+    print_me("Elongation", elon.dms_str(n_dec=1))
+
+    # Elongation: 18d 44' 18.7''
+
 Print mean orbital elements for Uranus at 2065.6.24::
 
     epoch = Epoch(2065, 6, 24.0)

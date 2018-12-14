@@ -25,6 +25,24 @@ We can compute the geometric heliocentric position for a given epoch::
 
     # Radius vector: 29.93966
 
+Compute the geocentric position for 1992/12/20::
+
+    epoch = Epoch(1992, 12, 20.0)
+
+    ra, dec, elon = Neptune.geocentric_position(epoch)
+
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+
+    # Right ascension: 19h 17' 14.5''
+
+    print_me("Declination", dec.dms_str(n_dec=1))
+
+    # Declination: -21d 34' 15.1''
+
+    print_me("Elongation", elon.dms_str(n_dec=1))
+
+    # Elongation: 19d 44' 59.6''
+
 Print mean orbital elements for Neptune at 2065.6.24::
 
     epoch = Epoch(2065, 6, 24.0)

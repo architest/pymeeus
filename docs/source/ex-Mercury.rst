@@ -25,6 +25,24 @@ We can compute the geometric heliocentric position for a given epoch::
 
     # Radius vector: 0.45113
 
+Compute the geocentric position for 1992/12/20::
+
+    epoch = Epoch(1992, 12, 20.0)
+
+    ra, dec, elon = Mercury.geocentric_position(epoch)
+
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+
+    # Right ascension: 16h 33' 59.3''
+
+    print_me("Declination", dec.dms_str(n_dec=1))
+
+    # Declination: -20d 53' 31.6''
+
+    print_me("Elongation", elon.dms_str(n_dec=1))
+
+    # Elongation: 18d 24' 29.8''
+
 Print mean orbital elements for Mercury at 2065.6.24::
 
     epoch = Epoch(2065, 6, 24.0)
