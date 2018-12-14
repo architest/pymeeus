@@ -23,6 +23,7 @@
    Mercury
    Minor
    Neptune
+   Pluto
    Saturn
    Sun
    Uranus
@@ -44,6 +45,7 @@
    ex-Mercury
    ex-Minor
    ex-Neptune
+   ex-Pluto
    ex-Saturn
    ex-Sun
    ex-Uranus

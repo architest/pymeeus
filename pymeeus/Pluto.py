@@ -379,11 +379,19 @@ def main():
     print(35 * "*" + "\n")
 
     # Let's now compute the heliocentric position for a given epoch
-    epoch = Epoch(1992, 12, 20.0)
+    epoch = Epoch(1992, 10, 13.0)
     lon, lat, r = Pluto.geometric_heliocentric_position(epoch)
     print_me("Geometric Heliocentric Longitude", lon.to_positive())
     print_me("Geometric Heliocentric Latitude", lat)
     print_me("Radius vector", r)
+
+    print("")
+
+    # Compute the geocentric position for 1992/10/13:
+    epoch = Epoch(1992, 10, 13.0)
+    ra, dec = Pluto.geocentric_position(epoch)
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+    print_me("Declination", dec.dms_str(n_dec=1))
 
 
 if __name__ == "__main__":
