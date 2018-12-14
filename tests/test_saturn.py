@@ -91,6 +91,22 @@ def test_saturn_orbital_elements_j2000():
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
 
 
+def test_saturn_geocentric_position():
+    """Tests the geocentric_position() method of Saturn class"""
+
+    epoch = Epoch(1992, 12, 20.0)
+    ra, dec, elon = Saturn.geocentric_position(epoch)
+
+    assert ra.ra_str(n_dec=1) == "21h 11' 41.8''", \
+        "ERROR: 1st geocentric_position() test doesn't match"
+
+    assert dec.dms_str(n_dec=1) == "-17d 15' 40.8''", \
+        "ERROR: 2nd geocentric_position() test doesn't match"
+
+    assert elon.dms_str(n_dec=1) == "46d 51' 47.7''", \
+        "ERROR: 3rd geocentric_position() test doesn't match"
+
+
 def test_saturn_conjunction():
     """Tests the conjunction() method of Saturn class"""
 
