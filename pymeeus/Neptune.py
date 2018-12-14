@@ -2205,7 +2205,7 @@ class Neptune(object):
         >>> print(dec.dms_str(n_dec=1))
         -21d 34' 15.1''
         >>> print(elon.dms_str(n_dec=1))
-        72d 5' 22.3''
+        19d 44' 59.6''
         """
 
         # First check that input value is of correct types
@@ -2271,9 +2271,9 @@ class Neptune(object):
         e = true_obliquity(epoch)
         ra, dec = ecliptical2equatorial(lamb, beta, e)
         # Let's compute the elongation angle
-        ls, ls, rs = Sun.apparent_geocentric_position(epoch)
+        lons, lats, rs = Sun.apparent_geocentric_position(epoch)
         lambr = lamb.rad()
-        lsr = ls.rad()
+        lsr = lons.rad()
         betar = beta.rad()
         elon = acos(cos(betar) * cos(lambr - lsr))
         elon = Angle(elon, radians=True)
