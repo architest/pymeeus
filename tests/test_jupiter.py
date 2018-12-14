@@ -103,7 +103,7 @@ def test_jupiter_geocentric_position():
     assert dec.dms_str(n_dec=1) == "-3d 41' 55.3''", \
         "ERROR: 2nd geocentric_position() test doesn't match"
 
-    assert elon.dms_str(n_dec=1) == "167d 39' 3.5''", \
+    assert elon.dms_str(n_dec=1) == "76d 2' 26.0''", \
         "ERROR: 3rd geocentric_position() test doesn't match"
 
 
