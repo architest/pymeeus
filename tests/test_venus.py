@@ -91,6 +91,22 @@ def test_venus_orbital_elements_j2000():
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
 
 
+def test_venus_geocentric_position():
+    """Tests the geocentric_position() method of Venus class"""
+
+    epoch = Epoch(1992, 12, 20.0)
+    ra, dec, elon = Venus.geocentric_position(epoch)
+
+    assert ra.ra_str(n_dec=1) == "21h 4' 41.5''", \
+        "ERROR: 1st geocentric_position() test doesn't match"
+
+    assert dec.dms_str(n_dec=1) == "-18d 53' 16.8''", \
+        "ERROR: 2nd geocentric_position() test doesn't match"
+
+    assert elon.dms_str(n_dec=1) == "44d 46' 8.9''", \
+        "ERROR: 3rd geocentric_position() test doesn't match"
+
+
 def test_venus_inferior_conjunction():
     """Tests the inferior_conjunction() method of Venus class"""
 
