@@ -91,6 +91,22 @@ def test_jupiter_orbital_elements_j2000():
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
 
 
+def test_jupiter_geocentric_position():
+    """Tests the geocentric_position() method of Jupiter class"""
+
+    epoch = Epoch(1992, 12, 20.0)
+    ra, dec, elon = Jupiter.geocentric_position(epoch)
+
+    assert ra.ra_str(n_dec=1) == "12h 47' 9.6''", \
+        "ERROR: 1st geocentric_position() test doesn't match"
+
+    assert dec.dms_str(n_dec=1) == "-3d 41' 55.3''", \
+        "ERROR: 2nd geocentric_position() test doesn't match"
+
+    assert elon.dms_str(n_dec=1) == "167d 39' 3.5''", \
+        "ERROR: 3rd geocentric_position() test doesn't match"
+
+
 def test_jupiter_conjunction():
     """Tests the conjunction() method of Jupiter class"""
 
