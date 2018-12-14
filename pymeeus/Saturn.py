@@ -6418,6 +6418,15 @@ def main():
 
     print("")
 
+    # Compute the geocentric position for 1992/12/20:
+    epoch = Epoch(1992, 12, 20.0)
+    ra, dec, elon = Saturn.geocentric_position(epoch)
+    print_me("Right ascension", ra.ra_str(n_dec=1))
+    print_me("Declination", dec.dms_str(n_dec=1))
+    print_me("Elongation", elon.dms_str(n_dec=1))
+
+    print("")
+
     # Print mean orbital elements for Saturn at 2065.6.24
     epoch = Epoch(2065, 6, 24.0)
     l, a, e, i, ome, arg = Saturn.orbital_elements_mean_equinox(epoch)
