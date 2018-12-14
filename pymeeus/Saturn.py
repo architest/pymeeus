@@ -6041,7 +6041,7 @@ class Saturn(object):
         >>> print(dec.dms_str(n_dec=1))
         -17d 15' 40.8''
         >>> print(elon.dms_str(n_dec=1))
-        44d 51' 36.0''
+        46d 51' 47.7''
         """
 
         # First check that input value is of correct types
@@ -6107,9 +6107,9 @@ class Saturn(object):
         e = true_obliquity(epoch)
         ra, dec = ecliptical2equatorial(lamb, beta, e)
         # Let's compute the elongation angle
-        ls, ls, rs = Sun.apparent_geocentric_position(epoch)
+        lons, lats, rs = Sun.apparent_geocentric_position(epoch)
         lambr = lamb.rad()
-        lsr = ls.rad()
+        lsr = lons.rad()
         betar = beta.rad()
         elon = acos(cos(betar) * cos(lambr - lsr))
         elon = Angle(elon, radians=True)
