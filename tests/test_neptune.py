@@ -91,6 +91,22 @@ def test_neptune_orbital_elements_j2000():
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
 
 
+def test_neptune_geocentric_position():
+    """Tests the geocentric_position() method of Neptune class"""
+
+    epoch = Epoch(1992, 12, 20.0)
+    ra, dec, elon = Neptune.geocentric_position(epoch)
+
+    assert ra.ra_str(n_dec=1) == "19h 17' 14.5''", \
+        "ERROR: 1st geocentric_position() test doesn't match"
+
+    assert dec.dms_str(n_dec=1) == "-21d 34' 15.1''", \
+        "ERROR: 2nd geocentric_position() test doesn't match"
+
+    assert elon.dms_str(n_dec=1) == "19d 44' 59.6''", \
+        "ERROR: 3rd geocentric_position() test doesn't match"
+
+
 def test_neptune_conjunction():
     """Tests the conjunction() method of Neptune class"""
 
