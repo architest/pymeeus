@@ -275,8 +275,8 @@ class Pluto(object):
         corr_lon = 0.0
         corr_lat = 0.0
         corr_rad = 0.0
-        for n in range(len(PLUTO_ARGUMENT)):
-            iii, jjj, kkk = PLUTO_ARGUMENT[n]
+        for n, argument in enumerate(PLUTO_ARGUMENT):
+            iii, jjj, kkk = argument
             alpha = Angle(iii * jj + jjj * ss + kkk * pp).to_positive()
             alpha = alpha.rad()
             sin_a = sin(alpha)
