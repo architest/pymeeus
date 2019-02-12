@@ -400,15 +400,15 @@ def nutation_longitude(*args, **kwargs):
     arguments = [d, m, mprime, f, omega]
     # Now is time of using the nutation tables
     deltapsi = 0.0
-    for i in range(len(NUTATION_SINE_COEF_TABLE)):
+    for i, value in enumerate(NUTATION_SINE_COEF_TABLE):
         argument = Angle()
         coeff = 0.0
         for j in range(5):
             if NUTATION_ARG_TABLE[i][j]:  # Avoid multiplications by zero
                 argument += NUTATION_ARG_TABLE[i][j] * arguments[j]
-        coeff = NUTATION_SINE_COEF_TABLE[i][0]
-        if NUTATION_SINE_COEF_TABLE[i][1]:
-            coeff += NUTATION_SINE_COEF_TABLE[i][1] * t
+        coeff = value[0]
+        if value[1]:
+            coeff += value[1] * t
         deltapsi += (coeff * sin(argument.rad())) / 10000.0
     return Angle(0, 0, deltapsi)
 
@@ -475,15 +475,15 @@ def nutation_obliquity(*args, **kwargs):
     arguments = [d, m, mprime, f, omega]
     # Now is time of using the nutation tables
     deltaepsilon = 0.0
-    for i in range(len(NUTATION_COSINE_COEF_TABLE)):
+    for i, value in enumerate(NUTATION_COSINE_COEF_TABLE):
         argument = Angle()
         coeff = 0.0
         for j in range(5):
             if NUTATION_ARG_TABLE[i][j]:  # Avoid multiplications by zero
                 argument += NUTATION_ARG_TABLE[i][j] * arguments[j]
-        coeff = NUTATION_COSINE_COEF_TABLE[i][0]
-        if NUTATION_COSINE_COEF_TABLE[i][1]:
-            coeff += NUTATION_COSINE_COEF_TABLE[i][1] * t
+        coeff = value[0]
+        if value[1]:
+            coeff += value[1] * t
         deltaepsilon += (coeff * cos(argument.rad())) / 10000.0
     return Angle(0, 0, deltaepsilon)
 
