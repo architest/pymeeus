@@ -450,8 +450,8 @@ class CurveFitting(object):
         w = 0
         xl = list(self._x)
         yl = list(self._y)
-        for i in range(len(xl)):
-            x = xl[i]
+        for i, value in enumerate(xl):
+            x = value
             y = yl[i]
             m += f0(x) * f0(x)
             p += f0(x) * f1(x)
