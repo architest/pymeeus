@@ -3211,7 +3211,7 @@ class Earth(object):
         :param epoch: Epoch to compute Earth position, as an Epoch object
         :type epoch: :py:class:`Epoch`
         :param nutation: Whether the nutation correction will be applied
-        :type epoch: bool
+        :type nutation: bool
 
         :returns: A tuple with the heliocentric longitude and latitude (as
             :py:class:`Angle` objects), and the radius vector (as a float,
