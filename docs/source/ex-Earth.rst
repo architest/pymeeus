@@ -180,3 +180,17 @@ Print mean orbital elements for Earth at 2065.6.24::
     print_me("Argument of the perihelion", round(arg, 6))
 
     # Argument of the perihelion: -70.651889
+
+Find the epoch of the Perihelion closer to 2008/02/01::
+
+    epoch = Epoch(2008, 2, 1.0)
+
+    e = Earth.perihelion_aphelion(epoch)
+
+    y, m, d, h, mi, s = e.get_full_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' ' + str(h) + ':' + str(mi)
+
+    print_me("The Perihelion closest to 2008/2/1 happened on", peri)
+
+    # The Perihelion closest to 2008/2/1 happened on: 2008/1/2 23:53

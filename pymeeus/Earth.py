@@ -22,6 +22,7 @@ from math import sqrt, radians, sin, cos, tan, atan
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch
+from pymeeus.Interpolation import Interpolation
 from pymeeus.Coordinates import (
     geometric_vsop_pos, apparent_vsop_pos, orbital_elements
 )
@@ -3326,6 +3327,109 @@ class Earth(object):
 
         return orbital_elements(epoch, ORBITAL_ELEM, ORBITAL_ELEM_J2000)
 
+    @staticmethod
+    def perihelion_aphelion(epoch, perihelion=True):
+        """This method computes the time of Perihelion (or Aphelion) closer to
+        a given epoch.
+
+        :param epoch: Epoch close to the desired Perihelion (or Aphelion)
+        :type epoch: :py:class:`Epoch`
+        :param peihelion: If True, the epoch of the closest Perihelion is
+            computed, if False, the epoch of the closest Aphelion is found.
+        :type bool:
+
+        :returns: The epoch of the desired Perihelion (or Aphelion)
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1989, 11, 20.0)
+        >>> e = Earth.perihelion_aphelion(epoch)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        1990
+        >>> print(m)
+        1
+        >>> print(d)
+        4
+        >>> print(h)
+        17
+        >>> epoch = Epoch(2000, 4, 1.0)
+        >>> e = Earth.perihelion_aphelion(epoch, perihelion=False)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        2000
+        >>> print(m)
+        7
+        >>> print(d)
+        3
+        >>> print(h)
+        23
+        >>> print(mi)
+        51
+        >>> epoch = Epoch(2003, 3, 10.0)
+        >>> e = Earth.perihelion_aphelion(epoch)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        2003
+        >>> print(m)
+        1
+        >>> print(d)
+        4
+        >>> print(h)
+        5
+        >>> print(mi)
+        1
+        >>> epoch = Epoch(2009, 5, 1.0)
+        >>> e = Earth.perihelion_aphelion(epoch, perihelion=False)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        2009
+        >>> print(m)
+        7
+        >>> print(d)
+        4
+        >>> print(h)
+        1
+        >>> print(mi)
+        41
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input value")
+        # First approximation
+        k = 0.99997 * (epoch.year() - 2000.01)
+        if perihelion:
+            k = round(k)
+        else:
+            k = round(k + 0.5) - 0.5
+        jde = 2451547.507 + k * (365.2596358 + k * 0.0000000156)
+        # Compute correction to first approximation
+        a1 = Angle(328.41 + 132.788585 * k)
+        a2 = Angle(316.13 + 584.903153 * k)
+        a3 = Angle(346.20 + 450.380738 * k)
+        a4 = Angle(136.95 + 659.306737 * k)
+        a5 = Angle(249.52 + 329.653368 * k)
+        if perihelion:
+            corr = (1.278 * sin(a1.rad()) - 0.055 * sin(a2.rad())
+                    - 0.091 * sin(a3.rad()) - 0.056 * sin(a4.rad())
+                    - 0.045 * sin(a5.rad()))
+        else:
+            corr = (-1.352 * sin(a1.rad()) + 0.061 * sin(a2.rad())
+                    + 0.062 * sin(a3.rad()) + 0.029 * sin(a4.rad())
+                    + 0.031 * sin(a5.rad()))
+        jde += corr
+        # Compute the epochs half a day before and after
+        jde_before = jde - 0.5
+        jde_after = jde + 0.5
+        # Compute the Sun-Earth distance for each epoch
+        l, b, r_b = Earth.geometric_heliocentric_position(Epoch(jde_before))
+        l, b, r = Earth.geometric_heliocentric_position(Epoch(jde))
+        l, b, r_a = Earth.geometric_heliocentric_position(Epoch(jde_after))
+        # Call an interpolation object
+        m = Interpolation([jde_before, jde, jde_after], [r_b, r, r_a])
+        sol = m.minmax()
+        return Epoch(sol)
+
 
 def main():
 
@@ -3452,6 +3556,15 @@ def main():
     print_me("Inclination on plane of the ecliptic", round(i, 6))   # 0.0
     print_me("Longitude of the ascending node", round(ome, 5))  # 174.71534
     print_me("Argument of the perihelion", round(arg, 6))       # -70.651889
+
+    print("")
+
+    # Find the epoch of the Perihelion closer to 2008/02/01
+    epoch = Epoch(2008, 2, 1.0)
+    e = Earth.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' ' + str(h) + ':' + str(mi)
+    print_me("The Perihelion closest to 2008/2/1 happened on", peri)
 
 
 if __name__ == "__main__":

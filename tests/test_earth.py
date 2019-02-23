@@ -209,3 +209,45 @@ def test_earth_orbital_elements_j2000():
 
     assert abs(round(arg, 6) - (-71.566717)) < TOL, \
         "ERROR: 6th orbital_elements_j2000() test doesn't match"
+
+
+def test_earth_perihelion_aphelion():
+    """Tests the perihelion_aphelion() method of Earth class"""
+
+    epoch = Epoch(2003, 3, 10.0)
+    e = Earth.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2003) < TOL, \
+        "ERROR: 1st perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 1) < TOL, \
+        "ERROR: 2nd perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 4) < TOL, \
+        "ERROR: 3rd perihelion_aphelion() test doesn't match"
+
+    assert abs(h - 5) < TOL, \
+        "ERROR: 4th perihelion_aphelion() test doesn't match"
+
+    assert abs(mi - 1) < TOL, \
+        "ERROR: 5th perihelion_aphelion() test doesn't match"
+
+    epoch = Epoch(2009, 5, 1.0)
+    e = Earth.perihelion_aphelion(epoch, perihelion=False)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2009) < TOL, \
+        "ERROR: 6th perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 7) < TOL, \
+        "ERROR: 7th perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 4) < TOL, \
+        "ERROR: 8th perihelion_aphelion() test doesn't match"
+
+    assert abs(h - 1) < TOL, \
+        "ERROR: 9th perihelion_aphelion() test doesn't match"
+
+    assert abs(mi - 41) < TOL, \
+        "ERROR: 10th perihelion_aphelion() test doesn't match"
