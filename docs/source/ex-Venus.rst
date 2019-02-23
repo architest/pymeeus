@@ -180,3 +180,17 @@ Compute the time of the station in longitude #2 close to 2018/12/1::
     print_me("Date of station in longitude #2", date)
 
     # Date of station in longitude #2: 2018/11/16.439
+
+Find the epoch of the Perihelion closer to 1978/10/15::
+
+    epoch = Epoch(1978, 10, 15.0)
+
+    e = Venus.perihelion_aphelion(epoch)
+
+    y, m, d, h, mi, s = e.get_full_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
+
+    print_me("The Perihelion closest to 1978/10/15 happened on", peri)
+
+    # The Perihelion closest to 1978/10/15 happened on: 1978/12/31 at 4 hours
