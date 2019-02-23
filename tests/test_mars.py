@@ -173,3 +173,39 @@ def test_mars_station_longitude_2():
 
     assert abs(round(d, 4) - 27.7553) < TOL, \
         "ERROR: 3rd station_longitude_2() test doesn't match"
+
+
+def test_mars_perihelion_aphelion():
+    """Tests the perihelion_aphelion() method of Mars class"""
+
+    epoch = Epoch(2019, 2, 23.0)
+    e = Mars.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2018) < TOL, \
+        "ERROR: 1st perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 9) < TOL, \
+        "ERROR: 2nd perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 16) < TOL, \
+        "ERROR: 3rd perihelion_aphelion() test doesn't match"
+
+    assert abs(h - 12) < TOL, \
+        "ERROR: 4th perihelion_aphelion() test doesn't match"
+
+    epoch = Epoch(2032, 1, 1.0)
+    e = Mars.perihelion_aphelion(epoch, perihelion=False)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2032) < TOL, \
+        "ERROR: 5th perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 10) < TOL, \
+        "ERROR: 6th perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 24) < TOL, \
+        "ERROR: 7th perihelion_aphelion() test doesn't match"
+
+    assert abs(h - 22) < TOL, \
+        "ERROR: 8th perihelion_aphelion() test doesn't match"

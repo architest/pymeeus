@@ -136,3 +136,17 @@ Compute the time of the station in longitude #2 close to 1997/3/1::
     print_me("Date of station in longitude #2", date)
 
     # Date of station in longitude #2: 1997/4/27.7553
+
+Find the epoch of the Aphelion closer to 2032/1/1::
+
+    epoch = Epoch(2032, 1, 1.0)
+
+    e = Mars.perihelion_aphelion(epoch, perihelion=False)
+
+    y, m, d, h, mi, s = e.get_full_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
+
+    print_me("The Aphelion closest to 2032/1/1 will happen on", peri)
+
+    # The Aphelion closest to 2032/1/1 will happen on: 2032/10/24 at 22 hours
