@@ -7613,7 +7613,7 @@ class Mercury(object):
         # Compute the epochs half a day before and after
         jde_before = jde - 0.5
         jde_after = jde + 0.5
-        # Compute the Sun-Earth distance for each epoch
+        # Compute the Sun-Mercury distance for each epoch
         l, b, r_b = Mercury.geometric_heliocentric_position(Epoch(jde_before))
         l, b, r = Mercury.geometric_heliocentric_position(Epoch(jde))
         l, b, r_a = Mercury.geometric_heliocentric_position(Epoch(jde_after))

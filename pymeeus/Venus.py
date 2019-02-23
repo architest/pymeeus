@@ -2422,7 +2422,7 @@ class Venus(object):
         # Compute the epochs half a day before and after
         jde_before = jde - 0.5
         jde_after = jde + 0.5
-        # Compute the Sun-Earth distance for each epoch
+        # Compute the Sun-Venus distance for each epoch
         l, b, r_b = Venus.geometric_heliocentric_position(Epoch(jde_before))
         l, b, r = Venus.geometric_heliocentric_position(Epoch(jde))
         l, b, r_a = Venus.geometric_heliocentric_position(Epoch(jde_after))

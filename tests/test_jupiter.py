@@ -209,5 +209,3 @@ def test_jupiter_perihelion_aphelion():
 
     assert abs(h - 6) < TOL, \
         "ERROR: 8th perihelion_aphelion() test doesn't match"
-
-
