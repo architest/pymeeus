@@ -22,6 +22,7 @@ from math import sin, cos, tan, acos, atan2, sqrt, radians
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Interpolation import Interpolation
 from pymeeus.Coordinates import (
     geometric_vsop_pos, apparent_vsop_pos, orbital_elements,
     nutation_longitude, true_obliquity, ecliptical2equatorial
@@ -4457,6 +4458,65 @@ class Uranus(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def perihelion_aphelion(epoch, perihelion=True):
+        """This method computes the time of Perihelion (or Aphelion) closer to
+        a given epoch.
+
+        :param epoch: Epoch close to the desired Perihelion (or Aphelion)
+        :type epoch: :py:class:`Epoch`
+        :param peihelion: If True, the epoch of the closest Perihelion is
+            computed, if False, the epoch of the closest Aphelion is found.
+        :type bool:
+
+        :returns: The epoch of the desired Perihelion (or Aphelion)
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of wrong type.
+
+        .. note:: The solution provided by this method may have several days of
+            error.
+
+        >>> epoch = Epoch(1880, 1, 1.0)
+        >>> e = Uranus.perihelion_aphelion(epoch)
+        >>> y, m, d = e.get_date()
+        >>> print(y)
+        1882
+        >>> print(m)
+        3
+        >>> print(int(d))
+        18
+        >>> epoch = Epoch(2090, 1, 1.0)
+        >>> e = Uranus.perihelion_aphelion(epoch, perihelion=False)
+        >>> y, m, d = e.get_date()
+        >>> print(y)
+        2092
+        >>> print(m)
+        11
+        >>> print(int(d))
+        22
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input value")
+        # First approximation
+        k = 0.0119 * (epoch.year() - 2051.1)
+        if perihelion:
+            k = round(k)
+        else:
+            k = round(k + 0.5) - 0.5
+        jde = 2470213.5 + k * (30694.8767 - k * 0.00541)
+        # Compute the epochs 1 year before and after
+        jde_before = jde - 360.0
+        jde_after = jde + 360.0
+        # Compute the Sun-Uranus distance for each epoch
+        l, b, r_b = Uranus.geometric_heliocentric_position(Epoch(jde_before))
+        l, b, r = Uranus.geometric_heliocentric_position(Epoch(jde))
+        l, b, r_a = Uranus.geometric_heliocentric_position(Epoch(jde_after))
+        # Call an interpolation object
+        m = Interpolation([jde_before, jde, jde_after], [r_b, r, r_a])
+        sol = m.minmax()
+        return Epoch(sol)
+
 
 def main():
 
@@ -4514,6 +4574,15 @@ def main():
     d = round(d, 4)
     date = "{}/{}/{}".format(y, m, d)
     print_me("Opposition date", date)
+
+    print("")
+
+    # Find the epoch of the Perihelion closer to 1780/1/1
+    epoch = Epoch(1780, 1, 1.0)
+    e = Uranus.perihelion_aphelion(epoch)
+    y, m, d = e.get_date()
+    peri = str(y) + '/' + str(m) + '/' + str(int(d))
+    print_me("The Perihelion closest to 1780/1/1 happened on", peri)
 
 
 if __name__ == "__main__":

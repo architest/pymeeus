@@ -104,3 +104,17 @@ Compute the time of the opposition close to 1780/12/1::
     print_me("Opposition date", date)
 
     # Opposition date: 1780/12/17.5998
+
+Find the epoch of the Perihelion closer to 1780/1/1::
+
+    epoch = Epoch(1780, 1, 1.0)
+
+    e = Uranus.perihelion_aphelion(epoch)
+
+    y, m, d = e.get_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(int(d))
+
+    print_me("The Perihelion closest to 1780/1/1 happened on", peri)
+
+    # The Perihelion closest to 1780/1/1 happened on: 1798/2/26

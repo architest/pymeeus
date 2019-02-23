@@ -139,3 +139,33 @@ def test_uranus_opposition():
 
     assert abs(round(d, 4) - 17.5998) < TOL, \
         "ERROR: 3rd opposition() test doesn't match"
+
+
+def test_uranus_perihelion_aphelion():
+    """Tests the perihelion_aphelion() method of Uranus class"""
+
+    epoch = Epoch(1960, 1, 1.0)
+    e = Uranus.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 1966) < TOL, \
+        "ERROR: 1st perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 5) < TOL, \
+        "ERROR: 2nd perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 18) < TOL, \
+        "ERROR: 3rd perihelion_aphelion() test doesn't match"
+
+    epoch = Epoch(2009, 1, 1.0)
+    e = Uranus.perihelion_aphelion(epoch, perihelion=False)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2009) < TOL, \
+        "ERROR: 4th perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 2) < TOL, \
+        "ERROR: 5th perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 23) < TOL, \
+        "ERROR: 6th perihelion_aphelion() test doesn't match"
