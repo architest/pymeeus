@@ -22,6 +22,7 @@ from math import sin, cos, tan, acos, atan2, sqrt, radians
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Interpolation import Interpolation
 from pymeeus.Coordinates import (
     geometric_vsop_pos, apparent_vsop_pos, orbital_elements,
     nutation_longitude, true_obliquity, ecliptical2equatorial
@@ -7561,6 +7562,66 @@ class Mercury(object):
         to_return = jde0 + corr
         return Epoch(to_return)
 
+    @staticmethod
+    def perihelion_aphelion(epoch, perihelion=True):
+        """This method computes the time of Perihelion (or Aphelion) closer to
+        a given epoch.
+
+        :param epoch: Epoch close to the desired Perihelion (or Aphelion)
+        :type epoch: :py:class:`Epoch`
+        :param peihelion: If True, the epoch of the closest Perihelion is
+            computed, if False, the epoch of the closest Aphelion is found.
+        :type bool:
+
+        :returns: The epoch of the desired Perihelion (or Aphelion)
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2000, 1, 1.0)
+        >>> e = Mercury.perihelion_aphelion(epoch)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        2000
+        >>> print(m)
+        2
+        >>> print(d)
+        15
+        >>> print(h)
+        18
+        >>> epoch = Epoch(2000, 3, 1.0)
+        >>> e = Mercury.perihelion_aphelion(epoch, perihelion=False)
+        >>> y, m, d, h, mi, s = e.get_full_date()
+        >>> print(y)
+        2000
+        >>> print(m)
+        3
+        >>> print(d)
+        30
+        >>> print(h)
+        17
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input value")
+        # First approximation
+        k = 4.15201 * (epoch.year() - 2000.12)
+        if perihelion:
+            k = round(k)
+        else:
+            k = round(k + 0.5) - 0.5
+        jde = 2451590.257 + k * 87.96934963
+        # Compute the epochs half a day before and after
+        jde_before = jde - 0.5
+        jde_after = jde + 0.5
+        # Compute the Sun-Earth distance for each epoch
+        l, b, r_b = Mercury.geometric_heliocentric_position(Epoch(jde_before))
+        l, b, r = Mercury.geometric_heliocentric_position(Epoch(jde))
+        l, b, r_a = Mercury.geometric_heliocentric_position(Epoch(jde_after))
+        # Call an interpolation object
+        m = Interpolation([jde_before, jde, jde_after], [r_b, r, r_a])
+        sol = m.minmax()
+        return Epoch(sol)
+
 
 def main():
 
@@ -7660,6 +7721,15 @@ def main():
     d = round(d, 4)
     date = "{}/{}/{}".format(y, m, d)
     print_me("Date of station in longitude #2", date)
+
+    print("")
+
+    # Find the epoch of the Perihelion closer to 2000/01/01
+    epoch = Epoch(2000, 1, 1.0)
+    e = Mercury.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
+    print_me("The Perihelion closest to 2000/1/1 happened on", peri)
 
 
 if __name__ == "__main__":

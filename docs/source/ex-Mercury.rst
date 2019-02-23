@@ -180,3 +180,17 @@ Compute the time of the station in longitude #2 close to 1993/10/1::
     print_me("Date of station in longitude #2", date)
 
     # Date of station in longitude #2: 1993/11/15.0724
+
+Find the epoch of the Perihelion closer to 2000/01/01::
+
+    epoch = Epoch(2000, 1, 1.0)
+
+    e = Mercury.perihelion_aphelion(epoch)
+
+    y, m, d, h, mi, s = e.get_full_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
+
+    print_me("The Perihelion closest to 2000/1/1 happened on", peri)
+
+    # The Perihelion closest to 2000/1/1 happened on: 2000/2/15 at 18 hours
