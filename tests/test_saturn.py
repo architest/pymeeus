@@ -173,3 +173,33 @@ def test_saturn_station_longitude_2():
 
     assert abs(round(d, 4) - 6.4175) < TOL, \
         "ERROR: 3rd station_longitude_2() test doesn't match"
+
+
+def test_saturn_perihelion_aphelion():
+    """Tests the perihelion_aphelion() method of Saturn class"""
+
+    epoch = Epoch(2030, 1, 1.0)
+    e = Saturn.perihelion_aphelion(epoch)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 2032) < TOL, \
+        "ERROR: 1st perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 11) < TOL, \
+        "ERROR: 2nd perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 28) < TOL, \
+        "ERROR: 3rd perihelion_aphelion() test doesn't match"
+
+    epoch = Epoch(1925, 1, 1.0)
+    e = Saturn.perihelion_aphelion(epoch, perihelion=False)
+    y, m, d, h, mi, s = e.get_full_date()
+
+    assert abs(y - 1929) < TOL, \
+        "ERROR: 4th perihelion_aphelion() test doesn't match"
+
+    assert abs(m - 11) < TOL, \
+        "ERROR: 5th perihelion_aphelion() test doesn't match"
+
+    assert abs(d - 11) < TOL, \
+        "ERROR: 6th perihelion_aphelion() test doesn't match"

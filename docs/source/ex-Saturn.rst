@@ -136,3 +136,17 @@ Compute the time of the station in longitude #2 close to 2018/11/1::
     print_me("Date of station in longitude #2", date)
 
     # Date of station in longitude #2: 2018/9/6.4175
+
+Find the epoch of the Perihelion closer to 2000/1/1::
+
+    epoch = Epoch(2000, 1, 1.0)
+
+    e = Saturn.perihelion_aphelion(epoch)
+
+    y, m, d, h, mi, s = e.get_full_date()
+
+    peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
+
+    print_me("The Perihelion closest to 2000/1/1 happened on", peri)
+
+    # The Perihelion closest to 2000/1/1 happened on: 2003/7/26 at 15 hours
