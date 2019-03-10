@@ -150,3 +150,21 @@ Find the epoch of the Aphelion closer to 1981/6/1::
     print_me("The Aphelion closest to 1981/6/1 will happen on", peri)
 
     # The Aphelion closest to 1981/6/1 will happen on: 1981/7/28 at 6 hours
+
+Compute the time of passage through an ascending node::
+
+    epoch = Epoch(2019, 1, 1)
+
+    time, r = Jupiter.passage_nodes(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 1)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 2025/9/15.6
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 5.1729

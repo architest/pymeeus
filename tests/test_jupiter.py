@@ -209,3 +209,25 @@ def test_jupiter_perihelion_aphelion():
 
     assert abs(h - 6) < TOL, \
         "ERROR: 8th perihelion_aphelion() test doesn't match"
+
+
+def test_jupiter_passage_nodes():
+    """Tests the passage_nodes() method of Jupiter class"""
+
+    epoch = Epoch(2019, 1, 1)
+    time, r = Jupiter.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    r = round(r, 4)
+
+    assert abs(y - 2025) < TOL, \
+        "ERROR: 1st passage_nodes() test doesn't match"
+
+    assert abs(m - 9) < TOL, \
+        "ERROR: 2nd passage_nodes() test doesn't match"
+
+    assert abs(d - 15.6) < TOL, \
+        "ERROR: 3rd passage_nodes() test doesn't match"
+
+    assert abs(r - 5.1729) < TOL, \
+        "ERROR: 4th passage_nodes() test doesn't match"
