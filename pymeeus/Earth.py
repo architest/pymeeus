@@ -24,7 +24,8 @@ from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch
 from pymeeus.Interpolation import Interpolation
 from pymeeus.Coordinates import (
-    geometric_vsop_pos, apparent_vsop_pos, orbital_elements
+    geometric_vsop_pos, apparent_vsop_pos, orbital_elements,
+    passage_nodes_elliptic
 )
 
 """
@@ -3430,6 +3431,46 @@ class Earth(object):
         sol = m.minmax()
         return Epoch(sol)
 
+    @staticmethod
+    def passage_nodes(epoch, ascending=True):
+        """This function computes the time of passage by the nodes (ascending
+        or descending) of Earth, nearest to the given epoch.
+
+        :param epoch: Epoch closest to the node passage
+        :type epoch: :py:class:`Epoch`
+        :param ascending: Whether the time of passage by the ascending (True)
+            or descending (False) node will be computed
+        :type ascending: bool
+
+        :returns: Tuple containing:
+            - Time of passage through the node (:py:class:`Epoch`)
+            - Radius vector when passing through the node (in AU, float)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2019, 1, 1)
+        >>> time, r = Earth.passage_nodes(epoch)
+        >>> year, month, day = time.get_date()
+        >>> print(year)
+        2019
+        >>> print(month)
+        3
+        >>> print(round(day, 1))
+        15.0
+        >>> print(round(r, 4))
+        0.9945
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Get the orbital parameters
+        l, a, e, i, ome, arg = Earth.orbital_elements_mean_equinox(epoch)
+        # Compute the time of passage through perihelion
+        t = Earth.perihelion_aphelion(epoch)
+        # Get the time of passage through the node
+        time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
+        return time, r
+
 
 def main():
 
@@ -3565,6 +3606,17 @@ def main():
     y, m, d, h, mi, s = e.get_full_date()
     peri = str(y) + '/' + str(m) + '/' + str(d) + ' ' + str(h) + ':' + str(mi)
     print_me("The Perihelion closest to 2008/2/1 happened on", peri)
+
+    print("")
+
+    # Compute the time of passage through an ascending node
+    epoch = Epoch(2019, 1, 1)
+    time, r = Earth.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    # 2019/3/15.0
+    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 0.9945
 
 
 if __name__ == "__main__":

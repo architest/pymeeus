@@ -194,3 +194,21 @@ Find the epoch of the Perihelion closer to 2008/02/01::
     print_me("The Perihelion closest to 2008/2/1 happened on", peri)
 
     # The Perihelion closest to 2008/2/1 happened on: 2008/1/2 23:53
+
+Compute the time of passage through an ascending node::
+
+    epoch = Epoch(2019, 1, 1)
+
+    time, r = Earth.passage_nodes(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 1)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 2019/3/15.0
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 0.9945

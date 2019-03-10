@@ -251,3 +251,25 @@ def test_earth_perihelion_aphelion():
 
     assert abs(mi - 41) < TOL, \
         "ERROR: 10th perihelion_aphelion() test doesn't match"
+
+
+def test_earth_passage_nodes():
+    """Tests the passage_nodes() method of Earth class"""
+
+    epoch = Epoch(2019, 1, 1)
+    time, r = Earth.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    r = round(r, 4)
+
+    assert abs(y - 2019) < TOL, \
+        "ERROR: 1st passage_nodes() test doesn't match"
+
+    assert abs(m - 3) < TOL, \
+        "ERROR: 2nd passage_nodes() test doesn't match"
+
+    assert abs(d - 15.0) < TOL, \
+        "ERROR: 3rd passage_nodes() test doesn't match"
+
+    assert abs(r - 0.9945) < TOL, \
+        "ERROR: 4th passage_nodes() test doesn't match"
