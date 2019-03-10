@@ -249,3 +249,25 @@ def test_venus_perihelion_aphelion():
 
     assert abs(h - 12) < TOL, \
         "ERROR: 8th perihelion_aphelion() test doesn't match"
+
+
+def test_venus_passage_nodes():
+    """Tests the passage_nodes() method of Venus class"""
+
+    epoch = Epoch(1979, 1, 1)
+    time, r = Venus.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    r = round(r, 4)
+
+    assert abs(y - 1978) < TOL, \
+        "ERROR: 1st passage_nodes() test doesn't match"
+
+    assert abs(m - 11) < TOL, \
+        "ERROR: 2nd passage_nodes() test doesn't match"
+
+    assert abs(d - 27.4) < TOL, \
+        "ERROR: 3rd passage_nodes() test doesn't match"
+
+    assert abs(r - 0.7205) < TOL, \
+        "ERROR: 4th passage_nodes() test doesn't match"

@@ -3009,7 +3009,7 @@ def passage_nodes_elliptic(omega, e, a, t, ascending=True):
     :type a: float
     :param t: Time of perihelion passage
     :type t: :py:class:`Epoch`
-    :param ascending: Whether the time of passabe by the ascending (True) or
+    :param ascending: Whether the time of passage by the ascending (True) or
         descending (False) node will be computed
     :type ascending: bool
 
@@ -3076,7 +3076,7 @@ def passage_nodes_parabolic(omega, q, t, ascending=True):
     :type q: float
     :param t: Time of perihelion passage
     :type t: :py:class:`Epoch`
-    :param ascending: Whether the time of passabe by the ascending (True) or
+    :param ascending: Whether the time of passage by the ascending (True) or
         descending (False) node will be computed
     :type ascending: bool
 

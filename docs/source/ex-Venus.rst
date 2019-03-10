@@ -194,3 +194,21 @@ Find the epoch of the Perihelion closer to 1978/10/15::
     print_me("The Perihelion closest to 1978/10/15 happened on", peri)
 
     # The Perihelion closest to 1978/10/15 happened on: 1978/12/31 at 4 hours
+
+Compute the time of passage through an ascending node::
+
+    epoch = Epoch(1979, 1, 1)
+
+    time, r = Venus.passage_nodes(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 1)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 1978/11/27.4
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 0.7205
