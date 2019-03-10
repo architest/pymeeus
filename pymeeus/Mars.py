@@ -25,7 +25,8 @@ from pymeeus.Epoch import Epoch, JDE2000
 from pymeeus.Interpolation import Interpolation
 from pymeeus.Coordinates import (
     geometric_vsop_pos, apparent_vsop_pos, orbital_elements,
-    nutation_longitude, true_obliquity, ecliptical2equatorial
+    nutation_longitude, true_obliquity, ecliptical2equatorial,
+    passage_nodes_elliptic
 )
 from pymeeus.Earth import Earth
 from pymeeus.Sun import Sun
@@ -6126,6 +6127,46 @@ class Mars(object):
         sol = m.minmax()
         return Epoch(sol)
 
+    @staticmethod
+    def passage_nodes(epoch, ascending=True):
+        """This function computes the time of passage by the nodes (ascending
+        or descending) of Mars, nearest to the given epoch.
+
+        :param epoch: Epoch closest to the node passage
+        :type epoch: :py:class:`Epoch`
+        :param ascending: Whether the time of passage by the ascending (True)
+            or descending (False) node will be computed
+        :type ascending: bool
+
+        :returns: Tuple containing:
+            - Time of passage through the node (:py:class:`Epoch`)
+            - Radius vector when passing through the node (in AU, float)
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(2019, 1, 1)
+        >>> time, r = Mars.passage_nodes(epoch)
+        >>> year, month, day = time.get_date()
+        >>> print(year)
+        2019
+        >>> print(month)
+        1
+        >>> print(round(day, 1))
+        15.2
+        >>> print(round(r, 4))
+        1.4709
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Get the orbital parameters
+        l, a, e, i, ome, arg = Mars.orbital_elements_mean_equinox(epoch)
+        # Compute the time of passage through perihelion
+        t = Mars.perihelion_aphelion(epoch)
+        # Get the time of passage through the node
+        time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
+        return time, r
+
 
 def main():
 
@@ -6210,6 +6251,17 @@ def main():
     y, m, d, h, mi, s = e.get_full_date()
     peri = str(y) + '/' + str(m) + '/' + str(d) + ' at ' + str(h) + ' hours'
     print_me("The Aphelion closest to 2032/1/1 will happen on", peri)
+
+    print("")
+
+    # Compute the time of passage through an ascending node
+    epoch = Epoch(2019, 1, 1)
+    time, r = Mars.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    # 2019/1/15.2
+    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 1.4709
 
 
 if __name__ == "__main__":

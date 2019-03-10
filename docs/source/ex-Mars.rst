@@ -150,3 +150,21 @@ Find the epoch of the Aphelion closer to 2032/1/1::
     print_me("The Aphelion closest to 2032/1/1 will happen on", peri)
 
     # The Aphelion closest to 2032/1/1 will happen on: 2032/10/24 at 22 hours
+
+Compute the time of passage through an ascending node::
+
+    epoch = Epoch(2019, 1, 1)
+
+    time, r = Mars.passage_nodes(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 1)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 2019/1/15.2
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 1.4709
