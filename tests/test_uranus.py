@@ -169,3 +169,25 @@ def test_uranus_perihelion_aphelion():
 
     assert abs(d - 23) < TOL, \
         "ERROR: 6th perihelion_aphelion() test doesn't match"
+
+
+def test_uranus_passage_nodes():
+    """Tests the passage_nodes() method of Uranus class"""
+
+    epoch = Epoch(2019, 1, 1)
+    time, r = Uranus.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    r = round(r, 4)
+
+    assert abs(y - 2028) < TOL, \
+        "ERROR: 1st passage_nodes() test doesn't match"
+
+    assert abs(m - 8) < TOL, \
+        "ERROR: 2nd passage_nodes() test doesn't match"
+
+    assert abs(d - 23.2) < TOL, \
+        "ERROR: 3rd passage_nodes() test doesn't match"
+
+    assert abs(r - 19.3201) < TOL, \
+        "ERROR: 4th passage_nodes() test doesn't match"
