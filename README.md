@@ -70,6 +70,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.2
+    * Add methods to compute the perihelion and aphelion of all planets
 * 0.3.1
     * Fix errors in the elongation computation, add tests and examples of use of methods 'geocentric_position()', and tests and examples for 'Pluto' class
 * 0.3.0
