@@ -743,3 +743,49 @@ Calculate the length of the orbit for the same comet Halley::
     print_me("Length of the orbit (AU)", round(length, 2))
 
     # Length of the orbit (AU): 77.06
+
+Compute passage through the nodes of an elliptic orbit::
+
+    omega = Angle(111.84644)
+
+    e = 0.96727426
+
+    a = 17.9400782
+
+    t = Epoch(1986, 2, 9.45891)
+
+    time, r = passage_nodes_elliptic(omega, e, a, t)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 2)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 1985/11/9.16
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 1.8045
+
+Passage through the nodes of a parabolic orbit::
+
+    omega = Angle(154.9103)
+
+    q = 1.324502
+
+    t = Epoch(1989, 8, 20.291)
+
+    time, r = passage_nodes_parabolic(omega, q, t, ascending=False)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 2)
+
+    print("Time of passage through descending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through descending node: 1989/9/17.64
+
+    print("Radius vector at descending node: {}".format(round(r, 4)))
+
+    # Radius vector at descending node: 1.3901

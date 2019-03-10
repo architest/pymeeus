@@ -19,7 +19,8 @@
 
 
 from math import (
-    sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, copysign
+    sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, copysign,
+    degrees
 )
 from pymeeus.base import TOL, iint
 from pymeeus.Angle import Angle
@@ -2996,6 +2997,138 @@ def length_orbit(e, a):
     return length
 
 
+def passage_nodes_elliptic(omega, e, a, t, ascending=True):
+    """This function computes the time of passage by the nodes (ascending or
+    descending) of a given celestial object with an elliptic orbit.
+
+    :param omega: Argument of the perihelion
+    :type omega: :py:class:`Angle`
+    :param e: Orbital eccentricity
+    :type e: float
+    :param a: Semimajor axis of the orbit, in Astronomical Units
+    :type a: float
+    :param t: Time of perihelion passage
+    :type t: :py:class:`Epoch`
+    :param ascending: Whether the time of passabe by the ascending (True) or
+        descending (False) node will be computed
+    :type ascending: bool
+
+    :returns: Tuple containing:
+        - Time of passage through the node (:py:class:`Epoch`)
+        - Radius vector when passing through the node (in AU, float)
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> omega = Angle(111.84644)
+    >>> e = 0.96727426
+    >>> a = 17.9400782
+    >>> t = Epoch(1986, 2, 9.45891)
+    >>> time, r = passage_nodes_elliptic(omega, e, a, t)
+    >>> year, month, day = time.get_date()
+    >>> print(year)
+    1985
+    >>> print(month)
+    11
+    >>> print(round(day, 2))
+    9.16
+    >>> print(round(r, 4))
+    1.8045
+    >>> time, r = passage_nodes_elliptic(omega, e, a, t, ascending=False)
+    >>> year, month, day = time.get_date()
+    >>> print(year)
+    1986
+    >>> print(month)
+    3
+    >>> print(round(day, 2))
+    10.37
+    >>> print(round(r, 4))
+    0.8493
+    """
+
+    if not (isinstance(omega, Angle) and isinstance(e, float) and
+            isinstance(a, float) and isinstance(t, Epoch)):
+        raise TypeError("Invalid input types")
+    # First, get the true anomaly
+    if ascending:
+        v = 360.0 - omega
+    else:
+        v = 180.0 - omega
+    # Compute the eccentric anomaly
+    ee = 2.0 * atan(sqrt((1.0 - e)/(1.0 + e)) * tan(v.rad() / 2.0))
+    # Now compute the mean anomaly
+    m = ee - e * sin(ee)
+    # We need the mean motion, in degrees/day
+    n = 0.9856076686/(a * sqrt(a))
+    # The time of passage will be
+    tt = t + degrees(m) / n
+    # And the corresponding radius vector is
+    r = a * (1.0 - e * cos(ee))
+    return tt, r
+
+
+def passage_nodes_parabolic(omega, q, t, ascending=True):
+    """This function computes the time of passage by the nodes (ascending or
+    descending) of a given celestial object with a parabolic orbit.
+
+    :param omega: Argument of the perihelion
+    :type omega: :py:class:`Angle`
+    :param q: Perihelion distance, in Astronomical Units
+    :type q: float
+    :param t: Time of perihelion passage
+    :type t: :py:class:`Epoch`
+    :param ascending: Whether the time of passabe by the ascending (True) or
+        descending (False) node will be computed
+    :type ascending: bool
+
+    :returns: Tuple containing:
+        - Time of passage through the node (:py:class:`Epoch`)
+        - Radius vector when passing through the node (in AU, float)
+    :rtype: tuple
+    :raises: TypeError if input values are of wrong type.
+
+    >>> omega = Angle(154.9103)
+    >>> q = 1.324502
+    >>> t = Epoch(1989, 8, 20.291)
+    >>> time, r = passage_nodes_parabolic(omega, q, t)
+    >>> year, month, day = time.get_date()
+    >>> print(year)
+    1977
+    >>> print(month)
+    9
+    >>> print(round(day, 2))
+    17.64
+    >>> print(round(r, 4))
+    28.0749
+    >>> time, r = passage_nodes_parabolic(omega, q, t, ascending=False)
+    >>> year, month, day = time.get_date()
+    >>> print(year)
+    1989
+    >>> print(month)
+    9
+    >>> print(round(day, 3))
+    17.636
+    >>> print(round(r, 4))
+    1.3901
+    """
+
+    if not (isinstance(omega, Angle) and isinstance(q, float) and
+            isinstance(t, Epoch)):
+        raise TypeError("Invalid input types")
+    # First, get the true anomaly
+    if ascending:
+        v = 360.0 - omega
+    else:
+        v = 180.0 - omega
+    # Compute an auxiliary value
+    s = tan(v.rad() / 2.0)
+    s2 = s * s
+    # Compute time of passage
+    tt = t + 27.403895 * s * (s2 + 3.0) * q * sqrt(q)
+    # Compute radius vector
+    r = q * (1.0 + s2)
+    return tt, r
+
+
 def main():
 
     # Let's define a small helper function
@@ -3479,6 +3612,29 @@ def main():
     # Calculate the length of the orbit
     length = length_orbit(e, a)
     print_me("Length of the orbit (AU)", round(length, 2))   # 77.06
+
+    # Passage through the nodes of an elliptic orbit
+    omega = Angle(111.84644)
+    e = 0.96727426
+    a = 17.9400782
+    t = Epoch(1986, 2, 9.45891)
+    time, r = passage_nodes_elliptic(omega, e, a, t)
+    y, m, d = time.get_date()
+    d = round(d, 2)
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    # 1985/11/9.16
+    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 1.8045
+
+    # Passage through the nodes of a parabolic orbit
+    omega = Angle(154.9103)
+    q = 1.324502
+    t = Epoch(1989, 8, 20.291)
+    time, r = passage_nodes_parabolic(omega, q, t, ascending=False)
+    y, m, d = time.get_date()
+    d = round(d, 2)
+    print("Time of passage through descending node: {}/{}/{}".format(y, m, d))
+    # 1989/9/17.64
+    print("Radius vector at descending node: {}".format(round(r, 4)))  # 1.3901
 
 
 if __name__ == "__main__":

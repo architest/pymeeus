@@ -33,7 +33,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
         straight_line, circle_diameter, apparent_position, \
         orbital_equinox2equinox, kepler_equation, velocity, \
-        velocity_perihelion, velocity_aphelion, length_orbit
+        velocity_perihelion, velocity_aphelion, length_orbit, \
+        passage_nodes_elliptic, passage_nodes_parabolic
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -680,3 +681,78 @@ def test_coordinates_length_orbit():
 
     assert abs(round(length, 2) - 77.06) < TOL, \
         "ERROR: 1st length_orbit() test, value doesn't match"
+
+
+def test_coordinates_passage_nodes_elliptic():
+    """Tests the passage_nodes_elliptic() function of Coordinates module"""
+
+    omega = Angle(111.84644)
+    e = 0.96727426
+    a = 17.9400782
+    t = Epoch(1986, 2, 9.45891)
+    time, r = passage_nodes_elliptic(omega, e, a, t)
+    year, month, day = time.get_date()
+
+    assert abs(year - 1985) < TOL, \
+        "ERROR: 1st passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(month - 11) < TOL, \
+        "ERROR: 2nd passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(round(day, 2) - 9.16) < TOL, \
+        "ERROR: 3rd passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(round(r, 4) - 1.8045) < TOL, \
+        "ERROR: 4th passage_nodes_elliptic() test, value doesn't match"
+
+    time, r = passage_nodes_elliptic(omega, e, a, t, ascending=False)
+    year, month, day = time.get_date()
+
+    assert abs(year - 1986) < TOL, \
+        "ERROR: 5th passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(month - 3) < TOL, \
+        "ERROR: 6th passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(round(day, 2) - 10.37) < TOL, \
+        "ERROR: 7th passage_nodes_elliptic() test, value doesn't match"
+
+    assert abs(round(r, 4) - 0.8493) < TOL, \
+        "ERROR: 8th passage_nodes_elliptic() test, value doesn't match"
+
+
+def test_coordinates_passage_nodes_parabolic():
+    """Tests the passage_nodes_parabolic() function of Coordinates module"""
+
+    omega = Angle(154.9103)
+    q = 1.324502
+    t = Epoch(1989, 8, 20.291)
+    time, r = passage_nodes_parabolic(omega, q, t)
+    year, month, day = time.get_date()
+
+    assert abs(year - 1977) < TOL, \
+        "ERROR: 1st passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(month - 9) < TOL, \
+        "ERROR: 2nd passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(round(day, 2) - 17.64) < TOL, \
+        "ERROR: 3rd passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(round(r, 4) - 28.0749) < TOL, \
+        "ERROR: 4th passage_nodes_parabolic() test, value doesn't match"
+
+    time, r = passage_nodes_parabolic(omega, q, t, ascending=False)
+    year, month, day = time.get_date()
+
+    assert abs(year - 1989) < TOL, \
+        "ERROR: 5th passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(month - 9) < TOL, \
+        "ERROR: 6th passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(round(day, 3) - 17.636) < TOL, \
+        "ERROR: 7th passage_nodes_parabolic() test, value doesn't match"
+
+    assert abs(round(r, 4) - 1.3901) < TOL, \
+        "ERROR: 8th passage_nodes_parabolic() test, value doesn't match"
