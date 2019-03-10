@@ -262,3 +262,25 @@ def test_mercury_perihelion_aphelion():
 
     assert abs(h - 17) < TOL, \
         "ERROR: 8th perihelion_aphelion() test doesn't match"
+
+
+def test_mercury_passage_nodes():
+    """Tests the passage_nodes() method of Mercury class"""
+
+    epoch = Epoch(2019, 1, 1)
+    time, r = Mercury.passage_nodes(epoch)
+    y, m, d = time.get_date()
+    d = round(d, 1)
+    r = round(r, 4)
+
+    assert abs(y - 2018) < TOL, \
+        "ERROR: 1st passage_nodes() test doesn't match"
+
+    assert abs(m - 11) < TOL, \
+        "ERROR: 2nd passage_nodes() test doesn't match"
+
+    assert abs(d - 24.7) < TOL, \
+        "ERROR: 3rd passage_nodes() test doesn't match"
+
+    assert abs(r - 0.3143) < TOL, \
+        "ERROR: 4th passage_nodes() test doesn't match"

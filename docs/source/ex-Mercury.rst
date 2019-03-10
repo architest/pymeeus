@@ -194,3 +194,21 @@ Find the epoch of the Perihelion closer to 2000/01/01::
     print_me("The Perihelion closest to 2000/1/1 happened on", peri)
 
     # The Perihelion closest to 2000/1/1 happened on: 2000/2/15 at 18 hours
+
+Compute the time of passage through an ascending node::
+
+    epoch = Epoch(2019, 1, 1)
+
+    time, r = Mercury.passage_nodes(epoch)
+
+    y, m, d = time.get_date()
+
+    d = round(d, 1)
+
+    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+
+    # Time of passage through ascending node: 2018/11/24.7
+
+    print("Radius vector at ascending node: {}".format(round(r, 4)))
+
+    # Radius vector at ascending node: 0.3143
