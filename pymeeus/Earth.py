@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, radians, sin, cos, tan, atan
+from math import sqrt, radians, sin, cos, tan, atan, atan2
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch
@@ -3471,6 +3471,73 @@ class Earth(object):
         time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
         return time, r
 
+    @staticmethod
+    def parallax_correction(right_ascension, declination, latitude, distance,
+                            hour_angle):
+        """This function computes the parallaxes in right ascension and
+        declination in order to obtain the topocentric values.
+
+        :param right_ascension: Geocentric right ascension, as an
+            :py:class:`Angle` object
+        :type right_ascension: :py:class:`Angle`
+        :param declination: Geocentric declination, as an
+            :py:class:`Angle` object
+        :type declination: :py:class:`Angle`
+        :param latitude: Latitude of the observation point
+        :type latitude: :py:class:`Angle`
+        :param distance: Distance from the celestial object to the Earth, in
+            Astronomical Units
+        :type distance: float
+        :param hour_angle: Geocentric hour angle of the celestial object, as an
+            :py:class:`Angle`
+        :type hour_angle: :py:class:`Angle`
+
+        :returns: Tuple containing the topocentric right ascension and
+            declination
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> right_ascension = Angle(22, 38, 7.25, ra=True)
+        >>> declination = Angle(-15, 46, 15.9)
+        >>> latitude = Angle(33, 21, 22)
+        >>> distance = 0.37276
+        >>> hour_angle = Angle(288.7958)
+        >>> topo_ra, topo_dec = Earth.parallax_correction(right_ascension, \
+                                                          declination, \
+                                                          latitude, distance, \
+                                                          hour_angle)
+        >>> print(topo_ra.ra_str(n_dec=2))
+        22h 38' 8.54''
+        >>> print(topo_dec.dms_str(n_dec=1))
+        -15d 46' 30.0''
+        """
+
+        if not (isinstance(right_ascension, Angle) and
+                isinstance(declination, Angle) and
+                isinstance(latitude, Angle) and
+                isinstance(distance, float) and
+                isinstance(hour_angle, Angle)):
+            raise TypeError("Invalid input types")
+        # Let's start computing the equatorial horizontal parallax
+        ang = Angle(0, 0, 8.794)
+        sin_pi = sin(ang.rad()) / distance
+        # Also, the values related to the latitude
+        e = Earth()
+        rho_sinphi = e.rho_sinphi(latitude, 0)
+        rho_cosphi = e.rho_cosphi(latitude, 0)
+        # Now, let's compute the correction for the right ascension
+        delta_a = atan2(-rho_cosphi * sin_pi * sin(hour_angle.rad()),
+                        cos(declination.rad()) - rho_cosphi * sin_pi *
+                        cos(hour_angle.rad()))
+        delta_a = Angle(delta_a, radians=True)
+        # And finally, the declination already corrected
+        dec = atan2((sin(declination.rad()) - rho_sinphi * sin_pi) *
+                    cos(delta_a.rad()),
+                    cos(declination.rad()) - rho_cosphi * sin_pi *
+                    cos(hour_angle.rad()))
+        dec = Angle(dec, radians=True)
+        return (right_ascension + delta_a), dec
+
 
 def main():
 
@@ -3617,6 +3684,21 @@ def main():
     print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
     # 2019/3/15.0
     print("Radius vector at ascending node: {}".format(round(r, 4)))  # 0.9945
+
+    print("")
+
+    # Compute the parallax correction
+    right_ascension = Angle(22, 38, 7.25, ra=True)
+    declination = Angle(-15, 46, 15.9)
+    latitude = Angle(33, 21, 22)
+    distance = 0.37276
+    hour_angle = Angle(288.7958)
+    top_ra, top_dec = Earth.parallax_correction(right_ascension, declination,
+                                                latitude, distance, hour_angle)
+    print_me("Corrected topocentric right ascension: ", top_ra.ra_str(n_dec=2))
+    # 22h 38' 8.54''
+    print_me("Corrected topocentric declination", top_dec.dms_str(n_dec=1))
+    # -15d 46' 30.0''
 
 
 if __name__ == "__main__":

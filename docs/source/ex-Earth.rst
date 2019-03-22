@@ -212,3 +212,27 @@ Compute the time of passage through an ascending node::
     print("Radius vector at ascending node: {}".format(round(r, 4)))
 
     # Radius vector at ascending node: 0.9945
+
+Compute the parallax correction::
+
+    right_ascension = Angle(22, 38, 7.25, ra=True)
+
+    declination = Angle(-15, 46, 15.9)
+
+    latitude = Angle(33, 21, 22)
+
+    distance = 0.37276
+
+    hour_angle = Angle(288.7958)
+
+    top_ra, top_dec = Earth.parallax_correction(right_ascension, declination,
+
+                                                latitude, distance, hour_angle)
+
+    print_me("Corrected topocentric right ascension: ", top_ra.ra_str(n_dec=2))
+
+    # Corrected topocentric right ascension: : 22h 38' 8.54''
+
+    print_me("Corrected topocentric declination", top_dec.dms_str(n_dec=1))
+
+    # Corrected topocentric declination: -15d 46' 30.0''

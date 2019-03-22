@@ -273,3 +273,21 @@ def test_earth_passage_nodes():
 
     assert abs(r - 0.9945) < TOL, \
         "ERROR: 4th passage_nodes() test doesn't match"
+
+
+def test_parallax_correction():
+    """Tests the parallax_correction() method of Earth class"""
+
+    right_ascension = Angle(22, 38, 7.25, ra=True)
+    declination = Angle(-15, 46, 15.9)
+    latitude = Angle(33, 21, 22)
+    distance = 0.37276
+    hour_angle = Angle(288.7958)
+    top_ra, top_dec = Earth.parallax_correction(right_ascension, declination,
+                                                latitude, distance, hour_angle)
+
+    assert top_ra.ra_str(n_dec=2) == "22h 38' 8.54''", \
+        "ERROR: 1st parallax_correction() test doesn't match"
+
+    assert top_dec.dms_str(n_dec=1) == "-15d 46' 30.0''", \
+        "ERROR: 2nd parallax_correction() test doesn't match"
