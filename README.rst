@@ -31,6 +31,12 @@ Or, for a per-user installation:
 
     pip install --user pymeeus
 
+If you prefer Python3, you can use:
+
+.. code:: sh
+
+    pip3 install --user pymeeus
+
 Meta
 ----
 
@@ -77,6 +83,10 @@ documentation to your new code. This also includes in-line comments!!!.
 
 What's new
 ----------
+
+-  0.3.4
+
+   -  Add method to compute the parallax correction to Earth class
 
 -  0.3.3
 

@@ -76,6 +76,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.4
+    * Add method to compute the parallax correction to Earth class
 * 0.3.3
     * Add methods to compute the passage through the nodes.
 * 0.3.2
