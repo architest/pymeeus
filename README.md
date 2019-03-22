@@ -27,6 +27,12 @@ Or, for a per-user installation:
 pip install --user pymeeus
 ```
 
+If you prefer Python3, you can use:
+
+```sh
+pip3 install --user pymeeus
+```
+
 ## Meta
 
 Author: Dagoberto Salazar
