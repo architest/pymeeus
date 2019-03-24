@@ -236,3 +236,37 @@ Compute the parallax correction::
     print_me("Corrected topocentric declination", top_dec.dms_str(n_dec=1))
 
     # Corrected topocentric declination: -15d 46' 30.0''
+
+Compute the parallax correction in ecliptical coordinates::
+
+    longitude = Angle(181, 46, 22.5)
+
+    latitude = Angle(2, 17, 26.2)
+
+    semidiameter = Angle(0, 16, 15.5)
+
+    obs_lat = Angle(50, 5, 7.8)
+
+    obliquity = Angle(23, 28, 0.8)
+
+    sidereal_time = Angle(209, 46, 7.9)
+
+    distance = 0.0024650163
+
+    topo_lon, topo_lat, topo_diam = \
+
+        Earth.parallax_ecliptical(longitude, latitude, semidiameter, obs_lat,
+
+                                  obliquity, sidereal_time, distance)
+
+    print_me("Corrected topocentric longitude", topo_lon.dms_str(n_dec=1))
+
+    # Corrected topocentric longitude: 181d 48' 5.0''
+
+    print_me("Corrected topocentric latitude", topo_lat.dms_str(n_dec=1))
+
+    # Corrected topocentric latitude: 1d 29' 7.1''
+
+    print_me("Corrected topocentric semidiameter", topo_diam.dms_str(n_dec=1))
+
+    # Corrected topocentric semidiameter: 16' 25.5''

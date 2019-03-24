@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sqrt, radians, sin, cos, tan, atan, atan2
+from math import sqrt, radians, sin, cos, tan, atan, atan2, asin
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch
@@ -3473,7 +3473,7 @@ class Earth(object):
 
     @staticmethod
     def parallax_correction(right_ascension, declination, latitude, distance,
-                            hour_angle):
+                            hour_angle, height=0.0):
         """This function computes the parallaxes in right ascension and
         declination in order to obtain the topocentric values.
 
@@ -3491,6 +3491,8 @@ class Earth(object):
         :param hour_angle: Geocentric hour angle of the celestial object, as an
             :py:class:`Angle`
         :type hour_angle: :py:class:`Angle`
+        :param heigth: Height of observation point above sea level, in meters
+        :type height: float
 
         :returns: Tuple containing the topocentric right ascension and
             declination
@@ -3516,15 +3518,16 @@ class Earth(object):
                 isinstance(declination, Angle) and
                 isinstance(latitude, Angle) and
                 isinstance(distance, float) and
-                isinstance(hour_angle, Angle)):
+                isinstance(hour_angle, Angle) and
+                isinstance(height, float)):
             raise TypeError("Invalid input types")
         # Let's start computing the equatorial horizontal parallax
         ang = Angle(0, 0, 8.794)
         sin_pi = sin(ang.rad()) / distance
         # Also, the values related to the latitude
         e = Earth()
-        rho_sinphi = e.rho_sinphi(latitude, 0)
-        rho_cosphi = e.rho_cosphi(latitude, 0)
+        rho_sinphi = e.rho_sinphi(latitude, height)
+        rho_cosphi = e.rho_cosphi(latitude, height)
         # Now, let's compute the correction for the right ascension
         delta_a = atan2(-rho_cosphi * sin_pi * sin(hour_angle.rad()),
                         cos(declination.rad()) - rho_cosphi * sin_pi *
@@ -3537,6 +3540,100 @@ class Earth(object):
                     cos(hour_angle.rad()))
         dec = Angle(dec, radians=True)
         return (right_ascension + delta_a), dec
+
+    @staticmethod
+    def parallax_ecliptical(longitude, latitude, semidiameter, obs_lat,
+                            obliquity, sidereal_time, distance, height=0.0):
+        """This function computes the topocentric coordinates of a celestial
+        body (Moon or planet) directly from its geocentric values in ecliptical
+        coordinates.
+
+        :param longitude: Geocentric ecliptical longitude as an
+            :py:class:`Angle`
+        :type longitude: :py:class:`Angle`
+        :param latitude: Geocentric ecliptical latitude as an :py:class:`Angle`
+        :type latitude: :py:class:`Angle`
+        :param semidiameter: Geocentric semidiameter as an :py:class:`Angle`
+        :type semidiameter: :py:class:`Angle`
+        :param obs_lat: Latitude of the observation point
+        :type obs_lat: :py:class:`Angle`
+        :param obliquity: Obliquity of the eliptic, as an :py:class:`Angle`
+        :type obliquity: :py:class:`Angle`
+        :param sidereal_time: Local sidereal time, as an :py:class:`Angle`
+        :type sidereal_time: :py:class:`Angle`
+        :param distance: Distance from the celestial object to the Earth, in
+            Astronomical Units
+        :type distance: float
+        :param heigth: Height of observation point above sea level, in meters
+        :type height: float
+
+        :returns: Tuple containing the topocentric longitude, latitude and
+            semidiameter
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> longitude = Angle(181, 46, 22.5)
+        >>> latitude = Angle(2, 17, 26.2)
+        >>> semidiameter = Angle(0, 16, 15.5)
+        >>> obs_lat = Angle(50, 5, 7.8)
+        >>> obliquity = Angle(23, 28, 0.8)
+        >>> sidereal_time = Angle(209, 46, 7.9)
+        >>> distance = 0.0024650163
+        >>> topo_lon, topo_lat, topo_diam = \
+                Earth.parallax_ecliptical(longitude, latitude, semidiameter, \
+                                          obs_lat, obliquity, sidereal_time, \
+                                          distance)
+        >>> print(topo_lon.dms_str(n_dec=1))
+        181d 48' 5.0''
+        >>> print(topo_lat.dms_str(n_dec=1))
+        1d 29' 7.1''
+        >>> print(topo_diam.dms_str(n_dec=1))
+        16' 25.5''
+        """
+
+        if not (isinstance(longitude, Angle) and
+                isinstance(latitude, Angle) and
+                isinstance(semidiameter, Angle) and
+                isinstance(obs_lat, Angle) and
+                isinstance(obliquity, Angle) and
+                isinstance(sidereal_time, Angle) and
+                isinstance(distance, float) and
+                isinstance(height, float)):
+            raise TypeError("Invalid input types")
+        # Let's start computing the equatorial horizontal parallax
+        ang = Angle(0, 0, 8.794)
+        sin_pi = sin(ang.rad()) / distance
+        # Also, the values related to the latitude
+        e = Earth()
+        rho_sinphi = e.rho_sinphi(obs_lat, height)
+        rho_cosphi = e.rho_cosphi(obs_lat, height)
+        # Let's compute some auxiliary quantities
+        lonr = longitude.rad()
+        latr = latitude.rad()
+        semir = semidiameter.rad()
+        sidr = sidereal_time.rad()
+        oblr = obliquity.rad()
+        n = cos(lonr) * cos(latr) - rho_cosphi * sin_pi * cos(sidr)
+        # Now, compute the topocentric longitude
+        topo_lon = atan2(sin(lonr) * cos(latr) -
+                         sin_pi * (rho_sinphi * sin(oblr) +
+                                   rho_cosphi * cos(oblr) * sin(sidr)), n)
+        topo_lon = Angle(topo_lon, radians=True).to_positive()
+        tlonr = topo_lon.rad()
+        # Compute the topocentric latitude
+        topo_lat = atan2(cos(tlonr) * (sin(latr) -
+                                       sin_pi * (rho_sinphi * cos(oblr) -
+                                                 rho_cosphi * sin(oblr) *
+                                                 sin(sidr))), n)
+        topo_lat = Angle(topo_lat, radians=True).to_positive()
+        # Watch out: Latitude is only valid in the +/-90 deg range
+        if abs(topo_lat) > 90.0:
+            topo_lat = topo_lat - 180.0
+        tlatr = topo_lat.rad()
+        # And finally, let's compute the topocentric semidiameter
+        topo_semi = asin((cos(tlonr) * cos(tlatr) * sin(semir)) / n)
+        topo_semi = Angle(topo_semi, radians=True)
+        return topo_lon, topo_lat, topo_semi
 
 
 def main():
@@ -3699,6 +3796,26 @@ def main():
     # 22h 38' 8.54''
     print_me("Corrected topocentric declination", top_dec.dms_str(n_dec=1))
     # -15d 46' 30.0''
+
+    print("")
+
+    # Compute the parallax correction in ecliptical coordinates
+    longitude = Angle(181, 46, 22.5)
+    latitude = Angle(2, 17, 26.2)
+    semidiameter = Angle(0, 16, 15.5)
+    obs_lat = Angle(50, 5, 7.8)
+    obliquity = Angle(23, 28, 0.8)
+    sidereal_time = Angle(209, 46, 7.9)
+    distance = 0.0024650163
+    topo_lon, topo_lat, topo_diam = \
+        Earth.parallax_ecliptical(longitude, latitude, semidiameter, obs_lat,
+                                  obliquity, sidereal_time, distance)
+    print_me("Corrected topocentric longitude", topo_lon.dms_str(n_dec=1))
+    # 181d 48' 5.0''
+    print_me("Corrected topocentric latitude", topo_lat.dms_str(n_dec=1))
+    # 1d 29' 7.1''
+    print_me("Corrected topocentric semidiameter", topo_diam.dms_str(n_dec=1))
+    # 16' 25.5''
 
 
 if __name__ == "__main__":
