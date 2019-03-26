@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, acos, atan2, sqrt, radians
+from math import sin, cos, tan, acos, atan2, sqrt, radians, log10
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
@@ -2472,6 +2472,67 @@ class Venus(object):
         time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
         return time, r
 
+    @staticmethod
+    def illuminated_fraction(epoch):
+        """This function computes an approximation of the illuminated fraction
+        of Venus disk, as seen from Earth.
+
+        :param epoch: Epoch to compute the illuminated fraction
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Illuminated fraction of Venus disk
+        :rtype: float
+        :raises: TypeError if input values are of wrong type.
+
+        >>> epoch = Epoch(1992, 12, 20)
+        >>> k = Venus.illuminated_fraction(epoch)
+        >>> print(round(k, 2))
+        0.64
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        t = (epoch.jde() - 2451545.0) / 36525.0
+        v = Angle(261.51 + 22518.443 * t)
+        m = Angle(177.53 + 35999.050 * t)
+        n = Angle(50.42 + 58517.811 * t)
+        w = Angle(v + 1.91 * sin(m.rad()) + 0.78 * sin(n.rad()))
+        delta2 = abs(1.52321 + 1.44666 * cos(w.rad()))
+        delta = sqrt(delta2)
+        k = ((0.72333 + delta) * (0.72333 + delta) - 1.0) / (2.89332 * delta)
+        return k
+
+    @staticmethod
+    def magnitude(sun_dist, earth_dist, phase_angle):
+        """This function computes the approximate magnitude of Venus.
+
+        :param sun_dist: Distance from Venus to the Sun, in Astronomical Units
+        :type sun_dist: float
+        :param earth_dist: Distance from Venus to Earth, in Astronomical Units
+        :type earth_dist: float
+        :param phase_angle: Venus phase angle
+        :type phase_angle: float, :py:class:`Angle`
+
+        :returns: Venus' magnitude
+        :rtype: float
+        :raises: TypeError if input values are of wrong type.
+
+        >>> sun_dist = 0.724604
+        >>> earth_dist = 0.910947
+        >>> phase_angle = Angle(72.96)
+        >>> m = Venus.magnitude(sun_dist, earth_dist, phase_angle)
+        >>> print(round(m, 1))
+        -3.8
+        """
+
+        if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
+                and isinstance(phase_angle, (float, Angle))):
+            raise TypeError("Invalid input types")
+        i = float(phase_angle)
+        m = (-4.0 + 5.0 * log10(sun_dist * earth_dist) + 0.01322 * i
+             + 0.0000004247 * i * i * i)
+        return m
+
 
 def main():
 
@@ -2591,6 +2652,20 @@ def main():
     print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
     # 1978/11/27.4
     print("Radius vector at ascending node: {}".format(round(r, 4)))  # 0.7205
+
+    print("")
+
+    # Compute the (approximate) illuminated fraction of Venus disk for an Epoch
+    epoch = Epoch(1992, 12, 20)
+    k = Venus.illuminated_fraction(epoch)
+    print_me("Approximate illuminated fraction of Venus", round(k, 2))  # 0.64
+
+    # Compute the magnitude of Venus
+    sun_dist = 0.724604
+    earth_dist = 0.910947
+    phase_angle = Angle(72.96)
+    m = Venus.magnitude(sun_dist, earth_dist, phase_angle)
+    print_me("Venus' magnitude", round(m, 1))                           # -3.8
 
 
 if __name__ == "__main__":

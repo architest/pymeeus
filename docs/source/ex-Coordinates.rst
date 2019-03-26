@@ -789,3 +789,25 @@ Passage through the nodes of a parabolic orbit::
     print("Radius vector at descending node: {}".format(round(r, 4)))
 
     # Radius vector at descending node: 1.3901
+
+Compute the phase angle::
+
+    sun_dist = 0.724604
+
+    earth_dist = 0.910947
+
+    sun_earth_dist = 0.983824
+
+    angle = phase_angle(sun_dist, earth_dist, sun_earth_dist)
+
+    print_me("Phase angle", round(angle, 2))
+
+    # Phase angle: 72.96
+
+Now, let's compute the illuminated fraction of the disk::
+
+    k = illuminated_fraction(sun_dist, earth_dist, sun_earth_dist)
+
+    print_me("Illuminated fraction of planet disk", round(k, 3))
+
+    # Illuminated fraction of planet disk: 0.647

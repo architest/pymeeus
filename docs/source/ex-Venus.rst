@@ -212,3 +212,27 @@ Compute the time of passage through an ascending node::
     print("Radius vector at ascending node: {}".format(round(r, 4)))
 
     # Radius vector at ascending node: 0.7205
+
+Compute the (approximate) illuminated fraction of Venus disk for an Epoch::
+
+    epoch = Epoch(1992, 12, 20)
+
+    k = Venus.illuminated_fraction(epoch)
+
+    print_me("Approximate illuminated fraction of Venus", round(k, 2))
+
+    # Approximate illuminated fraction of Venus: 0.64
+
+Compute the magnitude of Venus::
+
+    sun_dist = 0.724604
+
+    earth_dist = 0.910947
+
+    phase_angle = Angle(72.96)
+
+    m = Venus.magnitude(sun_dist, earth_dist, phase_angle)
+
+    print_me("Venus' magnitude", round(m, 1))
+
+    # Venus' magnitude: -3.8

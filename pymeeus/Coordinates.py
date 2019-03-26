@@ -3129,6 +3129,70 @@ def passage_nodes_parabolic(omega, q, t, ascending=True):
     return tt, r
 
 
+def phase_angle(sun_dist, earth_dist, sun_earth_dist):
+    """This function computes the phase angle, i.e., the angle Sun-planet-Earth
+    from the corresponding distances.
+
+    :param sun_dist: Planet's distance to the Sun, in Astronomical Units
+    :type sun_dist: float
+    :param earth_dist: Distance from planet to Earth, in Astronomical Units
+    :type earth_dist: float
+    :param sun_earth_dist: Distance Sun-Earth, in Astronomical Units
+    :type sun_earth_dist: float
+
+    :returns: The phase angle, as an Angle object
+    :rtype: :py:class:`Angle`
+    :raises: TypeError if input values are of wrong type.
+
+    >>> sun_dist = 0.724604
+    >>> earth_dist = 0.910947
+    >>> sun_earth_dist = 0.983824
+    >>> angle = phase_angle(sun_dist, earth_dist, sun_earth_dist)
+    >>> print(round(angle, 2))
+    72.96
+    """
+
+    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float) and
+            isinstance(sun_earth_dist, float)):
+        raise TypeError("Invalid input types")
+    angle = acos((sun_dist * sun_dist + earth_dist * earth_dist -
+                  sun_earth_dist * sun_earth_dist) /
+                 (2.0 * sun_dist * earth_dist))
+    angle = Angle(angle, radians=True)
+    return angle
+
+
+def illuminated_fraction(sun_dist, earth_dist, sun_earth_dist):
+    """This function computes the illuminated fraction of the disk of a planet,
+    as seen from the Earth.
+
+    :param sun_dist: Planet's distance to the Sun, in Astronomical Units
+    :type sun_dist: float
+    :param earth_dist: Distance from planet to Earth, in Astronomical Units
+    :type earth_dist: float
+    :param sun_earth_dist: Distance Sun-Earth, in Astronomical Units
+    :type sun_earth_dist: float
+
+    :returns: The illuminated fraction of the disc of a planet
+    :rtype: float
+    :raises: TypeError if input values are of wrong type.
+
+    >>> sun_dist = 0.724604
+    >>> earth_dist = 0.910947
+    >>> sun_earth_dist = 0.983824
+    >>> k = illuminated_fraction(sun_dist, earth_dist, sun_earth_dist)
+    >>> print(round(k, 3))
+    0.647
+    """
+
+    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float) and
+            isinstance(sun_earth_dist, float)):
+        raise TypeError("Invalid input types")
+    k = ((sun_dist + earth_dist) * (sun_dist + earth_dist) -
+         sun_earth_dist * sun_earth_dist) / (4.0 * sun_dist * earth_dist)
+    return k
+
+
 def main():
 
     # Let's define a small helper function
@@ -3613,6 +3677,8 @@ def main():
     length = length_orbit(e, a)
     print_me("Length of the orbit (AU)", round(length, 2))   # 77.06
 
+    print("")
+
     # Passage through the nodes of an elliptic orbit
     omega = Angle(111.84644)
     e = 0.96727426
@@ -3635,6 +3701,18 @@ def main():
     print("Time of passage through descending node: {}/{}/{}".format(y, m, d))
     # 1989/9/17.64
     print("Radius vector at descending node: {}".format(round(r, 4)))  # 1.3901
+
+    print("")
+
+    # Compute the phase angle
+    sun_dist = 0.724604
+    earth_dist = 0.910947
+    sun_earth_dist = 0.983824
+    angle = phase_angle(sun_dist, earth_dist, sun_earth_dist)
+    print_me("Phase angle", round(angle, 2))                        # 72.96
+    # Now, let's compute the illuminated fraction of the disk
+    k = illuminated_fraction(sun_dist, earth_dist, sun_earth_dist)
+    print_me("Illuminated fraction of planet disk", round(k, 3))    # 0.647
 
 
 if __name__ == "__main__":

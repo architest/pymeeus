@@ -34,7 +34,8 @@ from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
         straight_line, circle_diameter, apparent_position, \
         orbital_equinox2equinox, kepler_equation, velocity, \
         velocity_perihelion, velocity_aphelion, length_orbit, \
-        passage_nodes_elliptic, passage_nodes_parabolic
+        passage_nodes_elliptic, passage_nodes_parabolic, phase_angle, \
+        illuminated_fraction
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 
@@ -756,3 +757,27 @@ def test_coordinates_passage_nodes_parabolic():
 
     assert abs(round(r, 4) - 1.3901) < TOL, \
         "ERROR: 8th passage_nodes_parabolic() test, value doesn't match"
+
+
+def test_coordinates_phase_angle():
+    """Tests the phase_angle() function of Coordinates module"""
+
+    sun_dist = 0.724604
+    earth_dist = 0.910947
+    sun_earth_dist = 0.983824
+    angle = phase_angle(sun_dist, earth_dist, sun_earth_dist)
+
+    assert abs(round(angle, 2) - 72.96) < TOL, \
+        "ERROR: 1st phase_angle() test, value doesn't match"
+
+
+def test_coordinates_illuminated_fraction():
+    """Tests the illuminated_fraction() function of Coordinates module"""
+
+    sun_dist = 0.724604
+    earth_dist = 0.910947
+    sun_earth_dist = 0.983824
+    k = illuminated_fraction(sun_dist, earth_dist, sun_earth_dist)
+
+    assert abs(round(k, 3) - 0.647) < TOL, \
+        "ERROR: 1st illuminated_fraction() test, value doesn't match"
