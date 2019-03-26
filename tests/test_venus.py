@@ -21,6 +21,7 @@
 from pymeeus.base import TOL
 from pymeeus.Venus import Venus
 from pymeeus.Epoch import Epoch
+from pymeeus.Angle import Angle
 
 
 # Venus class
@@ -271,3 +272,25 @@ def test_venus_passage_nodes():
 
     assert abs(r - 0.7205) < TOL, \
         "ERROR: 4th passage_nodes() test doesn't match"
+
+
+def test_venus_illuminated_fraction():
+    """Tests the illuminated_fraction() method of Venus class"""
+
+    epoch = Epoch(1992, 12, 20)
+    k = Venus.illuminated_fraction(epoch)
+
+    assert abs(round(k, 2) - 0.64) < TOL, \
+        "ERROR: 1st illuminated_fraction() test doesn't match"
+
+
+def test_venus_magnitude():
+    """Tests the magnitude() method of Venus class"""
+
+    sun_dist = 0.724604
+    earth_dist = 0.910947
+    phase_angle = Angle(72.96)
+    m = Venus.magnitude(sun_dist, earth_dist, phase_angle)
+
+    assert abs(round(m, 1) - (-3.8)) < TOL, \
+        "ERROR: 1st magnitude() test doesn't match"
