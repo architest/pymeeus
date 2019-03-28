@@ -76,10 +76,12 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.5
+    * Add method magnitude() to planet classes
 * 0.3.4
     * Add method to compute the parallax correction to Earth class
 * 0.3.3
-    * Add methods to compute the passage through the nodes.
+    * Add methods to compute the passage through the nodes
 * 0.3.2
     * Add methods to compute the perihelion and aphelion of all planets
 * 0.3.1
