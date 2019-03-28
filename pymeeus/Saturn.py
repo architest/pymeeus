@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, acos, atan2, sqrt, radians
+from math import sin, cos, tan, acos, atan2, sqrt, radians, log10
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
@@ -6498,6 +6498,48 @@ class Saturn(object):
         # Get the time of passage through the node
         time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
         return time, r
+
+    @staticmethod
+    def magnitude(sun_dist, earth_dist, delta_u, b):
+        """This function computes the approximate magnitude of Saturn.
+
+        :param sun_dist: Distance from Saturn to the Sun, in Astronomical Units
+        :type sun_dist: float
+        :param earth_dist: Distance from Saturn to Earth, in Astronomical Units
+        :type earth_dist: float
+        :param delta_u: Difference between the Saturnicentric longitudes of the
+            Sun and the Earth, measured in the plane of the ring
+        :type delta_u: float, :py:class:`Angle`
+        :param b: Saturnicentric latitude of the Earth refered to the plane of
+            the ring, positive towards the north
+        :type b: float, :py:class:`Angle`
+
+        :returns: Saturn's magnitude
+        :rtype: float
+        :raises: TypeError if input values are of wrong type.
+
+        >>> sun_dist = 9.867882
+        >>> earth_dist = 10.464606
+        >>> delta_u = Angle(16.442)
+        >>> b = Angle(4.198)
+        >>> m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
+        >>> print(m)
+        1.9
+        """
+
+        # WARNING: According to Example 41.d in page 286 of Meeus book, the
+        # result for the example above is 0.9 (instead of 1.9). However, after
+        # carefully checking the formula implemented here, I'm sure that the
+        # book has an error
+        if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
+                and isinstance(delta_u, (float, Angle))
+                and isinstance(b, (float, Angle))):
+            raise TypeError("Invalid input types")
+        delta_u = float(delta_u)
+        b = Angle(b).rad()
+        m = (-8.68 + 5.0 * log10(sun_dist * earth_dist) + 0.044 * abs(delta_u)
+             - 2.6 * sin(abs(b)) + 1.25 * sin(b) * sin(b))
+        return round(m, 1)
 
 
 def main():

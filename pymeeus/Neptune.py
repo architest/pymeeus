@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, acos, atan2, sqrt, radians
+from math import sin, cos, tan, acos, atan2, sqrt, radians, log10
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
@@ -2394,6 +2394,25 @@ class Neptune(object):
                 cos(gg) * (0.0728))
         to_return = jde0 + corr
         return Epoch(to_return)
+
+    @staticmethod
+    def magnitude(sun_dist, earth_dist):
+        """This function computes the approximate magnitude of Neptune.
+
+        :param sun_dist: Distance from Neptune to Sun, in Astronomical Units
+        :type sun_dist: float
+        :param earth_dist: Distance Neptune to Earth, in Astronomical Units
+        :type earth_dist: float
+
+        :returns: Neptune's magnitude
+        :rtype: float
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)):
+            raise TypeError("Invalid input types")
+        m = -7.05 + 5.0 * log10(sun_dist * earth_dist)
+        return round(m, 1)
 
 
 def main():

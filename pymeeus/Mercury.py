@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, acos, atan2, sqrt, radians
+from math import sin, cos, tan, acos, atan2, sqrt, radians, log10
 
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
@@ -7662,6 +7662,31 @@ class Mercury(object):
         # Get the time of passage through the node
         time, r = passage_nodes_elliptic(arg, e, a, t, ascending)
         return time, r
+
+    @staticmethod
+    def magnitude(sun_dist, earth_dist, phase_angle):
+        """This function computes the approximate magnitude of Mercury.
+
+        :param sun_dist: Distance from Mercury to Sun, in Astronomical Units
+        :type sun_dist: float
+        :param earth_dist: Distance Mercury to Earth, in Astronomical Units
+        :type earth_dist: float
+        :param phase_angle: Mercury phase angle
+        :type phase_angle: float, :py:class:`Angle`
+
+        :returns: Mercury's magnitude
+        :rtype: float
+        :raises: TypeError if input values are of wrong type.
+        """
+
+        if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
+                and isinstance(phase_angle, (float, Angle))):
+            raise TypeError("Invalid input types")
+        i = float(phase_angle)
+        i50 = i - 50.0
+        m = (1.16 + 5.0 * log10(sun_dist * earth_dist) + 0.02838 * i50 +
+             0.0001023 * i50 * i50)
+        return round(m, 1)
 
 
 def main():
