@@ -2521,7 +2521,7 @@ class Venus(object):
         >>> earth_dist = 0.910947
         >>> phase_angle = Angle(72.96)
         >>> m = Venus.magnitude(sun_dist, earth_dist, phase_angle)
-        >>> print(round(m, 1))
+        >>> print(m)
         -3.8
         """
 
@@ -2531,7 +2531,7 @@ class Venus(object):
         i = float(phase_angle)
         m = (-4.0 + 5.0 * log10(sun_dist * earth_dist) + 0.01322 * i
              + 0.0000004247 * i * i * i)
-        return m
+        return round(m, 1)
 
 
 def main():
