@@ -1728,8 +1728,6 @@ class Epoch(object):
                   (cos(latitude.rad()) * cos_delta))
         # Finally, compute rising and setting times
         omega = degrees(acos(cos_om))
-        e = Epoch(jtran)
-        y, m, d, h, mi, s = e.get_full_date()
         jrise = Epoch(jtran - (omega / 360.0))
         jsett = Epoch(jtran + (omega / 360.0))
         return jrise, jsett
