@@ -20,7 +20,7 @@
 
 import calendar
 import datetime
-from math import radians, cos
+from math import radians, cos, sin, asin, sqrt, acos, degrees
 
 from pymeeus.base import TOL, get_ordinal_suffix, iint
 from pymeeus.Angle import Angle
@@ -1659,6 +1659,80 @@ class Epoch(object):
         if self.leap():
             days_of_year = 366.0
         return y + doy / days_of_year
+
+    def rise_set(self, latitude, longitude, altitude=0.0):
+        """This method computes the times of rising and setting of the Sun.
+
+        .. note:: The algorithm used is the one explained in the article
+            "Sunrise equation" of the Wikipedia at:
+            https://en.wikipedia.org/wiki/Sunrise_equation
+
+        .. note:: The results are given in UTC time.
+
+        :param latitude: Latitude of the observer, as an Angle object. Positive
+            to the East
+        :type latitude: :py:class:`Angle`
+        :param longitude: Longitude of the observer, as an Angle object.
+            Positive to the North
+        :type longitude: :py:class:`Angle`
+        :param altitude: Altitude of the observer, as meters above sea level
+        :type altitude: int, float
+
+        :returns: Two :py:class:`Epoch` objects representing rising time and
+            setting time, in a tuple
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+
+        >>> e = Epoch(2019, 4, 2)
+        >>> latitude = Angle(48, 8, 0)
+        >>> longitude = Angle(11, 34, 0)
+        >>> altitude = 520.0
+        >>> rising, setting = e.rise_set(latitude, longitude, altitude)
+        >>> y, m, d, h, mi, s = rising.get_full_date()
+        >>> print("{}:{}".format(h, mi))
+        4:48
+        >>> y, m, d, h, mi, s = setting.get_full_date()
+        >>> print("{}:{}".format(h, mi))
+        17:48
+        """
+
+        if not (isinstance(latitude, Angle) and isinstance(longitude, Angle)
+                and isinstance(altitude, (int, float))):
+            raise TypeError("Invalid input types")
+        # Let's start computing the number of days since 2000/1/1 12:00 (cjd)
+        # Compute fractional Julian Day for leap seconds and terrestrial time
+        # We need current year and month
+        year, month, dat = self.get_date()
+        frac = (10.0 + 32.184 + Epoch.leap_seconds(year, month)) / 86400.0
+        cjd = self.jde() - 2451545.0 + frac
+        # Compute mean solar noon
+        jstar = cjd - (float(longitude) / 360.0)
+        # Solar mean anomaly
+        m = (357.5291 + 0.98560028 * jstar) % 360
+        mr = radians(m)
+        # Equation of the center
+        c = 1.9148 * sin(mr) + 0.02 * sin(2.0 * mr) + 0.0003 * sin(3.0 * mr)
+        # Ecliptic longitude
+        lambd = (m + c + 180.0 + 102.9372) % 360
+        lr = radians(lambd)
+        # Solar transit
+        jtran = 2451545.5 + jstar + 0.0053 * sin(mr) - 0.0069 * sin(2.0 * lr)
+        # Declination of the Sun
+        sin_delta = sin(lr) * sin(radians(23.44))
+        delta = asin(sin_delta)
+        cos_delta = cos(delta)
+        # Hour angle
+        # First, correct by elevation
+        corr = -0.83 - 2.076 * sqrt(altitude) / 60.0
+        cos_om = ((sin(radians(corr)) - sin(latitude.rad()) * sin_delta) /
+                  (cos(latitude.rad()) * cos_delta))
+        # Finally, compute rising and setting times
+        omega = degrees(acos(cos_om))
+        e = Epoch(jtran)
+        y, m, d, h, mi, s = e.get_full_date()
+        jrise = Epoch(jtran - (omega / 360.0))
+        jsett = Epoch(jtran + (omega / 360.0))
+        return jrise, jsett
 
     def __call__(self):
         """Method used when Epoch is called only with parenthesis.
