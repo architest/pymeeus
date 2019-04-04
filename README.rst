@@ -84,6 +84,10 @@ documentation to your new code. This also includes in-line comments!!!.
 What's new
 ----------
 
+-  0.3.6
+
+   -  Add method to compute rising and setting times of the Sun
+
 -  0.3.5
 
    -  Add method magnitude() to planet classes
