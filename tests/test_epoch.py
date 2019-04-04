@@ -20,6 +20,7 @@
 
 from pymeeus.base import TOL
 from pymeeus.Epoch import Epoch
+from pymeeus.Angle import Angle
 
 
 # Epoch class
@@ -437,3 +438,22 @@ def test_epoch_le():
     a = Epoch(-207, 11, 5.2)
     b = Epoch(-207, 11, 5.2)
     assert a <= b, "ERROR: 2nd __le__() test, output doesn't match"
+
+
+def test_epoch_rise_set():
+    """Tests the 'rise_set()' method of Epochs"""
+
+    e = Epoch(2019, 4, 2)
+    latitude = Angle(48, 8, 0)
+    longitude = Angle(11, 34, 0)
+    altitude = 520.0
+    rising, setting = e.rise_set(latitude, longitude, altitude)
+    y, m, d, h, mi, s = rising.get_full_date()
+
+    assert h == 4, "ERROR: 1st rise_set() test, output doesn't match"
+    assert mi == 48, "ERROR: 2nd rise_set() test, output doesn't match"
+
+    y, m, d, h, mi, s = setting.get_full_date()
+
+    assert h == 17, "ERROR: 3rd rise_set() test, output doesn't match"
+    assert mi == 48, "ERROR: 3rd rise_set() test, output doesn't match"

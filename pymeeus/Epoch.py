@@ -1667,13 +1667,17 @@ class Epoch(object):
             "Sunrise equation" of the Wikipedia at:
             https://en.wikipedia.org/wiki/Sunrise_equation
 
+        .. note:: This algorithm is only valid within the artic and antartic
+            circles (+/- 66d 33'). Outside that range this method returns
+            invalid values (JDE < 0)
+
         .. note:: The results are given in UTC time.
 
         :param latitude: Latitude of the observer, as an Angle object. Positive
-            to the East
+            to the North
         :type latitude: :py:class:`Angle`
         :param longitude: Longitude of the observer, as an Angle object.
-            Positive to the North
+            Positive to the East
         :type longitude: :py:class:`Angle`
         :param altitude: Altitude of the observer, as meters above sea level
         :type altitude: int, float
@@ -1699,12 +1703,18 @@ class Epoch(object):
         if not (isinstance(latitude, Angle) and isinstance(longitude, Angle)
                 and isinstance(altitude, (int, float))):
             raise TypeError("Invalid input types")
+        # Check that latitude is within valid range
+        limit = Angle(66, 33, 0)
+        if latitude > limit or latitude < -limit:
+            error = Epoch(-1)
+            return error, error
         # Let's start computing the number of days since 2000/1/1 12:00 (cjd)
         # Compute fractional Julian Day for leap seconds and terrestrial time
-        # We need current year and month
-        year, month, dat = self.get_date()
+        # We need current epoch without hours, minutes and seconds
+        year, month, day = self.get_date()
+        e = Epoch(year, month, day)
         frac = (10.0 + 32.184 + Epoch.leap_seconds(year, month)) / 86400.0
-        cjd = self.jde() - 2451545.0 + frac
+        cjd = e.jde() - 2451545.0 + frac
         # Compute mean solar noon
         jstar = cjd - (float(longitude) / 360.0)
         # Solar mean anomaly
@@ -1717,6 +1727,8 @@ class Epoch(object):
         lr = radians(lambd)
         # Solar transit
         jtran = 2451545.5 + jstar + 0.0053 * sin(mr) - 0.0069 * sin(2.0 * lr)
+        # NOTE: The original algorithm indicates a value of 2451545.0, but that
+        # leads to transit times around midnight, which is an error
         # Declination of the Sun
         sin_delta = sin(lr) * sin(radians(23.44))
         delta = asin(sin_delta)
@@ -2253,6 +2265,20 @@ def main():
     print_me("2007/5/20.0 != 2007/5/20.000001", a != b)
     print_me("2007/5/20.0 > 2007/5/20.000001", a > b)
     print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
+
+    print("")
+
+    # Compute the time of rise and setting of the Sun in a given day
+    e = Epoch(2018, 5, 2)
+    print("On May 2nd, 2018, Sun rising/setting times in Munich were (UTC):")
+    latitude = Angle(48, 8, 0)
+    longitude = Angle(11, 34, 0)
+    altitude = 520.0
+    rising, setting = e.rise_set(latitude, longitude, altitude)
+    y, m, d, h, mi, s = rising.get_full_date()
+    print("Rising time: {}:{}".format(h, mi))                           # 3:50
+    y, m, d, h, mi, s = setting.get_full_date()
+    print("Setting time: {}:{}".format(h, mi))                          # 18:33
 
 
 if __name__ == "__main__":

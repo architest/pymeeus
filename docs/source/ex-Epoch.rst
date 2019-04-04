@@ -330,3 +330,29 @@ It is possible to carry out some algebraic operations with Epochs.
     print_me("2007/5/20.0 <= 2007/5/20.000001", a <= b)
 
     # 2007/5/20.0 <= 2007/5/20.000001: True
+
+- Compute the time of rise and setting of the Sun in a given day::
+
+    e = Epoch(2018, 5, 2)
+
+    print("On May 2nd, 2018, Sun rising/setting times in Munich were (UTC):")
+
+    latitude = Angle(48, 8, 0)
+
+    longitude = Angle(11, 34, 0)
+
+    altitude = 520.0
+
+    rising, setting = e.rise_set(latitude, longitude, altitude)
+
+    y, m, d, h, mi, s = rising.get_full_date()
+
+    print("Rising time: {}:{}".format(h, mi))
+
+    # Rising time: 3:50
+
+    y, m, d, h, mi, s = setting.get_full_date()
+
+    print("Setting time: {}:{}".format(h, mi))
+
+    # Setting time: 18:33
