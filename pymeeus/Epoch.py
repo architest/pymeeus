@@ -1669,7 +1669,7 @@ class Epoch(object):
 
         .. note:: This algorithm is only valid within the artic and antartic
             circles (+/- 66d 33'). Outside that range this method returns
-            invalid values (JDE < 0)
+            a ValueError exception
 
         .. note:: The results are given in UTC time.
 
@@ -1686,6 +1686,7 @@ class Epoch(object):
             setting time, in a tuple
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
+        :raises: ValueError if latitude outside the +/- 66d 33' range.
 
         >>> e = Epoch(2019, 4, 2)
         >>> latitude = Angle(48, 8, 0)
@@ -1706,8 +1707,7 @@ class Epoch(object):
         # Check that latitude is within valid range
         limit = Angle(66, 33, 0)
         if latitude > limit or latitude < -limit:
-            error = Epoch(-1)
-            return error, error
+            raise ValueError("Latitude outside the +/- 66d 33' range")
         # Let's start computing the number of days since 2000/1/1 12:00 (cjd)
         # Compute fractional Julian Day for leap seconds and terrestrial time
         # We need current epoch without hours, minutes and seconds
