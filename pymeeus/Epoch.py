@@ -119,9 +119,9 @@ class Epoch(object):
     class, you may use the :meth:`get_last_leap_second()` method.
 
     .. note:: The current version of UTC was implemented in January 1st, 1972.
-       Therefore, for dates before the correction in **NOT** carried out, even
-       if the **utc** argument is set to True, and it is supposed that the
-       input data is already in TT scale.
+       Therefore, for dates before that date the correction is **NOT** carried
+       out, even if the **utc** argument is set to True, and it is supposed
+       that the input data is already in TT scale.
 
     .. note:: For conversions between TT and Universal Time (UT), please use
        the method :meth:`tt2ut`.
@@ -424,13 +424,13 @@ class Epoch(object):
             sec = args[5]
         if year < -4712:  # No negative JDE will be allowed
             raise ValueError("Invalid value for the input year")
-        if day < 1 or day > 31:
+        if day < 1 or day >= 32:
             raise ValueError("Invalid value for the input day")
-        if hours < 0 or hours > 23:
+        if hours < 0 or hours >= 24:
             raise ValueError("Invalid value for the input hours")
-        if minutes < 0 or minutes > 59:
+        if minutes < 0 or minutes >= 60:
             raise ValueError("Invalid value for the input minutes")
-        if sec < 0 or sec > 59:
+        if sec < 0 or sec >= 60:
             raise ValueError("Invalid value for the input seconds")
 
         # Test the days according to the month
