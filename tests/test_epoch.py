@@ -267,6 +267,27 @@ def test_epoch_tt2ut():
     assert abs(round(Epoch.tt2ut(2015, 7), 1) - 69.3) < TOL, \
         "ERROR: 6th tt2ut() test, output doesn't match"
 
+    assert abs(round(Epoch.tt2ut(1000, 1), 1) - 1574.2) < TOL, \
+        "ERROR: 7th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(-501, 1), 1) - 17218.5) < TOL, \
+        "ERROR: 8th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1801, 1), 1) - 13.4) < TOL, \
+        "ERROR: 9th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1930, 1), 1) - 24.1) < TOL, \
+        "ERROR: 10th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1945, 1), 1) - 26.9) < TOL, \
+        "ERROR: 11th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(1970, 1), 1) - 40.2) < TOL, \
+        "ERROR: 12th tt2ut() test, output doesn't match"
+
+    assert abs(round(Epoch.tt2ut(2000, 1), 1) - 63.9) < TOL, \
+        "ERROR: 13th tt2ut() test, output doesn't match"
+
 
 def test_epoch_dow():
     """Tests the dow() method of Epoch class"""
