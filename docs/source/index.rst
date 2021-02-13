@@ -19,6 +19,7 @@
    Epoch
    Interpolation
    Jupiter
+   JupiterMoons
    Mars
    Mercury
    Minor
@@ -41,6 +42,7 @@
    ex-Epoch
    ex-Interpolation
    ex-Jupiter
+   ex-JupiterMoons
    ex-Mars
    ex-Mercury
    ex-Minor
