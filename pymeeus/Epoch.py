@@ -1400,6 +1400,7 @@ class Epoch(object):
                 )
             )
         elif year >= 500 and year < 1600:
+            u = (year - 1000) / 100.0
             dt = 1574.2 + u * (
                 -556.01
                 + u
