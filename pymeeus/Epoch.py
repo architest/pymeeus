@@ -300,7 +300,7 @@ class Epoch(object):
                 return
             elif isinstance(args[0], (tuple, list)):
                 year, month, day, hours, minutes, sec = \
-                        self._check_values(*args[0])
+                    self._check_values(*args[0])
             elif isinstance(args[0], datetime.datetime):
                 d = args[0]
                 year, month, day, hours, minutes, sec = self._check_values(

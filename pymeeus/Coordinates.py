@@ -287,8 +287,8 @@ def mean_obliquity(*args, **kwargs):
                     * (
                         -249.67
                         + u
-                        * (-39.05 + u * (7.12 + u *
-                                         (27.87 + u * (5.79 + u * 2.45))))
+                        * (-39.05 + u * (7.12 + u
+                                         * (27.87 + u * (5.79 + u * 2.45))))
                     )
                 )
             )
@@ -546,8 +546,8 @@ def precession_equatorial(
         p_motion_ra = Angle(p_motion_ra)
     if isinstance(p_motion_dec, (int, float)):
         p_motion_dec = Angle(p_motion_dec)
-    if not (isinstance(p_motion_ra, Angle) and
-            isinstance(p_motion_dec, Angle)):
+    if not (isinstance(p_motion_ra, Angle)
+            and isinstance(p_motion_dec, Angle)):
         raise TypeError("Invalid input types")
     tt = (start_epoch - JDE2000) / 36525.0
     t = (final_epoch - start_epoch) / 36525.0
@@ -644,8 +644,8 @@ def precession_ecliptical(
         p_motion_lon = Angle(p_motion_lon)
     if isinstance(p_motion_lat, (int, float)):
         p_motion_lat = Angle(p_motion_lat)
-    if not (isinstance(p_motion_lon, Angle) and
-            isinstance(p_motion_lat, Angle)):
+    if not (isinstance(p_motion_lon, Angle)
+            and isinstance(p_motion_lat, Angle)):
         raise TypeError("Invalid input types")
     tt = (start_epoch - JDE2000) / 36525.0
     t = (final_epoch - start_epoch) / 36525.0
@@ -671,9 +671,9 @@ def precession_ecliptical(
     # But beware!: There is still a missing constant for pie. We didn't add
     # it before because of the mismatch between degrees and seconds
     pie += 174.876384
-    a = (cos(eta.rad()) * cos(start_lat.rad()) *
-         sin(pie.rad() - start_lon.rad()) - sin(eta.rad()) *
-         sin(start_lat.rad()))
+    a = (cos(eta.rad()) * cos(start_lat.rad())
+         * sin(pie.rad() - start_lon.rad()) - sin(eta.rad())
+         * sin(start_lat.rad()))
     b = cos(start_lat.rad()) * cos(pie.rad() - start_lon.rad())
     c = cos(eta.rad()) * sin(start_lat.rad()) + sin(eta.rad()) * cos(
         start_lat.rad()
@@ -791,8 +791,8 @@ def precession_newcomb(
         p_motion_ra = Angle(p_motion_ra)
     if isinstance(p_motion_dec, (int, float)):
         p_motion_dec = Angle(p_motion_dec)
-    if not (isinstance(p_motion_ra, Angle) and
-            isinstance(p_motion_dec, Angle)):
+    if not (isinstance(p_motion_ra, Angle)
+            and isinstance(p_motion_dec, Angle)):
         raise TypeError("Invalid input types")
     tt = (start_epoch - 2415020.3135) / 36524.2199
     t = (final_epoch - start_epoch) / 36524.2199
@@ -885,8 +885,8 @@ def motion_in_space(
         p_motion_ra = Angle(p_motion_ra)
     if isinstance(p_motion_dec, (int, float)):
         p_motion_dec = Angle(p_motion_dec)
-    if not (isinstance(p_motion_ra, Angle) and
-            isinstance(p_motion_dec, Angle)):
+    if not (isinstance(p_motion_ra, Angle)
+            and isinstance(p_motion_dec, Angle)):
         raise TypeError("Invalid input types")
     if not (
         isinstance(distance, (int, float))
@@ -908,8 +908,8 @@ def motion_in_space(
         - z * p_motion_dec.rad() * sin(start_ra.rad())
         + x * p_motion_ra.rad()
     )
-    dz = ((z / distance) * dr + distance *
-          p_motion_dec.rad() * cos(start_dec.rad()))
+    dz = ((z / distance) * dr + distance
+          * p_motion_dec.rad() * cos(start_dec.rad()))
     xp = x + time * dx
     yp = y + time * dy
     zp = z + time * dz
@@ -1155,8 +1155,8 @@ def equatorial2galactic(right_ascension, declination):
     """
 
     # First check that input values are of correct types
-    if not (isinstance(right_ascension, Angle) and
-            isinstance(declination, Angle)):
+    if not (isinstance(right_ascension, Angle)
+            and isinstance(declination, Angle)):
         raise TypeError("Invalid input types")
     ra = right_ascension.rad()
     dec = declination.rad()
@@ -1372,8 +1372,8 @@ def ecliptic_equator(longitude, latitude, obliquity):
     lon = longitude.rad()
     lat = latitude.rad()
     eps = obliquity.rad()
-    q = (atan2((cos(lon) * tan(eps)), (sin(lat) *
-                                       sin(lon) * tan(eps) - cos(lat))))
+    q = (atan2((cos(lon) * tan(eps)), (sin(lat)
+                                       * sin(lon) * tan(eps) - cos(lat))))
     q = Angle(q, radians=True)
     return q
 
@@ -1401,8 +1401,8 @@ def diurnal_path_horizon(declination, geo_latitude):
     """
 
     # First check that input values are of correct types
-    if not (isinstance(declination, Angle) and
-            isinstance(geo_latitude, Angle)):
+    if not (isinstance(declination, Angle)
+            and isinstance(geo_latitude, Angle)):
         raise TypeError("Invalid input types")
     dec = declination.rad()
     lat = geo_latitude.rad()
@@ -1828,8 +1828,8 @@ def minimum_angular_separation(
     # Let's define some auxiliary functions
     def k_factor(d1, d_a):
         """This auxiliary function returns arcseconds, input is in radians"""
-        return (206264.8062 / (1.0 + sin(d1) * sin(d1) *
-                               tan(d_a) * tan(d_a / 2.0)))
+        return (206264.8062 / (1.0 + sin(d1) * sin(d1)
+                               * tan(d_a) * tan(d_a / 2.0)))
 
     def u_factor(k, d1, d_a, d_d):
         """Input is in radians, except for k (arcseconds)"""
@@ -2202,8 +2202,8 @@ def planet_stars_in_line(
         d2 = delta2.rad()
         a3 = alpha3.rad()
         d3 = delta3.rad()
-        return (tan(d1) * sin(a2 - a3) + tan(d2) * sin(a3 - a1) +
-                tan(d3) * sin(a1 - a2))
+        return (tan(d1) * sin(a2 - a3) + tan(d2) * sin(a3 - a1)
+                + tan(d3) * sin(a1 - a2))
 
     # First check that input values are of correct types
     if not (
@@ -2336,12 +2336,12 @@ def straight_line(alpha1, delta1, alpha2, delta2, alpha3, delta3):
     n3 = a1 * b3 - a3 * b1
     psi = acos(
         (l1 * l2 + m1 * m2 + n1 * n2)
-        / (sqrt(l1 * l1 + m1 * m1 + n1 * n1) *
-           sqrt(l2 * l2 + m2 * m2 + n2 * n2)))
+        / (sqrt(l1 * l1 + m1 * m1 + n1 * n1)
+           * sqrt(l2 * l2 + m2 * m2 + n2 * n2)))
     omega = asin(
         (a2 * l3 + b2 * m3 + c2 * n3)
-        / (sqrt(a2 * a2 + b2 * b2 + c2 * c2) *
-           sqrt(l3 * l3 + m3 * m3 + n3 * n3)))
+        / (sqrt(a2 * a2 + b2 * b2 + c2 * c2)
+           * sqrt(l3 * l3 + m3 * m3 + n3 * n3)))
     return Angle(psi, radians=True), Angle(omega, radians=True)
 
 
@@ -2626,8 +2626,8 @@ def apparent_position(epoch, alpha, delta, sun_lon):
     d = delta.rad()
     eps = epsilon.rad()
     # Compute corrections due to nutation
-    dalpha1 = ((cos(eps) + sin(eps) * sin(a) * tan(d)) * dpsi -
-               (cos(a) * tan(d)) * depsilon)
+    dalpha1 = ((cos(eps) + sin(eps) * sin(a) * tan(d)) * dpsi
+               - (cos(a) * tan(d)) * depsilon)
     ddelta1 = (sin(eps) * cos(a)) * dpsi + sin(a) * depsilon
     dalpha1 = Angle(dalpha1)
     ddelta1 = Angle(ddelta1)
@@ -2639,14 +2639,14 @@ def apparent_position(epoch, alpha, delta, sun_lon):
     lon = sun_lon.rad()
     k = 20.49552    # The constant of aberration
     dalpha2 = k * (-(cos(a) * cos(lon) * cos(eps) + sin(a) * sin(lon)) / cos(d)
-                   + e * (cos(a) * cos(pie) * cos(eps) +
-                          sin(a) * sin(pie)) / cos(d))
-    ddelta2 = k * (-(cos(lon) * cos(eps) *
-                     (tan(eps) * cos(d) - sin(a) * sin(d)) +
-                     cos(a) * sin(d) * sin(lon)) +
-                   e * (cos(pie) * cos(eps) * (tan(eps) * cos(d) -
-                                               sin(a) * sin(d))
-                        + cos(a) * sin(d) * sin(pie)))
+                   + e * (cos(a) * cos(pie) * cos(eps)
+                          + sin(a) * sin(pie)) / cos(d))
+    ddelta2 = k * (-(cos(lon) * cos(eps)
+                     * (tan(eps) * cos(d) - sin(a) * sin(d))
+                     + cos(a) * sin(d) * sin(lon))
+                   + e * (cos(pie) * cos(eps) * (tan(eps) * cos(d)
+                                                 - sin(a) * sin(d))
+                          + cos(a) * sin(d) * sin(pie)))
     dalpha2 = Angle(0, 0, dalpha2)
     ddelta2 = Angle(0, 0, ddelta2)
     # Add the two corrections to the original values
@@ -2737,8 +2737,8 @@ def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
         omegapsi = Angle(omegapsi, radians=True)
         lon1 = omegapsi + pie + p
     domega = atan2(-sin(etar) * sin(lon0r - pir),
-                   sin(i0r) * cos(etar) -
-                   cos(i0r) * sin(etar) * cos(lon0r - pir))
+                   sin(i0r) * cos(etar)
+                   - cos(i0r) * sin(etar) * cos(lon0r - pir))
     domega = Angle(domega, radians=True)
     arg1 = arg0 + domega
     return i1, arg1, lon1
@@ -2855,8 +2855,8 @@ def orbital_elements(epoch, parameters1, parameters2):
     """
 
     # First check that input values are of correct types
-    if not (isinstance(epoch, Epoch) and isinstance(parameters1, list) and
-            isinstance(parameters2, list)):
+    if not (isinstance(epoch, Epoch) and isinstance(parameters1, list)
+            and isinstance(parameters2, list)):
         raise TypeError("Invalid input types")
 
     # Define an auxiliary function
@@ -3045,8 +3045,8 @@ def passage_nodes_elliptic(omega, e, a, t, ascending=True):
     0.8493
     """
 
-    if not (isinstance(omega, Angle) and isinstance(e, float) and
-            isinstance(a, float) and isinstance(t, Epoch)):
+    if not (isinstance(omega, Angle) and isinstance(e, float)
+            and isinstance(a, float) and isinstance(t, Epoch)):
         raise TypeError("Invalid input types")
     # First, get the true anomaly
     if ascending:
@@ -3111,8 +3111,8 @@ def passage_nodes_parabolic(omega, q, t, ascending=True):
     1.3901
     """
 
-    if not (isinstance(omega, Angle) and isinstance(q, float) and
-            isinstance(t, Epoch)):
+    if not (isinstance(omega, Angle) and isinstance(q, float)
+            and isinstance(t, Epoch)):
         raise TypeError("Invalid input types")
     # First, get the true anomaly
     if ascending:
@@ -3152,12 +3152,12 @@ def phase_angle(sun_dist, earth_dist, sun_earth_dist):
     72.96
     """
 
-    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float) and
-            isinstance(sun_earth_dist, float)):
+    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
+            and isinstance(sun_earth_dist, float)):
         raise TypeError("Invalid input types")
-    angle = acos((sun_dist * sun_dist + earth_dist * earth_dist -
-                  sun_earth_dist * sun_earth_dist) /
-                 (2.0 * sun_dist * earth_dist))
+    angle = acos((sun_dist * sun_dist + earth_dist * earth_dist
+                  - sun_earth_dist * sun_earth_dist)
+                 / (2.0 * sun_dist * earth_dist))
     angle = Angle(angle, radians=True)
     return angle
 
@@ -3185,11 +3185,11 @@ def illuminated_fraction(sun_dist, earth_dist, sun_earth_dist):
     0.647
     """
 
-    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float) and
-            isinstance(sun_earth_dist, float)):
+    if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
+            and isinstance(sun_earth_dist, float)):
         raise TypeError("Invalid input types")
-    k = ((sun_dist + earth_dist) * (sun_dist + earth_dist) -
-         sun_earth_dist * sun_earth_dist) / (4.0 * sun_dist * earth_dist)
+    k = ((sun_dist + earth_dist) * (sun_dist + earth_dist)
+         - sun_earth_dist * sun_earth_dist) / (4.0 * sun_dist * earth_dist)
     return k
 
 
