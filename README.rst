@@ -90,9 +90,14 @@ Contributors
 What’s new
 ----------
 
--  0.3.7
+-  0.3.8
 
    -  Fixed undefined variable in Epoch.tt2ut
+
+-  0.3.7
+
+   -  Fix bug when using fractional seconds, minutes, hours or days,
+      plus documentation improvements
 
 -  0.3.6
 
