@@ -92,6 +92,11 @@ Contributors
 What’s new
 ----------
 
+-  0.3.9
+
+   -  Relaxed requirements, added contributor molsen234, and fixed
+      format problems showed by flake8
+
 -  0.3.8
 
    -  Fixed undefined variable in Epoch.tt2ut
