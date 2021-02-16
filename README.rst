@@ -1,14 +1,14 @@
 PyMeeus
 =======
 
-    **Library of astronomical algorithms in Python**.
+   **Library of astronomical algorithms in Python**.
 
 PyMeeus is a Python implementation of the astronomical algorithms
-described in the classical book "Astronomical Algorithms, 2nd Edition,
-Willmann-Bell Inc. (1998)" by Jean Meeus.
+described in the classical book “Astronomical Algorithms, 2nd Edition,
+Willmann-Bell Inc. (1998)” by Jean Meeus.
 
 There are great astronomical libraries out there. For instance, if
-you're looking for high precision and speed you should take a look at
+you’re looking for high precision and speed you should take a look at
 `libnova <http://libnova.sourceforge.net/>`__. For a set of python
 modules aimed at professional astronomers, you should look at
 `Astropy <http://www.astropy.org/>`__. On the other hand, the advantages
@@ -23,19 +23,19 @@ The easiest way of installing PyMeeus is using pip:
 
 .. code:: sh
 
-    pip install pymeeus
+   pip install pymeeus
 
 Or, for a per-user installation:
 
 .. code:: sh
 
-    pip install --user pymeeus
+   pip install --user pymeeus
 
 If you prefer Python3, you can use:
 
 .. code:: sh
 
-    pip3 install --user pymeeus
+   pip3 install --user pymeeus
 
 Meta
 ----
@@ -50,13 +50,13 @@ Documentation: https://pymeeus.readthedocs.io/en/latest/
 GitHub: https://github.com/architest/pymeeus
 
 If you have Sphinx installed, you can generate your own, latest
-documentation going to directory 'docs' and issuing:
+documentation going to directory ‘docs’ and issuing:
 
 .. code:: sh
 
-    make html
+   make html
 
-Then the HTML documentation pages can be found in 'build/html'.
+Then the HTML documentation pages can be found in ‘build/html’.
 
 Contributing
 ------------
@@ -81,8 +81,18 @@ the proper place in ``tests`` directory.
 Finally, documentation is also a big thing here. Add proper and abundant
 documentation to your new code. This also includes in-line comments!!!.
 
-What's new
+Contributors
+------------
+
+-  `Neil Freeman <https://github.com/fitnr>`__ - Fixed undefined
+   variable in Epoch.tt2ut
+
+What’s new
 ----------
+
+-  0.3.7
+
+   -  Fixed undefined variable in Epoch.tt2ut
 
 -  0.3.6
 
@@ -107,12 +117,12 @@ What's new
 -  0.3.1
 
    -  Fix errors in the elongation computation, add tests and examples
-      of use of methods 'geocentric\_position()', and tests and examples
-      for 'Pluto' class
+      of use of methods ‘geocentric_position()’, and tests and examples
+      for ‘Pluto’ class
 
 -  0.3.0
 
-   -  Added 'Pluto' class
+   -  Added ‘Pluto’ class
 
 -  0.2.11
 
@@ -121,39 +131,39 @@ What's new
 
 -  0.2.10
 
-   -  Added 'geocentric\_position()' method to 'Minor' class, and added
+   -  Added ‘geocentric_position()’ method to ‘Minor’ class, and added
       conjunction and opposition methods for Mercury, Venus and Mars.
 
 -  0.2.9
 
-   -  Added class 'Minor', as well as functions to compute velocity of
+   -  Added class ‘Minor’, as well as functions to compute velocity of
       an object and length of an orbit
 
 -  0.2.8
 
-   -  Added methods 'geocentric\_position()' to all the planets
+   -  Added methods ‘geocentric_position()’ to all the planets
 
 -  0.2.7
 
-   -  Added function 'kepler\_equation()' to 'Coordinates' module, and
-      'orbital\_elements' methods to classes 'Mercury', 'Venus',
-      'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus' and 'Neptune'
+   -  Added function ‘kepler_equation()’ to ‘Coordinates’ module, and
+      ‘orbital_elements’ methods to classes ‘Mercury’, ‘Venus’, ‘Earth’,
+      ‘Mars’, ‘Jupiter’, ‘Saturn’, ‘Uranus’ and ‘Neptune’
 
 -  0.2.6
 
-   -  Added classes 'Uranus' and 'Neptune', plus additional functions in
-      Coordinates module'
+   -  Added classes ‘Uranus’ and ‘Neptune’, plus additional functions in
+      Coordinates module’
 
 -  0.2.5
 
-   -  Added classes 'Jupiter' and 'Saturn'
+   -  Added classes ‘Jupiter’ and ‘Saturn’
 
 -  0.2.4
 
    -  Minor bug fixing, added methods
-      'ephemeris\_physical\_observations()' and
-      'beginning\_synodic\_rotation()', and added classes 'Mercury' and
-      'Mars'
+      ‘ephemeris_physical_observations()’ and
+      ‘beginning_synodic_rotation()’, and added classes ‘Mercury’ and
+      ‘Mars’
 
 -  0.2.3
 
@@ -195,13 +205,13 @@ What's new
 
 -  0.1.6
 
-   -  Added function 'times\_rise\_transit\_set()' to Coordinates module
+   -  Added function ‘times_rise_transit_set()’ to Coordinates module
 
 -  0.1.5
 
    -  Added functions for parallactic angle, ecliptic points in the
       horizon, angle between north celestial pole and north pole of the
-      ecliptic, and diurnal path vs. the horizon at time of rising or
+      ecliptic, and diurnal path vs. the horizon at time of rising or
       setting
 
 -  0.1.4

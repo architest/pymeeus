@@ -74,8 +74,14 @@ place in `tests` directory.
 Finally, documentation is also a big thing here. Add proper and abundant
 documentation to your new code. This also includes in-line comments!!!.
 
+## Contributors
+
+* [Neil Freeman](https://github.com/fitnr) - Fixed undefined variable in Epoch.tt2ut
+
 ## What's new
 
+* 0.3.7
+    * Fixed undefined variable in Epoch.tt2ut
 * 0.3.6
     * Add method to compute rising and setting times of the Sun
 * 0.3.5
