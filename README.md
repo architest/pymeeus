@@ -77,6 +77,7 @@ documentation to your new code. This also includes in-line comments!!!.
 ## Contributors
 
 * [Neil Freeman](https://github.com/fitnr) - Fixed undefined variable in Epoch.tt2ut
+* [molsen234](https://github.com/molsen234) - Fixed bug when using fractional seconds, minutes, hours or days
 
 ## What's new
 

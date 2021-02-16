@@ -86,6 +86,8 @@ Contributors
 
 -  `Neil Freeman <https://github.com/fitnr>`__ - Fixed undefined
    variable in Epoch.tt2ut
+-  `molsen234 <https://github.com/molsen234>`__ - Fixed bug when using
+   fractional seconds, minutes, hours or days
 
 What’s new
 ----------
