@@ -2937,8 +2937,8 @@ class Earth(object):
             phi = radians(latitude)  # Convert to radians
         else:
             phi = latitude.rad()  # It is an Angle. Call method rad()
-        return (0.9983271 + 0.0016764 * cos(2.0 * phi) -
-                0.0000035 * cos(4.0 * phi))
+        return (0.9983271 + 0.0016764 * cos(2.0 * phi)
+                - 0.0000035 * cos(4.0 * phi))
 
     def rho_sinphi(self, latitude, height):
         """Method to compute the rho*sin(phi') term, needed in the calculation
@@ -3514,12 +3514,12 @@ class Earth(object):
         -15d 46' 30.0''
         """
 
-        if not (isinstance(right_ascension, Angle) and
-                isinstance(declination, Angle) and
-                isinstance(latitude, Angle) and
-                isinstance(distance, float) and
-                isinstance(hour_angle, Angle) and
-                isinstance(height, float)):
+        if not (isinstance(right_ascension, Angle)
+                and isinstance(declination, Angle)
+                and isinstance(latitude, Angle)
+                and isinstance(distance, float)
+                and isinstance(hour_angle, Angle)
+                and isinstance(height, float)):
             raise TypeError("Invalid input types")
         # Let's start computing the equatorial horizontal parallax
         ang = Angle(0, 0, 8.794)
@@ -3530,14 +3530,14 @@ class Earth(object):
         rho_cosphi = e.rho_cosphi(latitude, height)
         # Now, let's compute the correction for the right ascension
         delta_a = atan2(-rho_cosphi * sin_pi * sin(hour_angle.rad()),
-                        cos(declination.rad()) - rho_cosphi * sin_pi *
-                        cos(hour_angle.rad()))
+                        cos(declination.rad()) - rho_cosphi * sin_pi
+                        * cos(hour_angle.rad()))
         delta_a = Angle(delta_a, radians=True)
         # And finally, the declination already corrected
-        dec = atan2((sin(declination.rad()) - rho_sinphi * sin_pi) *
-                    cos(delta_a.rad()),
-                    cos(declination.rad()) - rho_cosphi * sin_pi *
-                    cos(hour_angle.rad()))
+        dec = atan2((sin(declination.rad()) - rho_sinphi * sin_pi)
+                    * cos(delta_a.rad()),
+                    cos(declination.rad()) - rho_cosphi * sin_pi
+                    * cos(hour_angle.rad()))
         dec = Angle(dec, radians=True)
         return (right_ascension + delta_a), dec
 
@@ -3591,14 +3591,14 @@ class Earth(object):
         16' 25.5''
         """
 
-        if not (isinstance(longitude, Angle) and
-                isinstance(latitude, Angle) and
-                isinstance(semidiameter, Angle) and
-                isinstance(obs_lat, Angle) and
-                isinstance(obliquity, Angle) and
-                isinstance(sidereal_time, Angle) and
-                isinstance(distance, float) and
-                isinstance(height, float)):
+        if not (isinstance(longitude, Angle)
+                and isinstance(latitude, Angle)
+                and isinstance(semidiameter, Angle)
+                and isinstance(obs_lat, Angle)
+                and isinstance(obliquity, Angle)
+                and isinstance(sidereal_time, Angle)
+                and isinstance(distance, float)
+                and isinstance(height, float)):
             raise TypeError("Invalid input types")
         # Let's start computing the equatorial horizontal parallax
         ang = Angle(0, 0, 8.794)
@@ -3615,16 +3615,16 @@ class Earth(object):
         oblr = obliquity.rad()
         n = cos(lonr) * cos(latr) - rho_cosphi * sin_pi * cos(sidr)
         # Now, compute the topocentric longitude
-        topo_lon = atan2(sin(lonr) * cos(latr) -
-                         sin_pi * (rho_sinphi * sin(oblr) +
-                                   rho_cosphi * cos(oblr) * sin(sidr)), n)
+        topo_lon = atan2(sin(lonr) * cos(latr)
+                         - sin_pi * (rho_sinphi * sin(oblr)
+                                     + rho_cosphi * cos(oblr) * sin(sidr)), n)
         topo_lon = Angle(topo_lon, radians=True).to_positive()
         tlonr = topo_lon.rad()
         # Compute the topocentric latitude
-        topo_lat = atan2(cos(tlonr) * (sin(latr) -
-                                       sin_pi * (rho_sinphi * cos(oblr) -
-                                                 rho_cosphi * sin(oblr) *
-                                                 sin(sidr))), n)
+        topo_lat = atan2(cos(tlonr) * (sin(latr)
+                                       - sin_pi * (rho_sinphi * cos(oblr)
+                                                   - rho_cosphi * sin(oblr)
+                                                   * sin(sidr))), n)
         topo_lat = Angle(topo_lat, radians=True).to_positive()
         # Watch out: Latitude is only valid in the +/-90 deg range
         if abs(topo_lat) > 90.0:

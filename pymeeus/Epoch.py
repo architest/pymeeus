@@ -364,8 +364,8 @@ class Epoch(object):
         b = 0.0
         if not Epoch.is_julian(y, m, iint(d)):
             b = 2.0 - a + iint(a / 4.0)
-        jde = (iint(365.25 * (y + 4716.0)) +
-               iint(30.6001 * (m + 1.0)) + d + b - 1524.5)
+        jde = (iint(365.25 * (y + 4716.0))
+               + iint(30.6001 * (m + 1.0)) + d + b - 1524.5)
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
         # In this case, UTC to TT correction is applied automatically
@@ -739,8 +739,8 @@ class Epoch(object):
             doy = d.timetuple().tm_yday
         else:
             k = 2 if Epoch.is_leap(yyyy) else 1
-            doy = (iint((275.0 * mm) / 9.0) -
-                   k * iint((mm + 9.0) / 12.0) + day - 30.0)
+            doy = (iint((275.0 * mm) / 9.0)
+                   - k * iint((mm + 9.0) / 12.0) + day - 30.0)
         return float(doy + frac)
 
     @staticmethod
@@ -808,8 +808,8 @@ class Epoch(object):
                     m = 1
                 else:
                     m = iint((9.0 * (k + doy)) / 275.0 + 0.98)
-                d = (doy - iint((275.0 * m) / 9.0) +
-                     k * iint((m + 9.0) / 12.0) + 30)
+                d = (doy - iint((275.0 * m) / 9.0)
+                     + k * iint((m + 9.0) / 12.0) + 30)
                 return year, int(m), d + frac
         else:
             raise ValueError("Invalid input values")
@@ -901,8 +901,8 @@ class Epoch(object):
         utchour = datetime.datetime.utcnow().hour
         localminute = datetime.datetime.now().minute
         utcminute = datetime.datetime.utcnow().minute
-        return ((localhour - utchour) * 3600.0 +
-                (localminute - utcminute) * 60.0)
+        return ((localhour - utchour) * 3600.0
+                + (localminute - utcminute) * 60.0)
 
     @staticmethod
     def easter(year):
@@ -990,8 +990,8 @@ class Epoch(object):
         s = 0 if year < 1583 else iint((3.0 * c - 5.0) / 4.0)
         a = (12 * (year + 1)) % 19
         b = year % 4
-        q = (-1.904412361576 + 1.554241796621 * a +
-             0.25 * b - 0.003177794022 * year + s)
+        q = (-1.904412361576 + 1.554241796621 * a
+             + 0.25 * b - 0.003177794022 * year + s)
         j = (iint(q) + 3 * year + 5 * b + 2 + s) % 7
         r = q - iint(q)
         if j == 2 or j == 4 or j == 6:
@@ -1394,8 +1394,8 @@ class Epoch(object):
                     + u
                     * (
                         -5.952053
-                        + (u * (-0.1798452 +
-                                u * (0.022174192 + 0.0090316521 * u)))
+                        + (u * (-0.1798452
+                                + u * (0.022174192 + 0.0090316521 * u)))
                     )
                 )
             )
@@ -1409,8 +1409,8 @@ class Epoch(object):
                     + u
                     * (
                         0.319781
-                        + (u * (-0.8503463 +
-                                u * (-0.005050998 + 0.0083572073 * u)))
+                        + (u * (-0.8503463
+                                + u * (-0.005050998 + 0.0083572073 * u)))
                     )
                 )
             )
@@ -1436,8 +1436,8 @@ class Epoch(object):
                         * (
                             -0.00037436
                             + t
-                            * (0.0000121272 + t * (-0.0000001699 +
-                                                   0.000000000875 * t))
+                            * (0.0000121272 + t * (-0.0000001699
+                                                   + 0.000000000875 * t))
                         )
                     )
                 )
@@ -1447,8 +1447,8 @@ class Epoch(object):
             dt = 7.62 + t * (
                 0.5737
                 + t
-                * (-0.251754 + t * (0.01680668 +
-                                    t * (-0.0004473624 + t / 233174.0)))
+                * (-0.251754 + t * (0.01680668
+                                    + t * (-0.0004473624 + t / 233174.0)))
             )
         elif year >= 1900 and year < 1920:
             t = y - 1900.0
@@ -1469,15 +1469,15 @@ class Epoch(object):
             dt = 63.86 + t * (
                 0.3345
                 + t
-                * (-0.060374 + t * (0.0017275 +
-                                    t * (0.000651814 + 0.00002373599 * t)))
+                * (-0.060374 + t * (0.0017275
+                                    + t * (0.000651814 + 0.00002373599 * t)))
             )
         elif year >= 2005 and year < 2050:
             t = y - 2000.0
             dt = 62.92 + t * (0.32217 + 0.005589 * t)
         elif year >= 2050 and year < 2150:
-            dt = (-20.0 + 32.0 * ((y - 1820.0) / 100.0) ** 2 -
-                  0.5628 * (2150.0 - y))
+            dt = (-20.0 + 32.0 * ((y - 1820.0) / 100.0) ** 2
+                  - 0.5628 * (2150.0 - y))
         else:
             u = (year - 1820.0) / 100.0
             dt = -20.0 + 32.0 * u * u
@@ -1737,8 +1737,8 @@ class Epoch(object):
         # Hour angle
         # First, correct by elevation
         corr = -0.83 - 2.076 * sqrt(altitude) / 60.0
-        cos_om = ((sin(radians(corr)) - sin(latitude.rad()) * sin_delta) /
-                  (cos(latitude.rad()) * cos_delta))
+        cos_om = ((sin(radians(corr)) - sin(latitude.rad()) * sin_delta)
+                  / (cos(latitude.rad()) * cos_delta))
         # Finally, compute rising and setting times
         omega = degrees(acos(cos_om))
         jrise = Epoch(jtran - (omega / 360.0))
@@ -2199,8 +2199,8 @@ def main():
 
     # Now, convert a date in the Moslem calendar to the Gregorian calendar
     y, m, d = Epoch.moslem2gregorian(1421, 1, 1)
-    print_me("The date 1421/1/1 in the Moslem calendar is, in Gregorian " +
-             "calendar", "{}/{}/{}".format(y, m, d))
+    print_me("The date 1421/1/1 in the Moslem calendar is, in Gregorian "
+             + "calendar", "{}/{}/{}".format(y, m, d))
     y, m, d = Epoch.moslem2gregorian(1439, 9, 1)
     print_me(
         "The start of Ramadan month (9/1) for Gregorian year 2018 is",

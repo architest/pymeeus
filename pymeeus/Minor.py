@@ -88,9 +88,9 @@ class Minor(object):
         """
 
         # First check that input value is of correct types
-        if not (isinstance(t, Epoch) and isinstance(q, float) and
-                isinstance(e, float) and isinstance(i, Angle) and
-                isinstance(omega, Angle) and isinstance(w, Angle)):
+        if not (isinstance(t, Epoch) and isinstance(q, float)
+                and isinstance(e, float) and isinstance(i, Angle)
+                and isinstance(omega, Angle) and isinstance(w, Angle)):
             raise TypeError("Invalid input types")
         # Compute auxiliary quantities
         se = 0.397777156

@@ -2327,13 +2327,13 @@ class Neptune(object):
         # Convert to radians
         ee = Angle(ee).rad()
         gg = Angle(gg).rad()
-        corr = (0.0168 +
-                sin(m) * (-2.5606 + t * (0.0088 + t * 0.00002)) +
-                cos(m) * (-0.8611 + t * (-0.0037 + t * 0.00002)) +
-                sin(2.0 * m) * (0.0118 + t * (-0.0004 + t * 0.00001)) +
-                cos(2.0 * m) * (0.0307 - t * 0.0003) +
-                cos(ee) * (-0.5964) +
-                cos(gg) * (0.0728))
+        corr = (0.0168
+                + sin(m) * (-2.5606 + t * (0.0088 + t * 0.00002))
+                + cos(m) * (-0.8611 + t * (-0.0037 + t * 0.00002))
+                + sin(2.0 * m) * (0.0118 + t * (-0.0004 + t * 0.00001))
+                + cos(2.0 * m) * (0.0307 - t * 0.0003)
+                + cos(ee) * (-0.5964)
+                + cos(gg) * (0.0728))
         to_return = jde0 + corr
         return Epoch(to_return)
 
@@ -2385,13 +2385,13 @@ class Neptune(object):
         # Convert to radians
         ee = Angle(ee).rad()
         gg = Angle(gg).rad()
-        corr = (-0.014 + t * t * 0.00001 +
-                sin(m) * (-1.3486 + t * (0.001 + t * 0.00001)) +
-                cos(m) * (0.8597 + t * 0.0037) +
-                sin(2.0 * m) * (-0.0082 + t * (-0.0002 + t * 0.00001)) +
-                cos(2.0 * m) * (0.0037 - t * 0.0003) +
-                cos(ee) * (-0.5964) +
-                cos(gg) * (0.0728))
+        corr = (-0.014 + t * t * 0.00001
+                + sin(m) * (-1.3486 + t * (0.001 + t * 0.00001))
+                + cos(m) * (0.8597 + t * 0.0037)
+                + sin(2.0 * m) * (-0.0082 + t * (-0.0002 + t * 0.00001))
+                + cos(2.0 * m) * (0.0037 - t * 0.0003)
+                + cos(ee) * (-0.5964)
+                + cos(gg) * (0.0728))
         to_return = jde0 + corr
         return Epoch(to_return)
 

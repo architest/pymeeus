@@ -4389,14 +4389,14 @@ class Uranus(object):
         # Convert to radians
         ee = Angle(ee).rad()
         ff = Angle(ff).rad()
-        corr = (-0.0859 + t * 0.0003 +
-                sin(m) * (-3.8179 + t * (-0.0148 + t * 0.00003)) +
-                cos(m) * (5.1228 + t * (-0.0105 - t * 0.00002)) +
-                sin(2.0 * m) * (-0.0803 + t * 0.0011) +
-                cos(2.0 * m) * (-0.1905 - t * 0.0006) +
-                sin(3.0 * m) * (0.0088 + t * 0.0001) +
-                cos(ee) * (0.885) +
-                cos(ff) * (0.2153))
+        corr = (-0.0859 + t * 0.0003
+                + sin(m) * (-3.8179 + t * (-0.0148 + t * 0.00003))
+                + cos(m) * (5.1228 + t * (-0.0105 - t * 0.00002))
+                + sin(2.0 * m) * (-0.0803 + t * 0.0011)
+                + cos(2.0 * m) * (-0.1905 - t * 0.0006)
+                + sin(3.0 * m) * (0.0088 + t * 0.0001)
+                + cos(ee) * (0.885)
+                + cos(ff) * (0.2153))
         to_return = jde0 + corr
         return Epoch(to_return)
 
@@ -4448,14 +4448,14 @@ class Uranus(object):
         # Convert to radians
         ee = Angle(ee).rad()
         ff = Angle(ff).rad()
-        corr = (0.0844 - t * 0.0006 +
-                sin(m) * (-0.1048 + t * 0.0246) +
-                cos(m) * (-5.1221 + t * (0.0104 + t * 0.00003)) +
-                sin(2.0 * m) * (-0.1428 + t * 0.0005) +
-                cos(2.0 * m) * (-0.0148 - t * 0.0013) +
-                cos(3.0 * m) * (0.0055) +
-                cos(ee) * (0.885) +
-                cos(ff) * (0.2153))
+        corr = (0.0844 - t * 0.0006
+                + sin(m) * (-0.1048 + t * 0.0246)
+                + cos(m) * (-5.1221 + t * (0.0104 + t * 0.00003))
+                + sin(2.0 * m) * (-0.1428 + t * 0.0005)
+                + cos(2.0 * m) * (-0.0148 - t * 0.0013)
+                + cos(3.0 * m) * (0.0055)
+                + cos(ee) * (0.885)
+                + cos(ff) * (0.2153))
         to_return = jde0 + corr
         return Epoch(to_return)
 

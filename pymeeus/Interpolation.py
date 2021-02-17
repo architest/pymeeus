@@ -263,8 +263,8 @@ class Interpolation(object):
             # Check that all the arguments are ints, floats or Angles
             all_numbers = True
             for arg in args:
-                all_numbers = (all_numbers and
-                               isinstance(arg, (int, float, Angle)))
+                all_numbers = (all_numbers
+                               and isinstance(arg, (int, float, Angle)))
             # If any of the values failed the test, raise an exception
             if not all_numbers:
                 raise TypeError("Invalid input value")
@@ -374,8 +374,8 @@ class Interpolation(object):
             val = self._y[start]
         else:
             x = list(self._x)  # Let's make a copy, just in case
-            val = (self._newton_diff(start, end - 1) -
-                   self._newton_diff(start + 1, end)) / (x[start] - x[end])
+            val = (self._newton_diff(start, end - 1)
+                   - self._newton_diff(start + 1, end)) / (x[start] - x[end])
 
         return val
 
@@ -506,8 +506,8 @@ class Interpolation(object):
         xmin = self._x[0]
         xmax = self._x[-1]
         # Check if input value is of correct type
-        if (isinstance(xl, (int, float, Angle)) and
-                isinstance(xh, (int, float, Angle))):
+        if (isinstance(xl, (int, float, Angle))
+                and isinstance(xh, (int, float, Angle))):
             # Check if BOTH values are zero
             if xl == 0 and xh == 0:
                 xl = xmin

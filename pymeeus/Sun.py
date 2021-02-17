@@ -430,8 +430,8 @@ class Sun(object):
         """
 
         # First check that input values are of correct types
-        if (not isinstance(epoch, Epoch) and
-                not isinstance(equinox_epoch, Epoch)):
+        if (not isinstance(epoch, Epoch)
+                and not isinstance(equinox_epoch, Epoch)):
             raise TypeError("Invalid input types")
         # Second, compute Sun's rectangular coordinates w.r.t. J2000.0
         x0, y0, z0 = Sun.rectangular_coordinates_j2000(epoch)
@@ -521,14 +521,15 @@ class Sun(object):
                     365241.72562 + y * (-0.05323 + y * (0.00907 + y * 0.00025))
                 )
             elif target == "autumn":
-                jde0 = (1721325.70455 +
-                        y * (365242.49558 +
-                             y * (-0.11677 + y * (-0.00297 + y * 0.00074))))
+                jde0 = (1721325.70455
+                        + y * (365242.49558
+                               + y * (-0.11677 + y * (-0.00297
+                                                      + y * 0.00074))))
             elif target == "winter":
-                jde0 = (1721414.39987 +
-                        y * (363242.88257 + y * (-0.00769 +
-                                                 y * (-0.00933 -
-                                                      y * 0.00006))))
+                jde0 = (1721414.39987
+                        + y * (363242.88257 + y * (-0.00769
+                                                   + y * (-0.00933
+                                                          - y * 0.00006))))
         elif (year >= 1000) and (year <= 3000):
             y = (year - 2000.0) / 1000.0
             if target == "spring":
@@ -544,9 +545,10 @@ class Sun(object):
                     365242.01767 + y * (-0.11575 + y * (0.00337 + y * 0.00078))
                 )
             elif target == "winter":
-                jde0 = (2451900.05952 +
-                        y * (365242.74049 +
-                             y * (-0.06223 + y * (-0.00823 + y * 0.00032))))
+                jde0 = (2451900.05952
+                        + y * (365242.74049
+                               + y * (-0.06223 + y * (-0.00823
+                                                      + y * 0.00032))))
         else:
             raise ValueError("'year' value out of range")
         k = ["spring", "summer", "autumn", "winter"].index(target)
@@ -588,11 +590,12 @@ class Sun(object):
             raise TypeError("Invalid input type")
         # Compute time in Julian millenia from J2000.0
         t = (epoch - JDE2000) / 365250
-        l0 = (280.4664567 +
-              t * (360007.6982779 +
-                   t * (0.03032028 +
-                        t * (1.0 / 49931.0 +
-                             t * (-1.0 / 15300.0 - t * 1.0 / 2000000.0)))))
+        l0 = (280.4664567
+              + t * (360007.6982779
+                     + t * (0.03032028
+                            + t * (1.0 / 49931.0
+                                   + t * (-1.0 / 15300.0
+                                          - t * 1.0 / 2000000.0)))))
         l0 = Angle(l0)
         l0 = l0.to_positive()
         # Compute the apparent position of the Sun
