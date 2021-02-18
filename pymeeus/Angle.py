@@ -1211,8 +1211,8 @@ def main():
     # Call the __repr__() method to get a string defining the current object
     # This string can then be fed to 'eval()' function to generate the object
     print_me("print(b.__repr__())", b.__repr__())  # Angle(138.7325)
-    c = eval(repr(b))
-    print_me("c = eval(repr(b)); print(c)", c)  # 138.7325
+
+    c = b
 
     print("")
 
