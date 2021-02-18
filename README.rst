@@ -92,6 +92,10 @@ Contributors
 What’s new
 ----------
 
+-  0.3.10
+
+   -  Fixed characters with the wrong encoding
+
 -  0.3.9
 
    -  Relaxed requirements, added contributor molsen234, and fixed

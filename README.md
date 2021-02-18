@@ -81,12 +81,14 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.10
+    * Fixed characters with the wrong encoding
 * 0.3.9
     * Relaxed requirements, added contributor molsen234, and fixed format problems showed by flake8
 * 0.3.8
     * Fixed undefined variable in Epoch.tt2ut
 * 0.3.7
-    * Fix bug when using fractional seconds, minutes, hours or days, plus documentation improvements 
+    * Fix bug when using fractional seconds, minutes, hours or days, plus documentation improvements
 * 0.3.6
     * Add method to compute rising and setting times of the Sun
 * 0.3.5
