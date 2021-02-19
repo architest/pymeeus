@@ -81,8 +81,10 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.3.13
+    * Additional encoding changes
 * 0.3.12
-    * Deleted 'encoding' keyword from setup.py, which was giving problems
+    * Deleted `encoding` keyword from setup.py, which was giving problems
 * 0.3.11
     * Added encoding specification to setup.py
 * 0.3.10
