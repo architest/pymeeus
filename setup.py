@@ -9,8 +9,8 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 # Get the long description from the relevant file
-with open(path.join(here, 'README.rst')) as f:
-    long_description = f.read()
+with open(path.join(here, 'README.rst'), 'rb') as f:
+    long_description = f.read().decode('utf-8')
 
 
 config = {
