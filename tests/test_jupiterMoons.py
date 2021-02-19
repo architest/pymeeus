@@ -26,7 +26,7 @@ from pymeeus.base import TOL
 from pymeeus.Epoch import Epoch
 
 EPOCH_1992_12_16_UTC = Epoch(1992, 12, 16, utc=True)
-exp_prec: int = 4
+exp_prec = 4
 
 
 class TestJupiterMoons(TestCase):
@@ -147,8 +147,8 @@ class TestJupiterMoons(TestCase):
         delta, tau, l, b, r = JupiterMoons.calculate_DELTA(epoch)
 
         # value_reference
-        delta_reference: float = 5.6611211815432645
-        tau_reference: float = 0.032695909
+        delta_reference = 5.6611211815432645
+        tau_reference = 0.032695909
 
         assert abs(round(delta, 4) - round(delta_reference, 4)) < TOL, \
             """ERROR: Distance between earth and Jupiter of
