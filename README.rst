@@ -8,7 +8,7 @@ described in the classical book Astronomical Algorithms, 2nd Edition,
 Willmann-Bell Inc. (1998) by Jean Meeus.
 
 There are great astronomical libraries out there. For instance, if
-you’re looking for high precision and speed you should take a look at
+you're looking for high precision and speed you should take a look at
 `libnova <http://libnova.sourceforge.net/>`__. For a set of python
 modules aimed at professional astronomers, you should look at
 `Astropy <http://www.astropy.org/>`__. On the other hand, the advantages
