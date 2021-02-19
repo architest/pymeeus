@@ -92,6 +92,11 @@ Contributors
 What’s new
 ----------
 
+-  0.3.12
+
+   -  Deleted 'encoding' keyword from setup.py, which was giving
+      problems
+
 -  0.3.11
 
    -  Added encoding specification to setup.py
