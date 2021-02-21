@@ -92,6 +92,11 @@ Contributors
 What’s new
 ----------
 
+-  0.4.0
+
+   -  Added methods to compute Saturn's ring inclination and longitude
+      of ascending node
+
 -  0.3.13
 
    -  Additional encoding changes
@@ -211,91 +216,3 @@ What’s new
 -  0.2.0
 
    -  Added Sun module
-
--  0.1.10
-
-   -  Added functions to compute if three objects are in a straight
-      line, and the smallest diameter of a circle containing them.
-
--  0.1.9
-
-   -  Added functions to compute relative position angles and
-      conjunctions
-
--  0.1.8
-
-   -  Added functions to compute angular separation to Coordinates
-      module
-
--  0.1.7
-
-   -  Added functions to compute atmospheric refraction to Coordinates
-      module
-
--  0.1.6
-
-   -  Added function ‘times_rise_transit_set()’ to Coordinates module
-
--  0.1.5
-
-   -  Added functions for parallactic angle, ecliptic points in the
-      horizon, angle between north celestial pole and north pole of the
-      ecliptic, and diurnal path vs. the horizon at time of rising or
-      setting
-
--  0.1.4
-
-   -  Added several conversion functions to Coordinates module
-
--  0.1.3
-
-   -  Added Coordinates module
-
--  0.1.2
-
-   -  Added precession and proper motion methods, and changed handling
-      of Epoch class
-
--  0.1.1
-
-   -  Added methods related to nutation corrections
-
--  0.1.0
-
-   -  Earth class added
-
--  0.0.9
-
-   -  Significant documentation improvements
-
--  0.0.8
-
-   -  Epoch class finished
-
--  0.0.7
-
-   -  Epoch class added
-
--  0.0.6
-
-   -  CurveFitting class added
-
--  0.0.5
-
-   -  Interpolation class added
-
--  0.0.4
-
-   -  Angle class finished
-
--  0.0.3
-
-   -  Removed unnecessary dependencies
-
--  0.0.2
-
-   -  Documentation improvements
-
--  0.0.1
-
-   -  Initial commit
