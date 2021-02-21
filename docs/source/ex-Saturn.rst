@@ -168,3 +168,39 @@ Compute the time of passage through an ascending node::
     print("Radius vector at ascending node: {}".format(round(r, 4)))
 
     # Radius vector at ascending node: 9.0546
+
+Compute the approximate magnitude of Saturn::
+
+    sun_dist = 9.867882
+
+    earth_dist = 10.464606
+
+    delta_u = Angle(16.442)
+
+    b = Angle(4.198)
+
+    m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
+
+    print("Approximate magnitude of Saturn: {}".format(m))
+
+    # Approximate magnitude of Saturn: 1.9
+
+Compute the ring inclination::
+
+    epoch = Epoch(1992, 12, 16.00068)
+
+    i = Saturn.ring_inclination(epoch)
+
+    print("Saturn's ring inclination: {}".format(round(i, 6)))
+
+    # Saturn's ring inclination: 28.076131
+
+Compute the longitude of the ascending node of the ring::
+
+    epoch = Epoch(1992, 12, 16.00068)
+
+    omega = Saturn.ring_logitude_ascending_node(epoch)
+
+    print("Saturn's ring longitude of the ascending node: {}".format(round(omega, 6)))
+
+    # Saturn's ring longitude of the ascending node: 169.410243

@@ -6541,6 +6541,61 @@ class Saturn(object):
              - 2.6 * sin(abs(b)) + 1.25 * sin(b) * sin(b))
         return round(m, 1)
 
+    @staticmethod
+    def ring_inclination(epoch):
+        """This function computes the inclination of the plane of Saturn's
+        ring, referred to the ecliptic and mean equinox of the date.
+
+        :param epoch: Epoch to compute the ring inclination
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Inclination of the ring referred to the ecliptic and mean
+            equinox of the date
+        :rtype: :py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 12, 16.00068)
+        >>> i = Saturn.ring_inclination(epoch)
+        >>> print(round(i, 6))
+        28.076131
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the inclination
+        i = Angle(28.075216 + (-0.012998 + 0.000004 * t) * t)
+        return i
+
+    @staticmethod
+    def ring_logitude_ascending_node(epoch):
+        """This function computes the longitude of the ascending node of the
+        plane of Saturn's ring, referred to the ecliptic and mean equinox of
+        the date.
+
+        :param epoch: Epoch to compute the ring longitude of ascending node
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Longitude of the ascending node of the ring, referred to the
+            ecliptic and mean equinox of the date
+        :rtype: :py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 12, 16.00068)
+        >>> omega = Saturn.ring_logitude_ascending_node(epoch)
+        >>> print(round(omega, 6))
+        169.410243
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Compute the longitude of the ascending node
+        omega = Angle(169.50847 + (1.394681 + 0.000412 * t) * t)
+        return omega
+
 
 def main():
 
@@ -6636,6 +6691,33 @@ def main():
     print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
     # 2034/5/30.2
     print("Radius vector at ascending node: {}".format(round(r, 4)))  # 9.0546
+
+    print("")
+
+    # Compute the approximate magnitude of Saturn::
+    sun_dist = 9.867882
+    earth_dist = 10.464606
+    delta_u = Angle(16.442)
+    b = Angle(4.198)
+    m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
+    print("Approximate magnitude of Saturn: {}".format(m))
+    # 1.9
+
+    print("")
+
+    # Compute the ring inclination
+    epoch = Epoch(1992, 12, 16.00068)
+    i = Saturn.ring_inclination(epoch)
+    print("Saturn's ring inclination: {}".format(round(i, 6)))
+    # 28.076131
+
+    print("")
+    # Compute the longitude of the ascending node of the ring
+    epoch = Epoch(1992, 12, 16.00068)
+    omega = Saturn.ring_logitude_ascending_node(epoch)
+    print("Saturn's ring longitude of the ascending node: {}".format(
+        round(omega, 6)))
+    # 169.410243
 
 
 if __name__ == "__main__":

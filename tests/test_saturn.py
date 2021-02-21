@@ -21,6 +21,7 @@
 from pymeeus.base import TOL
 from pymeeus.Saturn import Saturn
 from pymeeus.Epoch import Epoch
+from pymeeus.Angle import Angle
 
 
 # Saturn class
@@ -225,3 +226,38 @@ def test_saturn_passage_nodes():
 
     assert abs(r - 9.0546) < TOL, \
         "ERROR: 4th passage_nodes() test doesn't match"
+
+
+def test_magnitude():
+    """Tests the magnitude() method of Saturn class"""
+
+    sun_dist = 9.867882
+    earth_dist = 10.464606
+    delta_u = Angle(16.442)
+    b = Angle(4.198)
+    m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
+
+    assert abs(m - 1.9) < TOL, \
+        "ERROR: 1st magnitude() test doesn't match"
+
+
+def test_ring_inclination():
+    """Tests the ring_inclination() method of Saturn class"""
+
+    epoch = Epoch(1992, 12, 16.00068)
+    i = Saturn.ring_inclination(epoch)
+    i = round(i, 6)
+
+    assert abs(i - 28.076131) < TOL, \
+        "ERROR: 1st ring_inclination() test doesn't match"
+
+
+def test_ring_longitude_ascending_node():
+    """Tests the ring_logitude_ascending_node() method of Saturn class"""
+
+    epoch = Epoch(1992, 12, 16.00068)
+    omega = Saturn.ring_logitude_ascending_node(epoch)
+    omega = round(omega, 6)
+
+    assert abs(omega - 169.410243) < TOL, \
+        "ERROR: 1st ring_logitude_ascending_node() test doesn't match"
