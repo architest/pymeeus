@@ -88,23 +88,23 @@ Contributors
    variable in Epoch.tt2ut
 -  `molsen234 <https://github.com/molsen234>`__ - Fixed bug when using
    fractional seconds, minutes, hours or days
--  `Sebastian Veigl <https://github.com/sebastian1306>`__ - Added functionality
-   for Jupiter's moons
--  [Sophie Scholz] - Added functionality for Jupiter's moons
--  [Vittorio Serra] - Added functionality for Jupiter's moons
-   [Michael Lutz] - Added functionality for Jupiter's moons
+-  `Sebastian Veigl <https://github.com/sebastian1306>`__ - Added
+   functionality for Jupiter's moons
+-  Sophie Scholz - Added functionality for Jupiter's moons
+-  Vittorio Serra - Added functionality for Jupiter's moons
+-  Michael Lutz - Added functionality for Jupiter's moons
 
 What’s new
 ----------
 
 -  0.4.1
 
-   -  Added funtionality to compute the positions of Jupiter's Galilean
+   -  Added funtionality to compute the positions of Jupiter’s Galilean
       moons
 
 -  0.4.0
 
-   -  Added methods to compute Saturn's ring inclination and longitude
+   -  Added methods to compute Saturn’s ring inclination and longitude
       of ascending node
 
 -  0.3.13

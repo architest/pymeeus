@@ -79,9 +79,9 @@ documentation to your new code. This also includes in-line comments!!!.
 * [Neil Freeman](https://github.com/fitnr) - Fixed undefined variable in Epoch.tt2ut
 * [molsen234](https://github.com/molsen234) - Fixed bug when using fractional seconds, minutes, hours or days
 * [Sebastian Veigl](https://github.com/sebastian1306) - Added functionality for Jupiter's moons
-* [Sophie Scholz] - Added functionality for Jupiter's moons
-* [Vittorio Serra] - Added functionality for Jupiter's moons
-* [Michael Lutz] - Added functionality for Jupiter's moons
+* Sophie Scholz - Added functionality for Jupiter's moons
+* Vittorio Serra - Added functionality for Jupiter's moons
+* Michael Lutz - Added functionality for Jupiter's moons
 
 ## What's new
 
