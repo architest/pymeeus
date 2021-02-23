@@ -78,9 +78,15 @@ documentation to your new code. This also includes in-line comments!!!.
 
 * [Neil Freeman](https://github.com/fitnr) - Fixed undefined variable in Epoch.tt2ut
 * [molsen234](https://github.com/molsen234) - Fixed bug when using fractional seconds, minutes, hours or days
+* [Sebastian Veigl](https://github.com/sebastian1306) - Added functionality for Jupiter's moons
+* [Sophie Scholz] - Added functionality for Jupiter's moons
+* [Vittorio Serra] - Added functionality for Jupiter's moons
+* [Michael Lutz] - Added functionality for Jupiter's moons
 
 ## What's new
 
+* 0.4.1
+    * Added funtionality to compute the positions of Jupiter's Galilean moons
 * 0.4.0
     * Added methods to compute Saturn's ring inclination and longitude of ascending node
 * 0.3.13
@@ -111,27 +117,3 @@ documentation to your new code. This also includes in-line comments!!!.
     * Fix errors in the elongation computation, add tests and examples of use of methods 'geocentric_position()', and tests and examples for 'Pluto' class
 * 0.3.0
     * Added 'Pluto' class
-* 0.2.11
-    * Added conjunction and opposition methods for Jupiter, Saturn, Uranus and Neptune
-* 0.2.10
-    * Added 'geocentric_position()' method to 'Minor' class, and added conjunction and opposition methods for Mercury, Venus and Mars.
-* 0.2.9
-    * Added class 'Minor', as well as functions to compute velocity of an object and length of an orbit
-* 0.2.8
-    * Added methods 'geocentric_position()' to all the planets
-* 0.2.7
-    * Added function 'kepler_equation()' to 'Coordinates' module, and 'orbital_elements' methods to classes 'Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus' and 'Neptune'
-* 0.2.6
-    * Added classes 'Uranus' and 'Neptune', plus additional functions in Coordinates module'
-* 0.2.5
-    * Added classes 'Jupiter' and 'Saturn'
-* 0.2.4
-    * Minor bug fixing, added methods 'ephemeris_physical_observations()' and 'beginning_synodic_rotation()', and added classes 'Mercury' and 'Mars'
-* 0.2.3
-    * Added the complete list of VSOP87 parameters to Venus, method to compute dates of equinoxes and solstices, and the Equation of Time
-* 0.2.2
-    * Added heliocentric position method for J2000.0 (Earth) and rectangular coordinates methods (Sun)
-* 0.2.1
-    * Added Venus module and VSOP87-based positioning methods
-* 0.2.0
-    * Added Sun module
