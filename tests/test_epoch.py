@@ -49,6 +49,12 @@ def test_epoch_constructor():
         "ERROR: 5th constructor test, JDE value doesn't match"
 
 
+def test_epoch_hashable():
+    a = Epoch(1987, 6, 19.5)
+    # can use as a key to a dict
+    _ = {a: 1}
+
+
 def test_epoch_is_julian():
     """Tests the is_julian() static method of Epoch class"""
 

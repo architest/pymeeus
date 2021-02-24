@@ -198,6 +198,9 @@ class Epoch(object):
         self._jde = 0.0
         self.set(*args, **kwargs)  # Use 'set()' method to handle the setup
 
+    def __hash__(self):
+        return float(self).__hash__()
+
     def set(self, *args, **kwargs):
         """Method used to set the value of this object.
 
