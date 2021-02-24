@@ -93,13 +93,20 @@ Contributors
 -  Sophie Scholz - Added functionality for Jupiter's moons
 -  Vittorio Serra - Added functionality for Jupiter's moons
 -  Michael Lutz - Added functionality for Jupiter's moons
+-  `Ben Dilday <https://github.com/bdilday>`__ - Added ``__hash__()``
+   method to class Epoch
 
 What’s new
 ----------
 
+-  0.4.2
+
+   -  Added method ``__hash__()`` to Epoch. Now Epoch objects can be
+      used as keys in a dictionary.
+
 -  0.4.1
 
-   -  Added funtionality to compute the positions of Jupiter’s Galilean
+   -  Added funtionality to compute the positions of Jupiter's Galilean
       moons
 
 -  0.4.0
