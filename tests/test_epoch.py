@@ -330,8 +330,8 @@ def test_epoch_apparent_sidereal_time():
     """Tests the apparent_sidereal_time() method of Epoch class"""
 
     e = Epoch(1987, 4, 10)
-    assert abs(round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8) -
-               0.54914508) < TOL, \
+    assert abs(round(e.apparent_sidereal_time(23.44357, (-3.788)/3600.0), 8)
+               - 0.54914508) < TOL, \
         "ERROR: 1st apparent_sidereal_time() test, output doesn't match"
 
 
