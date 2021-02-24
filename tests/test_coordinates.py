@@ -22,20 +22,20 @@ from math import cos
 
 from pymeeus.base import TOL
 from pymeeus.Coordinates import mean_obliquity, true_obliquity, \
-        nutation_longitude, nutation_obliquity, precession_equatorial, \
-        precession_ecliptical, motion_in_space, equatorial2ecliptical, \
-        ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
-        equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
-        parallactic_angle, ecliptic_equator, diurnal_path_horizon, \
-        times_rise_transit_set, refraction_apparent2true, \
-        refraction_true2apparent, angular_separation, \
-        minimum_angular_separation, relative_position_angle, \
-        planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
-        straight_line, circle_diameter, apparent_position, \
-        orbital_equinox2equinox, kepler_equation, velocity, \
-        velocity_perihelion, velocity_aphelion, length_orbit, \
-        passage_nodes_elliptic, passage_nodes_parabolic, phase_angle, \
-        illuminated_fraction
+    nutation_longitude, nutation_obliquity, precession_equatorial, \
+    precession_ecliptical, motion_in_space, equatorial2ecliptical, \
+    ecliptical2equatorial, equatorial2horizontal, horizontal2equatorial, \
+    equatorial2galactic, galactic2equatorial, ecliptic_horizon, \
+    parallactic_angle, ecliptic_equator, diurnal_path_horizon, \
+    times_rise_transit_set, refraction_apparent2true, \
+    refraction_true2apparent, angular_separation, \
+    minimum_angular_separation, relative_position_angle, \
+    planetary_conjunction, planet_star_conjunction, planet_stars_in_line, \
+    straight_line, circle_diameter, apparent_position, \
+    orbital_equinox2equinox, kepler_equation, velocity, \
+    velocity_perihelion, velocity_aphelion, length_orbit, \
+    passage_nodes_elliptic, passage_nodes_parabolic, phase_angle, \
+    illuminated_fraction
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 

@@ -133,11 +133,14 @@ def test_curvefitting_general_fitting():
     """Tests the general_fitting() method of CurveFitting class"""
 
     # Let's define the three functions to be used for fitting
-    def sin1(x): return sin(radians(x))
+    def sin1(x):
+        return sin(radians(x))
 
-    def sin2(x): return sin(radians(2.0*x))
+    def sin2(x):
+        return sin(radians(2.0*x))
 
-    def sin3(x): return sin(radians(3.0*x))
+    def sin3(x):
+        return sin(radians(3.0*x))
 
     a, b, c = cf4.general_fitting(sin1, sin2, sin3)
     assert abs(round(a, 2) - 1.2) < TOL, \
