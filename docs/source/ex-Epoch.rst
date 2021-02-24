@@ -356,3 +356,11 @@ It is possible to carry out some algebraic operations with Epochs.
     print("Setting time: {}:{}".format(h, mi))
 
     # Setting time: 18:33
+
+- Compute the hash of a given Epoch::
+
+    h = e.__hash__()
+
+    print("Hash of Epoch({}): {}".format(e, h))
+
+    # Hash of Epoch(2458240.5): 1152921504609305216

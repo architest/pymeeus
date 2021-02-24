@@ -199,6 +199,10 @@ class Epoch(object):
         self.set(*args, **kwargs)  # Use 'set()' method to handle the setup
 
     def __hash__(self):
+        """Method used to create  hash from an Epoch object.
+
+        This method allows Epoch objects to be used as the key in a dictionary.
+        """
         return float(self).__hash__()
 
     def set(self, *args, **kwargs):
@@ -2283,6 +2287,12 @@ def main():
     print("Rising time: {}:{}".format(h, mi))                           # 3:50
     y, m, d, h, mi, s = setting.get_full_date()
     print("Setting time: {}:{}".format(h, mi))                          # 18:33
+
+    print("")
+
+    # Compute the hash of a given Epoch
+    h = e.__hash__()
+    print("Hash of Epoch({}): {}".format(e, h))
 
 
 if __name__ == "__main__":
