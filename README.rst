@@ -50,13 +50,13 @@ Documentation: https://pymeeus.readthedocs.io/en/latest/
 GitHub: https://github.com/architest/pymeeus
 
 If you have Sphinx installed, you can generate your own, latest
-documentation going to directory ‘docs’ and issuing:
+documentation going to directory 'docs' and issuing:
 
 .. code:: sh
 
    make html
 
-Then the HTML documentation pages can be found in ‘build/html’.
+Then the HTML documentation pages can be found in 'build/html'.
 
 Contributing
 ------------
@@ -96,7 +96,7 @@ Contributors
 -  `Ben Dilday <https://github.com/bdilday>`__ - Added ``__hash__()``
    method to class Epoch
 
-What’s new
+What's new
 ----------
 
 -  0.4.2
@@ -111,7 +111,7 @@ What’s new
 
 -  0.4.0
 
-   -  Added methods to compute Saturn’s ring inclination and longitude
+   -  Added methods to compute Saturn's ring inclination and longitude
       of ascending node
 
 -  0.3.13
@@ -168,9 +168,9 @@ What’s new
 -  0.3.1
 
    -  Fix errors in the elongation computation, add tests and examples
-      of use of methods ‘geocentric_position()’, and tests and examples
-      for ‘Pluto’ class
+      of use of methods 'geocentric_position()', and tests and examples
+      for 'Pluto' class
 
 -  0.3.0
 
-   -  Added ‘Pluto’ class
+   -  Added 'Pluto' class
