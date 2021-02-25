@@ -2,8 +2,8 @@
 > **Library of astronomical algorithms in Python**.
 
 PyMeeus is a Python implementation of the astronomical algorithms described in
-the classical book Astronomical Algorithms, 2nd Edition, Willmann-Bell Inc.
-(1998) by Jean Meeus.
+the classical book 'Astronomical Algorithms, 2nd Edition, Willmann-Bell Inc.
+(1998)' by Jean Meeus.
 
 There are great astronomical libraries out there. For instance, if you're
 looking for high precision and speed you should take a look at
@@ -103,13 +103,13 @@ documentation to your new code. This also includes in-line comments!!!.
 * 0.3.9
     * Relaxed requirements, added contributor molsen234, and fixed format problems showed by flake8
 * 0.3.8
-    * Fixed undefined variable in Epoch.tt2ut
+    * Fixed undefined variable in `Epoch.tt2ut`
 * 0.3.7
     * Fix bug when using fractional seconds, minutes, hours or days, plus documentation improvements
 * 0.3.6
     * Add method to compute rising and setting times of the Sun
 * 0.3.5
-    * Add method magnitude() to planet classes
+    * Add method `magnitude()` to planet classes
 * 0.3.4
     * Add method to compute the parallax correction to Earth class
 * 0.3.3
@@ -117,6 +117,6 @@ documentation to your new code. This also includes in-line comments!!!.
 * 0.3.2
     * Add methods to compute the perihelion and aphelion of all planets
 * 0.3.1
-    * Fix errors in the elongation computation, add tests and examples of use of methods 'geocentric_position()', and tests and examples for 'Pluto' class
+    * Fix errors in the elongation computation, add tests and examples of use of methods `geocentric_position()`, and tests and examples for `Pluto` class
 * 0.3.0
-    * Added 'Pluto' class
+    * Added `Pluto` class
