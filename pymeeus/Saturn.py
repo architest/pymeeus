@@ -18,8 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, tan, acos, atan2, sqrt, radians, log10
-
+from math import (
+    sin, cos, tan, acos, atan2, sqrt, radians, log10, asin, fabs
+)
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from pymeeus.Interpolation import Interpolation
@@ -6500,29 +6501,33 @@ class Saturn(object):
         return time, r
 
     @staticmethod
-    def magnitude(sun_dist, earth_dist, delta_u, b):
+    def magnitude(sun_dist, earth_dist, delta_U, B):
         """This function computes the approximate magnitude of Saturn.
 
         :param sun_dist: Distance from Saturn to the Sun, in Astronomical Units
         :type sun_dist: float
         :param earth_dist: Distance from Saturn to Earth, in Astronomical Units
         :type earth_dist: float
-        :param delta_u: Difference between the Saturnicentric longitudes of the
-            Sun and the Earth, measured in the plane of the ring
-        :type delta_u: float, :py:class:`Angle`
-        :param b: Saturnicentric latitude of the Earth refered to the plane of
-            the ring, positive towards the north
-        :type b: float, :py:class:`Angle`
+        :param delta_U: Difference between the Saturnicentric longitudes of the
+            Sun and the Earth, measured in the plane of the ring, in degrees
+        :type delta_U: float, :py:class:`Angle`
+        :param B: Saturnicentric latitude of the Earth refered to the plane of
+            the ring, positive towards the north, in degrees
+        :type B: float, :py:class:`Angle`
 
         :returns: Saturn's magnitude
         :rtype: float
         :raises: TypeError if input values are of wrong type.
 
+        .. note::
+            In order to obtain ``delta_U`` and ``B``, please see method
+            ``ring_parameters()``.
+
         >>> sun_dist = 9.867882
         >>> earth_dist = 10.464606
-        >>> delta_u = Angle(16.442)
-        >>> b = Angle(4.198)
-        >>> m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
+        >>> delta_U = Angle(16.442)
+        >>> B = Angle(4.198)
+        >>> m = Saturn.magnitude(sun_dist, earth_dist, delta_U, B)
         >>> print(m)
         1.9
         """
@@ -6532,13 +6537,13 @@ class Saturn(object):
         # carefully checking the formula implemented here, I'm sure that the
         # book has an error
         if not (isinstance(sun_dist, float) and isinstance(earth_dist, float)
-                and isinstance(delta_u, (float, Angle))
-                and isinstance(b, (float, Angle))):
+                and isinstance(delta_U, (float, Angle))
+                and isinstance(B, (float, Angle))):
             raise TypeError("Invalid input types")
-        delta_u = float(delta_u)
-        b = Angle(b).rad()
-        m = (-8.68 + 5.0 * log10(sun_dist * earth_dist) + 0.044 * abs(delta_u)
-             - 2.6 * sin(abs(b)) + 1.25 * sin(b) * sin(b))
+        delta_U = float(delta_U)
+        B = Angle(B).rad()
+        m = (-8.68 + 5.0 * log10(sun_dist * earth_dist) + 0.044 * abs(delta_U)
+             - 2.6 * sin(abs(B)) + 1.25 * sin(B) * sin(B))
         return round(m, 1)
 
     @staticmethod
@@ -6595,6 +6600,144 @@ class Saturn(object):
         # Compute the longitude of the ascending node
         omega = Angle(169.50847 + (1.394681 + 0.000412 * t) * t)
         return omega
+
+    @staticmethod
+    def ring_parameters(epoch):
+        """This function computes the parameters related to Saturn's ring, like
+        geocentric position angle of the semiminor axis, the size of the major
+        and minor axes of the outer edge, etc.
+
+        :param epoch: Epoch closest to the node passage
+        :type epoch: :py:class:`Epoch`
+
+        :returns: Tuple containing:
+
+            * Saturnicentic latitude of the Earth referred to the plane
+              of the ring (B), positive towards the north (:py:class:`Angle`).
+            * Saturnicentric latitude of the Sun referred to the plane
+              of the ring (B'), positive towards the north (:py:class:`Angle`).
+            * Geocentric position angle of the northern semiminor axis
+              of the apparent ellipse of the ring (P), measured from the north
+              towards the east. This is also the position angle of the north
+              pole of rotation of the planet (:py:class:`Angle`).
+            * Difference between the Saturnicentric longitudes of the Sun and
+              the Earth (delta_U), measured in the plane of the ring
+              (:py:class:`Angle`).
+            * The size of major axis of the outer edge of the outer
+              ring ('a'), in arcseconds (float).
+            * The size of minor axis of the outer edge of the outer
+              ring ('b'), in arcseconds (float).
+
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        .. note:: Factors by which the axes 'a' and 'b' of the outer edge of
+            the outer ring are to be multiplied to obtain the axes of:
+
+            * Inner edge of outer ring: 0.8801
+            * Outer edge of inner ring: 0.8599
+            * Inner edge of inner ring: 0.6650
+            * Inner edge of dusky ring: 0.5486
+
+        >>> epoch = Epoch(1992, 12, 16.00068)
+        >>> B, Bprime, P, delta_U, a, b = Saturn.ring_parameters(epoch)
+        >>> print(round(B, 3))
+        16.442
+        >>> print(round(Bprime, 3))
+        14.679
+        >>> print(round(P, 3))
+        6.741
+        >>> print(round(delta_U, 3))
+        4.198
+        >>> print(round(a, 2))
+        35.87
+        >>> print(round(b, 2))
+        10.15
+        """
+
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input type")
+        # Get inclination and longitude of the ascending node of the ring
+        i = Saturn.ring_inclination(epoch)
+        Omega = Saturn.ring_logitude_ascending_node(epoch)
+        # Compute the geometric heliocentric position of the Earth
+        l0, b0, R = Earth.geometric_heliocentric_position(epoch)
+        l0r = l0.rad()
+        b0r = b0.rad()
+        # Set an initial value to the distance between Earth and Saturn, in UA.
+        delta = 9.0
+        # Compute the approximate light-time from Saturn to Earth
+        tau = 0.0057755183 * delta
+        oldtau = 0.0
+        ll = Angle(0.0)
+        b = Angle(0.0)
+        r = 0.0
+        while fabs(tau - oldtau) > 0.000001:
+            newEpoch = epoch - tau
+            ll, bl, r = Saturn.geometric_heliocentric_position(newEpoch)
+            # Convert to radians
+            lr = ll.rad()
+            br = bl.rad()
+            # Compute the rectangular position of Saturn w.r.t. Earth
+            x = r * cos(br) * cos(lr) - R * cos(l0r)
+            y = r * cos(br) * sin(lr) - R * sin(l0r)
+            z = r * sin(br) - R * sin(b0r)
+            # Compute the distance Earth-Saturn
+            delta = sqrt((x * x) + (y * y) + (z * z))
+            oldtau = tau
+            tau = 0.0057755183 * delta
+        # Compute geocentric longitude and latitude of Saturn, in radians
+        lambdar = atan2(y, x)
+        betar = atan2(z, sqrt(x * x + y * y))
+        # Get the Saturnicentic latitude of the Earth
+        ir = i.rad()
+        Omegar = Omega.rad()
+        B = asin(sin(ir) * cos(betar) * sin(lambdar - Omegar)
+                 - (cos(ir) * sin(betar)))
+        # Compute the size of the ring, in arcseconds
+        a = 375.35 / delta
+        b = a * sin(fabs(B))
+        # Get the time from J2000.0 in Julian centuries
+        T = (epoch - JDE2000) / 36525.0
+        # Calculate the longitude N of the ascending node of Saturn's orbit
+        N = Angle(113.6655 + 0.8771 * T)
+        # Correct l and b for the Sun's aberration as seen from Saturn
+        lprime = Angle(ll() - 0.01759 / r)
+        bprime = bl - (0.000764 * cos(lr - N.rad())) / r
+        Bprime = asin(sin(ir) * cos(bprime.rad()) * sin(lprime.rad() - Omegar)
+                      - cos(ir) * sin(bprime.rad()))
+        Bprime = Angle(Bprime, radians=True)
+        # Let's calculate the quantity delta_U, needed to compute the magnitude
+        bprimer = bprime.rad()
+        diff1 = lprime.rad() - Omegar
+        U1r = atan2((sin(ir) * sin(bprimer) + cos(ir) * cos(bprimer)
+                     * sin(diff1)), (cos(bprimer) * cos(diff1)))
+        diff2 = lambdar - Omegar
+        U2r = atan2((sin(ir) * sin(betar) + cos(ir) * cos(bprimer)
+                     * sin(diff2)), (cos(betar) * cos(diff2)))
+        delta_U = Angle(fabs(U1r - U2r), radians=True)
+        B = Angle(B, radians=True)
+        dpsi = nutation_longitude(epoch)
+        epsilon = true_obliquity(epoch)
+        Lambda0 = Omega - 90.0
+        Beta0 = 90.0 - i
+        corrLambda = 0.005693 * cos(l0r - lambdar) / cos(betar)
+        corrBeta = 0.005693 * sin(l0r - lambdar) * sin(betar)
+        Lambda = Angle(lambdar, radians=True).to_positive() + corrLambda
+        Beta = Angle(betar, radians=True) + corrBeta
+        Lambda += dpsi
+        Lambda0 += dpsi
+        alpha0, delta0 = ecliptical2equatorial(Lambda0, Beta0, epsilon)
+        alpha0r = alpha0.rad()
+        delta0r = delta0.rad()
+        alpha, delta = ecliptical2equatorial(Lambda, Beta, epsilon)
+        alphar = alpha.rad()
+        deltar = delta.rad()
+        P = atan2((cos(delta0r) * sin(alpha0r - alphar)),
+                  (sin(delta0r) * cos(deltar)
+                   - cos(delta0r) * sin(deltar) * cos(alpha0r - alphar)))
+        P = Angle(P, radians=True)
+        return B, Bprime, P, delta_U, a, b
 
 
 def main():
@@ -6690,7 +6833,7 @@ def main():
     d = round(d, 1)
     print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
     # 2034/5/30.2
-    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 9.0546
+    print_me("Radius vector at ascending node", round(r, 4))  # 9.0546
 
     print("")
 
@@ -6700,7 +6843,7 @@ def main():
     delta_u = Angle(16.442)
     b = Angle(4.198)
     m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
-    print("Approximate magnitude of Saturn: {}".format(m))
+    print_me("Approximate magnitude of Saturn", m)
     # 1.9
 
     print("")
@@ -6708,16 +6851,28 @@ def main():
     # Compute the ring inclination
     epoch = Epoch(1992, 12, 16.00068)
     i = Saturn.ring_inclination(epoch)
-    print("Saturn's ring inclination: {}".format(round(i, 6)))
+    print_me("Saturn's ring inclination", round(i, 6))
     # 28.076131
 
     print("")
     # Compute the longitude of the ascending node of the ring
     epoch = Epoch(1992, 12, 16.00068)
     omega = Saturn.ring_logitude_ascending_node(epoch)
-    print("Saturn's ring longitude of the ascending node: {}".format(
-        round(omega, 6)))
+    print_me("Saturn's ring longitude of the ascending node", round(omega, 6))
     # 169.410243
+
+    print("")
+    # Compute the parameters related to the ring
+    epoch = Epoch(1992, 12, 16.00068)
+    B, Bprime, P, delta_U, a, b = Saturn.ring_parameters(epoch)
+    print_me("Saturnicentric latitude of the Earth", round(B, 3))   # 16.442
+    print_me("Saturnicentric latitude of the Sun", round(Bprime, 3))  # 14.679
+    print_me("Geocentric position angle of nothern semiminor axis",
+             round(P, 3))   # 6.741
+    print_me("Difference in Saturnicentric longitudes of Sun and Earth",
+             round(delta_U, 3))  # 4.198
+    print_me("Size of major axis of outer ring", round(a, 2))   # 35.87
+    print_me("Size of minor axis of outer ring", round(b, 2))   # 10.15
 
 
 if __name__ == "__main__":

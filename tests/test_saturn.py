@@ -261,3 +261,34 @@ def test_ring_longitude_ascending_node():
 
     assert abs(omega - 169.410243) < TOL, \
         "ERROR: 1st ring_logitude_ascending_node() test doesn't match"
+
+
+def test_ring_parameters():
+    """Test the ring_parameters() method of Saturn class"""
+
+    epoch = Epoch(1992, 12, 16.00068)
+    B, Bprime, P, delta_U, a, b = Saturn.ring_parameters(epoch)
+    B = round(B, 3)
+    Bprime = round(Bprime, 3)
+    P = round(P, 3)
+    delta_U = round(delta_U, 3)
+    a = round(a, 2)
+    b = round(b, 2)
+
+    assert abs(B - 16.442) < TOL, \
+        "ERROR: 1st ring_parameters() test doesn't match"
+
+    assert abs(Bprime - 14.679) < TOL, \
+        "ERROR: 2nd ring_parameters() test doesn't match"
+
+    assert abs(P - 6.741) < TOL, \
+        "ERROR: 3rd ring_parameters() test doesn't match"
+
+    assert abs(delta_U - 4.198) < TOL, \
+        "ERROR: 4th ring_parameters() test doesn't match"
+
+    assert abs(a - 35.87) < TOL, \
+        "ERROR: 5th ring_parameters() test doesn't match"
+
+    assert abs(b - 10.15) < TOL, \
+        "ERROR: 6th ring_parameters() test doesn't match"

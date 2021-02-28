@@ -165,7 +165,7 @@ Compute the time of passage through an ascending node::
 
     # Time of passage through ascending node: 2034/5/30.2
 
-    print("Radius vector at ascending node: {}".format(round(r, 4)))
+    print_me("Radius vector at ascending node", round(r, 4))
 
     # Radius vector at ascending node: 9.0546
 
@@ -181,7 +181,7 @@ Compute the approximate magnitude of Saturn::
 
     m = Saturn.magnitude(sun_dist, earth_dist, delta_u, b)
 
-    print("Approximate magnitude of Saturn: {}".format(m))
+    printi_me("Approximate magnitude of Saturn", m)
 
     # Approximate magnitude of Saturn: 1.9
 
@@ -191,7 +191,7 @@ Compute the ring inclination::
 
     i = Saturn.ring_inclination(epoch)
 
-    print("Saturn's ring inclination: {}".format(round(i, 6)))
+    print_me("Saturn's ring inclination", round(i, 6))
 
     # Saturn's ring inclination: 28.076131
 
@@ -201,6 +201,36 @@ Compute the longitude of the ascending node of the ring::
 
     omega = Saturn.ring_logitude_ascending_node(epoch)
 
-    print("Saturn's ring longitude of the ascending node: {}".format(round(omega, 6)))
+    print_me("Saturn's ring longitude of the ascending node", round(omega, 6))
 
     # Saturn's ring longitude of the ascending node: 169.410243
+
+Compute the parameters related to the ring::
+
+    epoch = Epoch(1992, 12, 16.00068)
+
+    B, Bprime, P, delta_U, a, b = Saturn.ring_parameters(epoch)
+
+    print_me("Saturnicentric latitude of the Earth", round(B, 3))
+
+    # Saturnicentric latitude of the Eart: h16.442
+
+    print_me("Saturnicentric latitude of the Sun", round(Bprime, 3))
+
+    # Saturnicentric latitude of the Sun: 14.679
+
+    print_me("Geocentric position angle of nothern semiminor axis", round(P, 3))
+
+    # Geocentric position angle of nothern semiminor axis: 6.741
+
+    print_me("Difference in Saturnicentric longitudes of Sun and Earth", round(delta_U, 3))
+
+    # Difference in Saturnicentric longitudes of Sun and Earth: 4.198
+
+    print_me("Size of major axis of outer ring", round(a, 2))
+
+    # Size of major axis of outer ring: 35.87
+
+    print_me("Size of minor axis of outer ring", round(b, 2))
+
+    # Size of minor axis of outer ring: 10.15
