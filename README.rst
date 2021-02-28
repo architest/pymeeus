@@ -99,6 +99,10 @@ Contributors
 What's new
 ----------
 
+-  0.4.3
+
+   -  Added method ``ring_parameters()`` to Saturn class.
+
 -  0.4.2
 
    -  Added method ``__hash__()`` to Epoch. Now Epoch objects can be
