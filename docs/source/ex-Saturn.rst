@@ -213,7 +213,7 @@ Compute the parameters related to the ring::
 
     print_me("Saturnicentric latitude of the Earth", round(B, 3))
 
-    # Saturnicentric latitude of the Eart: h16.442
+    # Saturnicentric latitude of the Earth: 16.442
 
     print_me("Saturnicentric latitude of the Sun", round(Bprime, 3))
 
