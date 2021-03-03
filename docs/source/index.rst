@@ -23,6 +23,7 @@
    Mars
    Mercury
    Minor
+   Moon
    Neptune
    Pluto
    Saturn
@@ -46,6 +47,7 @@
    ex-Mars
    ex-Mercury
    ex-Minor
+   ex-Moon
    ex-Neptune
    ex-Pluto
    ex-Saturn
