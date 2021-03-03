@@ -99,6 +99,10 @@ Contributors
 What's new
 ----------
 
+-  0.5.0
+
+   -  Added ``Moon`` class and ``position()`` methods.
+
 -  0.4.3
 
    -  Added method ``ring_parameters()`` to Saturn class.
