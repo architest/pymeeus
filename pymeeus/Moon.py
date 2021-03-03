@@ -218,12 +218,12 @@ class Moon(object):
         # Compute Moon's mean longitude, referred to mean equinox of date
         Lprime = 218.3164477 + (481267.88123421
                                 + (-0.0015786
-                                   + ( 1.0/538841.0
+                                   + (1.0/538841.0
                                        - t/65194000.0) * t) * t) * t
         # Mean elongation of the Moon
         D = 297.8501921 + (445267.1114034
                            + (-0.0018819
-                              + ( 1.0/545868.0 - t/113065000.0) * t) * t) * t
+                              + (1.0/545868.0 - t/113065000.0) * t) * t) * t
         # Sun's mean anomaly
         M = 357.5291092 + (35999.0502909 + (-0.0001536 + t/24490000.0) * t) * t
         # Moon's mean anomaly
