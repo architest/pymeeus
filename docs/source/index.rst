@@ -6,54 +6,22 @@
 
 .. include:: ../../README.rst
 
+API
+=======
 
 .. toctree::
    :maxdepth: 2
-   :caption: API:
 
-   base
-   Angle
-   Coordinates
-   CurveFitting
-   Earth
-   Epoch
-   Interpolation
-   Jupiter
-   JupiterMoons
-   Mars
-   Mercury
-   Minor
-   Moon
-   Neptune
-   Pluto
-   Saturn
-   Sun
-   Uranus
-   Venus
+   core/index
+   bodies/index
+
+Examples
+========
 
 .. toctree::
    :maxdepth: 2
-   :caption: Examples:
 
-   ex-base
-   ex-Angle
-   ex-Coordinates
-   ex-CurveFitting
-   ex-Earth
-   ex-Epoch
-   ex-Interpolation
-   ex-Jupiter
-   ex-JupiterMoons
-   ex-Mars
-   ex-Mercury
-   ex-Minor
-   ex-Moon
-   ex-Neptune
-   ex-Pluto
-   ex-Saturn
-   ex-Sun
-   ex-Uranus
-   ex-Venus
+   examples/index
 
 
 Indices and tables
