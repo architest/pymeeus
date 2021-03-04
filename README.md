@@ -86,6 +86,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.5.1
+    * Changes in the organization of the documentation
 * 0.5.0
     * Added `Moon` class and `position()` methods.
 * 0.4.3
