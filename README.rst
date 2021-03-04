@@ -99,6 +99,11 @@ Contributors
 What's new
 ----------
 
+-  0.5.2
+
+   -  Added methods to compute the Moon's longitude of ascending node
+      and perigee
+
 -  0.5.1
 
    -  Changes in the organization of the documentation
