@@ -73,3 +73,41 @@ Get the apparent equatorial position::
 
     # Equatorial horizontal parallax (Pi): 0.99199
 
+Compute the longitude of the Moon's mean ascending node::
+
+    epoch = Epoch(1913, 5, 27.0)
+
+    Omega = Moon.longitude_mean_ascending_node(epoch)
+
+    print_me("Longitude of the mean ascending node", round(Omega, 1))
+
+    # Longitude of the mean ascending node: 0.0
+
+    epoch = Epoch(1959, 12, 7.0)
+
+    Omega = Moon.longitude_mean_ascending_node(epoch)
+
+    print_me("Longitude of the mean ascending node", round(Omega, 1))
+
+    # Longitude of the mean ascending node: 180.0
+
+Get the longitude of the Moonś true ascending node::
+
+    epoch = Epoch(1913, 5, 27.0)
+
+    Omega = Moon.longitude_true_ascending_node(epoch)
+
+    print_me("Longitude of the true ascending node", round(Omega, 4))
+
+    # Longitude of the true ascending node: 0.8763
+
+Compute the longitude of the Moon's mean perigee::
+
+    epoch = Epoch(2021, 3, 5.0)
+
+    Pi = Moon.longitude_mean_perigee(epoch)
+
+    print_me("Longitude of the mean perigee", round(Pi, 5))
+
+    # Longitude of the mean perigee: 224.89194
+

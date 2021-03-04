@@ -196,7 +196,7 @@ class Moon(object):
             * Equatorial horizontal parallax of the Moon, as an
               py:class:`Epoch` object.
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 4, 12.0)
         >>> Lambda, Beta, Delta, ppi = Moon.geocentric_ecliptical_pos(epoch)
@@ -329,7 +329,7 @@ class Moon(object):
             * Equatorial horizontal parallax of the Moon, as an
               py:class:`Epoch` object.
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 4, 12.0)
         >>> Lambda, Beta, Delta, ppi = Moon.apparent_ecliptical_pos(epoch)
@@ -376,7 +376,7 @@ class Moon(object):
             * Equatorial horizontal parallax of the Moon, as an
               py:class:`Epoch` object.
         :rtype: tuple
-        :raises: TypeError if input values are of wrong type.
+        :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 4, 12.0)
         >>> ra, dec, Delta, ppi = Moon.apparent_equatorial_pos(epoch)
@@ -400,6 +400,141 @@ class Moon(object):
         # And now let's carry out the transformation ecliptical->equatorial
         ra, dec = ecliptical2equatorial(Lambda, Beta, epsilon)
         return ra, dec, Delta, ppi
+
+    @staticmethod
+    def longitude_mean_ascending_node(epoch):
+        """This method computes the longitude of the mean ascending node of the
+        Moon in degrees, for a given instant, measured from the mean equinox of
+        the date.
+
+        :param epoch: Instant to compute the Moon's mean ascending node, as an
+            py:class:`Epoch` object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The longitude of the mean ascending node.
+        :rtype: py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1913, 5, 27.0)
+        >>> Omega = Moon.longitude_mean_ascending_node(epoch)
+        >>> print(round(Omega, 1))
+        0.0
+        >>> epoch = Epoch(2043, 9, 10.0)
+        >>> Omega = Moon.longitude_mean_ascending_node(epoch)
+        >>> print(round(Omega, 1))
+        0.0
+        >>> epoch = Epoch(1959, 12, 7.0)
+        >>> Omega = Moon.longitude_mean_ascending_node(epoch)
+        >>> print(round(Omega, 1))
+        180.0
+        >>> epoch = Epoch(2108, 11, 3.0)
+        >>> Omega = Moon.longitude_mean_ascending_node(epoch)
+        >>> print(round(Omega, 1))
+        180.0
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch)):
+            raise TypeError("Invalid input type")
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Compute Moon's longitude of the mean ascending node
+        Omega = 125.0445479 + (-1934.1362891
+                               + (0.0020754
+                                  + (1.0/476441.0
+                                     - t/60616000.0) * t) * t) * t
+        Omega = Angle(Omega).to_positive()
+        return Omega
+
+    @staticmethod
+    def longitude_true_ascending_node(epoch):
+        """This method computes the longitude of the true ascending node of the
+        Moon in degrees, for a given instant, measured from the mean equinox of
+        the date.
+
+        :param epoch: Instant to compute the Moon's true ascending node, as an
+            py:class:`Epoch` object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The longitude of the true ascending node.
+        :rtype: py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1913, 5, 27.0)
+        >>> Omega = Moon.longitude_true_ascending_node(epoch)
+        >>> print(round(Omega, 4))
+        0.8763
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch)):
+            raise TypeError("Invalid input type")
+        # Let's start computing the longitude of the MEAN ascending node
+        Omega = Moon.longitude_mean_ascending_node(epoch)
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Mean elongation of the Moon
+        D = 297.8501921 + (445267.1114034
+                           + (-0.0018819
+                              + (1.0/545868.0 - t/113065000.0) * t) * t) * t
+        # Sun's mean anomaly
+        M = 357.5291092 + (35999.0502909 + (-0.0001536 + t/24490000.0) * t) * t
+        # Moon's mean anomaly
+        Mprime = 134.9633964 + (477198.8675055
+                                + (0.0087414
+                                   + (1.0/69699.9
+                                      + t/14712000.0) * t) * t) * t
+        # Moon's argument of latitude
+        F = 93.2720950 + (483202.0175233
+                          + (-0.0036539
+                             + (-1.0/3526000.0 + t/863310000.0) * t) * t) * t
+        # Reduce the angles to a [0 360] range
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        Fr = F.rad()
+        # Compute the periodic terms
+        corr = (-1.4979 * sin(2.0 * (Dr - Fr)) - 0.15 * sin(Mr)
+                - 0.1226 * sin(2.0 * Dr) + 0.1176 * sin(2.0 * Fr)
+                - 0.0801 * sin(2.0 * (Mprimer - Fr)))
+        Omega += Angle(corr)
+        return Omega
+
+    @staticmethod
+    def longitude_mean_perigee(epoch):
+        """This method computes the longitude of the mean perigee of the lunar
+        orbitn in degrees, for a given instant, measured from the mean equinoxi
+        of the date.
+
+        :param epoch: Instant to compute the Moon's mean perigee, as an
+            py:class:`Epoch` object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The longitude of the mean perigee.
+        :rtype: py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(2021, 3, 5.0)
+        >>> Pi = Moon.longitude_mean_perigee(epoch)
+        >>> print(round(Pi, 5))
+        224.89194
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch)):
+            raise TypeError("Invalid input type")
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Compute Moon's longitude of the mean perigee
+        Pi = 83.3532465 + (4069.0137287
+                           + (-0.01032
+                              + (-1.0/80053.0 + t/18999000.0) * t) * t) * t
+        Pi = Angle(Pi)
+        return Pi
 
 
 def main():
@@ -440,6 +575,30 @@ def main():
     print_me("Declination (dec)", round(dec, 6))        # 13.768367
     print_me("Distance (Delta)", round(Delta, 1))       # 368409.7
     print_me("Equatorial horizontal parallax (Pi)", round(ppi, 6))  # 0.991990
+
+    print("")
+
+    # Compute the longitude of the Moon's mean ascending node
+    epoch = Epoch(1913, 5, 27.0)
+    Omega = Moon.longitude_mean_ascending_node(epoch)
+    print_me("Longitude of the mean ascending node", round(Omega, 1))   # 0.0
+    epoch = Epoch(1959, 12, 7.0)
+    Omega = Moon.longitude_mean_ascending_node(epoch)
+    print_me("Longitude of the mean ascending node", round(Omega, 1))   # 180.0
+
+    print("")
+
+    # Get the longitude of the Moonś true ascending node
+    epoch = Epoch(1913, 5, 27.0)
+    Omega = Moon.longitude_true_ascending_node(epoch)
+    print_me("Longitude of the true ascending node", round(Omega, 4))  # 0.8763
+
+    print("")
+
+    # Compute the longitude of the Moon's mean perigee
+    epoch = Epoch(2021, 3, 5.0)
+    Pi = Moon.longitude_mean_perigee(epoch)
+    print_me("Longitude of the mean perigee", round(Pi, 5))     # 224.89194
 
 
 if __name__ == "__main__":
