@@ -172,3 +172,14 @@ def test_moon_illuminated_fraction_disk():
     assert abs(k - 0.68) < TOL, \
         "ERROR: 1st 'illuminated_fraction_disk()' test, 'k' value doesn't\
             match"
+
+
+def test_moon_position_bright_limb():
+    """Tests the method 'position_bright_limb()' of Moon class"""
+
+    epoch = Epoch(1992, 4, 12.0)
+    xi = Moon.position_bright_limb(epoch)
+    xi = round(xi, 1)
+
+    assert abs(xi - 285.0) < TOL, \
+        "ERROR: 1st 'position_bright_limb()' test, 'xi' value doesn't match"

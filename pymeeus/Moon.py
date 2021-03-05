@@ -19,9 +19,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, asin
+from math import sin, cos, asin, atan2
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
+from pymeeus.Sun import Sun
 from pymeeus.Coordinates import (
     nutation_longitude, true_obliquity, ecliptical2equatorial
 )
@@ -182,7 +183,7 @@ class Moon(object):
         equatorial horizontal parallax.
 
         :param epoch: Instant to compute the Moon's position, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: Tuple containing:
@@ -315,7 +316,7 @@ class Moon(object):
         kilometers and the equatorial horizontal parallax.
 
         :param epoch: Instant to compute the Moon's position, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: Tuple containing:
@@ -362,7 +363,7 @@ class Moon(object):
         kilometers and the equatorial horizontal parallax.
 
         :param epoch: Instant to compute the Moon's position, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: Tuple containing:
@@ -408,7 +409,7 @@ class Moon(object):
         the date.
 
         :param epoch: Instant to compute the Moon's mean ascending node, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: The longitude of the mean ascending node.
@@ -453,7 +454,7 @@ class Moon(object):
         the date.
 
         :param epoch: Instant to compute the Moon's true ascending node, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: The longitude of the true ascending node.
@@ -511,7 +512,7 @@ class Moon(object):
         of the date.
 
         :param epoch: Instant to compute the Moon's mean perigee, as an
-            py:class:`Epoch` object
+            py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
         :returns: The longitude of the mean perigee.
@@ -543,10 +544,10 @@ class Moon(object):
         is enough to the 2nd decimal place.
 
         :param epoch: Instant to compute the Moon's illuminated fraction of the
-            disk, as a py:class:`Epoch` object
+            disk, as a py:class:`Epoch` object.
         :type epoch: :py:class:`Epoch`
 
-        :returns: The approximate illuminated fraction of the Moon's disk
+        :returns: The approximate illuminated fraction of the Moon's disk.
         :rtype: float
         :raises: TypeError if input value is of wrong type.
 
@@ -585,6 +586,47 @@ class Moon(object):
                   - 0.214 * sin(2.0 * Mprimer) - 0.11 * sin(Dr))
         k = (1.0 + cos(i.rad())) / 2.0
         return k
+
+    @staticmethod
+    def position_bright_limb(epoch):
+        """This method computes the position angle of the Moon's bright limb,
+        i.e., the position angle of the midpoint of the illuminated limb,
+        reckoned eastward from the North Point of the disk (not from the axis
+        of rotation of the lunar globe).
+
+        :param epoch: Instant to compute the position angle of the  Moon's
+            bright limb, as a py:class:`Epoch` object.
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The position angle of the Moon's bright limb.
+        :rtype: :py:class:`Angle`
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 4, 12.0)
+        >>> xi = Moon.position_bright_limb(epoch)
+        >>> print(round(xi, 1))
+        285.0
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch)):
+            raise TypeError("Invalid input type")
+        # Compute the right ascension and declination of the Sun
+        a0, d0, r0 = Sun.apparent_rightascension_declination_coarse(epoch)
+        # Now compute the right ascension and declination of the Moon
+        a, d, r, ppi = Moon.apparent_equatorial_pos(epoch)
+        a0r = a0.rad()
+        d0r = d0.rad()
+        ar = a.rad()
+        dr = d.rad()
+        # Compute the numerator of the tan(xi) formula
+        numerator = cos(d0r) * sin(a0r - ar)
+        # Now the denominator
+        denominator = sin(d0r) * cos(dr) - cos(d0r) * sin(dr) * cos(a0r - ar)
+        # Now let's compute xi
+        xi = atan2(numerator, denominator)
+        xi = Angle(xi, radians=True).to_positive()
+        return xi
 
 
 def main():
@@ -657,6 +699,14 @@ def main():
     k = Moon.illuminated_fraction_disk(epoch)
     print_me("Approximate illuminated fraction of Moon's disk", round(k, 2))
     # 0.68
+
+    print("")
+
+    # Compute the position angle of the bright limb of the Moon
+    epoch = Epoch(1992, 4, 12.0)
+    xi = Moon.position_bright_limb(epoch)
+    print_me("Position angle of the bright limb of the Moon", round(xi, 1))
+    # 285.0
 
 
 if __name__ == "__main__":

@@ -120,3 +120,13 @@ Compute the approximate illuminated fraction of the Moon's disk::
     print_me("Approximate illuminated fraction of Moon's disk", round(k, 2))
 
     # Approximate illuminated fraction of Moon's disk: 0.68
+
+Compute the position angle of the bright limb of the Moon::
+
+    epoch = Epoch(1992, 4, 12.0)
+
+    xi = Moon.position_bright_limb(epoch)
+
+    print_me("Position angle of the bright limb of the Moon", round(xi, 1))
+
+    # Position angle of the bright limb of the Moon: 285.0
