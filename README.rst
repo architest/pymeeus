@@ -99,6 +99,11 @@ Contributors
 What's new
 ----------
 
+-  0.5.4
+
+   -  Added methods ``illuminated_fraction_disk()`` and
+      ``position_bright_limb()`` to ``Moon`` class.
+
 -  0.5.3
 
    -  Fixed error in the return type of method
