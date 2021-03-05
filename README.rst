@@ -99,14 +99,19 @@ Contributors
 What's new
 ----------
 
+-  0.5.3
+
+   -  Fixed error in the return type of method
+      ``Sun.equation_of_time()``.
+
 -  0.5.2
 
    -  Added methods to compute the Moon's longitude of ascending node
-      and perigee
+      and perigee.
 
 -  0.5.1
 
-   -  Changes in the organization of the documentation
+   -  Changes in the organization of the documentation.
 
 -  0.5.0
 
@@ -124,70 +129,70 @@ What's new
 -  0.4.1
 
    -  Added funtionality to compute the positions of Jupiter's Galilean
-      moons
+      moons.
 
 -  0.4.0
 
    -  Added methods to compute Saturn's ring inclination and longitude
-      of ascending node
+      of ascending node.
 
 -  0.3.13
 
-   -  Additional encoding changes
+   -  Additional encoding changes.
 
 -  0.3.12
 
    -  Deleted ``encoding`` keyword from setup.py, which was giving
-      problems
+      problems.
 
 -  0.3.11
 
-   -  Added encoding specification to setup.py
+   -  Added encoding specification to setup.py.
 
 -  0.3.10
 
-   -  Fixed characters with the wrong encoding
+   -  Fixed characters with the wrong encoding.
 
 -  0.3.9
 
    -  Relaxed requirements, added contributor molsen234, and fixed
-      format problems showed by flake8
+      format problems showed by flake8.
 
 -  0.3.8
 
-   -  Fixed undefined variable in ``Epoch.tt2ut``
+   -  Fixed undefined variable in ``Epoch.tt2ut``.
 
 -  0.3.7
 
    -  Fix bug when using fractional seconds, minutes, hours or days,
-      plus documentation improvements
+      plus documentation improvements.
 
 -  0.3.6
 
-   -  Add method to compute rising and setting times of the Sun
+   -  Add method to compute rising and setting times of the Sun.
 
 -  0.3.5
 
-   -  Add method ``magnitude()`` to planet classes
+   -  Add method ``magnitude()`` to planet classes.
 
 -  0.3.4
 
-   -  Add method to compute the parallax correction to Earth class
+   -  Add method to compute the parallax correction to Earth class.
 
 -  0.3.3
 
-   -  Add methods to compute the passage through the nodes
+   -  Add methods to compute the passage through the nodes.
 
 -  0.3.2
 
-   -  Add methods to compute the perihelion and aphelion of all planets
+   -  Add methods to compute the perihelion and aphelion of all planets.
 
 -  0.3.1
 
    -  Fix errors in the elongation computation, add tests and examples
       of use of methods ``geocentric_position()``, and tests and
-      examples for ``Pluto`` class
+      examples for ``Pluto`` class.
 
 -  0.3.0
 
-   -  Added ``Pluto`` class
+   -  Added ``Pluto`` class.
