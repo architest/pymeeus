@@ -573,7 +573,7 @@ class Sun(object):
         :type epoch: :py:class:`Epoch`
 
         :returns: Difference between apparent and mean time, as a tuple, in
-            minutes and seconds of time
+            minutes (int) and seconds (float) of time
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
@@ -610,8 +610,8 @@ class Sun(object):
         e = l0() - 0.0057183 - alpha + deltapsi * cos(epsilon.rad())
         e *= 4.0
         # Extract seconds
-        s = (abs(e) % 1) * 60.0
-        m = int(e)
+        s = (abs(e()) % 1) * 60.0
+        m = int(e())
         return m, s
 
     @staticmethod
