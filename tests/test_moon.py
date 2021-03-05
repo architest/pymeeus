@@ -160,3 +160,15 @@ def test_moon_longitude_mean_perigee_node():
 
     assert abs(Pi - 224.89194) < TOL, \
         "ERROR: 1st 'longitude_mean_perigee()' test, 'Pi' value doesn't match"
+
+
+def test_moon_illuminated_fraction_disk():
+    """Tests the method 'illuminated_fraction_disk()' of Moon class"""
+
+    epoch = Epoch(1992, 4, 12.0)
+    k = Moon.illuminated_fraction_disk(epoch)
+    k = round(k, 2)
+
+    assert abs(k - 0.68) < TOL, \
+        "ERROR: 1st 'illuminated_fraction_disk()' test, 'k' value doesn't\
+            match"

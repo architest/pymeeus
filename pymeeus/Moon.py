@@ -507,7 +507,7 @@ class Moon(object):
     @staticmethod
     def longitude_mean_perigee(epoch):
         """This method computes the longitude of the mean perigee of the lunar
-        orbitn in degrees, for a given instant, measured from the mean equinoxi
+        orbitn in degrees, for a given instant, measured from the mean equinox
         of the date.
 
         :param epoch: Instant to compute the Moon's mean perigee, as an
@@ -530,11 +530,61 @@ class Moon(object):
         # Get the time from J2000.0 in Julian centuries
         t = (epoch - JDE2000) / 36525.0
         # Compute Moon's longitude of the mean perigee
-        Pi = 83.3532465 + (4069.0137287
-                           + (-0.01032
-                              + (-1.0/80053.0 + t/18999000.0) * t) * t) * t
-        Pi = Angle(Pi)
-        return Pi
+        ppii = 83.3532465 + (4069.0137287
+                             + (-0.01032
+                                + (-1.0/80053.0 + t/18999000.0) * t) * t) * t
+        ppii = Angle(ppii)
+        return ppii
+
+    @staticmethod
+    def illuminated_fraction_disk(epoch):
+        """This method computes the approximate illuminated fraction 'k' of the
+        disk of the Moon. The method used has a relatively low accuracy, but it
+        is enough to the 2nd decimal place.
+
+        :param epoch: Instant to compute the Moon's illuminated fraction of the
+            disk, as a py:class:`Epoch` object
+        :type epoch: :py:class:`Epoch`
+
+        :returns: The approximate illuminated fraction of the Moon's disk
+        :rtype: float
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 4, 12.0)
+        >>> k = Moon.illuminated_fraction_disk(epoch)
+        >>> print(round(k, 2))
+        0.68
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch)):
+            raise TypeError("Invalid input type")
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Mean elongation of the Moon
+        D = 297.8501921 + (445267.1114034
+                           + (-0.0018819
+                              + (1.0/545868.0 - t/113065000.0) * t) * t) * t
+        # Sun's mean anomaly
+        M = 357.5291092 + (35999.0502909 + (-0.0001536 + t/24490000.0) * t) * t
+        # Moon's mean anomaly
+        Mprime = 134.9633964 + (477198.8675055
+                                + (0.0087414
+                                   + (1.0/69699.9
+                                      + t/14712000.0) * t) * t) * t
+        # Reduce the angles to a [0 360] range
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        # Compute the 'i' angle
+        i = Angle(180.0 - D - 6.289 * sin(Mprimer) + 2.1 * sin(Mr)
+                  - 1.274 * sin(2.0 * Dr - Mprimer) - 0.658 * sin(2.0 * Dr)
+                  - 0.214 * sin(2.0 * Mprimer) - 0.11 * sin(Dr))
+        k = (1.0 + cos(i.rad())) / 2.0
+        return k
 
 
 def main():
@@ -599,6 +649,14 @@ def main():
     epoch = Epoch(2021, 3, 5.0)
     Pi = Moon.longitude_mean_perigee(epoch)
     print_me("Longitude of the mean perigee", round(Pi, 5))     # 224.89194
+
+    print("")
+
+    # Compute the approximate illuminated fraction of the Moon's disk
+    epoch = Epoch(1992, 4, 12.0)
+    k = Moon.illuminated_fraction_disk(epoch)
+    print_me("Approximate illuminated fraction of Moon's disk", round(k, 2))
+    # 0.68
 
 
 if __name__ == "__main__":

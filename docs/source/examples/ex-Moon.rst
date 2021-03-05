@@ -111,3 +111,12 @@ Compute the longitude of the Moon's mean perigee::
 
     # Longitude of the mean perigee: 224.89194
 
+Compute the approximate illuminated fraction of the Moon's disk::
+
+    epoch = Epoch(1992, 4, 12.0)
+
+    k = Moon.illuminated_fraction_disk(epoch)
+
+    print_me("Approximate illuminated fraction of Moon's disk", round(k, 2))
+
+    # Approximate illuminated fraction of Moon's disk: 0.68
