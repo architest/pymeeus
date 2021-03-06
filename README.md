@@ -86,6 +86,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.5.5
+    * Added method ``moon_phase()``.
 * 0.5.4
     * Added methods ``illuminated_fraction_disk()`` and ``position_bright_limb()`` to ``Moon`` class.
 * 0.5.3
