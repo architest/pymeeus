@@ -130,3 +130,27 @@ Compute the position angle of the bright limb of the Moon::
     print_me("Position angle of the bright limb of the Moon", round(xi, 1))
 
     # Position angle of the bright limb of the Moon: 285.0
+
+Calculate the instant of a New Moon::
+
+    epoch = Epoch(1977, 2, 15.0)
+
+    new_moon = Moon.moon_phase(epoch, target="new")
+
+    y, m, d, h, mi, s = new_moon.get_full_date()
+
+    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+
+    # New Moon: 1977/2/18 3:37:42.0
+
+Calculate the time of a Last Quarter::
+
+    epoch = Epoch(2044, 1, 15.0)
+
+    new_moon = Moon.moon_phase(epoch, target="last")
+
+    y, m, d, h, mi, s = new_moon.get_full_date()
+
+    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+
+    # Last Quarter: 2044/1/21 23:48:17.0
