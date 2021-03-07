@@ -894,7 +894,7 @@ class Moon(object):
         t = k / 1325.55
         # Compute the time of the 'mean' phase of the Moon
         jde = (2451534.6698 + 27.55454989 * k
-               + (-0.0006691 + ( 0.000001098 + 0.0000000052 * t) * t) * t * t)
+               + (-0.0006691 + (0.000001098 + 0.0000000052 * t) * t) * t * t)
         # Moon's mean elongation at jde
         D = (171.9179 + 335.9106046 * k
              + (-0.0100383 + (-0.00001156 + 0.000000055 * t) * t) * t * t)
