@@ -154,3 +154,19 @@ Calculate the time of a Last Quarter::
     print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
 
     # Last Quarter: 2044/1/21 23:48:17.0
+
+Compute the time and parallax of apogee::
+
+    epoch = Epoch(1988, 10, 1.0)
+
+    apogee, parallax = Moon.moon_perigee_apogee(epoch, target="apogee")
+
+    y, m, d, h, mi, s = apogee.get_full_date()
+
+    print("Apogee epoch: {}/{}/{} {}:{}".format(y, m, d, h, mi))
+
+    # Apogee epoch: 1988/10/7 20:30
+
+    print("Equatorial horizontal parallax: {}".format( parallax.dms_str(n_dec=3)))
+
+    # Equatorial horizontal parallax: 54' 0.679''

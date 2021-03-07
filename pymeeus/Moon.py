@@ -631,16 +631,17 @@ class Moon(object):
 
     @staticmethod
     def moon_phase(epoch, target="new"):
-        """This method computes the phases of the moon closest to the provided
-        epoch.
+        """This method computes the time of the phase of the moon closest to
+        the provided epoch. The resulting time is expressed in the uniform time
+        scale of Dynamical Time (TT).
 
-        :param epoch: Epoch we want to compute the moon phase for
+        :param epoch: Approximate epoch we want to compute the Moon phase for.
         :type year: :py:class:`Epoch`
         :param target: Corresponding phase. It can be "new" (New Moon), "first"
             (First Quarter), "full" (Full Moon) and "last" (Last Quarter).
         :type target: str
 
-        :returns: The instant of time when the provided phase happens
+        :returns: The instant of time when the provided phase happens.
         :rtype: :py:class:`Epoch`
         :raises: TypeError if input values are of wrong type.
         :raises: ValueError if 'target' value is invalid.
@@ -675,7 +676,7 @@ class Moon(object):
             num_days_year = 366.0
         doy = Epoch.get_doy(y, m, d)
         year = y + doy / num_days_year
-        # We start computing the 'k' parameter
+        # We compute the 'k' parameter
         k = iint((year - 2000.0) * 12.3685)
         if target == "first":
             k += 0.25
@@ -840,6 +841,196 @@ class Moon(object):
         jde = Epoch(jde)
         return jde
 
+    @staticmethod
+    def moon_perigee_apogee(epoch, target="perigee"):
+        """This method computes the approximate times when the distance between
+        the Earth and the Moon is a minimum (perigee) or a maximum (apogee).
+        The resulting times will be expressed in the uniform time scale of
+        Dynamical Time (TT).
+
+        :param epoch: Approximate epoch we want to compute the Moon's perigee
+            or apogee for.
+        :type year: :py:class:`Epoch`
+        :param target: Either 'perigee' of 'apogee'.
+        :type target: str
+
+        :returns: A tuple containing the instant of time when the perigee of
+            apogee happens, as a :py:class:`Epoch` object, and the Moon's
+            corresponding equatorial horizontal parallax, as a
+            :py:class:`Angle` object.
+        :rtype: tuple
+        :raises: TypeError if input values are of wrong type.
+        :raises: ValueError if 'target' value is invalid.
+
+        >>> epoch = Epoch(1988, 10, 1.0)
+        >>> apogee, parallax = Moon.moon_perigee_apogee(epoch, target="apogee")
+        >>> y, m, d, h, mi, s = apogee.get_full_date()
+        >>> print("{}/{}/{} {}:{}".format(y, m, d, h, mi))
+        1988/10/7 20:30
+        >>> print("{}".format(parallax.dms_str(n_dec=3)))
+        54' 0.679''
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch) and isinstance(target, str)):
+            raise TypeError("Invalid input types")
+        # Second, check that the target is correct
+        if (
+            (target != "perigee")
+            and (target != "apogee")
+        ):
+            raise ValueError("'target' value is invalid")
+        # Let's start computing the year with decimals
+        y, m, d = epoch.get_date()
+        num_days_year = 365.0
+        if Epoch.is_leap(y):
+            num_days_year = 366.0
+        doy = Epoch.get_doy(y, m, d)
+        year = y + doy / num_days_year
+        # We compute the 'k' parameter
+        k = iint((year - 1999.97) * 13.2555)
+        if target == "apogee":
+            k += 0.5
+        t = k / 1325.55
+        # Compute the time of the 'mean' phase of the Moon
+        jde = (2451534.6698 + 27.55454989 * k
+               + (-0.0006691 + ( 0.000001098 + 0.0000000052 * t) * t) * t * t)
+        # Moon's mean elongation at jde
+        D = (171.9179 + 335.9106046 * k
+             + (-0.0100383 + (-0.00001156 + 0.000000055 * t) * t) * t * t)
+        # Sun's mean anomaly
+        M = 347.3477 + 27.1577721 * k + (-0.000813 - 0.000001 * t) * t * t
+        # Moon's argument of latitude
+        F = 316.6109 + 364.5287911 * k + (-0.0125053 - 0.0000148 * t) * t * t
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        Fr = F.rad()
+        corr = 0.0
+        parallax = 0.0
+        if target == "perigee":
+            corr = (-1.6769 * sin(2.0 * Dr) + 0.4589 * sin(4.0 * Dr)
+                    - 0.1856 * sin(6.0 * Dr) + 0.0883 * sin(8.0 * Dr)
+                    + (-0.0773 + 0.00019 * t) * sin(2.0 * Dr - Mr)
+                    + (0.0502 - 0.00013 * t) * sin(Mr) - 0.046 * sin(10.0 * Dr)
+                    + (0.0422 - 0.00011 * t) * sin(4.0 * Dr - Mr)
+                    - 0.0256 * sin(6.0 * Dr - Mr) + 0.0253 * sin(12.0 * Dr)
+                    + 0.0237 * sin(Dr) + 0.0162 * sin(8.0 * Dr - Mr)
+                    - 0.0145 * sin(14.0 * Dr) + 0.0129 * sin(2.0 * Fr)
+                    - 0.0112 * sin(3.0 * Dr) - 0.0104 * sin(10.0 * Dr - Mr)
+                    + 0.0086 * sin(16.0 * Dr) + 0.0069 * sin(12.0 * Dr - Mr)
+                    + 0.0066 * sin(5.0 * Dr) - 0.0053 * sin(2.0 * (Dr + Fr))
+                    - 0.0052 * sin(18.0 * Dr) - 0.0046 * sin(14.0 * Dr - Mr)
+                    - 0.0041 * sin(7.0 * Dr) + 0.004 * sin(2.0 * Dr + Mr)
+                    + 0.0032 * sin(20.0 * Dr) - 0.0032 * sin(Dr + Mr)
+                    + 0.0031 * sin(16.0 * Dr - Mr)
+                    - 0.0029 * sin(4.0 * Dr + Mr) + 0.0027 * sin(9.0 * Dr)
+                    + 0.0027 * sin(4.0 * Dr + 2.0 * Fr)
+                    - 0.0027 * sin(2.0 * (Dr - Mr))
+                    + 0.0024 * sin(4.0 * Dr - 2.0 * Mr)
+                    - 0.0021 * sin(6.0 * Dr - 2.0 * Mr)
+                    - 0.0021 * sin(22.0 * Dr) - 0.0021 * sin(18.0 * Dr - Mr)
+                    + 0.0019 * sin(6.0 * Dr + Mr) - 0.0018 * sin(11.0 * Dr)
+                    - 0.0014 * sin(8.0 * Dr + Mr)
+                    - 0.0014 * sin(4.0 * Dr - 2.0 * Fr)
+                    - 0.0014 * sin(6.0 * Dr + 2.0 * Fr)
+                    + 0.0014 * sin(3.0 * Dr + Mr) - 0.0014 * sin(5.0 * Dr + Mr)
+                    + 0.0013 * sin(13.0 * Dr) + 0.0013 * sin(20.0 * Dr - Mr)
+                    + 0.0011 * sin(3.0 * Dr + 2.0 * Mr)
+                    - 0.0011 * sin(4.0 * Dr + 2.0 * Fr - 2.0 * Mr)
+                    - 0.0010 * sin(Dr + 2.0 * Mr)
+                    - 0.0009 * sin(22.0 * Dr - Mr) - 0.0008 * sin(4.0 * Fr)
+                    + 0.0008 * sin(6.0 * Dr - 2.0 * Fr)
+                    + 0.0008 * sin(2.0 * Dr - 2.0 * Fr + Mr)
+                    + 0.0007 * sin(2.0 * Mr) + 0.0007 * sin(2.0 * Fr - Mr)
+                    + 0.0007 * sin(2.0 * Dr + 4.0 * Fr)
+                    - 0.0006 * sin(2.0 * (Fr - Mr))
+                    - 0.0006 * sin(2.0 * (Dr - Fr + Mr))
+                    + 0.0006 * sin(24.0 * Dr) + 0.0005 * sin(4.0 * (Dr - Fr))
+                    + 0.0005 * sin(2.0 * (Dr + Mr)) - 0.0004 * sin(Dr - Mr))
+            parallax = (3629.215 + 63.224 * cos(2.0 * Dr)
+                        - 6.99 * cos(4.0 * Dr)
+                        + (2.834 - 0.0071 * t) * cos(2.0 * Dr - Mr)
+                        + 1.927 * cos(6.0 * Dr) - 1.263 * cos(Dr)
+                        - 0.702 * cos(8.0 * Dr)
+                        + (0.696 - 0.0017 * t) * cos(Mr) - 0.69 * cos(2.0 * Fr)
+                        + (-0.629 + 0.0016 * t) * cos(4.0 * Dr - Mr)
+                        - 0.392 * cos(2.0 * (Dr - Fr)) + 0.297 * cos(10.0 * Dr)
+                        + 0.26 * cos(6.0 * Dr - Mr) + 0.201 * cos(3.0 * Dr)
+                        - 0.161 * cos(2.0 * Dr + Mr) + 0.157 * cos(Dr + Mr)
+                        - 0.138 * cos(12.0 * Dr) - 0.127 * cos(8.0 * Dr - Mr)
+                        + 0.104 * cos(2.0 * (Dr + Fr))
+                        + 0.104 * cos(2.0 * (Dr - Mr)) - 0.079 * cos(5.0 * Dr)
+                        + 0.068 * cos(14.0 * Dr) + 0.067 * cos(10.0 * Dr - Mr)
+                        + 0.054 * cos(4.0 * Dr + Mr)
+                        - 0.038 * cos(12.0 * Dr - Mr)
+                        - 0.038 * cos(4.0 * Dr - 2.0 * Mr)
+                        + 0.037 * cos(7.0 * Dr)
+                        - 0.037 * cos(4.0 * Dr + 2.0 * Fr)
+                        - 0.035 * cos(16.0 * Dr) - 0.03 * cos(3.0 * Dr + Mr)
+                        + 0.029 * cos(Dr - Mr) - 0.025 * cos(6.0 * Dr + Mr)
+                        + 0.023 * cos(2.0 * Mr) + 0.023 * cos(14.0 * Dr - Mr)
+                        - 0.023 * cos(2.0 * (Dr + Mr))
+                        + 0.022 * cos(6.0 * Dr - 2.0 * Mr)
+                        - 0.021 * cos(2.0 * (Dr - Fr) - Mr)
+                        - 0.020 * cos(9.0 * Dr) + 0.019 * cos(18.0 * Dr)
+                        + 0.017 * cos(6.0 * Dr + 2.0 * Fr)
+                        + 0.014 * cos(2.0 * Fr - Mr)
+                        - 0.014 * cos(16.0 * Dr - Mr)
+                        + 0.013 * cos(4.0 * Dr - 2.0 * Fr)
+                        + 0.012 * cos(8.0 * Dr + Mr) + 0.011 * cos(11.0 * Dr)
+                        + 0.01 * cos(5.0 * Dr + Mr) - 0.01 * cos(20.0 * Dr))
+        else:
+            corr = (0.4392 * sin(2.0 * Dr)
+                    + 0.0684 * sin(4.0 * Dr)
+                    + (0.0456 - 0.00011 * t) * sin(Mr)
+                    + (0.0426 - 0.00011 * t) * sin(2.0 * Dr - Mr)
+                    + 0.0212 * sin(2.0 * Fr)
+                    - 0.0189 * sin(Dr)
+                    + 0.0144 * sin(6.0 * Dr)
+                    + 0.0113 * sin(4.0 * Dr - Mr)
+                    + 0.0047 * sin(2.0 * (Dr + Fr))
+                    + 0.0036 * sin(Dr + Mr)
+                    + 0.0035 * sin(8.0 * Dr)
+                    + 0.0034 * sin(6.0 * Dr - Mr)
+                    - 0.0034 * sin(2.0 * (Dr - Fr))
+                    + 0.0022 * sin(2.0 * (Dr - Mr))
+                    - 0.0017 * sin(3.0 * Dr)
+                    + 0.0013 * sin(4.0 * Dr + 2.0 * Fr)
+                    + 0.0011 * sin(8.0 * Dr - Mr)
+                    + 0.0010 * sin(4.0 * Dr - 2.0 * Mr)
+                    + 0.0009 * sin(10.0 * Dr)
+                    + 0.0007 * sin(3.0 * Dr + Mr)
+                    + 0.0006 * sin(2.0 * Mr)
+                    + 0.0005 * sin(2.0 * Dr + Mr)
+                    + 0.0005 * sin(2.0 * (Dr + Mr))
+                    + 0.0004 * sin(6.0 * Dr + 2.0 * Fr)
+                    + 0.0004 * sin(6.0 * Dr - 2.0 * Mr)
+                    + 0.0004 * sin(10.0 * Dr - Mr)
+                    - 0.0004 * sin(5.0 * Dr)
+                    - 0.0004 * sin(4.0 * Dr - 2.0 * Fr)
+                    + 0.0003 * sin(2.0 * Fr + Mr)
+                    + 0.0003 * sin(12.0 * Dr)
+                    + 0.0003 * sin(2.0 * (Dr + Fr) - Mr)
+                    - 0.0003 * sin(Dr - Mr))
+            parallax = (3245.251 - 9.147 * cos(2.0 * Dr) - 0.841 * cos(Dr)
+                        + 0.697 * cos(2.0 * Fr)
+                        + (-0.656 + 0.0016 * t) * cos(Mr)
+                        + 0.355 * cos(4.0 * Dr) + 0.159 * cos(2.0 * Dr - Mr)
+                        + 0.127 * cos(Dr + Mr) + 0.065 * cos(4.0 * Dr - Mr)
+                        + 0.052 * cos(6.0 * Dr) + 0.043 * cos(2.0 * Dr + Mr)
+                        + 0.031 * cos(2.0 * (Dr + Fr))
+                        - 0.023 * cos(2.0 * (Dr - Fr))
+                        + 0.022 * cos(2.0 * (Dr - Mr))
+                        + 0.019 * cos(2.0 * (Dr + Mr)) - 0.016 * cos(2.0 * Mr)
+                        + 0.014 * cos(6.0 * Dr - Mr) + 0.01 * cos(8.0 * Dr))
+        jde += corr
+        jde = Epoch(jde)
+        parallax = Angle(0, 0, parallax)
+        return jde, parallax
+
 
 def main():
 
@@ -936,6 +1127,18 @@ def main():
     print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi,
                                                    round(s, 0)))
     # 2044/1/21 23:48:17.0
+
+    print("")
+
+    # Compute the time and parallax of apogee
+    epoch = Epoch(1988, 10, 1.0)
+    apogee, parallax = Moon.moon_perigee_apogee(epoch, target="apogee")
+    y, m, d, h, mi, s = apogee.get_full_date()
+    print("Apogee epoch: {}/{}/{} {}:{}".format(y, m, d, h, mi))
+    # 1988/10/7 20:30
+    print("Equatorial horizontal parallax: {}".format(
+        parallax.dms_str(n_dec=3)))
+    # 54' 0.679''
 
 
 if __name__ == "__main__":
