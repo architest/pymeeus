@@ -33,6 +33,12 @@ If you prefer Python3, you can use:
 pip3 install --user pymeeus
 ```
 
+If you have PyMeeus already installed, but want to update to the latest version:
+
+```sh
+pip3 install -U pymeeus
+```
+
 ## Meta
 
 Author: Dagoberto Salazar
