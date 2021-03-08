@@ -106,6 +106,14 @@ Contributors
 What's new
 ----------
 
+-  0.5.6
+
+   -  Added method ``moon_perigee_apogee()``.
+
+-  0.5.5
+
+   -  Added method ``moon_phase()``.
+
 -  0.5.4
 
    -  Added methods ``illuminated_fraction_disk()`` and

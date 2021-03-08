@@ -183,3 +183,41 @@ def test_moon_position_bright_limb():
 
     assert abs(xi - 285.0) < TOL, \
         "ERROR: 1st 'position_bright_limb()' test, 'xi' value doesn't match"
+
+
+def test_moon_phase():
+    """Tests the method 'moon_phase()' of Moon class"""
+
+    epoch = Epoch(1977, 2, 15.0)
+    new_moon = Moon.moon_phase(epoch, target="new")
+    y, m, d, h, mi, s = new_moon.get_full_date()
+    res = (str(y) + "/" + str(m) + "/" + str(d) + " " + str(h) + ":" + str(mi)
+           + ":" + str(round(s, 0)))
+
+    assert res == "1977/2/18 3:37:42.0", \
+        "ERROR: 1st 'moon_phase()' test, 'res' value doesn't match"
+
+    epoch = Epoch(2044, 1, 15.0)
+    new_moon = Moon.moon_phase(epoch, target="last")
+    y, m, d, h, mi, s = new_moon.get_full_date()
+    res = (str(y) + "/" + str(m) + "/" + str(d) + " " + str(h) + ":" + str(mi)
+           + ":" + str(round(s, 0)))
+
+    assert res == "2044/1/21 23:48:17.0", \
+        "ERROR: 2nd 'moon_phase()' test, 'res' value doesn't match"
+
+
+def test_moon_perigee_apogee():
+    """Tests the method 'moon_perigee_apogee()' of Moon class"""
+
+    epoch = Epoch(1988, 10, 1.0)
+    apogee, parallax = Moon.moon_perigee_apogee(epoch, target="apogee")
+    y, m, d, h, mi, s = apogee.get_full_date()
+    apo = (str(y) + "/" + str(m) + "/" + str(d) + " " + str(h) + ":" + str(mi))
+    para = parallax.dms_str(n_dec=3)
+
+    assert apo == "1988/10/7 20:30", \
+        "ERROR: 1st 'moon_perigee_apogee()' test, 'apo' value doesn't match"
+
+    assert para == "54' 0.679''", \
+        "ERROR: 2nd 'moon_perigee_apogee()' test, 'para' value doesn't match"
