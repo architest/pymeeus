@@ -33,7 +33,7 @@ If you prefer Python3, you can use:
 pip3 install --user pymeeus
 ```
 
-If you have PyMeeus already installed, but want to update to the latest version:
+If you have PyMeeus already installed, but want to upgrade to the latest version:
 
 ```sh
 pip3 install -U pymeeus
@@ -92,6 +92,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.5.7
+    * Added method ``moon_passage_nodes()``.
 * 0.5.6
     * Added method ``moon_perigee_apogee()``.
 * 0.5.5
