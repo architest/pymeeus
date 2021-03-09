@@ -139,9 +139,9 @@ Calculate the instant of a New Moon::
 
     y, m, d, h, mi, s = new_moon.get_full_date()
 
-    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
 
-    # New Moon: 1977/2/18 3:37:42.0
+    # New Moon: 1977/2/18 3:37:42
 
 Calculate the time of a Last Quarter::
 
@@ -151,9 +151,9 @@ Calculate the time of a Last Quarter::
 
     y, m, d, h, mi, s = new_moon.get_full_date()
 
-    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
 
-    # Last Quarter: 2044/1/21 23:48:17.0
+    # Last Quarter: 2044/1/21 23:48:17
 
 Compute the time and parallax of apogee::
 
@@ -181,6 +181,6 @@ Compute the time of passage by the ascending node::
 
     mi += s/60.0
 
-    print("Passage by the ascending node: {}/{}/{} {}:{}".format(y, m, d, h, round(mi, 0)))
+    print("Passage by the ascending node: {}/{}/{} {}:{}".format(y, m, d, h, round(mi)))
 
-    # Passage by the ascending node: 1987/5/23 6:26.0
+    # Passage by the ascending node: 1987/5/23 6:26

@@ -653,8 +653,8 @@ class Moon(object):
         >>> epoch = Epoch(2044, 1, 1.0)
         >>> new_moon = Moon.moon_phase(epoch, target="last")
         >>> y, m, d, h, mi, s = new_moon.get_full_date()
-        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
-        2044/1/21 23:48:17.0
+        >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
+        2044/1/21 23:48:17
         """
 
         # First check that input values are of correct types
@@ -1054,8 +1054,8 @@ class Moon(object):
         >>> passage = Moon.moon_passage_nodes(epoch, target="ascending")
         >>> y, m, d, h, mi, s = passage.get_full_date()
         >>> mi += s/60.0
-        >>> print("{}/{}/{} {}:{}".format(y, m, d, h, round(mi, 0)))
-        1987/5/23 6:26.0
+        >>> print("{}/{}/{} {}:{}".format(y, m, d, h, round(mi)))
+        1987/5/23 6:26
         """
 
         # First check that input values are of correct types
@@ -1215,16 +1215,15 @@ def main():
     epoch = Epoch(1977, 2, 15.0)
     new_moon = Moon.moon_phase(epoch, target="new")
     y, m, d, h, mi, s = new_moon.get_full_date()
-    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
-    # 1977/2/18 3:37:42.0
+    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
+    # 1977/2/18 3:37:42
 
     # Calculate the time of a Last Quarter
     epoch = Epoch(2044, 1, 1.0)
     new_moon = Moon.moon_phase(epoch, target="last")
     y, m, d, h, mi, s = new_moon.get_full_date()
-    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi,
-                                                   round(s, 0)))
-    # 2044/1/21 23:48:17.0
+    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
+    # 2044/1/21 23:48:17
 
     print("")
 
@@ -1249,8 +1248,8 @@ def main():
                                                                  m,
                                                                  d,
                                                                  h,
-                                                                 round(mi, 0)))
-    # 1987/5/23 6:26.0
+                                                                 round(mi)))
+    # 1987/5/23 6:26
 
 
 if __name__ == "__main__":
