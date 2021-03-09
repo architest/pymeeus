@@ -170,3 +170,17 @@ Compute the time and parallax of apogee::
     print("Equatorial horizontal parallax: {}".format( parallax.dms_str(n_dec=3)))
 
     # Equatorial horizontal parallax: 54' 0.679''
+
+Compute the time of passage by the ascending node::
+
+    epoch = Epoch(1987, 5, 15.0)
+
+    passage = Moon.moon_passage_nodes(epoch, target="ascending")
+
+    y, m, d, h, mi, s = passage.get_full_date()
+
+    mi += s/60.0
+
+    print("Passage by the ascending node: {}/{}/{} {}:{}".format(y, m, d, h, round(mi, 0)))
+
+    # Passage by the ascending node: 1987/5/23 6:26.0

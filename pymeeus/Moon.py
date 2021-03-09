@@ -20,7 +20,6 @@
 
 
 from math import sin, cos, asin, atan2
-from pymeeus.base import iint
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from pymeeus.Sun import Sun
@@ -651,7 +650,7 @@ class Moon(object):
         >>> y, m, d, h, mi, s = new_moon.get_full_date()
         >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
         1977/2/18 3:37:42.0
-        >>> epoch = Epoch(2044, 1, 15.0)
+        >>> epoch = Epoch(2044, 1, 1.0)
         >>> new_moon = Moon.moon_phase(epoch, target="last")
         >>> y, m, d, h, mi, s = new_moon.get_full_date()
         >>> print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
@@ -677,7 +676,7 @@ class Moon(object):
         doy = Epoch.get_doy(y, m, d)
         year = y + doy / num_days_year
         # We compute the 'k' parameter
-        k = iint((year - 2000.0) * 12.3685)
+        k = round((year - 2000.0) * 12.3685, 0)
         if target == "first":
             k += 0.25
         elif target == "full":
@@ -688,6 +687,7 @@ class Moon(object):
         # Compute the time of the 'mean' phase of the Moon
         jde = (2451550.09766 + 29.530588861 * k
                + (0.00015437 + (-0.00000015 + 0.00000000073 * t) * t) * t * t)
+        # Eccentricity of Earth's orbit around the Sun
         E = 1.0 + (-0.002516 - 0.0000074 * t) * t
         # Sun's mean anomaly
         M = 2.5534 + 29.1053567 * k + (-0.0000014 - 0.00000011 * t) * t * t
@@ -888,11 +888,11 @@ class Moon(object):
         doy = Epoch.get_doy(y, m, d)
         year = y + doy / num_days_year
         # We compute the 'k' parameter
-        k = iint((year - 1999.97) * 13.2555)
+        k = round((year - 1999.97) * 13.2555, 0)
         if target == "apogee":
             k += 0.5
         t = k / 1325.55
-        # Compute the time of the 'mean' phase of the Moon
+        # Compute the time of the 'mean' perigee or apogee
         jde = (2451534.6698 + 27.55454989 * k
                + (-0.0006691 + (0.000001098 + 0.0000000052 * t) * t) * t * t)
         # Moon's mean elongation at jde
@@ -1031,6 +1031,104 @@ class Moon(object):
         parallax = Angle(0, 0, parallax)
         return jde, parallax
 
+    @staticmethod
+    def moon_passage_nodes(epoch, target="ascending"):
+        """This method computes the approximate times when the center of the
+        Moon passes through the ascending or descending node of its orbit. The
+        resulting times will be expressed in the uniform time scale of
+        Dynamical Time (TT).
+
+        :param epoch: Approximate epoch we want to compute the Moon's passage
+            through the ascending or descending node.
+        :type year: :py:class:`Epoch`
+        :param target: Either 'ascending' of 'descending'.
+        :type target: str
+
+        :returns: The instant of time when the Moon passes thhrough the
+            ascending or descending node.
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of wrong type.
+        :raises: ValueError if 'target' value is invalid.
+
+        >>> epoch = Epoch(1987, 5, 15.0)
+        >>> passage = Moon.moon_passage_nodes(epoch, target="ascending")
+        >>> y, m, d, h, mi, s = passage.get_full_date()
+        >>> mi += s/60.0
+        >>> print("{}/{}/{} {}:{}".format(y, m, d, h, round(mi, 0)))
+        1987/5/23 6:26.0
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch) and isinstance(target, str)):
+            raise TypeError("Invalid input types")
+        # Second, check that the target is correct
+        if (
+            (target != "ascending")
+            and (target != "descending")
+        ):
+            raise ValueError("'target' value is invalid")
+        # Let's start computing the year with decimals
+        y, m, d = epoch.get_date()
+        num_days_year = 365.0
+        if Epoch.is_leap(y):
+            num_days_year = 366.0
+        doy = Epoch.get_doy(y, m, d)
+        year = y + doy / num_days_year
+        # Compute the 'k' parameter
+        k = round((year - 2000.05) * 13.4223, 0)
+        if target == "descending":
+            k += 0.5
+        t = k / 1342.23
+        # Compute the time without the corrections
+        jde = (2451565.1619 + 27.212220817 * k
+               + (0.0002762 + (0.000000021 - 0.000000000088 * t) * t) * t * t)
+        # Compute the following angles in degrees
+        D = (183.638 + 331.73735682 * k
+             + (0.0014852 + (0.00000209 - 0.00000001 * t) * t) * t * t)
+        M = 17.4006 + 26.8203725 * k + (0.0001186 + 0.00000006 * t) * t * t
+        Mprime = (38.3776 + 355.52747313 * k
+                  + (0.0123499 + (0.000014627 - 0.000000069 * t) * t) * t * t)
+        Omega = (123.9767 - 1.44098956 * k
+                 + (0.0020608 + (0.00000214 - 0.000000016 * t) * t) * t * t)
+        V = 299.75 + (132.85 - 0.009173 * t) * t
+        P = Omega + 272.75 - 2.3 * t
+        # Reduce the angles to the [0 360] range, and convert to radians
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        Omega = Angle(Angle.reduce_deg(Omega)).to_positive()
+        Omegar = Omega.rad()
+        V = Angle(Angle.reduce_deg(V)).to_positive()
+        Vr = V.rad()
+        P = Angle(Angle.reduce_deg(P)).to_positive()
+        Pr = P.rad()
+        # Eccentricity of Earth's orbit around the Sun
+        E = 1.0 + (-0.002516 - 0.0000074 * t) * t
+        # Compute the correction to jde
+        corr = (-0.4721 * sin(Mprimer) - 0.1649 * sin(2.0 * Dr)
+                - 0.0868 * sin(2.0 * Dr - Mprimer)
+                + 0.0084 * sin(2.0 * Dr + Mprimer)
+                - 0.0083 * E * sin(2.0 * Dr - Mr)
+                - 0.0039 * E * sin(2.0 * Dr - Mr - Mprimer)
+                + 0.0034 * sin(2.0 * Mprimer)
+                - 0.0031 * sin(2.0 * (Dr - Mprimer))
+                + 0.0030 * E * sin(2.0 * Dr + Mr)
+                + 0.0028 * E * sin(Mr - Mprimer) + 0.0026 * E * sin(Mr)
+                + 0.0025 * sin(4.0 * Dr) + 0.0024 * sin(Dr)
+                + 0.0022 * E * sin(Mr + Mprimer) + 0.0017 * sin(Omegar)
+                + 0.0014 * sin(4.0 * Dr - Mprimer)
+                + 0.0005 * E * sin(2.0 * Dr + Mr - Mprimer)
+                + 0.0004 * E * sin(2.0 * Dr - Mr + Mprimer)
+                - 0.0003 * E * sin(2.0 * (Dr - Mr))
+                + 0.0003 * E * sin(4.0 * Dr - Mr) + 0.0003 * sin(Vr)
+                + 0.0003 * sin(Pr))
+        jde += corr
+        jde = Epoch(jde)
+        return jde
+
 
 def main():
 
@@ -1121,7 +1219,7 @@ def main():
     # 1977/2/18 3:37:42.0
 
     # Calculate the time of a Last Quarter
-    epoch = Epoch(2044, 1, 15.0)
+    epoch = Epoch(2044, 1, 1.0)
     new_moon = Moon.moon_phase(epoch, target="last")
     y, m, d, h, mi, s = new_moon.get_full_date()
     print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi,
@@ -1139,6 +1237,20 @@ def main():
     print("Equatorial horizontal parallax: {}".format(
         parallax.dms_str(n_dec=3)))
     # 54' 0.679''
+
+    print("")
+
+    # Compute the time of passage by the ascending node
+    epoch = Epoch(1987, 5, 15.0)
+    passage = Moon.moon_passage_nodes(epoch, target="ascending")
+    y, m, d, h, mi, s = passage.get_full_date()
+    mi += s/60.0
+    print("Passage by the ascending node: {}/{}/{} {}:{}".format(y,
+                                                                 m,
+                                                                 d,
+                                                                 h,
+                                                                 round(mi, 0)))
+    # 1987/5/23 6:26.0
 
 
 if __name__ == "__main__":

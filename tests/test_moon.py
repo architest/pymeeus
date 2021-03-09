@@ -197,7 +197,7 @@ def test_moon_phase():
     assert res == "1977/2/18 3:37:42.0", \
         "ERROR: 1st 'moon_phase()' test, 'res' value doesn't match"
 
-    epoch = Epoch(2044, 1, 15.0)
+    epoch = Epoch(2044, 1, 1.0)
     new_moon = Moon.moon_phase(epoch, target="last")
     y, m, d, h, mi, s = new_moon.get_full_date()
     res = (str(y) + "/" + str(m) + "/" + str(d) + " " + str(h) + ":" + str(mi)
@@ -221,3 +221,16 @@ def test_moon_perigee_apogee():
 
     assert para == "54' 0.679''", \
         "ERROR: 2nd 'moon_perigee_apogee()' test, 'para' value doesn't match"
+
+
+def test_moon_passage_nodes():
+    """Tests the method 'moon_passage_nodes()' of Moon class"""
+
+    epoch = Epoch(1987, 5, 15.0)
+    passage = Moon.moon_passage_nodes(epoch, target="ascending")
+    y, m, d, h, mi, s = passage.get_full_date()
+    mi = round(mi + s / 60.0, 0)
+    pas = (str(y) + "/" + str(m) + "/" + str(d) + " " + str(h) + ":" + str(mi))
+
+    assert pas == "1987/5/23 6:26.0", \
+        "ERROR: 1st 'moon_passage_nodes()' test, 'pas' value doesn't match"
