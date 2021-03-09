@@ -144,7 +144,7 @@ class TestJupiterMoons(TestCase):
         """Epoch used for the calculations"""
         epoch = Epoch(1992, 12, 16, utc=True)
 
-        delta, tau, l, b, r = JupiterMoons.calculate_DELTA(epoch)
+        delta, tau, l, b, r = JupiterMoons.calculate_delta(epoch)
 
         # value_reference
         delta_reference = 5.6611211815432645
@@ -152,11 +152,11 @@ class TestJupiterMoons(TestCase):
 
         assert abs(round(delta, 4) - round(delta_reference, 4)) < TOL, \
             """ERROR: Distance between earth and Jupiter of
-            JupiterMoons.calculate_DELTA() doesn't match"""
+            JupiterMoons.calculate_delta() doesn't match"""
 
         assert abs(round(tau, 4) - round(tau_reference, 4)) < TOL, \
             """ERROR: Light time delay tau between earth and Jupiter of
-            JupiterMoons.calculate_DELTA()doesn't match"""
+            JupiterMoons.calculate_delta()doesn't match"""
 
     def test_correct_rectangular_positions(self):
         """This method tests the method correct_rectangular_positions() that

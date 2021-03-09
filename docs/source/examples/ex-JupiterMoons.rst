@@ -60,7 +60,7 @@ using the E5-theory::
 Lets calculate the distance between Earth and Jupiter (DELTA) for a given epoch::
 
     utc_1992_12_16_00_00_00 = Epoch(1992, 12, 16, utc=True)
-    delta, tau, l, b, r = JupiterMoons.calculate_DELTA(utc_1992_12_16_00_00_00)
+    delta, tau, l, b, r = JupiterMoons.calculate_delta(utc_1992_12_16_00_00_00)
 
     print("Distance between Earth and Jupiter in AU: ", delta)
     #5.6611211815432645

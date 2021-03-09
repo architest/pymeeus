@@ -730,7 +730,7 @@ class JupiterMoons(object):
             return X, Y, Z
 
     @staticmethod
-    def calculate_DELTA(epoch):
+    def calculate_delta(epoch):
         """This method calculates the distance between Earth and Jupiter
         (DELTA) for a given epoch by iteration.
 
@@ -744,7 +744,7 @@ class JupiterMoons(object):
         :raises: TypeError if input values are wrong type
 
         >>> utc_1992_12_16_00_00_00 = Epoch(1992, 12, 16, utc=True)
-        >>> delta, tau, l, b, r = JupiterMoons.calculate_DELTA( \
+        >>> delta, tau, l, b, r = JupiterMoons.calculate_delta( \
         utc_1992_12_16_00_00_00)
         >>> print(round(delta, 10))
         5.6611211815
@@ -905,7 +905,7 @@ class JupiterMoons(object):
             raise TypeError("Invalid input type")
 
         # Calculate light-time delay
-        # DELTA, tau = JupiterMoons.calculate_DELTA(epoch)
+        # DELTA, tau = JupiterMoons.calculate_delta(epoch)
 
         # Calculate coordinates as seen from the Earth
         Coords_Earth = JupiterMoons.rectangular_positions_jovian_equatorial(
@@ -1251,7 +1251,7 @@ def main():
     # Lets calculate the distance between Earth and Jupiter (DELTA) for a
     # given epoch.
     utc_1992_12_16_00_00_00 = Epoch(1992, 12, 16, utc=True)
-    delta, tau, l, b, r = JupiterMoons.calculate_DELTA(utc_1992_12_16_00_00_00)
+    delta, tau, l, b, r = JupiterMoons.calculate_delta(utc_1992_12_16_00_00_00)
 
     print("Distance between Earth and Jupiter in AU: ", delta)
     # 5.6611211815432645
