@@ -92,6 +92,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.5.8
+    * Fixed several bugs in ``Epoch`` class, and added method ``doy()``.
 * 0.5.7
     * Added method ``moon_passage_nodes()``.
 * 0.5.6
