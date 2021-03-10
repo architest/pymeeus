@@ -455,7 +455,7 @@ class Epoch(object):
             if Epoch.is_leap(year):
                 limit_day = 29
         # Add '1' to 'limit_day' in order to allow for fractional days
-        if day > limit_day + 1:
+        if day >= limit_day + 1:
             raise ValueError("Invalid value for the input day")
 
         # We are ready to return the parameters
