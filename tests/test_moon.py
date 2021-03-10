@@ -270,7 +270,7 @@ def test_moon_maximum_declination():
     epoch = Epoch(-4, 3, 15.0)
     epo, dec = Moon.moon_maximum_declination(epoch, target='northern')
     y, m, d, h, mi, s = epo.get_full_date()
-    epochstr = "{}/{}/{} {}h".format(y, m, d, h, mi)
+    epochstr = "{}/{}/{} {}h".format(y, m, d, h)
     decli = "{}".format(dec.dms_str(n_dec=0))
 
     assert epochstr == "-4/3/16 15h", \
