@@ -234,3 +234,49 @@ def test_moon_passage_nodes():
 
     assert pas == "1987/5/23 6:26.0", \
         "ERROR: 1st 'moon_passage_nodes()' test, 'pas' value doesn't match"
+
+
+def test_moon_maximum_declination():
+    """Tests the method 'moon_maximum_declination()' of Moon class"""
+
+    epoch = Epoch(1988, 12, 15.0)
+    epo, dec = Moon.moon_maximum_declination(epoch)
+    y, m, d, h, mi, s = epo.get_full_date()
+    epochstr = "{}/{}/{} {}:0{}".format(y, m, d, h, mi)
+    decli = "{}".format(dec.dms_str(n_dec=0))
+
+    assert epochstr == "1988/12/22 20:01", \
+        "ERROR: 1st 'moon_maximum_declination()' test, 'epochstr' value "\
+        + "doesn't match"
+
+    assert decli == "28d 9' 22.0''", \
+        "ERROR: 2nd 'moon_maximum_declination()' test, 'decli' value doesn't "\
+        + "match"
+
+    epoch = Epoch(2049, 4, 15.0)
+    epo, dec = Moon.moon_maximum_declination(epoch, target='southern')
+    y, m, d, h, mi, s = epo.get_full_date()
+    epochstr = "{}/{}/{} {}:{}".format(y, m, d, h, mi)
+    decli = "{}".format(dec.dms_str(n_dec=0))
+
+    assert epochstr == "2049/4/21 14:0", \
+        "ERROR: 3rd 'moon_maximum_declination()' test, 'epochstr' value "\
+        + "doesn't match"
+
+    assert decli == "-22d 8' 18.0''", \
+        "ERROR: 4th 'moon_maximum_declination()' test, 'decli' value doesn't "\
+        + "match"
+
+    epoch = Epoch(-4, 3, 15.0)
+    epo, dec = Moon.moon_maximum_declination(epoch, target='northern')
+    y, m, d, h, mi, s = epo.get_full_date()
+    epochstr = "{}/{}/{} {}h".format(y, m, d, h, mi)
+    decli = "{}".format(dec.dms_str(n_dec=0))
+
+    assert epochstr == "-4/3/16 15h", \
+        "ERROR: 5th 'moon_maximum_declination()' test, 'epochstr' value "\
+        + "doesn't match"
+
+    assert decli == "28d 58' 26.0''", \
+        "ERROR: 6th 'moon_maximum_declination()' test, 'decli' value doesn't "\
+        + "match"

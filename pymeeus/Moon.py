@@ -637,7 +637,8 @@ class Moon(object):
         :param epoch: Approximate epoch we want to compute the Moon phase for.
         :type year: :py:class:`Epoch`
         :param target: Corresponding phase. It can be "new" (New Moon), "first"
-            (First Quarter), "full" (Full Moon) and "last" (Last Quarter).
+            (First Quarter), "full" (Full Moon) and "last" (Last Quarter). It
+            is 'new' by default.
         :type target: str
 
         :returns: The instant of time when the provided phase happens.
@@ -851,10 +852,10 @@ class Moon(object):
         :param epoch: Approximate epoch we want to compute the Moon's perigee
             or apogee for.
         :type year: :py:class:`Epoch`
-        :param target: Either 'perigee' of 'apogee'.
+        :param target: Either 'perigee' or 'apogee'. It's 'perigee' by default.
         :type target: str
 
-        :returns: A tuple containing the instant of time when the perigee of
+        :returns: A tuple containing the instant of time when the perigee or
             apogee happens, as a :py:class:`Epoch` object, and the Moon's
             corresponding equatorial horizontal parallax, as a
             :py:class:`Angle` object.
@@ -1041,7 +1042,8 @@ class Moon(object):
         :param epoch: Approximate epoch we want to compute the Moon's passage
             through the ascending or descending node.
         :type year: :py:class:`Epoch`
-        :param target: Either 'ascending' of 'descending'.
+        :param target: Either 'ascending' or 'descending'. It is 'ascending' by
+            default.
         :type target: str
 
         :returns: The instant of time when the Moon passes thhrough the
@@ -1128,6 +1130,240 @@ class Moon(object):
         jde += corr
         jde = Epoch(jde)
         return jde
+
+    @staticmethod
+    def moon_maximum_declination(epoch, target="northern"):
+        """This method computes the approximate times when the Moon reaches
+        its maximum declination (either 'northern' or 'southern'), as well as
+        the values of these extreme declinations. The resulting times will be
+        expressed in the uniform time scale of Dynamical Time (TT).
+
+        :param epoch: Approximate epoch we want to compute the Moon's maximum
+            declination.
+        :type year: :py:class:`Epoch`
+        :param target: Either 'northern' or 'southern', depending on the
+            maximum declination being looked for. It is 'northern' by default.
+        :type target: str
+
+        :returns: A tuple containing the instant of time when the maximum
+            declination happens, as a :py:class:`Epoch` object, and the angle
+            value of such declination, as a :py:class:`Angle` object.
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1988, 12, 15.0)
+        >>> epo, dec = Moon.moon_maximum_declination(epoch)
+        >>> y, m, d, h, mi, s = epo.get_full_date()
+        >>> print("{}/{}/{} {}:0{}".format(y, m, d, h, mi))
+        1988/12/22 20:01
+        >>> print("{}".format(dec.dms_str(n_dec=0)))
+        28d 9' 22.0''
+        >>> epoch = Epoch(2049, 4, 15.0)
+        >>> epo, dec = Moon.moon_maximum_declination(epoch, target='southern')
+        >>> y, m, d, h, mi, s = epo.get_full_date()
+        >>> print("{}/{}/{} {}:{}".format(y, m, d, h, mi))
+        2049/4/21 14:0
+        >>> print("{}".format(dec.dms_str(n_dec=0)))
+        -22d 8' 18.0''
+        >>> epoch = Epoch(-4, 3, 15.0)
+        >>> epo, dec = Moon.moon_maximum_declination(epoch, target='northern')
+        >>> y, m, d, h, mi, s = epo.get_full_date()
+        >>> print("{}/{}/{} {}h".format(y, m, d, h))
+        -4/3/16 15h
+        >>> print("{}".format(dec.dms_str(n_dec=0)))
+        28d 58' 26.0''
+        """
+
+        # First check that input values are of correct types
+        if not (isinstance(epoch, Epoch) and isinstance(target, str)):
+            raise TypeError("Invalid input types")
+        # Second, check that the target is correct
+        if (
+            (target != "northern")
+            and (target != "southern")
+        ):
+            raise ValueError("'target' value is invalid")
+        # Let's start computing the year with decimals
+        y, m, d = epoch.get_date()
+        num_days_year = 365.0
+        if Epoch.is_leap(y):
+            num_days_year = 366.0
+        doy = Epoch.get_doy(y, m, d)
+        year = y + doy / num_days_year
+        # We compute the 'k' parameter
+        k = round((year - 2000.03) * 13.3686, 0)
+        t = k / 1336.86
+        # Compute the following angles in degrees, plus 'jde' in days
+        D = 333.0705546 * k + (-0.0004214 + 0.00000011 * t) * t * t
+        M = 26.9281592 * k - (0.0000355 + 0.0000001 * t) * t * t
+        Mprime = 356.9562794 * k + (0.0103066 + 0.00001251 * t) * t * t
+        F = 1.4467807 * k - (0.002069 + 0.00000215 * t) * t * t
+        jde = 27.321582247 * k + (0.000119804 - 0.000000141 * t) * t * t
+        # Adjust the values according to northern of southern declination
+        if (target == 'northern'):
+            D += 152.2029
+            M += 14.8591
+            Mprime += 4.6881
+            F += 325.8867
+            jde += 2451562.5897
+        else:
+            D += 345.6676
+            M += 1.13951
+            Mprime += 186.21
+            F += 145.1633
+            jde += 2451548.9289
+        # Reduce the angles to the [0 360] range, and convert to radians
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        Fr = F.rad()
+        # Eccentricity of Earth's orbit around the Sun
+        E = 1.0 + (-0.002516 - 0.0000074 * t) * t
+        corr = 0.0
+        cor2 = 0.0
+        # Compute the periodic terms for the time of maximum declination
+        if (target == 'northern'):
+            # Correction for the epoch
+            corr = (0.8975 * cos(Fr) - 0.4726 * sin(Mprimer)
+                    - 0.1030 * sin(2.0 * Fr) - 0.0976 * sin(2.0 * Dr - Mprimer)
+                    - 0.0462 * cos(Mprimer - Fr) - 0.0461 * cos(Mprimer + Fr)
+                    - 0.0438 * sin(2.0 * Dr) + 0.0162 * E * sin(Mr)
+                    - 0.0157 * cos(3.0 * Fr) + 0.0145 * sin(Mprimer + 2.0 * Fr)
+                    + 0.0136 * cos(2.0 * Dr - Fr)
+                    - 0.0095 * cos(2.0 * Dr - Mprimer - Fr)
+                    - 0.0091 * cos(2.0 * Dr - Mprimer + Fr)
+                    - 0.0089 * cos(2.0 * Dr + Fr) + 0.0075 * sin(2.0 * Mprimer)
+                    - 0.0068 * sin(Mprimer - 2.0 * Fr)
+                    + 0.0061 * cos(2.0 * Mprimer - Fr)
+                    - 0.0047 * sin(Mprimer + 3.0 * Fr)
+                    - 0.0043 * E * sin(2.0 * Dr - Mr - Mprimer)
+                    - 0.0040 * cos(Mprimer - 2.0 * Fr)
+                    - 0.0037 * sin(2.0 * (Dr - Mprimer)) + 0.0031 * sin(Fr)
+                    + 0.0030 * sin(2.0 * Dr + Mprimer)
+                    - 0.0029 * cos(Mprimer + 2.0 * Fr)
+                    - 0.0029 * E * sin(2.0 * Dr - Mr)
+                    - 0.0027 * sin(Mprimer + Fr)
+                    + 0.0024 * E * sin(Mr - Mprimer)
+                    - 0.0021 * sin(Mprimer - 3.0 * Fr)
+                    + 0.0019 * sin(2.0 * Mprimer + Fr)
+                    + 0.0018 * cos(2.0 * (Dr - Mprimer) - Fr)
+                    + 0.0018 * sin(3.0 * Fr) + 0.0017 * cos(Mprimer + 3.0 * Fr)
+                    + 0.0017 * cos(2.0 * Mprimer)
+                    - 0.0014 * cos(2.0 * Dr - Mprimer)
+                    + 0.0013 * cos(2.0 * Dr + Mprimer + Fr)
+                    + 0.0013 * cos(Mprimer) + 0.0012 * sin(3.0 * Mprimer + Fr)
+                    + 0.0011 * sin(2.0 * Dr - Mprimer + Fr)
+                    - 0.0011 * cos(2.0 * (Dr - Mprimer)) + 0.001 * cos(Dr + Fr)
+                    + 0.0010 * E * sin(Mr + Mprimer)
+                    - 0.0009 * sin(2.0 * (Dr - Fr))
+                    + 0.0007 * cos(2.0 * Mprimer + Fr)
+                    - 0.0007 * cos(3.0 * Mprimer + Fr))
+            # Correction for the declination
+            cor2 = (5.1093 * sin(Fr) + 0.2658 * cos(2.0 * Fr)
+                    + 0.1448 * sin(2.0 * Dr - Fr) - 0.0322 * sin(3.0 * Fr)
+                    + 0.0133 * cos(2.0 * (Dr - Fr)) + 0.0125 * cos(2.0 * Dr)
+                    - 0.0124 * sin(Mprimer - Fr)
+                    - 0.0101 * sin(Mprimer + 2.0 * Fr) + 0.0097 * cos(Fr)
+                    - 0.0087 * E * sin(2.0 * Dr + Mr - Fr)
+                    + 0.0074 * sin(Mprimer + 3.0 * Fr) + 0.0067 * sin(Dr + Fr)
+                    + 0.0063 * sin(Mprimer - 2.0 * Fr)
+                    + 0.0060 * E * sin(2.0 * Dr - Mr - Fr)
+                    - 0.0057 * sin(2.0 * Dr - Mprimer - Fr)
+                    - 0.0056 * cos(Mprimer + Fr)
+                    + 0.0052 * cos(Mprimer + 2.0 * Fr)
+                    + 0.0041 * cos(2.0 * Mprimer + Fr)
+                    - 0.0040 * cos(Mprimer - 3.0 * Fr)
+                    + 0.0038 * cos(2.0 * Mprimer - Fr)
+                    - 0.0034 * cos(Mprimer - 2.0 * Fr)
+                    - 0.0029 * sin(2.0 * Mprimer)
+                    + 0.0029 * sin(3.0 * Mprimer + Fr)
+                    - 0.0028 * E * cos(2.0 * Dr + Mr - Fr)
+                    - 0.0028 * cos(Mprimer - Fr) - 0.0023 * cos(3.0 * Fr)
+                    - 0.0021 * sin(2.0 * Dr + Fr)
+                    + 0.0019 * cos(Mprimer + 3.0 * Fr) + 0.0018 * cos(Dr + Fr)
+                    + 0.0017 * sin(2.0 * Mprimer - Fr)
+                    + 0.0015 * cos(3.0 * Mprimer + Fr)
+                    + 0.0014 * cos(2.0 * (Dr + Mprimer) + Fr)
+                    - 0.0012 * sin(2.0 * (Dr - Mprimer) - Fr)
+                    - 0.0012 * cos(2.0 * Mprimer) - 0.0010 * cos(Mprimer)
+                    - 0.0010 * sin(2.0 * Fr) + 0.0006 * sin(Mprimer + Fr))
+        else:
+            # Correction for the epoch
+            corr = (-0.8975 * cos(Fr) - 0.4726 * sin(Mprimer)
+                    - 0.1030 * sin(2.0 * Fr) - 0.0976 * sin(2.0 * Dr - Mprimer)
+                    + 0.0541 * cos(Mprimer - Fr) + 0.0516 * cos(Mprimer + Fr)
+                    - 0.0438 * sin(2.0 * Dr) + 0.0112 * E * sin(Mr)
+                    + 0.0157 * cos(3.0 * Fr) + 0.0023 * sin(Mprimer + 2.0 * Fr)
+                    - 0.0136 * cos(2.0 * Dr - Fr)
+                    + 0.0110 * cos(2.0 * Dr - Mprimer - Fr)
+                    + 0.0091 * cos(2.0 * Dr - Mprimer + Fr)
+                    + 0.0089 * cos(2.0 * Dr + Fr) + 0.0075 * sin(2.0 * Mprimer)
+                    - 0.0030 * sin(Mprimer - 2.0 * Fr)
+                    - 0.0061 * cos(2.0 * Mprimer - Fr)
+                    - 0.0047 * sin(Mprimer + 3.0 * Fr)
+                    - 0.0043 * E * sin(2.0 * Dr - Mr - Mprimer)
+                    + 0.0040 * cos(Mprimer - 2.0 * Fr)
+                    - 0.0037 * sin(2.0 * (Dr - Mprimer)) - 0.0031 * sin(Fr)
+                    + 0.0030 * sin(2.0 * Dr + Mprimer)
+                    + 0.0029 * cos(Mprimer + 2.0 * Fr)
+                    - 0.0029 * E * sin(2.0 * Dr - Mr)
+                    - 0.0027 * sin(Mprimer + Fr)
+                    + 0.0024 * E * sin(Mr - Mprimer)
+                    - 0.0021 * sin(Mprimer - 3.0 * Fr)
+                    - 0.0019 * sin(2.0 * Mprimer + Fr)
+                    - 0.0006 * cos(2.0 * (Dr - Mprimer) - Fr)
+                    - 0.0018 * sin(3.0 * Fr) - 0.0017 * cos(Mprimer + 3.0 * Fr)
+                    + 0.0017 * cos(2.0 * Mprimer)
+                    + 0.0014 * cos(2.0 * Dr - Mprimer)
+                    - 0.0013 * cos(2.0 * Dr + Mprimer + Fr)
+                    - 0.0013 * cos(Mprimer) + 0.0012 * sin(3.0 * Mprimer + Fr)
+                    + 0.0011 * sin(2.0 * Dr - Mprimer + Fr)
+                    + 0.0011 * cos(2.0 * (Dr - Mprimer)) + 0.001 * cos(Dr + Fr)
+                    + 0.0010 * E * sin(Mr + Mprimer)
+                    - 0.0009 * sin(2.0 * (Dr - Fr))
+                    - 0.0007 * cos(2.0 * Mprimer + Fr)
+                    - 0.0007 * cos(3.0 * Mprimer + Fr))
+            # Correction for the declination
+            cor2 = (-5.1093 * sin(Fr) + 0.2658 * cos(2.0 * Fr)
+                    - 0.1448 * sin(2.0 * Dr - Fr) + 0.0322 * sin(3.0 * Fr)
+                    + 0.0133 * cos(2.0 * (Dr - Fr)) + 0.0125 * cos(2.0 * Dr)
+                    - 0.0015 * sin(Mprimer - Fr)
+                    + 0.0101 * sin(Mprimer + 2.0 * Fr) - 0.0097 * cos(Fr)
+                    + 0.0087 * E * sin(2.0 * Dr + Mr - Fr)
+                    + 0.0074 * sin(Mprimer + 3.0 * Fr) + 0.0067 * sin(Dr + Fr)
+                    - 0.0063 * sin(Mprimer - 2.0 * Fr)
+                    - 0.0060 * E * sin(2.0 * Dr - Mr - Fr)
+                    + 0.0057 * sin(2.0 * Dr - Mprimer - Fr)
+                    - 0.0056 * cos(Mprimer + Fr)
+                    - 0.0052 * cos(Mprimer + 2.0 * Fr)
+                    - 0.0041 * cos(2.0 * Mprimer + Fr)
+                    - 0.0040 * cos(Mprimer - 3.0 * Fr)
+                    - 0.0038 * cos(2.0 * Mprimer - Fr)
+                    + 0.0034 * cos(Mprimer - 2.0 * Fr)
+                    - 0.0029 * sin(2.0 * Mprimer)
+                    + 0.0029 * sin(3.0 * Mprimer + Fr)
+                    + 0.0028 * E * cos(2.0 * Dr + Mr - Fr)
+                    - 0.0028 * cos(Mprimer - Fr) + 0.0023 * cos(3.0 * Fr)
+                    + 0.0021 * sin(2.0 * Dr + Fr)
+                    + 0.0019 * cos(Mprimer + 3.0 * Fr) + 0.0018 * cos(Dr + Fr)
+                    - 0.0017 * sin(2.0 * Mprimer - Fr)
+                    + 0.0015 * cos(3.0 * Mprimer + Fr)
+                    + 0.0014 * cos(2.0 * (Dr + Mprimer) + Fr)
+                    + 0.0012 * sin(2.0 * (Dr - Mprimer) - Fr)
+                    - 0.0012 * cos(2.0 * Mprimer) + 0.0010 * cos(Mprimer)
+                    - 0.0010 * sin(2.0 * Fr) + 0.0037 * sin(Mprimer + Fr))
+        # Add the correction to 'jde'
+        jde += corr
+        jde = Epoch(jde)
+        declination = 23.6961 - 0.013004 * t + cor2
+        if (target == 'southern'):
+            declination *= -1.0
+        declination = Angle(Angle.reduce_deg(declination))
+        return jde, declination
 
 
 def main():
@@ -1250,6 +1486,18 @@ def main():
                                                                  h,
                                                                  round(mi)))
     # 1987/5/23 6:26
+
+    print("")
+
+    # Compute the epoch and amplitude of maximum southern declination
+    epoch = Epoch(2049, 4, 15.0)
+    epo, dec = Moon.moon_maximum_declination(epoch, target='southern')
+    y, m, d, h, mi, s = epo.get_full_date()
+    print("Epoch of maximum declination: {}/{}/{} {}:{}".format(y, m, d, h,
+                                                                mi))
+    # 2049/4/21 14:0
+    print("Amplitude of maximum declination: {}".format(dec.dms_str(n_dec=0)))
+    # -22d 8' 18.0''
 
 
 if __name__ == "__main__":

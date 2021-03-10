@@ -184,3 +184,20 @@ Compute the time of passage by the ascending node::
     print("Passage by the ascending node: {}/{}/{} {}:{}".format(y, m, d, h, round(mi)))
 
     # Passage by the ascending node: 1987/5/23 6:26
+
+Compute the epoch and amplitude of maximum southern declination::
+
+    epoch = Epoch(2049, 4, 15.0)
+
+    epo, dec = Moon.moon_maximum_declination(epoch, target='southern')
+
+    y, m, d, h, mi, s = epo.get_full_date()
+
+    print("Epoch of maximum declination: {}/{}/{} {}:{}".format(y, m, d, h,
+                                                                mi))
+
+    # Epoch of maximum declination: 2049/4/21 14:0
+
+    print("Amplitude of maximum declination: {}".format(dec.dms_str(n_dec=0)))
+
+    # Amplitude of maximum declination: -22d 8' 18.0''
