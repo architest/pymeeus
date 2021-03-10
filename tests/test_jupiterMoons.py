@@ -244,7 +244,7 @@ class TestJupiterMoons(TestCase):
         right perspective distances
          between the Galilean satellites and Jupiter"""
 
-        utc_1992_12_16_00_00_00 = Epoch(EPOCH_1992_12_16_UTC, utc=True)
+        utc_1992_12_16_00_00_00 = Epoch(EPOCH_1992_12_16_UTC)
         result_matrix = JupiterMoons.check_phenomena(utc_1992_12_16_00_00_00)
         result_matrix_expect = [[-3.457757270630766, -2.553301264153796, 0.0],
                                 [-7.44770945299594, -8.33419997337025, 0.0],

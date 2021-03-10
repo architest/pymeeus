@@ -19,7 +19,7 @@
 
 
 from pymeeus.base import TOL
-from pymeeus.Epoch import Epoch
+from pymeeus.Epoch import Epoch, JDE2000, DAY2SEC
 from pymeeus.Angle import Angle
 
 
@@ -484,3 +484,17 @@ def test_epoch_rise_set():
 
     assert h == 17, "ERROR: 3rd rise_set() test, output doesn't match"
     assert mi == 48, "ERROR: 3rd rise_set() test, output doesn't match"
+
+
+def test_epoch_utc_constructor():
+    """Tests that the Epoch constructor handles UTC conversion well"""
+
+    e = Epoch(JDE2000, utc=True)
+    diff = round((e - JDE2000) * DAY2SEC, 3)
+
+    assert diff == 64.184, "ERROR: 1st UTC test, output doesn't match"
+
+    e = Epoch(2451545.0, utc=True)
+    diff = round((e - JDE2000) * DAY2SEC, 3)
+
+    assert diff == 64.184, "ERROR: 2nd UTC test, output doesn't match"

@@ -290,6 +290,12 @@ class Epoch(object):
         >>> e.set(d)
         >>> print(e)
         2026871.8
+        >>> e = Epoch(JDE2000, utc=True)
+        >>> print(round((e - JDE2000) * DAY2SEC, 3))
+        64.184
+        >>> e = Epoch(2451545.0, utc=True)
+        >>> print(round((e - JDE2000) * DAY2SEC, 3))
+        64.184
         """
 
         # Clean up the internal parameters
@@ -302,10 +308,10 @@ class Epoch(object):
         elif len(args) == 1:
             if isinstance(args[0], Epoch):
                 self._jde = args[0]._jde
-                return
+                year, month, day, hours, minutes, sec = self.get_full_date()
             elif isinstance(args[0], (int, float)):
                 self._jde = args[0]
-                return
+                year, month, day, hours, minutes, sec = self.get_full_date()
             elif isinstance(args[0], (tuple, list)):
                 year, month, day, hours, minutes, sec = \
                     self._check_values(*args[0])
