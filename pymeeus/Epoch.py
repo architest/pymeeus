@@ -297,7 +297,8 @@ class Epoch(object):
         # If no arguments are given, return. Internal values are 0.0
         if len(args) == 0:
             return
-        # If we have only one argument, it can be a JDE or another Epoch object
+        # If we have only one argument, it can be a JDE, another Epoch object,
+        # a tuple with year, month, day, etc or a datetime object
         elif len(args) == 1:
             if isinstance(args[0], Epoch):
                 self._jde = args[0]._jde
@@ -896,7 +897,7 @@ class Epoch(object):
         Universal Time (UTC). This method provides you the seconds that you
         have to add or subtract to UTC time to convert to your local time.
 
-        Please bear in mind that, in order for this method to work, you
+        Please bear in mind that, in order for this method to work, your
         operative system must be correctly configured, with the right time and
         corresponding time zone.
 
@@ -1675,9 +1676,9 @@ class Epoch(object):
             "Sunrise equation" of the Wikipedia at:
             https://en.wikipedia.org/wiki/Sunrise_equation
 
-        .. note:: This algorithm is only valid within the artic and antartic
-            circles (+/- 66d 33'). Outside that range this method returns
-            a ValueError exception
+        .. note:: This algorithm is only valid outside the artic and antartic
+            circles (+/- 66d 33'). For latitudes higher than +66d 33' and
+            smaller than -66d 33' this method returns a ValueError exception
 
         .. note:: The results are given in UTC time.
 
