@@ -131,6 +131,15 @@ def test_epoch_get_doy():
         "ERROR: 3rd get_doy() test, output doesn't match"
 
 
+def test_epoch_doy():
+    """Tests the doy() method of Epoch class"""
+
+    e = Epoch(2017, 12, 31.7)
+
+    assert round(e.doy(), 1) == 365.7, \
+        "ERROR: 1st doy() test, output doesn't match"
+
+
 def test_epoch_doy2date():
     """Tests the doy2date() static method of Epoch class"""
 

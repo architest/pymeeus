@@ -454,7 +454,8 @@ class Epoch(object):
         if month == 2:
             if Epoch.is_leap(year):
                 limit_day = 29
-        if day > limit_day:
+        # Add '1' to 'limit_day' in order to allow for fractional days
+        if day > limit_day + 1:
             raise ValueError("Invalid value for the input day")
 
         # We are ready to return the parameters
@@ -765,8 +766,17 @@ class Epoch(object):
         :rtype: float
 
         >>> e = Epoch(1999, 1, 29)
-        >>> e.doy()
+        >>> round(e.doy(), 1)
         29.0
+        >>> e = Epoch(2017, 12, 31.7)
+        >>> round(e.doy(), 1)
+        365.7
+        >>> e = Epoch(2012, 3, 3.1)
+        >>> round(e.doy(), 1)
+        63.1
+        >>> e = Epoch(-400, 2, 29.9)
+        >>> round(e.doy(), 1)
+        60.9
         """
 
         y, m, d = self.get_date()
@@ -2113,6 +2123,9 @@ def main():
     # Get the Day Of Year corresponding to a given date
     print_me("Day Of Year (DOY) of 1978/11/14", Epoch.get_doy(1978, 11, 14))
     print_me("Day Of Year (DOY) of -400/2/29.9", Epoch.get_doy(-400, 2, 29.9))
+    # As before, but using the contents of the Epoch object
+    e = Epoch(2017, 12, 31.7)
+    print_me("Day Of Year (DOY) of 2017/12/31.7", round(e.doy(), 1))
 
     print("")
 
