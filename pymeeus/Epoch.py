@@ -757,6 +757,21 @@ class Epoch(object):
                    - k * iint((mm + 9.0) / 12.0) + day - 30.0)
         return float(doy + frac)
 
+    def doy(self):
+        """This method returns the Day Of Year (DOY) for the current Epoch
+        object.
+
+        :returns: Day Of Year (DOY).
+        :rtype: float
+
+        >>> e = Epoch(1999, 1, 29)
+        >>> e.doy()
+        29.0
+        """
+
+        y, m, d = self.get_date()
+        return Epoch.get_doy(y, m, d)
+
     @staticmethod
     def doy2date(year, doy):
         """This method takes a year and a Day Of Year values, and returns the
