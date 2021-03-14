@@ -19,7 +19,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, asin, atan2
+from math import sin, cos, asin, atan2, tan
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from pymeeus.Sun import Sun
@@ -1366,28 +1366,48 @@ class Moon(object):
         return jde, declination
 
     @staticmethod
-    def moon_optical_libration(epoch):
-        """This method computes the optical librations in longitude and
-        latitude, i.e., the apparent oscillations in the hemisphere that the
-        Moon turns towards the Earth, due to variations in the geometric
-        position of the Earth relative to the lunar surface during the course
-        of the orbital motion of the Moon. These variations allow to observe
-        about 59% of the surface of the Moon from the Earth.
+    def moon_librations(epoch):
+        """This method computes the librations in longitude and latitude of the
+        moon. There are several librations: The optical librations, that are
+        the apparent oscillations in the hemisphere that the Moon turns towards
+        the Earth, due to variations in the geometric position of the Earth
+        relative to the lunar surface during the course of the orbital motion
+        of the Moon. These variations allow to observe about 59% of the surface
+        of the Moon from the Earth.
 
-        :param epoch: Epoch we want to compute the Moon's libration.
+        There is also the physical libration of the Moon, i.e., the libration
+        due to the actual rotational motion of the Moon about its mean
+        rotation. The physical libration is much smaller than the optical
+        libration, and can never be larger than 0.04 degree in both longitude
+        and latitude.
+
+        Finally, there is the total libration, which is the sum of the two
+        librations mentioned above
+
+        :param epoch: Epoch we want to compute the Moon's librations.
         :type year: :py:class:`Epoch`
 
         :returns: A tuple containing the optical libration in longitude and in
-            latitude, as :py:class:`Angle` objects.
+            latitude, the physical libration also in longitude and latitude,
+            and the total librations which is the sum of the previouse ones,
+            all of them as :py:class:`Angle` objects.
         :rtype: tuple
         :raises: TypeError if input value is of wrong type.
 
         >>> epoch = Epoch(1992, 4, 12.0)
-        >>> lprime, bprime = Moon.moon_optical_libration(epoch)
-        >>> print(round(lprime, 3))
+        >>> lopt, bopt, lphys, bphys, ltot, btot = Moon.moon_librations(epoch)
+        >>> print(round(lopt, 3))
         -1.206
-        >>> print(round(bprime, 3))
+        >>> print(round(bopt, 3))
         4.194
+        >>> print(round(lphys, 3))
+        -0.025
+        >>> print(round(bphys, 3))
+        0.006
+        >>> print(round(ltot, 2))
+        -1.23
+        >>> print(round(btot, 3))
+        4.2
         """
 
         # First check that input value is of correct type
@@ -1401,7 +1421,19 @@ class Moon(object):
         Lambda, Beta, Delta, ppi = Moon.apparent_ecliptical_pos(epoch)
         # Compute the nutation in longitude (deltaPsi)
         deltaPsi = nutation_longitude(epoch)
+        # Get the time from J2000.0 in Julian centuries
         t = (epoch - JDE2000) / 36525.0
+        # Mean elongation of the Moon
+        D = 297.8501921 + (445267.1114034
+                           + (-0.0018819
+                              + (1.0/545868.0 - t/113065000.0) * t) * t) * t
+        # Sun's mean anomaly
+        M = 357.5291092 + (35999.0502909 + (-0.0001536 + t/24490000.0) * t) * t
+        # Moon's mean anomaly
+        Mprime = 134.9633964 + (477198.8675055
+                                + (0.0087414
+                                   + (1.0/69699.9
+                                      + t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -1409,6 +1441,25 @@ class Moon(object):
         F = Angle(Angle.reduce_deg(F)).to_positive()
         # Compute the mean longitude of the ascending node of lunar orbit
         Omega = Moon.longitude_mean_ascending_node(epoch)
+        # Let's compute some additional arguments
+        k1 = 119.75 + 131.849 * t
+        k2 = 72.56 + 20.186 * t
+        # Eccentricity of Earth's orbit around the Sun
+        E = 1.0 + (-0.002516 - 0.0000074 * t) * t
+        # Reduce the angles to a [0 360] range
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        M = Angle(Angle.reduce_deg(M)).to_positive()
+        Mr = M.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        Fr = F.rad()
+        Omegar = Omega.rad()
+        k1 = Angle(Angle.reduce_deg(k1)).to_positive()
+        k1r = k1.rad()
+        k2 = Angle(Angle.reduce_deg(k2)).to_positive()
+        k2r = k2.rad()
         # Let's compute 'w' and some additional parameters
         w = Lambda - deltaPsi - Omega
         w = w.to_positive()
@@ -1418,13 +1469,49 @@ class Moon(object):
         betar = Beta.rad()
         sinB = sin(betar)
         cosB = cos(betar)
-        # Compute 'a'
-        A = atan2((sinW * cosB * cosI - sinB * sinI), (cosW * cosB))
-        A = Angle(A, radians=True).to_positive()
+        # Compute 'A'
+        Ar = atan2((sinW * cosB * cosI - sinB * sinI), (cosW * cosB))
+        A = Angle(Ar, radians=True).to_positive()
         lprime = A - F
-        bprime = asin(-sinW * cosB * sinI - sinB * cosI)
-        bprime = Angle(bprime, radians=True)
-        return lprime, bprime
+        bprimer = asin(-sinW * cosB * sinI - sinB * cosI)
+        bprime = Angle(bprimer, radians=True)
+        # Compute the expressions from D.H. Eckhardt 1981
+        rho = (-0.02752 * cos(Mprimer) - 0.02245 * sin(Fr)
+               + 0.00684 * cos(Mprimer - 2.0 * Fr) - 0.00293 * cos(2.0 * Fr)
+               - 0.00085 * cos(2.0 * (Fr - Dr))
+               - 0.00054 * cos(Mprimer - 2.0 * Dr) - 0.0002 * sin(Mprimer + Fr)
+               - 0.0002 * cos(Mprimer + 2.0 * Fr) - 0.0002 * cos(Mprimer - Fr)
+               + 0.00014 * cos(Mprimer + 2.0 * (Fr - Dr)))
+        rho = Angle(rho)
+        sigma = (-0.02816 * sin(Mprimer) + 0.02244 * cos(Fr)
+                 - 0.00682 * sin(Mprimer - 2.0 * Fr) - 0.00279 * sin(2.0 * Fr)
+                 - 0.00083 * sin(2.0 * (Fr - Dr))
+                 + 0.00069 * sin(Mprimer - 2.0 * Dr)
+                 + 0.0004 * cos(Mprimer + Fr) - 0.00025 * sin(2.0 * Mprimer)
+                 - 0.00023 * sin(Mprimer + 2.0 * Fr)
+                 + 0.0002 * cos(Mprimer - Fr) + 0.00019 * sin(Mprimer - Fr)
+                 + 0.00013 * sin(Mprimer + 2.0 * (Fr - Dr))
+                 - 0.0001 * cos(Mprimer - 3.0 * Fr))
+        sigma = Angle(sigma)
+        tau = (0.0252 * E * sin(Mr) + 0.00473 * sin(2.0 * (Mprimer - Fr))
+               - 0.00467 * sin(Mprimer) + 0.00396 * sin(k1r)
+               + 0.00276 * sin(2.0 * (Mprimer - Dr)) + 0.00196 * sin(Omegar)
+               - 0.00183 * cos(Mprimer - Fr)
+               + 0.00115 * sin(Mprimer - 2.0 * Dr)
+               - 0.00096 * sin(Mprimer - Dr) + 0.00046 * sin(2.0 * (Fr - Dr))
+               - 0.00039 * sin(Mprimer - Fr) - 0.00032 * sin(Mprimer - Mr - Dr)
+               + 0.00027 * sin(2.0 * (Mprimer - Dr) - Mr) + 0.00023 * sin(k2r)
+               - 0.00014 * sin(2.0 * Dr) + 0.00014 * cos(2.0 * (Mprimer - Fr))
+               - 0.00012 * sin(Mprimer - 2.0 * Fr)
+               - 0.00012 * sin(2.0 * Mprimer)
+               + 0.00011 * sin(2.0 * (Mprimer - Mr - Dr)))
+        tau = Angle(tau)
+        # Compute the physical librations
+        lpp = -tau + (rho * cos(Ar) + sigma * sin(Ar)) * tan(bprimer)
+        bpp = sigma * cos(Ar) - rho * sin(Ar)
+        lt = lprime + lpp
+        bt = bprime + bpp
+        return lprime, bprime, lpp, bpp, lt, bt
 
 
 def main():
@@ -1561,13 +1648,21 @@ def main():
 
     print("")
 
-    # Compute the optical libration
+    # Compute the librations of the Moon
     epoch = Epoch(1992, 4, 12.0)
-    lprime, bprime = Moon.moon_optical_libration(epoch)
-    print_me("Optical libration in longitude", round(lprime, 3))
+    lopt, bopt, lphys, bphys, ltot, btot = Moon.moon_librations(epoch)
+    print_me("Optical libration in longitude", round(lopt, 3))
     # -1.206
-    print_me("Optical libration in latitude", round(bprime, 3))
+    print_me("Optical libration in latitude", round(bopt, 3))
     # 4.194
+    print_me("Physical libration in longitude", round(lphys, 3))
+    # -0.025
+    print_me("Physical libration in latitude", round(bphys, 3))
+    # 0.006
+    print_me("Total libration in longitude", round(lphys, 2))
+    # -1.23
+    print_me("Total libration in latitude", round(bphys, 3))
+    # 4.2
 
 
 if __name__ == "__main__":

@@ -282,16 +282,32 @@ def test_moon_maximum_declination():
         + "match"
 
 
-def test_moon_optical_libration():
-    """Tests the method 'moon_optical_libration()' of Moon class"""
+def test_moon_librations():
+    """Tests the method 'moon_librations()' of Moon class"""
 
     epoch = Epoch(1992, 4, 12.0)
-    lprime, bprime = Moon.moon_optical_libration(epoch)
+    lopt, bopt, lphys, bphys, ltot, btot = Moon.moon_librations(epoch)
 
-    assert abs(round(lprime, 3) - (-1.206)) < TOL, \
-        "ERROR: 1st 'moon_optical_libration()' test, 'lprime' value "\
+    assert abs(round(lopt, 3) - (-1.206)) < TOL, \
+        "ERROR: 1st 'moon_librations()' test, 'lopt' value "\
         + "doesn't match"
 
-    assert abs(round(bprime, 3) - 4.194) < TOL, \
-        "ERROR: 2nd 'moon_optical_libration()' test, 'bprime' value doesn't "\
+    assert abs(round(bopt, 3) - 4.194) < TOL, \
+        "ERROR: 2nd 'moon_librations()' test, 'bopt' value doesn't "\
+        + "match"
+
+    assert abs(round(lphys, 3) - (-0.025)) < TOL, \
+        "ERROR: 3rd 'moon_librations()' test, 'lphys' value "\
+        + "doesn't match"
+
+    assert abs(round(bphys, 3) - 0.006) < TOL, \
+        "ERROR: 4th 'moon_librations()' test, 'bphys' value doesn't "\
+        + "match"
+
+    assert abs(round(ltot, 2) - (-1.23)) < TOL, \
+        "ERROR: 5th 'moon_librations()' test, 'ltot' value "\
+        + "doesn't match"
+
+    assert abs(round(btot, 3) - 4.2) < TOL, \
+        "ERROR: 6th 'moon_librations()' test, 'btot' value doesn't "\
         + "match"

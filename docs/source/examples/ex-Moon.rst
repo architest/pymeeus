@@ -201,16 +201,32 @@ Compute the epoch and amplitude of maximum southern declination::
 
     # Amplitude of maximum declination: -22d 8' 18.0''
 
-Compute the optical libration::
+Compute the librations of the Moon::
 
     epoch = Epoch(1992, 4, 12.0)
 
-    lprime, bprime = Moon.moon_optical_libration(epoch)
+    lopt, bopt, lphys, bphys, ltot, btot = Moon.moon_librations(epoch)
 
-    print_me("Optical libration in longitude", round(lprime, 3))
+    print_me("Optical libration in longitude", round(lopt, 3))
 
     # Optical libration in longitude: -1.206
 
-    print_me("Optical libration in latitude", round(bprime, 3))
+    print_me("Optical libration in latitude", round(bopt, 3))
 
     # Optical libration in latitude: 4.194
+
+    print_me("Physical libration in longitude", round(lphys, 3))
+
+    # Physical libration in longitude: -0.025
+
+    print_me("Physical libration in latitude", round(bphys, 3))
+
+    # Physical libration in latitude: 0.006
+
+    print_me("Total libration in longitude", round(lphys, 2))
+
+    # Total libration in longitude: -1.23
+
+    print_me("Total libration in latitude", round(bphys, 3))
+
+    # Total libration in latitude: 4.2
