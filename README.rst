@@ -106,6 +106,11 @@ Contributors
 What's new
 ----------
 
+-  0.5.10
+
+   -  Added methods ``moon_librations()`` and
+      ``moon_position_angle_axis()``.
+
 -  0.5.9
 
    -  Added method ``moon_maximum_declination()``.
