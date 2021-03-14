@@ -280,3 +280,18 @@ def test_moon_maximum_declination():
     assert decli == "28d 58' 26.0''", \
         "ERROR: 6th 'moon_maximum_declination()' test, 'decli' value doesn't "\
         + "match"
+
+
+def test_moon_optical_libration():
+    """Tests the method 'moon_optical_libration()' of Moon class"""
+
+    epoch = Epoch(1992, 4, 12.0)
+    lprime, bprime = Moon.moon_optical_libration(epoch)
+
+    assert abs(round(lprime, 3) - (-1.206)) < TOL, \
+        "ERROR: 1st 'moon_optical_libration()' test, 'lprime' value "\
+        + "doesn't match"
+
+    assert abs(round(bprime, 3) - 4.194) < TOL, \
+        "ERROR: 2nd 'moon_optical_libration()' test, 'bprime' value doesn't "\
+        + "match"

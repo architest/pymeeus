@@ -167,7 +167,7 @@ Compute the time and parallax of apogee::
 
     # Apogee epoch: 1988/10/7 20:30
 
-    print("Equatorial horizontal parallax: {}".format( parallax.dms_str(n_dec=3)))
+    print_me("Equatorial horizontal parallax", parallax.dms_str(n_dec=3))
 
     # Equatorial horizontal parallax: 54' 0.679''
 
@@ -193,11 +193,24 @@ Compute the epoch and amplitude of maximum southern declination::
 
     y, m, d, h, mi, s = epo.get_full_date()
 
-    print("Epoch of maximum declination: {}/{}/{} {}:{}".format(y, m, d, h,
-                                                                mi))
+    print("Epoch of maximum declination: {}/{}/{} {}:{}".format(y, m, d, h, mi))
 
     # Epoch of maximum declination: 2049/4/21 14:0
 
-    print("Amplitude of maximum declination: {}".format(dec.dms_str(n_dec=0)))
+    print_me("Amplitude of maximum declination", dec.dms_str(n_dec=0))
 
     # Amplitude of maximum declination: -22d 8' 18.0''
+
+Compute the optical libration::
+
+    epoch = Epoch(1992, 4, 12.0)
+
+    lprime, bprime = Moon.moon_optical_libration(epoch)
+
+    print_me("Optical libration in longitude", round(lprime, 3))
+
+    # Optical libration in longitude: -1.206
+
+    print_me("Optical libration in latitude", round(bprime, 3))
+
+    # Optical libration in latitude: 4.194

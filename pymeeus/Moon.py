@@ -1365,6 +1365,67 @@ class Moon(object):
         declination = Angle(Angle.reduce_deg(declination))
         return jde, declination
 
+    @staticmethod
+    def moon_optical_libration(epoch):
+        """This method computes the optical librations in longitude and
+        latitude, i.e., the apparent oscillations in the hemisphere that the
+        Moon turns towards the Earth, due to variations in the geometric
+        position of the Earth relative to the lunar surface during the course
+        of the orbital motion of the Moon. These variations allow to observe
+        about 59% of the surface of the Moon from the Earth.
+
+        :param epoch: Epoch we want to compute the Moon's libration.
+        :type year: :py:class:`Epoch`
+
+        :returns: A tuple containing the optical libration in longitude and in
+            latitude, as :py:class:`Angle` objects.
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 4, 12.0)
+        >>> lprime, bprime = Moon.moon_optical_libration(epoch)
+        >>> print(round(lprime, 3))
+        -1.206
+        >>> print(round(bprime, 3))
+        4.194
+        """
+
+        # First check that input value is of correct type
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Let's start computing some constants
+        ir = Angle(1.54242).rad()
+        sinI = sin(ir)
+        cosI = cos(ir)
+        # Now, let's call the method geocentric_ecliptical_pos()
+        Lambda, Beta, Delta, ppi = Moon.apparent_ecliptical_pos(epoch)
+        # Compute the nutation in longitude (deltaPsi)
+        deltaPsi = nutation_longitude(epoch)
+        t = (epoch - JDE2000) / 36525.0
+        # Moon's argument of latitude
+        F = 93.2720950 + (483202.0175233
+                          + (-0.0036539
+                             + (-1.0/3526000.0 + t/863310000.0) * t) * t) * t
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        # Compute the mean longitude of the ascending node of lunar orbit
+        Omega = Moon.longitude_mean_ascending_node(epoch)
+        # Let's compute 'w' and some additional parameters
+        w = Lambda - deltaPsi - Omega
+        w = w.to_positive()
+        wr = w.rad()
+        sinW = sin(wr)
+        cosW = cos(wr)
+        betar = Beta.rad()
+        sinB = sin(betar)
+        cosB = cos(betar)
+        # Compute 'a'
+        A = atan2((sinW * cosB * cosI - sinB * sinI), (cosW * cosB))
+        A = Angle(A, radians=True).to_positive()
+        lprime = A - F
+        bprime = asin(-sinW * cosB * sinI - sinB * cosI)
+        bprime = Angle(bprime, radians=True)
+        return lprime, bprime
+
 
 def main():
 
@@ -1469,8 +1530,7 @@ def main():
     y, m, d, h, mi, s = apogee.get_full_date()
     print("Apogee epoch: {}/{}/{} {}:{}".format(y, m, d, h, mi))
     # 1988/10/7 20:30
-    print("Equatorial horizontal parallax: {}".format(
-        parallax.dms_str(n_dec=3)))
+    print_me("Equatorial horizontal parallax", parallax.dms_str(n_dec=3))
     # 54' 0.679''
 
     print("")
@@ -1496,8 +1556,18 @@ def main():
     print("Epoch of maximum declination: {}/{}/{} {}:{}".format(y, m, d, h,
                                                                 mi))
     # 2049/4/21 14:0
-    print("Amplitude of maximum declination: {}".format(dec.dms_str(n_dec=0)))
+    print_me("Amplitude of maximum declination", dec.dms_str(n_dec=0))
     # -22d 8' 18.0''
+
+    print("")
+
+    # Compute the optical libration
+    epoch = Epoch(1992, 4, 12.0)
+    lprime, bprime = Moon.moon_optical_libration(epoch)
+    print_me("Optical libration in longitude", round(lprime, 3))
+    # -1.206
+    print_me("Optical libration in latitude", round(bprime, 3))
+    # 4.194
 
 
 if __name__ == "__main__":
