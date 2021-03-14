@@ -230,3 +230,13 @@ Compute the librations of the Moon::
     print_me("Total libration in latitude", round(bphys, 3))
 
     # Total libration in latitude: 4.2
+
+Let's calculate the position angle of the Moon's axis of rotation::
+
+    epoch = Epoch(1992, 4, 12.0)
+
+    p = Moon.moon_position_angle_axis(epoch)
+
+    print_me("Position angle of Moon's axis of rotation", round(p, 2))
+
+    # Position angle of Moon's axis of rotation: 15.08

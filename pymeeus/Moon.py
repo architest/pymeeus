@@ -19,7 +19,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-from math import sin, cos, asin, atan2, tan
+from math import sin, cos, asin, atan2, tan, sqrt
 from pymeeus.Angle import Angle
 from pymeeus.Epoch import Epoch, JDE2000
 from pymeeus.Sun import Sun
@@ -1417,7 +1417,7 @@ class Moon(object):
         ir = Angle(1.54242).rad()
         sinI = sin(ir)
         cosI = cos(ir)
-        # Now, let's call the method geocentric_ecliptical_pos()
+        # Now, let's call the method apparent_ecliptical_pos()
         Lambda, Beta, Delta, ppi = Moon.apparent_ecliptical_pos(epoch)
         # Compute the nutation in longitude (deltaPsi)
         deltaPsi = nutation_longitude(epoch)
@@ -1512,6 +1512,95 @@ class Moon(object):
         lt = lprime + lpp
         bt = bprime + bpp
         return lprime, bprime, lpp, bpp, lt, bt
+
+    @staticmethod
+    def moon_position_angle_axis(epoch):
+        """This method computes the position angle of the Moon's axis of
+        rotation. The effect of the physical libration is taken into account.
+
+        :param epoch: Epoch we want to compute the position angle of the Moon's
+            axis of rotation.
+        :type year: :py:class:`Epoch`
+
+        :returns: The position angle of the Moon's axis of rotation, as a
+            :py:class:`Angle` object.
+        :rtype: tuple
+        :raises: TypeError if input value is of wrong type.
+
+        >>> epoch = Epoch(1992, 4, 12.0)
+        >>> p = Moon.moon_position_angle_axis(epoch)
+        >>> print(round(p, 2))
+        15.08
+        """
+
+        # First check that input value is of correct type
+        if not isinstance(epoch, Epoch):
+            raise TypeError("Invalid input types")
+        # Let's start computing some constants
+        ir = Angle(1.54242).rad()
+        sinI = sin(ir)
+        # Compute the nutation in longitude (deltaPsi)
+        deltaPsi = nutation_longitude(epoch)
+        # Get the true obliquity of the ecliptic
+        epsilon = true_obliquity(epoch)
+        epsr = epsilon.rad()
+        # Get the time from J2000.0 in Julian centuries
+        t = (epoch - JDE2000) / 36525.0
+        # Mean elongation of the Moon
+        D = 297.8501921 + (445267.1114034
+                           + (-0.0018819
+                              + (1.0/545868.0 - t/113065000.0) * t) * t) * t
+        # Moon's mean anomaly
+        Mprime = 134.9633964 + (477198.8675055
+                                + (0.0087414
+                                   + (1.0/69699.9
+                                      + t/14712000.0) * t) * t) * t
+        # Moon's argument of latitude
+        F = 93.2720950 + (483202.0175233
+                          + (-0.0036539
+                             + (-1.0/3526000.0 + t/863310000.0) * t) * t) * t
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        # Compute the mean longitude of the ascending node of lunar orbit
+        Omega = Moon.longitude_mean_ascending_node(epoch)
+        # Reduce the angles to a [0 360] range
+        D = Angle(Angle.reduce_deg(D)).to_positive()
+        Dr = D.rad()
+        Mprime = Angle(Angle.reduce_deg(Mprime)).to_positive()
+        Mprimer = Mprime.rad()
+        F = Angle(Angle.reduce_deg(F)).to_positive()
+        Fr = F.rad()
+        # Compute the expressions from D.H. Eckhardt 1981
+        rho = (-0.02752 * cos(Mprimer) - 0.02245 * sin(Fr)
+               + 0.00684 * cos(Mprimer - 2.0 * Fr) - 0.00293 * cos(2.0 * Fr)
+               - 0.00085 * cos(2.0 * (Fr - Dr))
+               - 0.00054 * cos(Mprimer - 2.0 * Dr) - 0.0002 * sin(Mprimer + Fr)
+               - 0.0002 * cos(Mprimer + 2.0 * Fr) - 0.0002 * cos(Mprimer - Fr)
+               + 0.00014 * cos(Mprimer + 2.0 * (Fr - Dr)))
+        rho = Angle(rho)
+        rhor = rho.rad()
+        sigma = (-0.02816 * sin(Mprimer) + 0.02244 * cos(Fr)
+                 - 0.00682 * sin(Mprimer - 2.0 * Fr) - 0.00279 * sin(2.0 * Fr)
+                 - 0.00083 * sin(2.0 * (Fr - Dr))
+                 + 0.00069 * sin(Mprimer - 2.0 * Dr)
+                 + 0.0004 * cos(Mprimer + Fr) - 0.00025 * sin(2.0 * Mprimer)
+                 - 0.00023 * sin(Mprimer + 2.0 * Fr)
+                 + 0.0002 * cos(Mprimer - Fr) + 0.00019 * sin(Mprimer - Fr)
+                 + 0.00013 * sin(Mprimer + 2.0 * (Fr - Dr))
+                 - 0.0001 * cos(Mprimer - 3.0 * Fr))
+        sigma = Angle(sigma)
+        # Compute the parameters 'v', 'x', 'y' and 'w'
+        v = Omega + deltaPsi + (sigma / sinI)
+        vr = v.rad()
+        x = sin(ir + rhor) * sin(vr)
+        y = sin(ir + rhor) * cos(vr) * cos(epsr) - cos(ir + rhor) * sin(epsr)
+        w = atan2(x, y)
+        # Now, let's call the method apparent_equatorial_pos()
+        alpha, dec, Delta, ppi = Moon.apparent_equatorial_pos(epoch)
+        alphar = alpha.rad()
+        # Get the Moon librations
+        lopt, bopt, lphys, bphys, ltot, btot = Moon.moon_librations(epoch)
+        p = asin((sqrt(x * x + y * y) * cos(alphar - w)) / cos(btot.rad()))
+        return Angle(p, radians=True)
 
 
 def main():
@@ -1663,6 +1752,14 @@ def main():
     # -1.23
     print_me("Total libration in latitude", round(bphys, 3))
     # 4.2
+
+    print("")
+
+    # Let's calculate the position angle of the Moon's axis of rotation
+    epoch = Epoch(1992, 4, 12.0)
+    p = Moon.moon_position_angle_axis(epoch)
+    print_me("Position angle of Moon's axis of rotation", round(p, 2))
+    # 15.08
 
 
 if __name__ == "__main__":

@@ -311,3 +311,14 @@ def test_moon_librations():
     assert abs(round(btot, 3) - 4.2) < TOL, \
         "ERROR: 6th 'moon_librations()' test, 'btot' value doesn't "\
         + "match"
+
+
+def test_moon_position_angle_axis():
+    """Tests the method 'moon_position_angle_axis()' of Moon class"""
+
+    epoch = Epoch(1992, 4, 12.0)
+    p = Moon.moon_position_angle_axis(epoch)
+
+    assert abs(round(p, 2) - 15.08) < TOL, \
+        "ERROR: 1st 'moon_position_angle_axis()' test, 'p' value "\
+        + "doesn't match"
