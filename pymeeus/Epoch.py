@@ -232,19 +232,30 @@ class Epoch(object):
         value will be used for the UTC->TAI conversion, and the internal leap
         seconds table will be bypassed.
 
+        It is also possible to provide a local time with the parameter
+        **local=True**. In such case, the method :meth:`utc2local()` is called
+        to compute the LocalTime-UTC difference. This implies that the
+        parameter **utc=True** is automatically set.
+
         .. note:: The UTC to TT correction is only carried out for dates after
            January 1st, 1972.
 
+        .. note:: Please bear in mind that, in order for the method
+           :meth:`utc2local()`to work, your operative system must be correctly
+           configured, with the right time and corresponding time zone.
+
         :param args: Either JDE, Epoch, date, datetime or year, month, day,
            hours, minutes, seconds values, by themselves or inside a tuple or
-           list
+           list.
         :type args: int, float, :py:class:`Epoch`, tuple, list, date,
            datetime
-        :param utc: Whether the provided epoch is a civil time (UTC)
+        :param utc: Whether the provided epoch is a civil time (UTC).
         :type utc: bool
         :param leap_seconds: This is the value to be used in the UTC->TAI
             conversion, instead of taking it from internal leap seconds table.
         :type leap_seconds: int, float
+        :param local: Whether the provided epoch is a local time.
+        :type utc: bool
 
         :returns: None.
         :rtype: None
@@ -340,16 +351,26 @@ class Epoch(object):
         day += hours / DAY2HOURS + minutes / DAY2MIN + sec / DAY2SEC
         # Handle the 'leap_seconds' argument, if pressent
         if "leap_seconds" in kwargs:
-            # Compute JDE
-            self._jde = self._compute_jde(year, month, day, utc2tt=False,
-                                          leap_seconds=kwargs["leap_seconds"])
+            if "local" in kwargs:
+                self._jde = self._compute_jde(
+                    year, month, day, utc2tt=False,
+                    leap_seconds=kwargs["leap_seconds"],
+                    local=kwargs["local"])
+            else:
+                self._jde = self._compute_jde(
+                    year, month, day, utc2tt=False,
+                    leap_seconds=kwargs["leap_seconds"])
         elif "utc" in kwargs:
             self._jde = self._compute_jde(year, month, day,
                                           utc2tt=kwargs["utc"])
+        elif "local" in kwargs:
+            self._jde = self._compute_jde(year, month, day,
+                                          local=kwargs["local"])
         else:
             self._jde = self._compute_jde(year, month, day, utc2tt=False)
 
-    def _compute_jde(self, y, m, d, utc2tt=True, leap_seconds=0.0):
+    def _compute_jde(self, y, m, d, utc2tt=False, leap_seconds=0.0,
+                     local=False):
         """Method to compute the Julian Ephemeris Day (JDE).
 
         .. note:: The UTC to TT correction is only carried out for dates after
@@ -363,8 +384,10 @@ class Epoch(object):
         :type d: float
         :param utc2tt: Whether correction UTC to TT is done automatically.
         :type utc2tt: bool
-        :param leap_seconds: Number of leap seconds to apply
+        :param leap_seconds: Number of leap seconds to apply.
         :type leap_seconds: float
+        :param local: Whether a local time has been provided.
+        :type utc2tt: bool
 
         :returns: Julian Ephemeris Day (JDE)
         :rtype: float
@@ -382,16 +405,20 @@ class Epoch(object):
                + iint(30.6001 * (m + 1.0)) + d + b - 1524.5)
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
+        if local:
+            deltasec = Epoch.utc2local()
+            if not utc2tt and leap_seconds == 0.0:
+                utc2tt = True
         # In this case, UTC to TT correction is applied automatically
         if utc2tt:
             if y >= 1972:
-                deltasec = 32.184  # Difference between TT and TAI
+                deltasec += 32.184  # Difference between TT and TAI
                 deltasec += 10.0  # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(y, m)
         else:  # Correction is NOT automatic
             if leap_seconds != 0.0:  # We apply provided leap seconds
                 if y >= 1972:
-                    deltasec = 32.184  # Difference between TT and TAI
+                    deltasec += 32.184  # Difference between TT and TAI
                     deltasec += 10.0  # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
         return jde + deltasec / DAY2SEC
@@ -924,15 +951,29 @@ class Epoch(object):
     def utc2local():
         """Method to return the difference between UTC and local time.
 
-        By default, dates in this Epoch class are handled in Coordinated
-        Universal Time (UTC). This method provides you the seconds that you
-        have to add or subtract to UTC time to convert to your local time.
+        This method provides you the seconds that you have to add or subtract
+        to UTC time to convert to your local time. The correct way to apply
+        this method is according to the expression:
 
-        Please bear in mind that, in order for this method to work, your
-        operative system must be correctly configured, with the right time and
-        corresponding time zone.
+        utc2local() = LocalTime - UTC
 
-        :returns: Difference in seconds between local and UTC time.
+        Therefore, if for example you are located in a place whose
+        corresponding time zone is UTC+2, then this method will yield 7200
+        (seconds in two hours) and you must then apply this expression:
+
+        LocalTime = UTC + utclocal() = UTC + 7200
+
+        .. note:: Please bear in mind that, in order for this method to work,
+           your operative system must be correctly configured, with the right
+           time and corresponding time zone.
+
+        .. note:: Remember that class :py:class:`Epoch` internally stores time
+           as Terrestrial Time (TT), not UTC. In order to get the UTC time you
+           must use a method like :meth:`get_date()` or :meth:`get_full_date()`
+           and pass the parameter **utc=True**.
+
+        :returns: Difference in seconds between local and UTC time, in that
+            order.
         :rtype: float
         """
 
