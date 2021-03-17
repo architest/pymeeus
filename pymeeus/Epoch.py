@@ -307,6 +307,12 @@ class Epoch(object):
         >>> e = Epoch(2451545.0, utc=True)
         >>> print(round((e - JDE2000) * DAY2SEC, 3))
         64.184
+        >>> e = Epoch(JDE2000, local=True)
+        >>> print(round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3))
+        64.184
+        >>> e = Epoch(JDE2000, local=True, leap_seconds=35.0)
+        >>> print(round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3))
+        77.184
         """
 
         # Clean up the internal parameters

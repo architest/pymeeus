@@ -58,6 +58,16 @@ def test_epoch_constructor():
     assert abs(a - 64.184) < TOL, \
         "ERROR: 7th constructor test, difference value doesn't match"
 
+    e = Epoch(JDE2000, local=True)
+    a = round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3)
+    assert abs(a - 64.184) < TOL, \
+        "ERROR: 8th constructor test, difference value doesn't match"
+
+    e = Epoch(JDE2000, local=True, leap_seconds=35.0)
+    a = round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3)
+    assert abs(a - 77.184) < TOL, \
+        "ERROR: 9th constructor test, difference value doesn't match"
+
 
 def test_epoch_hashable():
     a = Epoch(1987, 6, 19.5)
