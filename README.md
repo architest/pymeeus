@@ -92,6 +92,8 @@ documentation to your new code. This also includes in-line comments!!!.
 
 ## What's new
 
+* 0.5.11
+    * Added parameter `local` to the `Epoch` class constructor and the methods `get_date()` and `get_full_date()`.
 * 0.5.10
     * Added methods ``moon_librations()`` and ``moon_position_angle_axis()``.
 * 0.5.9
