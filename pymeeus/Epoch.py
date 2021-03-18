@@ -1287,10 +1287,21 @@ class Epoch(object):
         provide a non zero value to **leap_seconds** to apply a specific leap
         seconds value.
 
+        It is also possible to retrieve a local time with the parameter
+        **local=True**. In such case, the method :meth:`utc2local()` is called
+        to compute the LocalTime-UTC difference. This implies that the
+        parameter **utc=True** is automatically set.
+
+        .. note:: Please bear in mind that, in order for the method
+           :meth:`utc2local()`to work, your operative system must be correctly
+           configured, with the right time and corresponding time zone.
+
         :param utc: Whether the TT to UTC conversion mechanism will be enabled
         :type utc: bool
         :param leap_seconds: Optional value for leap seconds.
         :type leap_seconds: int, float
+        :param local: Whether the retrieved epoch is converted to local time.
+        :type utc: bool
 
         :returns: Year, month, day in a tuple
         :rtype: tuple
@@ -1337,6 +1348,8 @@ class Epoch(object):
         year = int(year)
         month = int(month)
 
+        # If enabled, let's convert from TT to UTC, subtracting needed seconds
+        deltasec = 0.0
         tt2utc = False
         if "utc" in kwargs:
             tt2utc = kwargs["utc"]
@@ -1345,22 +1358,24 @@ class Epoch(object):
             leap_seconds = kwargs["leap_seconds"]
         else:
             leap_seconds = 0.0
-        # If enabled, let's convert from TT to UTC, subtracting needed seconds
-        deltasec = 0.0
+        if "local" in kwargs:
+            deltasec = Epoch.utc2local()
+            if not tt2utc and leap_seconds == 0.0:
+                tt2utc = True
         # In this case, TT to UTC correction is applied automatically, but only
         # for dates after July 1st, 1972
         if tt2utc:
             if year > 1972 or (year == 1972 and month >= 7):
-                deltasec = 32.184  # Difference between TT and TAI
+                deltasec += 32.184  # Difference between TT and TAI
                 deltasec += 10.0  # Difference between UTC and TAI in 1972
                 deltasec += Epoch.leap_seconds(year, month)
         else:  # Correction is NOT automatic
             if leap_seconds != 0.0:  # We apply provided leap seconds
                 if year > 1972 or (year == 1972 and month >= 7):
-                    deltasec = 32.184  # Difference between TT and TAI
+                    deltasec += 32.184  # Difference between TT and TAI
                     deltasec += 10.0  # Difference between UTC-TAI in 1972
                     deltasec += leap_seconds
-
+        # Apply the correction if needed
         if deltasec != 0.0:
             doy = Epoch.get_doy(year, month, day)
             doy -= deltasec / DAY2SEC
@@ -1378,10 +1393,21 @@ class Epoch(object):
         provide a non zero value to **leap_seconds** to apply a specific leap
         seconds value.
 
+        It is also possible to retrieve a local time with the parameter
+        **local=True**. In such case, the method :meth:`utc2local()` is called
+        to compute the LocalTime-UTC difference. This implies that the
+        parameter **utc=True** is automatically set.
+
+        .. note:: Please bear in mind that, in order for the method
+           :meth:`utc2local()`to work, your operative system must be correctly
+           configured, with the right time and corresponding time zone.
+
         :param utc: Whether the TT to UTC conversion mechanism will be enabled
         :type utc: bool
         :param leap_seconds: Optional value for leap seconds.
         :type leap_seconds: int, float
+        :param local: Whether the retrieved epoch is converted to local time.
+        :type utc: bool
 
         :returns: Year, month, day, hours, minutes, seconds in a tuple
         :rtype: tuple
