@@ -241,7 +241,7 @@ class Epoch(object):
            January 1st, 1972.
 
         .. note:: Please bear in mind that, in order for the method
-           :meth:`utc2local()`to work, your operative system must be correctly
+           :meth:`utc2local()` to work, your operative system must be correctly
            configured, with the right time and corresponding time zone.
 
         :param args: Either JDE, Epoch, date, datetime or year, month, day,
@@ -1293,7 +1293,7 @@ class Epoch(object):
         parameter **utc=True** is automatically set.
 
         .. note:: Please bear in mind that, in order for the method
-           :meth:`utc2local()`to work, your operative system must be correctly
+           :meth:`utc2local()` to work, your operative system must be correctly
            configured, with the right time and corresponding time zone.
 
         :param utc: Whether the TT to UTC conversion mechanism will be enabled
@@ -1399,7 +1399,7 @@ class Epoch(object):
         parameter **utc=True** is automatically set.
 
         .. note:: Please bear in mind that, in order for the method
-           :meth:`utc2local()`to work, your operative system must be correctly
+           :meth:`utc2local()` to work, your operative system must be correctly
            configured, with the right time and corresponding time zone.
 
         :param utc: Whether the TT to UTC conversion mechanism will be enabled
