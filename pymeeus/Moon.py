@@ -1,7 +1,3 @@
-
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2021  Dagoberto Salazar
 #
@@ -170,7 +166,7 @@ Units are 0.000001 degree. In Meeus' book this is Table 47.B and can be found
 in page 341."""
 
 
-class Moon(object):
+class Moon:
     """
     Class Moon models Earth's satellite.
     """
@@ -1607,7 +1603,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Saturn class
     print("\n" + 35 * "*")
@@ -1688,14 +1684,14 @@ def main():
     epoch = Epoch(1977, 2, 15.0)
     new_moon = Moon.moon_phase(epoch, target="new")
     y, m, d, h, mi, s = new_moon.get_full_date()
-    print("New Moon: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
+    print(f"New Moon: {y}/{m}/{d} {h}:{mi}:{round(s)}")
     # 1977/2/18 3:37:42
 
     # Calculate the time of a Last Quarter
     epoch = Epoch(2044, 1, 1.0)
     new_moon = Moon.moon_phase(epoch, target="last")
     y, m, d, h, mi, s = new_moon.get_full_date()
-    print("Last Quarter: {}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s)))
+    print(f"Last Quarter: {y}/{m}/{d} {h}:{mi}:{round(s)}")
     # 2044/1/21 23:48:17
 
     print("")
@@ -1704,7 +1700,7 @@ def main():
     epoch = Epoch(1988, 10, 1.0)
     apogee, parallax = Moon.moon_perigee_apogee(epoch, target="apogee")
     y, m, d, h, mi, s = apogee.get_full_date()
-    print("Apogee epoch: {}/{}/{} {}:{}".format(y, m, d, h, mi))
+    print(f"Apogee epoch: {y}/{m}/{d} {h}:{mi}")
     # 1988/10/7 20:30
     print_me("Equatorial horizontal parallax", parallax.dms_str(n_dec=3))
     # 54' 0.679''

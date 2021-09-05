@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -3197,7 +3194,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Coordinate functions
     print("\n" + 35 * "*")
@@ -3687,9 +3684,9 @@ def main():
     time, r = passage_nodes_elliptic(omega, e, a, t)
     y, m, d = time.get_date()
     d = round(d, 2)
-    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    print(f"Time of passage through ascending node: {y}/{m}/{d}")
     # 1985/11/9.16
-    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 1.8045
+    print(f"Radius vector at ascending node: {round(r, 4)}")  # 1.8045
 
     # Passage through the nodes of a parabolic orbit
     omega = Angle(154.9103)
@@ -3698,9 +3695,9 @@ def main():
     time, r = passage_nodes_parabolic(omega, q, t, ascending=False)
     y, m, d = time.get_date()
     d = round(d, 2)
-    print("Time of passage through descending node: {}/{}/{}".format(y, m, d))
+    print(f"Time of passage through descending node: {y}/{m}/{d}")
     # 1989/9/17.64
-    print("Radius vector at descending node: {}".format(round(r, 4)))  # 1.3901
+    print(f"Radius vector at descending node: {round(r, 4)}")  # 1.3901
 
     print("")
 

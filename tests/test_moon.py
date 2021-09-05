@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -242,8 +239,8 @@ def test_moon_maximum_declination():
     epoch = Epoch(1988, 12, 15.0)
     epo, dec = Moon.moon_maximum_declination(epoch)
     y, m, d, h, mi, s = epo.get_full_date()
-    epochstr = "{}/{}/{} {}:0{}".format(y, m, d, h, mi)
-    decli = "{}".format(dec.dms_str(n_dec=0))
+    epochstr = f"{y}/{m}/{d} {h}:0{mi}"
+    decli = f"{dec.dms_str(n_dec=0)}"
 
     assert epochstr == "1988/12/22 20:01", \
         "ERROR: 1st 'moon_maximum_declination()' test, 'epochstr' value "\
@@ -256,8 +253,8 @@ def test_moon_maximum_declination():
     epoch = Epoch(2049, 4, 15.0)
     epo, dec = Moon.moon_maximum_declination(epoch, target='southern')
     y, m, d, h, mi, s = epo.get_full_date()
-    epochstr = "{}/{}/{} {}:{}".format(y, m, d, h, mi)
-    decli = "{}".format(dec.dms_str(n_dec=0))
+    epochstr = f"{y}/{m}/{d} {h}:{mi}"
+    decli = f"{dec.dms_str(n_dec=0)}"
 
     assert epochstr == "2049/4/21 14:0", \
         "ERROR: 3rd 'moon_maximum_declination()' test, 'epochstr' value "\
@@ -270,8 +267,8 @@ def test_moon_maximum_declination():
     epoch = Epoch(-4, 3, 15.0)
     epo, dec = Moon.moon_maximum_declination(epoch, target='northern')
     y, m, d, h, mi, s = epo.get_full_date()
-    epochstr = "{}/{}/{} {}h".format(y, m, d, h)
-    decli = "{}".format(dec.dms_str(n_dec=0))
+    epochstr = f"{y}/{m}/{d} {h}h"
+    decli = f"{dec.dms_str(n_dec=0)}"
 
     assert epochstr == "-4/3/16 15h", \
         "ERROR: 5th 'moon_maximum_declination()' test, 'epochstr' value "\

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -33,7 +30,7 @@ from pymeeus.Angle import Angle
 """
 
 
-class Interpolation(object):
+class Interpolation:
     """
     Class Interpolation deals with finding intermediate values to those given
     in a table.
@@ -312,7 +309,7 @@ class Interpolation(object):
         'Interpolation([1, 2, 3, 4, 5, 6], [2, 4, 6, 8, 10, 12])'
         """
 
-        return "{}({}, {})".format(self.__class__.__name__, self._x, self._y)
+        return f"{self.__class__.__name__}({self._x}, {self._y})"
 
     def __len__(self):
         """This method returns the number of interpolation points (x, y, pairs)
@@ -632,7 +629,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's now work with the Interpolation class
     print("\n" + 35 * "*")

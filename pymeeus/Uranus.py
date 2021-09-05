@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -4123,7 +4120,7 @@ ORBITAL_ELEM_J2000 = [
 the standard equinox J2000.0. Based on Table 31.B, page 215"""
 
 
-class Uranus(object):
+class Uranus:
     """
     Class Uranus models that planet.
     """
@@ -4582,7 +4579,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Uranus class
     print("\n" + 35 * "*")
@@ -4624,7 +4621,7 @@ def main():
     conj = Uranus.conjunction(epoch)
     y, m, d = conj.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Conjunction date", date)
 
     # Compute the time of the opposition close to 1780/12/1
@@ -4632,7 +4629,7 @@ def main():
     oppo = Uranus.opposition(epoch)
     y, m, d = oppo.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Opposition date", date)
 
     print("")
@@ -4651,9 +4648,9 @@ def main():
     time, r = Uranus.passage_nodes(epoch)
     y, m, d = time.get_date()
     d = round(d, 1)
-    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    print(f"Time of passage through ascending node: {y}/{m}/{d}")
     # 2028/8/23.2
-    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 19.3201
+    print(f"Radius vector at ascending node: {round(r, 4)}")  # 19.3201
 
 
 if __name__ == "__main__":

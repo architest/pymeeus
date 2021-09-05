@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -120,7 +117,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's print the tolerance
     print_me("The default value for the tolerance is", TOL)

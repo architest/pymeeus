@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -33,7 +30,7 @@ from pymeeus.Angle import Angle
 """
 
 
-class CurveFitting(object):
+class CurveFitting:
     """
     Class CurveFitting deals with finding the function (linear, cuadratic, etc)
     that best fit a given set of points.
@@ -287,7 +284,7 @@ class CurveFitting(object):
         'CurveFitting([5, 3, 6, 1, 2, 4], [10, 6, 12, 2, 4, 8])'
         """
 
-        return "{}({}, {})".format(self.__class__.__name__, self._x, self._y)
+        return f"{self.__class__.__name__}({self._x}, {self._y})"
 
     def __len__(self):
         """This method returns the number of value pairs internally stored in
@@ -487,7 +484,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Now let's work with the CurveFitting class
     print("\n" + 35 * "*")
@@ -549,7 +546,7 @@ def main():
     # Let's use 'linear_fitting()'
     a, b = cf1.linear_fitting()
     print("Linear fitting for cf1:")
-    print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+    print(f"   a = {round(a, 2)}\tb = {round(b, 2)}")
 
     print("")
 
@@ -559,7 +556,7 @@ def main():
     print("   cf2 = CurveFitting(cf1)")
     a, b = cf2.linear_fitting()
     print("Linear fitting for cf2:")
-    print("   a = {}\tb = {}".format(round(a, 2), round(b, 2)))
+    print(f"   a = {round(a, 2)}\tb = {round(b, 2)}")
 
     print("")
 

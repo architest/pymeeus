@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -40,7 +37,7 @@ from pymeeus.Earth import Earth
 """
 
 
-class Sun(object):
+class Sun:
     """
     Class Sun handles the parameters related to the Sun.
     """
@@ -703,7 +700,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Sun functions
     print("\n" + 35 * "*")
@@ -799,13 +796,13 @@ def main():
     epoch = Sun.get_equinox_solstice(1962, target="summer")
     y, m, d, h, mi, s = epoch.get_full_date()
     print("The summer solstice of 1962:")
-    print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    print(f"{y}/{m}/{d} {h}:{mi}:{round(s, 0)}")
     # 1962/6/21 21:24:42.0
 
     epoch = Sun.get_equinox_solstice(2018, target="autumn")
     y, m, d, h, mi, s = epoch.get_full_date()
     print("The autumn equinox of 2018:")
-    print("{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0)))
+    print(f"{y}/{m}/{d} {h}:{mi}:{round(s, 0)}")
     # 2018/9/23 1:55:14.0
 
     print("")
@@ -814,7 +811,7 @@ def main():
     # time, can be easily computed
     epoch = Epoch(1992, 10, 13.0)
     m, s = Sun.equation_of_time(epoch)
-    print("Equation of time difference: {} min {} secs".format(m, round(s, 1)))
+    print(f"Equation of time difference: {m} min {round(s, 1)} secs")
     # 13m 42.6s
 
     print("")

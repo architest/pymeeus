@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2020  Michael Lutz, Sophie Scholz, Vittorio Serra, Sebastian
 # Veigl
@@ -35,7 +32,7 @@ from pymeeus.Sun import Sun
 """
 
 
-class JupiterMoons(object):
+class JupiterMoons:
     """
     Class JupiterMoons models the four galilean satellites of Jupiter. With:
     1: Io
@@ -266,7 +263,7 @@ class JupiterMoons(object):
         sum2 -= 0.01057 * sin(radians(G))
         sum2 -= 0.00775 * sin(radians(2 * (psi - PI)))
         sum2 += 0.00524 * sin(radians(2 * (l_1 - l_2)))
-        sum2 -= 0.00460 * sin(radians((l_1 - l_3)))
+        sum2 -= 0.00460 * sin(radians(l_1 - l_3))
         sum2 += 0.00316 * sin(radians(psi - 2 * G + omega_3 - 2 * PI))
         sum2 -= 0.00203 * sin(radians(pi_1 + pi_3 - 2 * PI - 2 * G))
         sum2 += 0.00146 * sin(radians(psi - omega_3))
@@ -445,53 +442,53 @@ class JupiterMoons(object):
         B_4_rad = atan(tan_B4)
 
         # Periodic terms for the radius vector
-        sum_r_1 = -0.0041339 * cos(radians((2 * (l_1 - l_2))))
-        sum_r_1 -= 0.0000387 * cos(radians((l_1 - pi_3)))
-        sum_r_1 -= 0.0000214 * cos(radians((l_1 - pi_4)))
-        sum_r_1 += 0.0000170 * cos(radians((l_1 - l_2)))
-        sum_r_1 -= 0.0000131 * cos(radians((4 * (l_1 - l_2))))
-        sum_r_1 += 0.0000106 * cos(radians((l_1 - l_3)))
-        sum_r_1 -= 0.0000066 * cos(radians((l_1 + pi_3 - 2 * PI - 2 * G)))
+        sum_r_1 = -0.0041339 * cos(radians(2 * (l_1 - l_2)))
+        sum_r_1 -= 0.0000387 * cos(radians(l_1 - pi_3))
+        sum_r_1 -= 0.0000214 * cos(radians(l_1 - pi_4))
+        sum_r_1 += 0.0000170 * cos(radians(l_1 - l_2))
+        sum_r_1 -= 0.0000131 * cos(radians(4 * (l_1 - l_2)))
+        sum_r_1 += 0.0000106 * cos(radians(l_1 - l_3))
+        sum_r_1 -= 0.0000066 * cos(radians(l_1 + pi_3 - 2 * PI - 2 * G))
 
-        sum_r_2 = +0.0093848 * cos(radians((l_1 - l_2)))
-        sum_r_2 -= 0.0003116 * cos(radians((l_2 - pi_3)))
-        sum_r_2 -= 0.0001744 * cos(radians((l_2 - pi_4)))
-        sum_r_2 -= 0.0001442 * cos(radians((l_2 - pi_2)))
-        sum_r_2 += 0.0000553 * cos(radians((l_2 - l_3)))
-        sum_r_2 += 0.0000523 * cos(radians((l_1 - l_3)))
-        sum_r_2 -= 0.0000290 * cos(radians((2 * (l_1 - l_2))))
-        sum_r_2 += 0.0000164 * cos(radians((2 * (l_2 - omega_2))))
-        sum_r_2 += 0.0000107 * cos(radians((l_1 - 2 * l_3 + pi_3)))
-        sum_r_2 -= 0.0000102 * cos(radians((l_2 - pi_1)))
-        sum_r_2 -= 0.0000091 * cos(radians((2 * (l_1 - l_3))))
+        sum_r_2 = +0.0093848 * cos(radians(l_1 - l_2))
+        sum_r_2 -= 0.0003116 * cos(radians(l_2 - pi_3))
+        sum_r_2 -= 0.0001744 * cos(radians(l_2 - pi_4))
+        sum_r_2 -= 0.0001442 * cos(radians(l_2 - pi_2))
+        sum_r_2 += 0.0000553 * cos(radians(l_2 - l_3))
+        sum_r_2 += 0.0000523 * cos(radians(l_1 - l_3))
+        sum_r_2 -= 0.0000290 * cos(radians(2 * (l_1 - l_2)))
+        sum_r_2 += 0.0000164 * cos(radians(2 * (l_2 - omega_2)))
+        sum_r_2 += 0.0000107 * cos(radians(l_1 - 2 * l_3 + pi_3))
+        sum_r_2 -= 0.0000102 * cos(radians(l_2 - pi_1))
+        sum_r_2 -= 0.0000091 * cos(radians(2 * (l_1 - l_3)))
 
-        sum_r_3 = -0.0014388 * cos(radians((l_3 - pi_3)))
-        sum_r_3 -= 0.0007919 * cos(radians((l_3 - pi_4)))
-        sum_r_3 += 0.0006342 * cos(radians((l_2 - l_3)))
-        sum_r_3 -= 0.0001761 * cos(radians((2 * (l_3 - l_4))))
-        sum_r_3 += 0.0000294 * cos(radians((l_3 - l_4)))
-        sum_r_3 -= 0.0000156 * cos(radians((3 * (l_3 - l_4))))
-        sum_r_3 += 0.0000156 * cos(radians((l_1 - l_3)))
-        sum_r_3 -= 0.0000153 * cos(radians((l_1 - l_2)))
-        sum_r_3 += 0.0000070 * cos(radians((2 * l_2 - 3 * l_3 + pi_3)))
-        sum_r_3 -= 0.0000051 * cos(radians((l_3 + pi_3 - 2 * PI - 2 * G)))
+        sum_r_3 = -0.0014388 * cos(radians(l_3 - pi_3))
+        sum_r_3 -= 0.0007919 * cos(radians(l_3 - pi_4))
+        sum_r_3 += 0.0006342 * cos(radians(l_2 - l_3))
+        sum_r_3 -= 0.0001761 * cos(radians(2 * (l_3 - l_4)))
+        sum_r_3 += 0.0000294 * cos(radians(l_3 - l_4))
+        sum_r_3 -= 0.0000156 * cos(radians(3 * (l_3 - l_4)))
+        sum_r_3 += 0.0000156 * cos(radians(l_1 - l_3))
+        sum_r_3 -= 0.0000153 * cos(radians(l_1 - l_2))
+        sum_r_3 += 0.0000070 * cos(radians(2 * l_2 - 3 * l_3 + pi_3))
+        sum_r_3 -= 0.0000051 * cos(radians(l_3 + pi_3 - 2 * PI - 2 * G))
 
-        sum_r_4 = -0.0073546 * cos(radians((l_4 - pi_4)))
-        sum_r_4 += 0.0001621 * cos(radians((l_4 - pi_3)))
-        sum_r_4 += 0.0000974 * cos(radians((l_3 - l_4)))
-        sum_r_4 -= 0.0000543 * cos(radians((l_4 + pi_4 - 2 * PI - 2 * G)))
-        sum_r_4 -= 0.0000271 * cos(radians((2 * (l_4 - pi_4))))
-        sum_r_4 += 0.0000182 * cos(radians((l_4 - PI)))
-        sum_r_4 += 0.0000177 * cos(radians((2 * (l_3 - l_4))))
-        sum_r_4 -= 0.0000167 * cos(radians((2 * l_4 - psi - omega_4)))
-        sum_r_4 += 0.0000167 * cos(radians((psi - omega_4)))
-        sum_r_4 -= 0.0000155 * cos(radians((2 * (l_4 - PI - G))))
-        sum_r_4 += 0.0000142 * cos(radians((2 * (l_4 - psi))))
-        sum_r_4 += 0.0000105 * cos(radians((l_1 - l_4)))
-        sum_r_4 += 0.0000092 * cos(radians((l_2 - l_4)))
-        sum_r_4 -= 0.0000089 * cos(radians((l_4 - PI - G)))
-        sum_r_4 -= 0.0000062 * cos(radians((l_4 + pi_4 - 2 * PI - 3 * G)))
-        sum_r_4 += 0.0000048 * cos(radians((2 * (l_4 - omega_4))))
+        sum_r_4 = -0.0073546 * cos(radians(l_4 - pi_4))
+        sum_r_4 += 0.0001621 * cos(radians(l_4 - pi_3))
+        sum_r_4 += 0.0000974 * cos(radians(l_3 - l_4))
+        sum_r_4 -= 0.0000543 * cos(radians(l_4 + pi_4 - 2 * PI - 2 * G))
+        sum_r_4 -= 0.0000271 * cos(radians(2 * (l_4 - pi_4)))
+        sum_r_4 += 0.0000182 * cos(radians(l_4 - PI))
+        sum_r_4 += 0.0000177 * cos(radians(2 * (l_3 - l_4)))
+        sum_r_4 -= 0.0000167 * cos(radians(2 * l_4 - psi - omega_4))
+        sum_r_4 += 0.0000167 * cos(radians(psi - omega_4))
+        sum_r_4 -= 0.0000155 * cos(radians(2 * (l_4 - PI - G)))
+        sum_r_4 += 0.0000142 * cos(radians(2 * (l_4 - psi)))
+        sum_r_4 += 0.0000105 * cos(radians(l_1 - l_4))
+        sum_r_4 += 0.0000092 * cos(radians(l_2 - l_4))
+        sum_r_4 -= 0.0000089 * cos(radians(l_4 - PI - G))
+        sum_r_4 -= 0.0000062 * cos(radians(l_4 + pi_4 - 2 * PI - 3 * G))
+        sum_r_4 += 0.0000048 * cos(radians(2 * (l_4 - omega_4)))
 
         # Mean distances of the satellites
         a1 = 5.90569
@@ -1163,7 +1160,7 @@ class JupiterMoons(object):
 def main():
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of JupiterMoons functions
     print("\n" + 35 * "*")

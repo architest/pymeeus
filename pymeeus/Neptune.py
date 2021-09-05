@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -2061,7 +2058,7 @@ ORBITAL_ELEM_J2000 = [
 the standard equinox J2000.0. Based on Table 31.B, page 215"""
 
 
-class Neptune(object):
+class Neptune:
     """
     Class Neptune models that planet.
     """
@@ -2419,7 +2416,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Neptune class
     print("\n" + 35 * "*")
@@ -2461,7 +2458,7 @@ def main():
     conj = Neptune.conjunction(epoch)
     y, m, d = conj.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Conjunction date", date)
 
     # Compute the time of the opposition close to 1846/8/1
@@ -2469,7 +2466,7 @@ def main():
     oppo = Neptune.opposition(epoch)
     y, m, d = oppo.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Opposition date", date)
 
 

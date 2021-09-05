@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -230,7 +227,7 @@ PLUTO_RADIUS_VECTOR = [
 radius vector according to Table 37.A in Meeus' book, page 265"""
 
 
-class Pluto(object):
+class Pluto:
     """
     Class Pluto models that minor planet.
     """
@@ -371,7 +368,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Pluto class
     print("\n" + 35 * "*")

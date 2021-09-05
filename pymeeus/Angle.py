@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -32,7 +29,7 @@ from pymeeus.base import TOL
 """
 
 
-class Angle(object):
+class Angle:
     """
     Class Angle deals with angles in either decimal format (d.dd) or in
     sexagesimal format (d m' s'').
@@ -266,7 +263,7 @@ class Angle(object):
         'Angle(12.5)'
         """
 
-        return "{}({})".format(self.__class__.__name__, self._deg)
+        return f"{self.__class__.__name__}({self._deg})"
 
     def set(self, *args, **kwargs):
         """Method used to define the value of the Angle object.
@@ -459,20 +456,20 @@ class Angle(object):
                 d -= 360.0
         if fancy:
             if d != 0:
-                return "{}d {}' {}''".format(int(sign * d), m, s)
+                return f"{int(sign * d)}d {m}' {s}''"
             elif m != 0:
-                return "{}' {}''".format(int(sign * m), s)
+                return f"{int(sign * m)}' {s}''"
             elif s != 0.0:
-                return "{}''".format(sign * s)
+                return f"{sign * s}''"
             else:
                 return "0d 0' 0.0''"
         else:
             if d != 0:
-                return "{}:{}:{}".format(int(sign * d), m, s)
+                return f"{int(sign * d)}:{m}:{s}"
             elif m != 0:
-                return "0:{}:{}".format(int(sign * m), s)
+                return f"0:{int(sign * m)}:{s}"
             elif s != 0.0:
-                return "0:0:{}".format(sign * s)
+                return f"0:0:{sign * s}"
             else:
                 return "0:0:0.0"
 
@@ -1107,7 +1104,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Angle class
     print("\n" + 35 * "*")
@@ -1134,7 +1131,7 @@ def main():
 
     # Use the static 'deg2dms()' method to carry out conversions
     d, m, s, sign = Angle.deg2dms(23.44694444)
-    val = "{}d {}' {}''".format(int(sign * d), m, s)
+    val = f"{int(sign * d)}d {m}' {s}''"
     print_me("{Deg}d {Min}' {Sec}''", val)  # 23d 26' 48.999984''
 
     # We can print Angle 'a' directly in sexagesimal format

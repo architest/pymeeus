@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -36,7 +33,7 @@ from pymeeus.Sun import Sun
 """
 
 
-class Minor(object):
+class Minor:
     """
     Class Minor models minor celestial bodies.
     """
@@ -433,7 +430,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Minor class
     print("\n" + 35 * "*")

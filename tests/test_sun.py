@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -164,7 +161,7 @@ def test_sun_get_equinox_solstice():
 
     epoch = Sun.get_equinox_solstice(1962, target="summer")
     y, m, d, h, mi, s = epoch.get_full_date()
-    st = "{}/{}/{} {}:{}:{}".format(y, m, d, h, mi, round(s, 0))
+    st = f"{y}/{m}/{d} {h}:{mi}:{round(s, 0)}"
 
     assert st == "1962/6/21 21:24:42.0", \
         "ERROR: 1st get_equinox_solstice() test, time stamp doesn't match"

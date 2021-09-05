@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -2740,7 +2737,7 @@ ORBITAL_ELEM_J2000 = [
 the standard equinox J2000.0. Based on Table 31.B, page 214"""
 
 
-class Ellipsoid(object):
+class Ellipsoid:
     """
     Class Ellipsoid is useful to encapsulate the most important parameters of
     a given reference ellipsoid.
@@ -2773,7 +2770,7 @@ class Ellipsoid(object):
         6378140.0:0.0033528132:7.292e-05
         """
 
-        return "{}:{}:{}".format(self._a, self._f, self._omega)
+        return f"{self._a}:{self._f}:{self._omega}"
 
     def __repr__(self):
         """Method providing the 'official' string representation of the object.
@@ -2829,7 +2826,7 @@ WGS84 = Ellipsoid(6378137.0, (1.0 / 298.257223563), 7292115e-11)
 the GPS system, and the standard in many applications"""
 
 
-class Earth(object):
+class Earth:
     """
     Class Earth models the figure of the Earth surface and, with the help of a
     configurable reference ellipsoid, provides a set of handy method to compute
@@ -3640,7 +3637,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Earth class
     print("\n" + 35 * "*")
@@ -3778,9 +3775,9 @@ def main():
     time, r = Earth.passage_nodes(epoch)
     y, m, d = time.get_date()
     d = round(d, 1)
-    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    print(f"Time of passage through ascending node: {y}/{m}/{d}")
     # 2019/3/15.0
-    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 0.9945
+    print(f"Radius vector at ascending node: {round(r, 4)}")  # 0.9945
 
     print("")
 

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -1822,7 +1819,7 @@ ORBITAL_ELEM_J2000 = [
 the standard equinox J2000.0. Based on Table 31.B, page 214"""
 
 
-class Venus(object):
+class Venus:
     """
     Class Venus models that planet.
     """
@@ -2538,7 +2535,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's show some uses of Venus class
     print("\n" + 35 * "*")
@@ -2580,7 +2577,7 @@ def main():
     conjunction = Venus.inferior_conjunction(epoch)
     y, m, d = conjunction.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Inferior conjunction date", date)
 
     # Compute the time of the superior conjunction close to 1993/10/1
@@ -2588,7 +2585,7 @@ def main():
     conjunction = Venus.superior_conjunction(epoch)
     y, m, d = conjunction.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Superior conjunction date", date)
 
     print("")
@@ -2598,7 +2595,7 @@ def main():
     time, elongation = Venus.western_elongation(epoch)
     y, m, d = time.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Western elongation date", date)
     elong = round(elongation, 4)
     print_me("Maximum western elongation angle", elong)
@@ -2610,7 +2607,7 @@ def main():
     time, elongation = Venus.eastern_elongation(epoch)
     y, m, d = time.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Eastern elongation date", date)
     elong = round(elongation, 4)
     print_me("Maximum eastern elongation angle", elong)
@@ -2622,7 +2619,7 @@ def main():
     sta1 = Venus.station_longitude_1(epoch)
     y, m, d = sta1.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Date of station in longitude #1", date)
 
     # Compute the time of the station in longitude #2 close to 2018/12/1
@@ -2630,7 +2627,7 @@ def main():
     sta2 = Venus.station_longitude_2(epoch)
     y, m, d = sta2.get_date()
     d = round(d, 4)
-    date = "{}/{}/{}".format(y, m, d)
+    date = f"{y}/{m}/{d}"
     print_me("Date of station in longitude #2", date)
 
     print("")
@@ -2649,9 +2646,9 @@ def main():
     time, r = Venus.passage_nodes(epoch)
     y, m, d = time.get_date()
     d = round(d, 1)
-    print("Time of passage through ascending node: {}/{}/{}".format(y, m, d))
+    print(f"Time of passage through ascending node: {y}/{m}/{d}")
     # 1978/11/27.4
-    print("Radius vector at ascending node: {}".format(round(r, 4)))  # 0.7205
+    print(f"Radius vector at ascending node: {round(r, 4)}")  # 0.7205
 
     print("")
 

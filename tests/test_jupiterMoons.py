@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2020  Michael Lutz, Sophie Scholz, Vittorio Serra, Sebastian
 # Veigl

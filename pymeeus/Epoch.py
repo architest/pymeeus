@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 # PyMeeus: Python module implementing astronomical algorithms.
 # Copyright (C) 2018  Dagoberto Salazar
 #
@@ -80,7 +77,7 @@ here as '1997.5', while a leap second added in 2005/12/31 appears here as
 '2006.0'."""
 
 
-class Epoch(object):
+class Epoch:
     """
     Class Epoch deals with the tasks related to time handling.
 
@@ -1278,7 +1275,7 @@ class Epoch(object):
         'Epoch(2446966.0)'
         """
 
-        return "{}({})".format(self.__class__.__name__, self._jde)
+        return f"{self.__class__.__name__}({self._jde})"
 
     def get_date(self, **kwargs):
         """This method converts the internal JDE value back to a date.
@@ -2160,7 +2157,7 @@ def main():
 
     # Let's define a small helper function
     def print_me(msg, val):
-        print("{}: {}".format(msg, val))
+        print(f"{msg}: {val}")
 
     # Let's do some work with the Epoch class
     print("\n" + 35 * "*")
@@ -2264,7 +2261,7 @@ def main():
     e = Epoch(1987, 4, 11)
     st2 = round(e.mean_sidereal_time(), 9)
     ds = (st2 - st1) * DAY2MIN
-    msg = "{}m {}s".format(iint(ds), (ds % 1) * 60.0)
+    msg = f"{iint(ds)}m {(ds % 1) * 60.0}s"
     print_me("Difference between sidereal time 1987/4/11 and 1987/4/10", msg)
 
     print("")
@@ -2315,11 +2312,11 @@ def main():
     # Now, convert a date in the Moslem calendar to the Gregorian calendar
     y, m, d = Epoch.moslem2gregorian(1421, 1, 1)
     print_me("The date 1421/1/1 in the Moslem calendar is, in Gregorian "
-             + "calendar", "{}/{}/{}".format(y, m, d))
+             + "calendar", f"{y}/{m}/{d}")
     y, m, d = Epoch.moslem2gregorian(1439, 9, 1)
     print_me(
         "The start of Ramadan month (9/1) for Gregorian year 2018 is",
-        "{}/{}/{}".format(y, m, d),
+        f"{y}/{m}/{d}",
     )
     # We can go from the Gregorian calendar back to the Moslem calendar too
     print_me(
@@ -2392,15 +2389,15 @@ def main():
     altitude = 520.0
     rising, setting = e.rise_set(latitude, longitude, altitude)
     y, m, d, h, mi, s = rising.get_full_date()
-    print("Rising time: {}:{}".format(h, mi))                           # 3:50
+    print(f"Rising time: {h}:{mi}")                           # 3:50
     y, m, d, h, mi, s = setting.get_full_date()
-    print("Setting time: {}:{}".format(h, mi))                          # 18:33
+    print(f"Setting time: {h}:{mi}")                          # 18:33
 
     print("")
 
     # Compute the hash of a given Epoch
     h = e.__hash__()
-    print("Hash of Epoch({}): {}".format(e, h))
+    print(f"Hash of Epoch({e}): {h}")
 
 
 if __name__ == "__main__":
