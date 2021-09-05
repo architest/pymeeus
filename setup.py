@@ -28,6 +28,7 @@ config = {
   'packages': ['pymeeus'],
   # 'scripts': ['example.py'],
   'py_modules': ['base'],
+  'python_requires': '>=3.6',
   'classifiers': [
     'Development Status :: 4 - Beta',
     'Environment :: Console',
