@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.7.12
+      - image: cimg/python:3.7.12
 
     working_directory: ~/repo
 
@@ -26,7 +26,7 @@ jobs:
             pytest -v
   build367:
     docker:
-      - image: circleci/python:3.6.7
+      - image: cimg/python:3.6.7
 
     working_directory: ~/repo
 
@@ -72,7 +72,7 @@ jobs:
             pytest -v
   build395:
     docker:
-      - image: circleci/python:3.9.5
+      - image: cimg/python:3.9.5
 
     working_directory: ~/repo
 
@@ -95,7 +95,7 @@ jobs:
             pytest -v
   build3106:
     docker:
-      - image: circleci/python:3.10.6
+      - image: cimg/python:3.10.6
 
     working_directory: ~/repo
 
@@ -118,7 +118,7 @@ jobs:
             pytest -v
   build311:
     docker:
-      - image: circleci/python:3.11
+      - image: cimg/python:3.11
 
     working_directory: ~/repo
 
