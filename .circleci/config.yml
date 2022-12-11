@@ -93,6 +93,52 @@ jobs:
             . venv/bin/activate
             flake8 --exclude=venv* --statistics
             pytest -v
+  build3106:
+    docker:
+      - image: circleci/python:3.10.6
+
+    working_directory: ~/repo
+
+    steps:
+      # Step 1: obtain repo from GitHub
+      - checkout
+      # Step 2: create virtual env and install dependencies
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      # Step 3: run linter and tests
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            flake8 --exclude=venv* --statistics
+            pytest -v
+  build311:
+    docker:
+      - image: circleci/python:3.11
+
+    working_directory: ~/repo
+
+    steps:
+      # Step 1: obtain repo from GitHub
+      - checkout
+      # Step 2: create virtual env and install dependencies
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+      # Step 3: run linter and tests
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            flake8 --exclude=venv* --statistics
+            pytest -v
 workflows:
     version: 2
     build_and_test:
@@ -101,3 +147,5 @@ workflows:
             - build27
             - build367
             - build395
+            - build3106
+            - build311
