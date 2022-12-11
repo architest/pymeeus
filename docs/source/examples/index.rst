@@ -6,6 +6,7 @@ Usage Examples
 .. toctree::
    :maxdepth: 2
 
+   ex-General
    ex-Angle
    ex-base
    ex-Coordinates
