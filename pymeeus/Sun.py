@@ -608,6 +608,11 @@ class Sun(object):
         # Now we need the nutation in longitude
         deltapsi = nutation_longitude(epoch)
         e = l0() - 0.0057183 - alpha + deltapsi * cos(epsilon.rad())
+        # The following line is a fix devised by janbredenbeek to a problem
+        # that arises in cases where alpha was just past the spring equinox
+        # but l0 was still < 360. In those cases e was incorrectly calculated
+        # The solution is to keep e as a float and reduce to range -180..+180
+        e = e - 360.0 * round(e / 360.0)
         e *= 4.0
         # Extract seconds
         s = (abs(e()) % 1) * 60.0
