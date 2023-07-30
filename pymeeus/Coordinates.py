@@ -1511,8 +1511,16 @@ def times_rise_transit_set(
         return m
 
     def interpol(n, y1, y2, y3):
-        a = y2 - y1
-        b = y3 - y2
+        """This is formula 3.3 from Meeus book, but adapted to avoid bugs
+        caused by not converting the Angle() objetcs to floats before
+        the interpolation. Fix provided by janbredenbeek:
+        https://github.com/janbredenbeek """
+        # Convert to float to avoid reducing to 0..360
+        a = y2() - y1()
+        b = y3() - y2()
+        # Reduce values to -180..+180
+        a = a - 360.0 * round(a / 360.0)
+        b = b - 360.0 * round(b / 360.0)
         c = b - a
         return y2 + n * (a + b + n * c) / 2.0
 
