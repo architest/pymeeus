@@ -1175,8 +1175,8 @@ def equatorial2galactic(right_ascension, declination):
 
 
 def galactic2equatorial(longitude, latitude):
-    """This function converts from galactic coordinates (longitude and latitude)
-    to equatorial coordinates (right ascension and declination).
+    """This function converts from galactic coordinates (longitude and
+    latitude) to equatorial coordinates (right ascension and declination).
 
     The current galactic system of coordinates was defined by the International
     Astronomical Union in 1959, using the standard equatorial system of epoch

@@ -15,7 +15,7 @@ with open(path.join(here, 'README.rst'), 'rb') as f:
 
 config = {
   'name': 'PyMeeus',
-  'version': '0.5.11',
+  'version': '0.5.12',
   'description': 'Python implementation of Jean Meeus astronomical routines',
   'long_description': long_description,
   'keywords': 'Meeus astronomy module library',
