@@ -1002,7 +1002,7 @@ class JupiterMoons(object):
 
         for row in range(len(result_matrix)):
             for col in range(len(result_matrix[row]) - 1):
-                result_matrix[row][col] = (1 >= dist_matrix[row][col] >= 0)
+                result_matrix[row][col] = (1 >= dist_matrix[row][col] >= 1)
 
         return result_matrix
 
