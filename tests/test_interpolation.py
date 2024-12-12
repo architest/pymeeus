@@ -32,7 +32,7 @@ i_angles2 = Interpolation()
 i_sine = Interpolation()
 
 
-def setup():
+def setup_module():
     """This function is used to set up the environment for the tests"""
     # Set up a interpolation object which uses Right Ascension
     y0 = Angle(10, 18, 48.732, ra=True)
@@ -64,8 +64,13 @@ def setup():
                 0.5236885653, 0.5453707057])
 
 
-def teardown():
+def teardown_module():
     pass
+
+
+# pre pytest 7.2 ompatibility
+setup = setup_module
+teardown = teardown_module
 
 
 # Interpolation class

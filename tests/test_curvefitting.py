@@ -31,9 +31,8 @@ cf3 = CurveFitting()
 cf4 = CurveFitting()
 
 
-def setup():
+def setup_module():
     """This function is used to set up the environment for the tests"""
-
     # Set up a few CurveFitting objects
     cf1.set([73.0, 38.0, 35.0, 42.0, 78.0, 68.0, 74.0, 42.0, 52.0, 54.0, 39.0,
              61.0, 42.0, 49.0, 50.0, 62.0, 44.0, 39.0, 43.0, 54.0, 44.0, 37.0],
@@ -58,8 +57,13 @@ def setup():
              -0.8372, -0.4377, -0.3640, -0.3508, -0.2126])
 
 
-def teardown():
+def teardown_module():
     pass
+
+
+# pre pytest 7.2 compatibility
+setup = setup_module
+teardown = teardown_module
 
 
 # CurveFitting class
