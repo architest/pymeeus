@@ -442,7 +442,7 @@ class Moon(object):
         # Compute Moon's longitude of the mean ascending node
         Omega = 125.0445479 + (-1934.1362891
                                + (0.0020754
-                                  + (1.0/476441.0
+                                  + (1.0/467441.0
                                      - t/60616000.0) * t) * t) * t
         Omega = Angle(Omega).to_positive()
         return Omega
