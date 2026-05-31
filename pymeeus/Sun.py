@@ -667,7 +667,7 @@ class Sun(object):
         p = x + y
         b0 = asin(sin(delta.rad()) * sin(i.rad()))
         b0 = Angle(b0, radians=True)
-        eta = atan(tan(delta.rad()) * cos(i.rad()))
+        eta = atan2(-sin(delta.rad()) * cos(i.rad()), -cos(delta.rad()))
         eta = Angle(eta, radians=True)
         l0 = eta - theta
         return p, b0, l0.to_positive()
