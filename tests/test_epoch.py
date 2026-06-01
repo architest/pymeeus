@@ -150,6 +150,15 @@ def test_epoch_get_doy():
     assert Epoch.get_doy(-400, 2, 29.9) == 60.9, \
         "ERROR: 3rd get_doy() test, output doesn't match"
 
+    assert Epoch.get_doy(-1000, 7, 12) == 194, \
+        "ERROR: 4th get_doy() test, output doesn't match"
+
+    assert Epoch.get_doy(-5, 3, 1) == 60, \
+        "ERROR: 5th get_doy() test, output doesn't match"
+
+    assert Epoch.get_doy(-4, 3, 1) == 61, \
+        "ERROR: 6th get_doy() test, output doesn't match"
+
 
 def test_epoch_doy():
     """Tests the doy() method of Epoch class"""
