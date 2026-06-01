@@ -649,7 +649,8 @@ class Sun(object):
         if not isinstance(epoch, Epoch):
             raise TypeError("Invalid input type")
         # Compute the auxiliary parameters
-        epoch += 0.00068
+        year, month, _ = epoch.get_date()
+        epoch += Epoch.tt2ut(year, month) / 86400.0
         theta = (epoch() - 2398220.0) * 360.0 / 25.38
         theta = Angle(theta)
         i = Angle(7.25)
@@ -667,7 +668,7 @@ class Sun(object):
         p = x + y
         b0 = asin(sin(delta.rad()) * sin(i.rad()))
         b0 = Angle(b0, radians=True)
-        eta = atan(tan(delta.rad()) * cos(i.rad()))
+        eta = atan2(-sin(delta.rad()) * cos(i.rad()), -cos(delta.rad()))
         eta = Angle(eta, radians=True)
         l0 = eta - theta
         return p, b0, l0.to_positive()

@@ -786,7 +786,7 @@ class Epoch(object):
                 raise ValueError("Invalid input date")
             doy = d.timetuple().tm_yday
         else:
-            k = 2 if Epoch.is_leap(yyyy) else 1
+            k = 1 if Epoch.is_leap(yyyy) else 2
             doy = (iint((275.0 * mm) / 9.0)
                    - k * iint((mm + 9.0) / 12.0) + day - 30.0)
         return float(doy + frac)

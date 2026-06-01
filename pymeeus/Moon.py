@@ -230,8 +230,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -442,7 +442,7 @@ class Moon(object):
         # Compute Moon's longitude of the mean ascending node
         Omega = 125.0445479 + (-1934.1362891
                                + (0.0020754
-                                  + (1.0/476441.0
+                                  + (1.0/467441.0
                                      - t/60616000.0) * t) * t) * t
         Omega = Angle(Omega).to_positive()
         return Omega
@@ -483,8 +483,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -571,8 +571,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Reduce the angles to a [0 360] range
         D = Angle(Angle.reduce_deg(D)).to_positive()
         Dr = D.rad()
@@ -895,7 +895,7 @@ class Moon(object):
         t = k / 1325.55
         # Compute the time of the 'mean' perigee or apogee
         jde = (2451534.6698 + 27.55454989 * k
-               + (-0.0006691 + (0.000001098 + 0.0000000052 * t) * t) * t * t)
+               + (-0.0006691 + (-0.000001098 + 0.0000000052 * t) * t) * t * t)
         # Moon's mean elongation at jde
         D = (171.9179 + 335.9106046 * k
              + (-0.0100383 + (-0.00001156 + 0.000000055 * t) * t) * t * t)
@@ -1208,7 +1208,7 @@ class Moon(object):
             jde += 2451562.5897
         else:
             D += 345.6676
-            M += 1.13951
+            M += 1.3951
             Mprime += 186.21
             F += 145.1633
             jde += 2451548.9289
@@ -1432,8 +1432,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -1553,8 +1553,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
