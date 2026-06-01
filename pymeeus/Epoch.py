@@ -779,7 +779,7 @@ class Epoch(object):
             raise ValueError("Invalid input data")
         day = int(dd)
         frac = dd % 1
-        if yyyy >= 1:  # datetime's minimum year is 1
+        if yyyy >= 1582:
             try:
                 d = datetime.date(yyyy, mm, day)
             except ValueError:
