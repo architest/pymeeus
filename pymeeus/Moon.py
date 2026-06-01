@@ -230,8 +230,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -483,8 +483,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -571,8 +571,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Reduce the angles to a [0 360] range
         D = Angle(Angle.reduce_deg(D)).to_positive()
         Dr = D.rad()
@@ -1432,8 +1432,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
@@ -1553,8 +1553,8 @@ class Moon(object):
         # Moon's mean anomaly
         Mprime = 134.9633964 + (477198.8675055
                                 + (0.0087414
-                                   + (1.0/69699.9
-                                      + t/14712000.0) * t) * t) * t
+                                   + (1.0/69699.0
+                                      - t/14712000.0) * t) * t) * t
         # Moon's argument of latitude
         F = 93.2720950 + (483202.0175233
                           + (-0.0036539
