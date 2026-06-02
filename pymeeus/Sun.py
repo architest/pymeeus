@@ -395,10 +395,10 @@ class Sun(object):
         x = r * cos(lat.rad()) * cos(lon.rad())
         y = r * cos(lat.rad()) * sin(lon.rad())
         z = r * sin(lat.rad())
-        x = 0.999925702634 * x + 0.012189716217 * y + 0.000011134016 * z
-        y = -0.011179418036 * x + 0.917413998946 * y - 0.397777041885 * z
-        z = -0.004859003787 * x + 0.397747363646 * y + 0.917482111428 * z
-        return x, y, z
+        x_0 = 0.999925702634 * x + 0.012189716217 * y + 0.000011134016 * z
+        y_0 = -0.011179418036 * x + 0.917413998946 * y - 0.397777041885 * z
+        z_0 = -0.004859003787 * x + 0.397747363646 * y + 0.917482111428 * z
+        return x_0, y_0, z_0
 
     @staticmethod
     def rectangular_coordinates_equinox(epoch, equinox_epoch):
