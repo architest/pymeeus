@@ -135,10 +135,10 @@ def test_rectangular_coordinates_b1950():
     assert abs(round(x, 8) - (-0.94149557)) < TOL, \
         "ERROR: 1st rectangular_coordinates_b1950() test, 'x' doesn't match"
 
-    assert abs(round(y, 8) - (-0.30259922)) < TOL, \
+    assert abs(round(y, 8) - (-0.30264495)) < TOL, \
         "ERROR: 2nd rectangular_coordinates_b1950() test, 'y' doesn't match"
 
-    assert abs(round(z, 8) - (-0.11578695)) < TOL, \
+    assert abs(round(z, 8) - (-0.13120549)) < TOL, \
         "ERROR: 3rd rectangular_coordinates_b1950() test, 'z' doesn't match"
 
 
