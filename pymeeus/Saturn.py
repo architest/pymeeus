@@ -6713,7 +6713,7 @@ class Saturn(object):
         U1r = atan2((sin(ir) * sin(bprimer) + cos(ir) * cos(bprimer)
                      * sin(diff1)), (cos(bprimer) * cos(diff1)))
         diff2 = lambdar - Omegar
-        U2r = atan2((sin(ir) * sin(betar) + cos(ir) * cos(bprimer)
+        U2r = atan2((sin(ir) * sin(betar) + cos(ir) * cos(betar)
                      * sin(diff2)), (cos(betar) * cos(diff2)))
         delta_U = Angle(fabs(U1r - U2r), radians=True)
         B = Angle(B, radians=True)
