@@ -573,7 +573,9 @@ class Sun(object):
         :type epoch: :py:class:`Epoch`
 
         :returns: Difference between apparent and mean time, as a tuple, in
-            minutes (int) and seconds (float) of time
+            minutes (int) and seconds (float) of time. Both share the sign of
+            the result, so a negative value under a minute returns e.g.
+            (0, -16.4); reconstruct the signed total as m + s/60.
         :rtype: tuple
         :raises: TypeError if input values are of wrong type.
 
@@ -607,16 +609,15 @@ class Sun(object):
         alpha = alpha.to_positive()
         # Now we need the nutation in longitude
         deltapsi = nutation_longitude(epoch)
-        e = l0() - 0.0057183 - alpha + deltapsi * cos(epsilon.rad())
-        # The following line is a fix devised by janbredenbeek to a problem
-        # that arises in cases where alpha was just past the spring equinox
-        # but l0 was still < 360. In those cases e was incorrectly calculated
-        # The solution is to keep e as a float and reduce to range -180..+180
+        # janbredenbeek fix: when alpha is just past the spring equinox while
+        # l0 is still < 360, e lands in (180,360)
+        e = l0() - 0.0057183 - alpha() + deltapsi() * cos(epsilon.rad())
         e = e - 360.0 * round(e / 360.0)
         e *= 4.0
-        # Extract seconds
-        s = (abs(e()) % 1) * 60.0
-        m = int(e())
+        # Split into minutes and seconds, both carrying the sign of e, so the
+        # sign survives even when |e| < 1 and m == 0 (e.g. (0, -16.4))
+        m = int(e)
+        s = (e - m) * 60.0
         return m, s
 
     @staticmethod
