@@ -581,7 +581,7 @@ def precession_equatorial(
     ) + cos(theta.rad()) * sin(start_dec.rad())
     final_ra = atan2(a, b) + z.rad()
     if start_dec > 85.0:  # Coordinates are close to the pole
-        final_dec = sqrt(a * a + b * b)
+        final_dec = acos(sqrt(a * a + b * b))
     else:
         final_dec = asin(c)
     # Convert results to Angles. Please note results are in radians
@@ -816,7 +816,7 @@ def precession_newcomb(
     ) + cos(theta.rad()) * sin(start_dec.rad())
     final_ra = atan2(a, b) + z.rad()
     if start_dec > 85.0:  # Coordinates are close to the pole
-        final_dec = sqrt(a * a + b * b)
+        final_dec = acos(sqrt(a * a + b * b))
     else:
         final_dec = asin(c)
     # Convert results to Angles. Please note results are in radians
