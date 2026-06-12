@@ -183,6 +183,44 @@ def test_sun_equation_of_time():
         "ERROR: 2nd equation_of_time() test, 's' doesn't match"
 
 
+def test_sun_equation_of_time_spring_equinox():
+    """Tests equation_of_time() on a spring-equinox crossing"""
+
+    epoch = Epoch(2024, 3, 20.5)
+    m, s = Sun.equation_of_time(epoch)
+    minutes = m + s / 60.0
+
+    assert m == -7, \
+        "ERROR: 1st spring-equinox equation_of_time() test, 'm' doesn't match"
+
+    assert abs(minutes - (-7.306)) < 0.01, \
+        "ERROR: 2nd spring-equinox equation_of_time() test, E was not reduced"
+
+def test_sun_equation_of_time_sign_near_zero():
+    """Tests equation_of_time() keeps the sign for sub-minute E across |E|~0
+
+    Around the mid-April crossing E is under a minute in magnitude and changes
+    sign: about -0.27 min on 2024-04-14 and +0.21 min on 2024-04-16."""
+
+    bm, bs = Sun.equation_of_time(Epoch(2024, 4, 14.0))   # (minutes, signed sec)
+    am, asec = Sun.equation_of_time(Epoch(2024, 4, 16.0))
+    before = bm + bs / 60.0
+    after = am + asec / 60.0
+
+    assert bm == 0 and bs < 0.0, \
+        "ERROR: 1st near-zero equation_of_time() test, wrong sign (2024-04-14)"
+    assert abs(before - (-0.2728)) < 0.01, \
+        "ERROR: 2nd near-zero equation_of_time() test, value (2024-04-14) doesn't match"
+
+    assert am == 0 and asec > 0.0, \
+        "ERROR: 3rd near-zero equation_of_time() test, wrong sign (2024-04-16)"
+    assert abs(after - 0.2075) < 0.01, \
+        "ERROR: 4th near-zero equation_of_time() test, value (2024-04-16) doesn't match"
+
+    assert before < 0.0 < after, \
+        "ERROR: 5th near-zero equation_of_time() test, sides not distinguishable"
+
+
 def test_sun_ephemeris_physical_observations():
     """Tests the ephemeris_physical_observations() method of Sun class"""
 
