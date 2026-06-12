@@ -794,7 +794,7 @@ def precession_newcomb(
     if not (isinstance(p_motion_ra, Angle)
             and isinstance(p_motion_dec, Angle)):
         raise TypeError("Invalid input types")
-    tt = (start_epoch - 2415020.3135) / 36524.2199
+    tt = (start_epoch - Epoch(2415020.3135)) / 36524.2199
     t = (final_epoch - start_epoch) / 36524.2199
     # Correct starting coordinates by proper motion
     start_ra += p_motion_ra * t * 100.0
