@@ -363,6 +363,33 @@ def test_coordinates_times_rise_transit_set():
         "ERROR: 3rd times_rise_transit_set() test, 'setting' doesn't match"
 
 
+def test_coordinates_times_rise_transit_set_meridian_wrap():
+    """Tests times_rise_transit_set() for the transit hour-angle wrap"""
+
+    longitude = Angle(100.0)
+    latitude = Angle(20.0)
+    alpha1 = Angle(355.78345574714496)
+    delta1 = Angle(-1.8258186035760802)
+    alpha2 = Angle(356.69822727457387)
+    delta2 = Angle(-1.4303730291596641)
+    alpha3 = Angle(357.61220064819383)
+    delta3 = Angle(-1.0347700757255995)
+    h0 = Angle(-0.8333)
+    delta_t = 69.12317527622284
+    theta0 = Angle(174.58612143862533)
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,
+                                                      alpha1, delta1,
+                                                      alpha2, delta2,
+                                                      alpha3, delta3, h0,
+                                                      delta_t, theta0)
+
+    assert abs(round(transit, 3) - 18.804) < TOL, \
+        "ERROR: 1st times_rise_transit_set_meridian_wrap test, transit wrapped by whole days"
+
+    assert rising < transit < setting + 24.0, \
+        "ERROR: 2nd times_rise_transit_set_meridian_wrap test, transit fell outside [rising, setting]"
+
+
 def test_coordinates_refraction_apparent2true():
     """Tests the refraction_apparent2true() method of Coordinates module"""
 
