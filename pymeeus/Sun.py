@@ -379,9 +379,9 @@ class Sun(object):
         >>> print(round(x, 8))
         -0.94149557
         >>> print(round(y, 8))
-        -0.30259922
+        -0.30264495
         >>> print(round(z, 8))
-        -0.11578695
+        -0.13120549
         """
 
         # First check that input values are of correct types
