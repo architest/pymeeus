@@ -1210,7 +1210,7 @@ class Epoch(object):
         e = iint((b - d) / 30.6001)
         d = b - d - iint(30.6001 * e)
         m = (e - 1) if e < 14 else (e - 13)
-        x = (c - 4716) if month > 2 else (c - 4715)
+        x = (c - 4716) if m > 2 else (c - 4715)
         w = 1 if x % 4 == 0 else 2
         n = iint((275.0 * m) / 9.0) - w * iint((m + 9.0) / 12.0) + d - 30
         a = x - 623
