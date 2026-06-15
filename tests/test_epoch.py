@@ -270,6 +270,18 @@ def test_epoch_gregorian2moslem():
     assert t[0] == 1412 and t[1] == 2 and t[2] == 2, \
         "ERROR: 1st gregorian2moslem() test, output doesn't match"
 
+    t = Epoch.gregorian2moslem(2000, 4, 6)
+    assert t[0] == 1421 and t[1] == 1 and t[2] == 1, \
+        "ERROR: 2nd gregorian2moslem() test, output doesn't match"
+
+    t = Epoch.gregorian2moslem(1970, 3, 9)
+    assert t[0] == 1390 and t[1] == 1 and t[2] == 1, \
+        "ERROR: 3rd gregorian2moslem() test, output doesn't match"
+
+    t = Epoch.gregorian2moslem(1979, 1, 1)
+    assert t[0] == 1399 and t[1] == 2 and t[2] == 1, \
+        "ERROR: 4th gregorian2moslem() test, output doesn't match"
+
 
 def test_epoch_get_date():
     """Tests the get_date() method of Epoch class"""
