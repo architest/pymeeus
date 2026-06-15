@@ -1635,7 +1635,7 @@ def refraction_apparent2true(apparent_elevation, pressure=1010.0,
         raise TypeError("Invalid input types")
     x = apparent_elevation + 7.31 / (apparent_elevation + 4.4)
     r = 1.0 / tan(x.rad()) + 0.0013515
-    r = Angle(r / 60.0)  # The 'r' value is in minutes of arc
+    r = r / 60.0  # The 'r' value is in minutes of arc
     if pressure != 1010.0 or temperature != 10.0:
         r = r * pressure / 1010.0 * 283.0 / (273.0 + temperature)
     return apparent_elevation - r
@@ -1686,7 +1686,7 @@ def refraction_true2apparent(true_elevation, pressure=1010.0,
         raise TypeError("Invalid input types")
     x = true_elevation + 10.3 / (true_elevation + 5.11)
     r = 1.02 / tan(x.rad()) + 0.0019279
-    r = Angle(r / 60.0)  # The 'r' value is in minutes of arc
+    r = r / 60.0  # The 'r' value is in minutes of arc
     if pressure != 1010.0 or temperature != 10.0:
         r = r * pressure / 1010.0 * 283.0 / (273.0 + temperature)
     return true_elevation + r
