@@ -1571,7 +1571,8 @@ def times_rise_transit_set(
         set_delta = interpol(n, delta1, delta2, delta3)
         # Compute the hour angles
         theta = theta0 + 360.985647 * m0
-        transit_ha = theta - longitude - transit_alpha
+        transit_ha = (theta - longitude - transit_alpha)()
+        transit_ha -= 360.0 * round(transit_ha / 360.0)
         delta_transit = transit_ha / (-360.0)
         theta = theta0 + 360.985647 * m1
         rise_ha = theta - longitude - rise_alpha
@@ -1586,7 +1587,7 @@ def times_rise_transit_set(
         delta_set = (set_ele - h0) / (
             360.0 * cos(set_delta.rad()) * cos(lat) * sin(set_ha.rad())
         )
-        m0 += delta_transit()
+        m0 += delta_transit
         m1 += delta_rise()
         m2 += delta_set()
     return (m1 * 24.0, m0 * 24.0, m2 * 24.0)
