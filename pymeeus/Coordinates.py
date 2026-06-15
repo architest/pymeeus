@@ -1429,8 +1429,9 @@ def times_rise_transit_set(
     """This function computes the times (in Universal Time UT) of rising,
     transit and setting of a given celestial body.
 
-    .. note:: If the body is circumpolar there are no rising, transit nor
-        setting times. In such a case a tuple with None's is returned
+    .. note:: If the body is circumpolar there are no rising nor setting times
+        (None is returned for both), but the transit (upper culmination) is
+        still computed and returned, since it does not depend on the horizon.
 
     .. note:: Care must be taken when interpreting the results. For instance,
         if the setting time is **smaller** than the rising time, it means that
@@ -1544,36 +1545,45 @@ def times_rise_transit_set(
     lat = latitude.rad()
     d2 = delta2.rad()
     hh0 = (sin(h) - sin(lat) * sin(d2)) / (cos(lat) * cos(d2))
-    # Check if the body is circumpolar. In such case, there are no rising,
-    # transit nor setting times, and a tuple with None's is returned
-    if abs(hh0) > 1.0:
-        return (None, None, None)
-    hh0 = acos(hh0)
-    hh0 = Angle(hh0, radians=True)
-    hh0.to_positive()
+    # |hh0| > 1 means the body never crosses the horizon h0: it is circumpolar
+    # (or never rises), so there are no rising nor setting times. The transit,
+    # however, does not depend on h0 and still exists, so it is
+    # always computed and returned; only m1/m2 (rise/set) are skipped.
+    circumpolar = abs(hh0) > 1.0
     m0 = (alpha2 + longitude - theta0) / 360.0
     m0 = m0()  # m0 is an Angle. Convert to float
-    m1 = m0 - hh0() / 360.0
-    m2 = m0 + hh0() / 360.0
+    if circumpolar:
+        m1 = None
+        m2 = None
+    else:
+        hh0 = acos(hh0)
+        hh0 = Angle(hh0, radians=True)
+        hh0.to_positive()
+        m1 = m0 - hh0() / 360.0
+        m2 = m0 + hh0() / 360.0
+        m1 = check_value(m1)
+        m2 = check_value(m2)
     m0 = check_value(m0)
-    m1 = check_value(m1)
-    m2 = check_value(m2)
     # Carry out this procedure twice
     for _ in range(2):
-        # Interpolate alpha and delta values for each (m0, m1, m2)
+        # Transit: interpolate alpha at m0 and correct by the hour angle,
+        # reduced to [-180, 180] before the linear -H/360 correction.
         n = m0 + delta_t / 86400.0
         transit_alpha = interpol(n, alpha1, alpha2, alpha3)
+        theta = theta0 + 360.985647 * m0
+        transit_ha = (theta - longitude - transit_alpha)()
+        transit_ha -= 360.0 * round(transit_ha / 360.0)
+        delta_transit = transit_ha / (-360.0)
+        m0 += delta_transit
+        if circumpolar:
+            continue
+        # Rising and setting (only when the body crosses the horizon)
         n = m1 + delta_t / 86400.0
         rise_alpha = interpol(n, alpha1, alpha2, alpha3)
         rise_delta = interpol(n, delta1, delta2, delta3)
         n = m2 + delta_t / 86400.0
         set_alpha = interpol(n, alpha1, alpha2, alpha3)
         set_delta = interpol(n, delta1, delta2, delta3)
-        # Compute the hour angles
-        theta = theta0 + 360.985647 * m0
-        transit_ha = (theta - longitude - transit_alpha)()
-        transit_ha -= 360.0 * round(transit_ha / 360.0)
-        delta_transit = transit_ha / (-360.0)
         theta = theta0 + 360.985647 * m1
         rise_ha = theta - longitude - rise_alpha
         theta = theta0 + 360.985647 * m2
@@ -1587,10 +1597,11 @@ def times_rise_transit_set(
         delta_set = (set_ele - h0) / (
             360.0 * cos(set_delta.rad()) * cos(lat) * sin(set_ha.rad())
         )
-        m0 += delta_transit
         m1 += delta_rise()
         m2 += delta_set()
-    return (m1 * 24.0, m0 * 24.0, m2 * 24.0)
+    rising = None if circumpolar else m1 * 24.0
+    setting = None if circumpolar else m2 * 24.0
+    return (rising, m0 * 24.0, setting)
 
 
 def refraction_apparent2true(apparent_elevation, pressure=1010.0,

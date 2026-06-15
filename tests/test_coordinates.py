@@ -390,6 +390,47 @@ def test_coordinates_times_rise_transit_set_meridian_wrap():
         "ERROR: 2nd times_rise_transit_set_meridian_wrap test, transit fell outside [rising, setting]"
 
 
+def test_coordinates_times_rise_transit_set_circumpolar_transit():
+    """Tests times_rise_transit_set() returns the transit for a circumpolar body"""
+
+    longitude = Angle(0.0)
+    latitude = Angle(70.0)
+    alpha = Angle(6, 0, 0.0, ra=True)   # RA = 90 deg
+    delta = Angle(80.0)
+    h0 = Angle(-0.5667)
+    delta_t = 0.0
+    theta0 = Angle(100.0)
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,
+                                                      alpha, delta,
+                                                      alpha, delta,
+                                                      alpha, delta, h0,
+                                                      delta_t, theta0)
+
+    assert rising is None and setting is None, \
+        "ERROR: 1st circumpolar_transit test, rising/setting should be None"
+
+    assert transit is not None, \
+        "ERROR: 2nd circumpolar_transit test, transit must be returned for a circumpolar body"
+
+    assert abs(round(transit, 3) - 23.270) < TOL, \
+        "ERROR: 3rd circumpolar_transit test, transit time doesn't match"
+
+    alpha1 = Angle(353.5)
+    alpha2 = Angle(0.0)
+    alpha3 = Angle(6.5)
+    rising, transit, setting = times_rise_transit_set(longitude, latitude,
+                                                      alpha1, delta,
+                                                      alpha2, delta,
+                                                      alpha3, delta, h0,
+                                                      69.0, Angle(0.5))
+
+    assert rising is None and setting is None, \
+        "ERROR: 4th circumpolar_transit test, rising/setting should be None"
+
+    assert abs(round(transit, 3) - 24.340) < TOL, \
+        "ERROR: 5th circumpolar_transit test, transit should be the true day-relative culmination"
+
+
 def test_coordinates_refraction_apparent2true():
     """Tests the refraction_apparent2true() method of Coordinates module"""
 
