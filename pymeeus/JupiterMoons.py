@@ -952,19 +952,23 @@ class JupiterMoons(object):
     @staticmethod
     def is_phenomena(epoch):
         """This method checks if the given coordinates correspond with any
-        satellite
-        phenomena. It returns the type of phenomena for all satellites.
-
+        satellite phenomena. It also determines conjunction status such as
+        moon in occultation, moon in transit, moon in eclipse, shadow Transit
+    
         :param epoch: Epoch the calculations should be made for
         :type epoch: :py:class:'Epoch'
-
         :returns: Result matrix for the four Galilean satellites
-            Row 0: Io            Column 0: Occultation
-            Row 1: Europa        Column 1: Eclipse
-            Row 2: Ganymede      Column 2: No use
-            Row 3: Callisto
-        :rtype: tuple
-
+            Row 0: Io            Column 0: Earth Occultation
+            Row 1: Europa        Column 1: Sun Occultation
+            Row 2: Ganymede      Column 2: Occultation Type  [Earth-Superior Conjunction, Sun-Superior Conjunction]
+            Row 3: Callisto      
+            
+            Occultation Type (Superior Conjunction)
+            Column 1: Earth-Superior Conjunction (True: Jupiter occults moon, False: moon transits jupiter)
+            Column 2: Sun-Superior Conjunction (True: moon enters eclipse, False: shadow transits jupiter)
+        
+        :rtype: list
+    
         :raises: TypeError if input values are wrong type
 
         Calculation of result matrix for December 16 at 0h UTC
@@ -972,24 +976,24 @@ class JupiterMoons(object):
         >>> utc_1992_12_16_00_00_00 = Epoch(1992, 12, 16, utc=True)
         >>> result_matrix = JupiterMoons.is_phenomena(utc_1992_12_16_00_00_00)
         >>> print(result_matrix[0])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> print(result_matrix[1])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> print(result_matrix[2])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> print(result_matrix[3])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> io_ecc_start_2021_02_12_14_19_14 = Epoch(2021, 2, 12.5966898148148)
         >>> result_matrix = JupiterMoons.is_phenomena( \
-        io_ecc_start_2021_02_12_14_19_14)
+        >>> io_ecc_start_2021_02_12_14_19_14)
         >>> print(result_matrix[0])
-        [False, True, False]
+        [False, True, [None, True]]
         >>> print(result_matrix[1])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> print(result_matrix[2])
-        [False, False, False]
+        [False, False, [None, None]]
         >>> print(result_matrix[3])
-        [False, False, False]
+        [False, False, [None, None]]
         """
 
         # Get distance Matrix
@@ -1002,7 +1006,15 @@ class JupiterMoons(object):
 
         for row in range(len(result_matrix)):
             for col in range(len(result_matrix[row]) - 1):
-                result_matrix[row][col] = (1 >= dist_matrix[row][col] >= 1)
+                # Occultation and Eclipse check within -1 and 1
+                result_matrix[row][col] = (1 >= dist_matrix[row][col] >= -1)
+
+            # Determine Occultation status for the third column
+            # Check Earth-based and Sun-based distances only if there's a Occultation
+            earth_based = dist_matrix[row][0] >= 0 if result_matrix[row][0] else None
+            sun_based = dist_matrix[row][1] >= 0 if result_matrix[row][1] else None
+
+            result_matrix[row][2] = [earth_based, sun_based]
 
         return result_matrix
 
@@ -1272,6 +1284,8 @@ def main():
     # Row 1: Europa      Column 1: perspective distance as seen from the Sun
     # Row 2: Ganymede    Column 2: No use
     # Row 3: Callisto
+    
+# ToDo update test
 
     # print Row 0
     print(
@@ -1309,31 +1323,35 @@ def main():
     io_ecc_start_2021_02_12_14_19_14 = Epoch(2021, 2, 12.5966898148148)
 
     # Structure of result matrix
-    # Row 0: Io          Column 0: Occultation True\False
-    # Row 1: Europa      Column 1: Eclipse True\False
-    # Row 2: Ganymede    Column 2: No use
-    # Row 3: Callisto
+    # Row 0: Io            Column 0: Earth Occultation
+    # Row 1: Europa        Column 1: Sun Occultation
+    # Row 2: Ganymede      Column 2: Occultation Type  [Earth-Superior Conjunction, Sun-Superior Conjunction]
+    # Row 3: Callisto      
+
+    # Occultation Type (Superior Conjunction)
+    # Column 1: Earth-Superior Conjunction (True: Jupiter occults moon, False: moon transits jupiter)
+    # Column 2: Sun-Superior Conjunction (True: moon enters eclipse, False: shadow transits jupiter)
 
     result_matrix = JupiterMoons.is_phenomena(io_ecc_start_2021_02_12_14_19_14)
-    # print Row 0
-    print("(Occultation of Io, Eclipse of Io, No use): ")
+    # Print Row 0
+    print("(Earth Occultation of Io, Sun Occultation of Io, [Superior Conjunction (Earth), Superior Conjunction (Sun)]):")
     print(result_matrix[0])
-    # [False, True, False]
+    # Expected Output: [False, True, [None, True]]
 
-    # print Row 1
-    print(" (Occultation of Europa, Eclipse of Europa, No use): ")
+    # Print Row 1
+    print("(Earth Occultation of Europa, Sun Occultation of Europa, [Superior Conjunction (Earth), Superior Conjunction (Sun)]):")
     print(result_matrix[1])
-    # [False, False, False]
+    # Expected Output: [False, False, [None, None]]
 
-    # print Row 2
-    print(" (Occultation of Ganymede, Eclipse of Gaymede, No use): ")
+    # Print Row 2
+    print("(Earth Occultation of Ganymede, Sun Occultation of Ganymede, [Superior Conjunction (Earth), Superior Conjunction (Sun)]):")
     print(result_matrix[2])
-    # [False,False,False]
+    # Expected Output: [False, False, [None, None]]
 
-    # print Row 3
-    print("(Occultation of Callisto, Eclipse of Callisto, No use): ")
+    # Print Row 3
+    print("(Earth Occultation of Callisto, Sun Occultation of Callisto, [Superior Conjunction (Earth), Superior Conjunction (Sun)]):")
     print(result_matrix[3])
-    # [False,False,False]
+    # Expected Output: [False, False, [None, None]]
 
     print("")
 

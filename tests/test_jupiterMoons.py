@@ -257,85 +257,117 @@ class TestJupiterMoons(TestCase):
                         col]) < TOL, \
                     """ERROR: check_phenomena() test doesn't match"""
 
-    def test_is_phenomena(self):
-        """This method tests if the method check_phenomena() returns the
-        right perspective distances
-         between the Galilean satellites and Jupiter"""
 
-        utc_1992_12_16_00_00_00 = Epoch(EPOCH_1992_12_16_UTC, utc=True)
+
+    def test_is_phenomena(self):
+        """
+        This test checks the  `is_phenomena()` method which
+        returns the result matrix including "conjunction type"
+        
+        Each row corresponds to one Galilean satellite (Io, Europa, Ganymede, Callisto).
+        Each row is: [earth_conjunction, sun_conjunction, [Earth_Superior_Conjunction, Sun_Superior_Conjunction]]
+        """
+
+        #
+        # 1) Check that on 1992-12-16, everything is False/None
+        #
+        utc_1992_12_16_00_00_00 = Epoch(1992, 12, 16, utc=True)
         result_matrix = JupiterMoons.is_phenomena(utc_1992_12_16_00_00_00)
-        result_matrix_expect = [[False, False, False],
-                                [False, False, False],
-                                [False, False, False],
-                                [False, False, False]]
-        for row in range(3):
+
+        # Expect everything to be False for columns 0 and 1, and [None, None] in column 2
+        result_matrix_expect = [
+            [False, False, [None, None]],
+            [False, False, [None, None]],
+            [False, False, [None, None]],
+            [False, False, [None, None]]
+        ]
+
+        for row in range(4):
+            # Check columns 0 and 1
             for col in range(2):
-                assert abs(
-                    result_matrix[row][col] - result_matrix_expect[row][
-                        col]) < TOL, \
-                    """ERROR: is_phenomena() test one doesn't match"""
+                assert result_matrix[row][col] == result_matrix_expect[row][col], \
+                    f"ERROR: Row {row}, col {col} mismatch on 1992-12-16!"
+            # Check [earth_based, sun_based]
+            assert result_matrix[row][2] == result_matrix_expect[row][2], \
+                f"ERROR: Row {row}, col 2 mismatch on 1992-12-16!"
 
         io_ecc_start_2021_02_12_14_19_14 = Epoch(2021, 2, 12.5966898148148)
-        result_matrix = JupiterMoons.is_phenomena(
-            io_ecc_start_2021_02_12_14_19_14)
-        result_matrix_expect[0][1] = True
+        result_matrix = JupiterMoons.is_phenomena(io_ecc_start_2021_02_12_14_19_14)
 
-        for row in range(3):
+        result_matrix_expect = [
+            [False, True,  [None, True]],  # Io
+            [False, False, [None, None]],  # Europa
+            [False, False, [None, None]],  # Ganymede
+            [False, False, [None, None]]   # Callisto
+        ]
+
+        for row in range(4):
             for col in range(2):
-                assert abs(
-                    result_matrix[row][col] - result_matrix_expect[row][
-                        col]) < TOL, \
-                    """ERROR: is_phenomena() test two doesn't match"""
+                assert result_matrix[row][col] == result_matrix_expect[row][col], \
+                    f"ERROR: Row {row}, col {col} mismatch on 2021-02-12!"
+            assert result_matrix[row][2] == result_matrix_expect[row][2], \
+                f"ERROR: Row {row}, col 2 mismatch on 2021-02-12!"
 
-        """ Unit test weather the software detects the right phenomea or not
-            Matrix:
-            col 0: test case identifier
-            col 1: Epoch to be tested
-            col 2/3: row/col-index of expected 'True'
-        All other entries are expected to be 'False'!"""
-        test_set = [["IO_OCC_START_2021_01_17_00_55_11",
-                     Epoch(2021, 1, 17.0383217592593), 0, 0],
-                    ["IO_ECC_START_2021_02_12_14_19_14",
-                     Epoch(2021, 2, 12.5966898148148), 0, 1],
-                    ["EU_OCC_START_2021_10_02_13_04_19",
-                     Epoch(2021, 10, 2.54466435185185), 1, 0],
-                    ["EU_ECC_START_2021_02_13_14_26_18",
-                     Epoch(2021, 2, 13.6015972222222), 1, 1],
-                    ["GA_OCC_START_2021_03_29_00_43_46",
-                     Epoch(2021, 3, 29.0303935185185), 2, 0],
-                    ["GA_ECC_START_2021_02_06_16_53_50",
-                     Epoch(2021, 2, 6.70405092592593), 2, 1],
-                    ["CA_OCC_START_2021_03_09_13_26_47",
-                     Epoch(2021, 3, 9.5602662037037), 3, 0],
-                    ["CA_ECC_START_2021_04_28_13_32_36",
-                     Epoch(2021, 4, 28.5643055555556), 3, 1],
-                    ["IO_OCC_END_2021_02_14_11_20_01",
-                     Epoch(2021, 2, 14.4722337962963), 0, 0],
-                    ["IO_ECC_END_2021_10_09_14_44_31",
-                     Epoch(2021, 10, 9.61424768518519), 0, 1],
-                    ["EU_OCC_END_2021_03_07_02_14_12",
-                     Epoch(2021, 3, 7.09319444444444), 1, 0],
-                    ["EU_ECC_END_2021_10_06_07_12_45",
-                     Epoch(2021, 10, 6.30052083333333), 1, 1],
-                    ["GA_OCC_END_2021_12_18_23_58_55",
-                     Epoch(2021, 12, 18.9992476851852), 2, 0],
-                    ["GA_ECC_END_2021_12_04_20_34_04",
-                     Epoch(2021, 12, 4.85699074074074), 2, 1],
-                    ["CA_OCC_END_2021_11_15_07_29_43",
-                     Epoch(2021, 11, 15.3123032407407), 3, 0],
-                    ["CA_ECC_END_2021_08_24_00_58_49",
-                     Epoch(2021, 8, 24.0408449074074), 3, 1]
-                    ]
 
-        for test_label in range(15):
-            result = JupiterMoons.is_phenomena(test_set[test_label][1])
-            for column in range(1):
-                for row in range(3):
-                    if column == test_set[test_label][3] and row == \
-                            test_set[test_label][2]:
-                        assert result[test_set[test_label][2]][
-                            test_set[test_label][3]], \
-                            """ERROR: existing phenomena is not detected """
+        test_set = [
+            ["IO_OCC_START_2021_01_17_00_55_11",
+            Epoch(2021, 1, 17.0383217592593), 0, 0],
+            ["IO_ECC_START_2021_02_12_14_19_14",
+            Epoch(2021, 2, 12.5966898148148), 0, 1],
+            ["EU_OCC_START_2021_10_02_13_04_19",
+            Epoch(2021, 10, 2.54466435185185), 1, 0],
+            ["EU_ECC_START_2021_02_13_14_26_18",
+            Epoch(2021, 2, 13.6015972222222), 1, 1],
+            ["GA_OCC_START_2021_03_29_00_43_46",
+            Epoch(2021, 3, 29.0303935185185), 2, 0],
+            ["GA_ECC_START_2021_02_06_16_53_50",
+            Epoch(2021, 2, 6.70405092592593), 2, 1],
+            ["CA_OCC_START_2021_03_09_13_26_47",
+            Epoch(2021, 3, 9.5602662037037), 3, 0],
+            ["CA_ECC_START_2021_04_28_13_32_36",
+            Epoch(2021, 4, 28.5643055555556), 3, 1],
+            ["IO_OCC_END_2021_02_14_11_20_01",
+            Epoch(2021, 2, 14.4722337962963), 0, 0],
+            ["IO_ECC_END_2021_10_09_14_44_31",
+            Epoch(2021, 10, 9.61424768518519), 0, 1],
+            ["EU_OCC_END_2021_03_07_02_14_12",
+            Epoch(2021, 3, 7.09319444444444), 1, 0],
+            ["EU_ECC_END_2021_10_06_07_12_45",
+            Epoch(2021, 10, 6.30052083333333), 1, 1],
+            ["GA_OCC_END_2021_12_18_23_58_55",
+            Epoch(2021, 12, 18.9992476851852), 2, 0],
+            ["GA_ECC_END_2021_12_04_20_34_04",
+            Epoch(2021, 12, 4.85699074074074), 2, 1],
+            ["CA_OCC_END_2021_11_15_07_29_43",
+            Epoch(2021, 11, 15.3123032407407), 3, 0],
+            ["CA_ECC_END_2021_08_24_00_58_49",
+            Epoch(2021, 8, 24.0408449074074), 3, 1]
+        ]
+
+
+        for label, epoch_val, expected_row, expected_col in test_set:
+            result = JupiterMoons.is_phenomena(epoch_val)
+
+            for row in range(4):
+                for col in range(2):
+                    if row == expected_row and col == expected_col:
+                        assert result[row][col] is True, \
+                            f"ERROR in {label}: expected row={row}, col={col} to be True"
                     else:
-                        assert not result[row][column], \
-                            """ERROR: non existing phenomena is detected"""
+                        assert result[row][col] is False, \
+                            f"ERROR in {label}: row={row}, col={col} should be False"
+            
+            for row in range(4):
+                if result[row][0]:
+                    assert result[row][2][0] is not None, \
+                        f"ERROR in {label}: row={row} Earth_Superior_Conjunction should not be None"
+                else:
+                    assert result[row][2][0] is None, \
+                        f"ERROR in {label}: row={row} Earth_Superior_Conjunction should be None"
+
+                if result[row][1]:
+                    assert result[row][2][1] is not None, \
+                        f"ERROR in {label}: row={row} sun_Superior_Conjunction should not be None"
+                else:
+                    assert result[row][2][1] is None, \
+                        f"ERROR in {label}: row={row} sun_Superior_Conjunction should be None"
