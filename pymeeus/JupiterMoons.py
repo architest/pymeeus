@@ -942,12 +942,12 @@ class JupiterMoons(object):
             return result_matrix
         else:
             return JupiterMoons.check_occultation(Coords_Earth[i_sat - 1][0],
-                                                  Coords_Earth[i_sat - 1][0],
+                                                  Coords_Earth[i_sat - 1][1],
                                                   Coords_Earth[i_sat - 1][
-                                                      0]), \
+                                                      2]), \
                 JupiterMoons.check_eclipse(
-                Coords_Sun[i_sat - 1][0], Coords_Sun[i_sat - 1][0],
-                Coords_Sun[i_sat - 1][0])
+                Coords_Sun[i_sat - 1][0], Coords_Sun[i_sat - 1][1],
+                Coords_Sun[i_sat - 1][2])
 
     @staticmethod
     def is_phenomena(epoch):
