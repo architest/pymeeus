@@ -2744,8 +2744,8 @@ def orbital_equinox2equinox(epoch0, epoch, i0, arg0, lon0):
     etar = eta.rad()
     lon0r = lon0.rad()
     pir = pie.rad()
-    # If i0 is very small, the procedure is different
-    if i0 < 1.0:
+    # Only at i0 = 0 the node is indeterminate; use the limiting case there
+    if i0 < 1e-9:
         i1 = eta
         lon1 = pie + p + 180.0
     else:
