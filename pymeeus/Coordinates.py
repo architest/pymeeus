@@ -2927,7 +2927,7 @@ def velocity(r, a):
 
     if not (isinstance(r, float) and isinstance(a, float)):
         raise TypeError("Invalid input types")
-    return 42.1218 * sqrt((1.0 / r) - (1.0 / (2.0 * a)))
+    return 42.1219 * sqrt((1.0 / r) - (1.0 / (2.0 * a)))
 
 
 def velocity_perihelion(e, a):
