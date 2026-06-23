@@ -581,9 +581,12 @@ def precession_equatorial(
     ) + cos(theta.rad()) * sin(start_dec.rad())
     final_ra = atan2(a, b) + z.rad()
     if start_dec > 85.0:  # Coordinates are close to the pole
-        final_dec = acos(sqrt(a * a + b * b))
+        # Meeus returns polar distance; subtract from pi/2 (90 degrees) 
+        # to get declination
+        final_dec = (pi / 2.0) - sqrt(a * a + b * b)
     else:
         final_dec = asin(c)
+
     # Convert results to Angles. Please note results are in radians
     final_ra = Angle(final_ra, radians=True)
     final_dec = Angle(final_dec, radians=True)

@@ -117,6 +117,7 @@ def test_coordinates_nutation_obliquity():
 def test_coordinates_precession_equatorial():
     """Tests the precession_equatorial() method of Coordinates module"""
 
+    # 1. Standard test case (Low-declination star)
     start_epoch = JDE2000
     final_epoch = Epoch(2028, 11, 13.19)
     alpha0 = Angle(2, 44, 11.986, ra=True)
@@ -132,6 +133,24 @@ def test_coordinates_precession_equatorial():
 
     assert delta.dms_str(False, 2) == "49:20:54.54", \
         "ERROR: 2nd precession_equatorial() test, 'declination' doesn't match"
+
+    # 2. High-declination test case (Near-polar star: Polaris bugfix verification)
+    final_epoch_polar = Epoch(-378, 5, 17.19)
+    alpha0_polar = Angle(2, 31, 49.094, ra=True)
+    delta0_polar = Angle(89, 15, 50.8)
+    pm_ra_polar = Angle(0, 0, 0.044)
+    pm_dec_polar = Angle(0, 0, -0.012)
+
+    alpha_polar, delta_polar = precession_equatorial(
+        start_epoch, final_epoch_polar, alpha0_polar, delta0_polar, pm_ra_polar, pm_dec_polar
+    )
+
+    # Note: Adding 24h to the negative RA string matches standard astronomical wrapping
+    assert (Angle(24, ra=True) + alpha_polar).ra_str(False, 3) == "23:4:11.358", \
+        "ERROR: Polar precession test, right ascension doesn't match"
+
+    assert delta_polar.dms_str(False, 2) == "76:18:39.85", \
+        "ERROR: Polar precession test, high-declination path returned polar distance instead of declination"
 
 
 def test_coordinates_precession_ecliptical():
