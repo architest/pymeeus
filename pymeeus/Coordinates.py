@@ -1567,6 +1567,12 @@ def times_rise_transit_set(
         m1 = check_value(m1)
         m2 = check_value(m2)
     m0 = check_value(m0)
+    # Geometric first estimates, kept as the fallback should a correction
+    # below turn out implausible (see the guard in the loop).
+    m1_init = m1
+    m2_init = m2
+    m1_frozen = False
+    m2_frozen = False
     # Carry out this procedure twice
     for _ in range(2):
         # Transit: interpolate alpha at m0 and correct by the hour angle,
@@ -1600,8 +1606,25 @@ def times_rise_transit_set(
         delta_set = (set_ele - h0) / (
             360.0 * cos(set_delta.rad()) * cos(lat) * sin(set_ha.rad())
         )
-        m1 += delta_rise()
-        m2 += delta_set()
+        # Step guard: a valid correction moves the estimate within its own
+        # crossing, so it can never exceed the half-day hour-angle span.
+        # Near a grazing crossing sin(ha) -> 0 invalidates the linearization
+        # and an unguarded step walks days away (and the next iteration then
+        # evaluates the interpolation far outside its window, compounding to
+        # corrections of weeks). Fall back to the geometric estimate for that
+        # root and stop correcting it; callers refine from there.
+        if not m1_frozen:
+            if abs(delta_rise()) > 0.5:
+                m1 = m1_init
+                m1_frozen = True
+            else:
+                m1 += delta_rise()
+        if not m2_frozen:
+            if abs(delta_set()) > 0.5:
+                m2 = m2_init
+                m2_frozen = True
+            else:
+                m2 += delta_set()
     rising = None if circumpolar else m1 * 24.0
     setting = None if circumpolar else m2 * 24.0
     return (rising, m0 * 24.0, setting)
