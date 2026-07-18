@@ -678,6 +678,39 @@ class Moon(object):
         year = y + doy / num_days_year
         # We compute the 'k' parameter
         k = round((year - 2000.0) * 12.3685, 0)
+        return Moon.moon_phase_from_k(k, target=target)
+
+    @staticmethod
+    def moon_phase_from_k(k, target="new"):
+        """Compute a Moon phase directly from its integer lunation index.
+
+        ``k`` counts mean New Moons from the epoch near January 2000. Quarter
+        offsets are selected through ``target`` and applied internally.
+
+        :param k: Integer lunation index of the target New Moon.
+        :type k: int, float
+        :param target: Corresponding phase: ``"new"``, ``"first"``,
+            ``"full"`` or ``"last"``.
+        :type target: str
+
+        :returns: The instant of the requested phase in Dynamical Time (TT).
+        :rtype: :py:class:`Epoch`
+        :raises: TypeError if input values are of incorrect types.
+        :raises: ValueError if ``k`` is not integral or ``target`` is invalid.
+        """
+
+        if not (isinstance(k, (int, float)) and isinstance(target, str)):
+            raise TypeError("Invalid input types")
+        if not float(k).is_integer():
+            raise ValueError("'k' must be an integer lunation index")
+        if (
+            (target != "new")
+            and (target != "first")
+            and (target != "full")
+            and (target != "last")
+        ):
+            raise ValueError("'target' value is invalid")
+        k = float(k)
         if target == "first":
             k += 0.25
         elif target == "full":
