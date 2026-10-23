@@ -308,10 +308,10 @@ class Epoch(object):
         >>> print(round((e - JDE2000) * DAY2SEC, 3))
         64.184
         >>> e = Epoch(JDE2000, local=True)
-        >>> print(round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3))
+        >>> print(round((e - JDE2000) * DAY2SEC + Epoch.utc2local(), 3))
         64.184
         >>> e = Epoch(JDE2000, local=True, leap_seconds=35.0)
-        >>> print(round((e - JDE2000) * DAY2SEC - Epoch.utc2local(), 3))
+        >>> print(round((e - JDE2000) * DAY2SEC + Epoch.utc2local(), 3))
         77.184
         """
 
@@ -412,7 +412,7 @@ class Epoch(object):
         # If enabled, let's convert from UTC to TT, adding the needed seconds
         deltasec = 0.0
         if local:
-            deltasec = Epoch.utc2local()
+            deltasec = -Epoch.utc2local()
             if not utc2tt and leap_seconds == 0.0:
                 utc2tt = True
         # In this case, UTC to TT correction is applied automatically
@@ -1358,8 +1358,8 @@ class Epoch(object):
             leap_seconds = kwargs["leap_seconds"]
         else:
             leap_seconds = 0.0
-        if "local" in kwargs:
-            deltasec = Epoch.utc2local()
+        if kwargs.get("local", False):
+            deltasec = -Epoch.utc2local()
             if not tt2utc and leap_seconds == 0.0:
                 tt2utc = True
         # In this case, TT to UTC correction is applied automatically, but only
@@ -1383,6 +1383,11 @@ class Epoch(object):
             if doy < 1.0:
                 year -= 1
                 doy = 366.0 + doy if Epoch.is_leap(year) else 365.0 + doy
+            else:
+                days = 366.0 if Epoch.is_leap(year) else 365.0
+                if doy >= days + 1.0:
+                    doy -= days
+                    year += 1
             year, month, day = Epoch.doy2date(year, doy)
         return year, month, day
 
