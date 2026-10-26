@@ -20,6 +20,7 @@
 
 import calendar
 import datetime
+import time
 from math import radians, cos, sin, asin, sqrt, acos, degrees
 
 from pymeeus.base import TOL, get_ordinal_suffix, iint
@@ -983,12 +984,10 @@ class Epoch(object):
         :rtype: float
         """
 
-        localhour = datetime.datetime.now().hour
-        utchour = datetime.datetime.utcnow().hour
-        localminute = datetime.datetime.now().minute
-        utcminute = datetime.datetime.utcnow().minute
-        return ((localhour - utchour) * 3600.0
-                + (localminute - utcminute) * 60.0)
+        # Use one instant and include the date on both sides of midnight.
+        timestamp = time.time()
+        return float(calendar.timegm(time.localtime(timestamp))
+                     - calendar.timegm(time.gmtime(timestamp)))
 
     @staticmethod
     def easter(year):
