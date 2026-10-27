@@ -483,6 +483,26 @@ def test_coordinates_angular_separation():
         "ERROR: 1st angular_separation() test, 'sep_ang' value doesn't match"
 
 
+def test_coordinates_angular_separation_small_angles():
+    """Small distinct directions must not be rounded to coincident points."""
+    for separation in (1e-7, 1e-6, 1e-5):
+        for first, second in ((0., separation), (separation, 0.)):
+            result = angular_separation(Angle(first), Angle(0),
+                                        Angle(second), Angle(0))
+            assert abs(float(result) - separation) < 1e-12
+            result = angular_separation(Angle(0), Angle(first),
+                                        Angle(0), Angle(second))
+            assert abs(float(result) - separation) < 1e-12
+
+
+def test_coordinates_angular_separation_antipodal():
+    """Resolve the distance from an antipode without asin domain errors."""
+    for separation in (180. - 1e-7, 180. - 1e-6, 180.):
+        result = angular_separation(Angle(0), Angle(0),
+                                    Angle(separation), Angle(0))
+        assert abs(float(result) - separation) < 1e-12
+
+
 def test_coordinates_minimum_angular_separation():
     """Tests the minimum_angular_separation() method of Coordinates module"""
 

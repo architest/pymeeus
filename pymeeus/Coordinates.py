@@ -20,7 +20,7 @@
 
 from math import (
     sqrt, sin, cos, tan, atan, atan2, asin, acos, radians, pi, copysign,
-    degrees
+    degrees, hypot
 )
 from pymeeus.base import TOL, iint
 from pymeeus.Angle import Angle
@@ -1761,11 +1761,6 @@ def angular_separation(alpha1, delta1, alpha2, delta2):
     32.793
     """
 
-    # Let's define an auxiliary function
-    def hav(theta):
-        """Function to compute the haversine (hav)"""
-        return (1.0 - cos(theta)) / 2.0
-
     # First check that input values are of correct types
     if not (
         isinstance(alpha1, Angle)
@@ -1776,11 +1771,14 @@ def angular_separation(alpha1, delta1, alpha2, delta2):
         raise TypeError("Invalid input types")
     dalpha = alpha1 - alpha2
     dalpha = dalpha.rad()
-    ddelta = delta1 - delta2
-    ddelta = ddelta.rad()
     d1 = delta1.rad()
     d2 = delta2.rad()
-    theta = 2.0 * asin(sqrt(hav(ddelta) + cos(d1) * cos(d2) * hav(dalpha)))
+    # Use the sine and cosine of the separation. Unlike 1 - cos(theta),
+    # this retains small separations and is stable near antipodal points.
+    y = cos(d2) * sin(dalpha)
+    x = cos(d1) * sin(d2) - sin(d1) * cos(d2) * cos(dalpha)
+    z = sin(d1) * sin(d2) + cos(d1) * cos(d2) * cos(dalpha)
+    theta = atan2(hypot(x, y), z)
     theta = Angle(theta, radians=True)
     return theta
 
