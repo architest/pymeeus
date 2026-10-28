@@ -20,6 +20,8 @@
 
 from math import sqrt, radians, sin
 
+import pytest
+
 from pymeeus.base import TOL
 from pymeeus.CurveFitting import CurveFitting
 
@@ -117,6 +119,42 @@ def test_curvefitting_linear_fitting():
 
     assert abs(round(b, 2) - 7.03) < TOL, \
         "ERROR: In 4th linear_fitting() test, 'b' value doesn't match"
+
+
+def test_linear_fitting_julian_dates():
+    """Retain time differences between nearby Julian dates."""
+    x = [2451545.0 + i / 1024.0 for i in range(5)]
+    y = [10.0 + 2.0 * i for i in range(5)]
+    assert CurveFitting(x, y).linear_fitting() == (2048.0, -5020764150.0)
+
+
+def test_linear_fitting_large_ordinates():
+    """Keep a small trend on top of a large common ordinate."""
+    x = [0, 1, 2, 3, 4]
+    y = [2**50 + 3 * value for value in x]
+    assert CurveFitting(x, y).linear_fitting() == (3.0, float(2**50))
+
+
+def test_linear_fitting_both_offsets():
+    """Fit exact affine data independently of its coordinate origin."""
+    x = [2**40 + value for value in [0, 1, 2, 3, 5]]
+    y = [2**40 + 3 * value for value in [0, 1, 2, 3, 5]]
+    a, b = CurveFitting(x, y).linear_fitting()
+    assert abs(a - 3.0) < 1e-14
+    assert abs(b + 2**41) < 0.002
+
+
+def test_linear_fitting_degenerate():
+    """Preserve rejection of zero or negligible abscissa variation."""
+    for x in [[1, 1, 1], [0.0, 1e-7, 2e-7]]:
+        with pytest.raises(ZeroDivisionError):
+            CurveFitting(x, [1, 2, 3]).linear_fitting()
+
+
+def test_linear_fitting_intercept():
+    """Avoid rounding the shifted mean back onto a large abscissa."""
+    assert CurveFitting([2**53, 2**53 + 2], [0, 2]).linear_fitting() == (
+        1.0, float(-2**53))
 
 
 def test_curvefitting_quadratic_fitting():

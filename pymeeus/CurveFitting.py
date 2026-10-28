@@ -351,18 +351,22 @@ class CurveFitting(object):
         a = -2.49	b = 244.18
         """
 
+        # Remove the common offsets before forming products, so nearby Julian
+        # dates or large ordinates do not lose their variation to cancellation.
         n = self._N
-        sxy = self._U
-        sx = self._P
-        sy = self._T
-        sx2 = self._Q
-        d = n * sx2 - sx * sx
+        x0, y0 = float(self._x[0]), float(self._y[0])
+        x = [float(value) - x0 for value in self._x]
+        y = [float(value) - y0 for value in self._y]
+        mean_x, mean_y = fsum(x) / n, fsum(y) / n
+        x = [value - mean_x for value in x]
+        y = [value - mean_y for value in y]
+        d = fsum(value * value for value in x)
 
-        if abs(d) < TOL:
+        if abs(n * d) < TOL:
             raise ZeroDivisionError("Input data leads to a division by zero")
 
-        a = (n * sxy - sx * sy) / d
-        b = (sy * sx2 - sx * sxy) / d
+        a = fsum(xi * yi for xi, yi in zip(x, y)) / d
+        b = (y0 - a * x0) + (mean_y - a * mean_x)
         return (a, b)
 
     def quadratic_fitting(self):
