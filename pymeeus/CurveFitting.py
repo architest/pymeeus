@@ -354,9 +354,16 @@ class CurveFitting(object):
         # Remove the common offsets before forming products, so nearby Julian
         # dates or large ordinates do not lose their variation to cancellation.
         n = self._N
-        x0, y0 = float(self._x[0]), float(self._y[0])
-        x = [float(value) - x0 for value in self._x]
-        y = [float(value) - y0 for value in self._y]
+        # Keep integer differences exact; converting large timestamps to floats
+        # first can make distinct samples equal. Angles need ordinary degrees
+        # here so their arithmetic does not wrap the differences.
+        x = [float(value) if isinstance(value, Angle) else value
+             for value in self._x]
+        y = [float(value) if isinstance(value, Angle) else value
+             for value in self._y]
+        x0, y0 = x[0], y[0]
+        x = [value - x0 for value in x]
+        y = [value - y0 for value in y]
         mean_x, mean_y = fsum(x) / n, fsum(y) / n
         x = [value - mean_x for value in x]
         y = [value - mean_y for value in y]

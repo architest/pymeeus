@@ -23,6 +23,7 @@ from math import sqrt, radians, sin
 import pytest
 
 from pymeeus.base import TOL
+from pymeeus.Angle import Angle
 from pymeeus.CurveFitting import CurveFitting
 
 
@@ -133,6 +134,29 @@ def test_linear_fitting_large_ordinates():
     x = [0, 1, 2, 3, 4]
     y = [2**50 + 3 * value for value in x]
     assert CurveFitting(x, y).linear_fitting() == (3.0, float(2**50))
+
+
+def test_linear_fitting_integer_timestamps():
+    """Subtract large integer origins before rounding to floating point."""
+    x = [2**60 + i for i in range(5)]
+    y = [10 + 2 * i for i in range(5)]
+    assert CurveFitting(x, y).linear_fitting() == (2.0, -float(2**61))
+
+
+def test_linear_fitting_integer_ordinates():
+    """Preserve integer trends smaller than the float spacing at the origin."""
+    x = [0, 1, 2, 3, 4]
+    y = [2**60 + 3 * i for i in x]
+    assert CurveFitting(x, y).linear_fitting() == (3.0, float(2**60))
+
+
+def test_linear_fitting_angles():
+    """Use unwrapped degree differences when fitting Angle inputs."""
+    x = [Angle(300), Angle(150), Angle(0)]
+    y = [Angle(10), Angle(20), Angle(30)]
+    a, b = CurveFitting(x, y).linear_fitting()
+    assert a == pytest.approx(-1.0 / 15.0)
+    assert b == pytest.approx(30.0)
 
 
 def test_linear_fitting_both_offsets():
