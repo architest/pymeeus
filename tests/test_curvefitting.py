@@ -159,6 +159,15 @@ def test_linear_fitting_angles():
     assert b == pytest.approx(30.0)
 
 
+def test_linear_fitting_integer_intercept():
+    """Cancel integer origins before rounding a small intercept."""
+    for origin in [-2**60, 2**60]:
+        for slope in [-3, 2]:
+            x = [origin + i for i in range(5)]
+            y = [slope * value + 3 for value in x]
+            assert CurveFitting(x, y).linear_fitting() == (float(slope), 3.0)
+
+
 def test_linear_fitting_both_offsets():
     """Fit exact affine data independently of its coordinate origin."""
     x = [2**40 + value for value in [0, 1, 2, 3, 5]]

@@ -373,7 +373,9 @@ class CurveFitting(object):
             raise ZeroDivisionError("Input data leads to a division by zero")
 
         a = fsum(xi * yi for xi, yi in zip(x, y)) / d
-        b = (y0 - a * x0) + (mean_y - a * mean_x)
+        # An integral slope lets integer origins cancel before float rounding.
+        origin_slope = int(a) if a.is_integer() else a
+        b = (y0 - origin_slope * x0) + (mean_y - a * mean_x)
         return (a, b)
 
     def quadratic_fitting(self):
