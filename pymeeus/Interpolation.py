@@ -521,7 +521,7 @@ class Interpolation(object):
             # Check limits against interpolation table. Reset if necessary
             if xl < self._x[0]:
                 xl = xmin
-            if xh < self._x[-1]:
+            if xh > self._x[-1]:
                 xh = xmax
             yl = self.__call__(xl)
             yh = self.__call__(xh)
@@ -552,7 +552,7 @@ class Interpolation(object):
                 else:
                     x = x - y / yp
                     # Check if x is within limits
-                    if x < xmin or x > xmax:
+                    if x < xl or x > xh:
                         # Switch to linear interpolation
                         x = (xl * yh - xh * yl) / (yh - yl)
                         y = self.__call__(x)

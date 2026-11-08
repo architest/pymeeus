@@ -20,6 +20,8 @@
 
 from math import sqrt, degrees
 
+import pytest
+
 from pymeeus.base import TOL
 from pymeeus.Angle import Angle
 from pymeeus.Interpolation import Interpolation
@@ -195,6 +197,47 @@ def test_interpolation_root():
 
     assert abs(i_angles2.root() - 26.6385869469) < TOL, \
         "ERROR: In 6th root() test, output value doesn't match"
+
+
+def test_interpolation_root_rejects_interval_without_root():
+    """A root elsewhere in the table must not satisfy a restricted search."""
+    m = Interpolation([0, 1, 2], [1, 0, -1])  # f(x) = 1 - x
+
+    with pytest.raises(ValueError):
+        m.root(0, 0.5)
+
+
+def test_interpolation_root_clamps_upper_limit():
+    """An upper limit beyond the interpolation table is clamped to its end."""
+    m = Interpolation([0, 1, 2], [1, 0, -1])
+
+    assert abs(m.root(0, 3) - 1.0) < TOL
+
+
+def test_interpolation_root_keeps_newton_steps_inside_interval():
+    """Newton steps outside the interval fall back to interpolation."""
+    m = Interpolation([-2, -1, 0, 1, 2], [-6, 0, 0, 0, 6])  # f(x) = x^3 - x
+
+    root = m.root(-0.99, 0.01)
+
+    assert -0.99 <= root <= 0.01
+    assert abs(root) < TOL
+
+
+def test_interpolation_root_selects_root_in_subinterval():
+    """A subinterval can isolate one root when the full range has two."""
+    m = Interpolation([0, 1, 2, 3], [2, 0, 0, 2])  # f(x) = (x - 1)(x - 2)
+
+    assert abs(m.root(0.5, 1.5) - 1.0) < TOL
+    assert abs(m.root(1.5, 0.5) - 1.0) < TOL
+
+
+def test_interpolation_minmax_rejects_interval_without_extremum():
+    """The derivative root must also respect the requested interval."""
+    m = Interpolation([0, 1, 2], [1, 0, 1])  # f(x) = (x - 1)^2
+
+    with pytest.raises(ValueError):
+        m.minmax(0, 0.5)
 
 
 def test_interpolation_minmax():
